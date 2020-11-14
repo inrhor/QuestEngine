@@ -1,5 +1,7 @@
 package cn.inrhor.questengine.common.hologram.packets
 
+import cn.inrhor.questengine.QuestEngine
+import cn.inrhor.questengine.utlis.public.MsgUtil
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.events.PacketContainer
@@ -7,6 +9,10 @@ import com.comphenix.protocol.wrappers.EnumWrappers
 import com.comphenix.protocol.wrappers.Pair
 import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.comphenix.protocol.wrappers.WrappedDataWatcher
+import io.izzel.taboolib.module.inject.TSchedule
+import io.izzel.taboolib.module.locale.TLocale
+import me.clip.placeholderapi.util.Msg
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
@@ -118,13 +124,31 @@ class PacketHolo {
             loc.add(0.0, -0.22, 0.0)
 
             spawnAS(player, entityID, loc)
-            setText(player, entityID, contents[index])
+
+/*//            if (TLocale.Translate.isPlaceholderPluginEnabled()) {
+                text = TLocale.Translate.setPlaceholders(player, text)
+//            }
+            setText(player, entityID, text)*/
+            updateWrite(player, entityID, contents[index])
+
             if (itemList.size > index) {setItem(player, entityID, itemList[index])}
 
             val ids = holoEntityIDMap[id]!!
             ids.add(entityID)
             holoEntityIDMap[id] = ids
         }
+    }
+
+    @TSchedule
+    fun updateWrite(player: Player, entityID: Int, text: String) {
+        Bukkit.getScheduler().runTaskTimer(QuestEngine.plugin,
+            Runnable {
+                // 判断 player 状态 执行终止或继续运行
+                // ...
+                // ...
+                val newText = TLocale.Translate.setPlaceholders(player, text)
+                setText(player, entityID, newText)
+            }, 1, 2)
     }
 
     companion object {

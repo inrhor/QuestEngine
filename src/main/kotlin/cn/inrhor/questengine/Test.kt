@@ -12,7 +12,7 @@ import java.util.*
 
 @TListener
 class Test : Listener {
-   /* @EventHandler
+    @EventHandler
     fun test(ev: PlayerDropItemEvent) {
         val item = ItemStack(Material.APPLE)
         val meta = item.itemMeta
@@ -20,13 +20,13 @@ class Test : Listener {
         meta?.lore = lore
         item.itemMeta = meta
 
-        val entityID = 1000
+//        val entityID = 1000
 
 //        PacketHoloTest.sendHologram(entityID, ev.player, "测试全息", item)
 
         val player = ev.player
-        PacketHolo().sendHolo(player, UUID.randomUUID().toString(), player.location, mutableListOf("hahah", "eee", "测试全息"), mutableListOf(item))
+        PacketHolo().sendHolo(player, UUID.randomUUID().toString(), player.location, mutableListOf("%animations_<typewriter cursor=_ pause=10 reverse>hashdkasdh</typewriter>%"), mutableListOf(item))
 
-    }*/
+    }
 
 }

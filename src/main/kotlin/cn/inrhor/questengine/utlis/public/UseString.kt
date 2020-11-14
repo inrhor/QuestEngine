@@ -1,10 +1,10 @@
 package cn.inrhor.questengine.utlis.public
 
-import cn.inrhor.questengine.IElodieQuest
+import cn.inrhor.questengine.QuestEngine
 
 object UseString {
 
     fun getLang(): String {
-        return IElodieQuest.config.getString("setting.lang")!!
+        return QuestEngine.config.getString("setting.lang")!!
     }
 }

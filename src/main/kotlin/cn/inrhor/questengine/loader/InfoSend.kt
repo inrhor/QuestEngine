@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.loader
 
-import cn.inrhor.questengine.IElodieQuest
+import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.utlis.public.MsgUtil
 import cn.inrhor.questengine.utlis.public.UseString
 import io.izzel.taboolib.module.locale.TLocale
@@ -22,7 +22,7 @@ class InfoSend {
             MsgUtil.send(s)
         }
 
-        val pluginCon = IElodieQuest.plugin.description
+        val pluginCon = QuestEngine.plugin.description
 
         TLocale.sendToConsole(
             "LOADER.INFO",
