@@ -1,0 +1,6 @@
+name: ${name}
+main: ${main}
+version: ${version}
+api-version: "1.13"
+authors: ${authors}
+softdepend: ${softdepend}

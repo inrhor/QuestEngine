@@ -1,0 +1,7 @@
+# 对话ID
+dialog1:
+  # 对话目标
+  target: "nbt:dialog1"
+  # 触发条件
+  condition:
+    - ""
