@@ -11,13 +11,13 @@ import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.comphenix.protocol.wrappers.WrappedDataWatcher
 import io.izzel.taboolib.module.inject.TSchedule
 import io.izzel.taboolib.module.locale.TLocale
-import me.clip.placeholderapi.util.Msg
-import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
+
 
 class PacketHolo {
 
@@ -105,13 +105,16 @@ class PacketHolo {
         sendServerPacket(player, packet)
     }
 
-    fun sendHolo(player: Player,
+    /*
+    重写
+     */
+    /*fun sendHolo(player: Player,
                  id: String,
                  loc: Location,
                  contents: MutableList<String>,
                  itemList: MutableList<ItemStack>) {
         if (holoEntityIDMap.containsKey(id)) {
-            // Msg
+            // Msg, id不存在消息
             return
         }
 
@@ -125,10 +128,7 @@ class PacketHolo {
 
             spawnAS(player, entityID, loc)
 
-/*//            if (TLocale.Translate.isPlaceholderPluginEnabled()) {
-                text = TLocale.Translate.setPlaceholders(player, text)
-//            }
-            setText(player, entityID, text)*/
+            // 处理动画文字
             updateWrite(player, entityID, contents[index])
 
             if (itemList.size > index) {setItem(player, entityID, itemList[index])}
@@ -137,18 +137,23 @@ class PacketHolo {
             ids.add(entityID)
             holoEntityIDMap[id] = ids
         }
-    }
+    }*/
 
     @TSchedule
     fun updateWrite(player: Player, entityID: Int, text: String) {
-        Bukkit.getScheduler().runTaskTimer(QuestEngine.plugin,
-            Runnable {
-                // 判断 player 状态 执行终止或继续运行
-                // ...
-                // ...
-                val newText = TLocale.Translate.setPlaceholders(player, text)
+        object : BukkitRunnable() {
+            override fun run() {
+                if (!player.isOnline || player.isDead) {
+                    cancel()
+                    return
+                }
+                /*
+                等待处理动画文字
+                 */
+                val newText = text
                 setText(player, entityID, newText)
-            }, 1, 2)
+            }
+        }.runTaskTimer(QuestEngine.plugin, 0L, 20L)
     }
 
     companion object {
