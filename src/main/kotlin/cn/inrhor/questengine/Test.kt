@@ -1,13 +1,12 @@
 package cn.inrhor.questengine
 
-import cn.inrhor.questengine.common.hologram.packets.PacketHolo
+import cn.inrhor.questengine.common.dialog.holo.DialogHolo
 import io.izzel.taboolib.module.inject.TListener
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.inventory.ItemStack
-import java.util.*
 
 
 @TListener
@@ -25,7 +24,10 @@ class Test : Listener {
 //        PacketHoloTest.sendHologram(entityID, ev.player, "测试全息", item)
 
         val player = ev.player
-        PacketHolo().sendHolo(player, UUID.randomUUID().toString(), player.location, mutableListOf("%animations_<typewriter cursor=_ pause=10 reverse>hashdkasdh</typewriter>%"), mutableListOf(item))
+//        PacketHolo().sendHolo(player, UUID.randomUUID().toString(), player.location, mutableListOf("%animations_<typewriter cursor=_ pause=10 reverse>hashdkasdh</typewriter>%"), mutableListOf(item))
+
+        val dialogHolo = DialogHolo(mutableListOf(player))
+        dialogHolo.runRunnable()
 
     }
 

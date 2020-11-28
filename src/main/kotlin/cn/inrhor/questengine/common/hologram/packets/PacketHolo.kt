@@ -1,7 +1,5 @@
 package cn.inrhor.questengine.common.hologram.packets
 
-import cn.inrhor.questengine.QuestEngine
-import cn.inrhor.questengine.utlis.public.MsgUtil
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.events.PacketContainer
@@ -9,13 +7,10 @@ import com.comphenix.protocol.wrappers.EnumWrappers
 import com.comphenix.protocol.wrappers.Pair
 import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.comphenix.protocol.wrappers.WrappedDataWatcher
-import io.izzel.taboolib.module.inject.TSchedule
-import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
 
 
@@ -39,24 +34,13 @@ class PacketHolo {
         sendServerPacket(player, packet)
     }
 
-    fun setText(player: Player, entityID: Int, text: String) {
+    fun setMetadata(player: Player, entityID: Int) {
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
         packet.modifier.writeDefaults()
         packet.integers.write(0, entityID)
 
         val metadata = WrappedDataWatcher()
-        // custom name
-        val opt: Optional<*> = Optional.of(
-            WrappedChatComponent
-                .fromChatMessage(text)[0].handle
-        )
-        metadata.setObject(
-            WrappedDataWatcher.WrappedDataWatcherObject(
-                2, // 对应 https://wiki.vg/Entity_metadata#Entity_Metadata_Format 的 Index
-                WrappedDataWatcher.Registry.getChatComponentSerializer(
-                    true)),
-            opt
-        )
+
         // custom name visible
         metadata.setObject(
             WrappedDataWatcher.WrappedDataWatcherObject(
@@ -84,6 +68,31 @@ class PacketHolo {
                 14,
                 WrappedDataWatcher.Registry.get(Byte::class.javaObjectType)),
             (0x08 or 0x01).toByte()
+        )
+
+        packet.watchableCollectionModifier.write(0, metadata.watchableObjects)
+
+        sendServerPacket(player, packet)
+    }
+
+    fun setText(player: Player, entityID: Int, text: String) {
+        val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
+        packet.modifier.writeDefaults()
+        packet.integers.write(0, entityID)
+
+        val metadata = WrappedDataWatcher()
+
+        // custom name
+        val opt: Optional<*> = Optional.of(
+            WrappedChatComponent
+                .fromChatMessage(text)[0].handle
+        )
+        metadata.setObject(
+            WrappedDataWatcher.WrappedDataWatcherObject(
+                2, // 对应 https://wiki.vg/Entity_metadata#Entity_Metadata_Format 的 Index
+                WrappedDataWatcher.Registry.getChatComponentSerializer(
+                    true)),
+            opt
         )
 
         packet.watchableCollectionModifier.write(0, metadata.watchableObjects)
@@ -139,7 +148,7 @@ class PacketHolo {
         }
     }*/
 
-    @TSchedule
+    /*@TSchedule
     fun updateWrite(player: Player, entityID: Int, text: String) {
         object : BukkitRunnable() {
             override fun run() {
@@ -147,18 +156,19 @@ class PacketHolo {
                     cancel()
                     return
                 }
-                /*
+                *//*
                 等待处理动画文字
-                 */
+                 *//*
                 val newText = text
                 setText(player, entityID, newText)
             }
         }.runTaskTimer(QuestEngine.plugin, 0L, 20L)
-    }
+    }*/
 
+    // 防止EntityID相似而冲突
     companion object {
         @JvmStatic
-        private val randomIntID = Random()
+        private val randomIntEntityID = Random()
 
         @JvmStatic
         private var holoEntityIDMap = mutableMapOf<String, MutableList<Int>>()

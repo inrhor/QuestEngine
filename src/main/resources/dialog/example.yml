@@ -1,7 +1,31 @@
 # 对话ID
 dialog1:
   # 对话目标
-  target: "nbt:dialog1"
+  target: "nbt=dialog1"
   # 触发条件
   condition:
     - ""
+  # 关于全息对话
+  dialog:
+    # 对话主体
+    own:
+      # 主体位置
+      location: ""
+      # 文字组
+      text:
+        # 位置基于主体位置变化
+        addLocation: ""
+        # 内容
+        content:
+          - ""
+          - ""
+      # 物品组
+      item:
+        # 位置基于主体位置变化
+        addLocation: ""
+        # 内容
+        content:
+          - ""
+          - ""
+    # 回复
+    reply:
