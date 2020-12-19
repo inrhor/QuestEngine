@@ -16,11 +16,21 @@ import java.util.*
 
 class PacketHolo {
 
+    /*private fun sendServerPacket(playerList: MutableList<Player>, packet: PacketContainer) {
+        ProtocolLibrary.getProtocolManager().sendServerPacket(playerList, packet)
+    }*/
+
+    private fun sendServerPacket(playerList: MutableList<Player>, packet: PacketContainer) {
+        playerList.forEach{
+            sendServerPacket(it, packet)
+        }
+    }
+
     private fun sendServerPacket(player: Player, packet: PacketContainer) {
         ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet)
     }
 
-    fun spawnAS(player: Player, entityID: Int, loc: Location) {
+    fun spawnAS(playerList: MutableList<Player>, entityID: Int, loc: Location) {
         val packet = PacketContainer(PacketType.Play.Server.SPAWN_ENTITY)
         packet.modifier.writeDefaults()
 
@@ -31,10 +41,19 @@ class PacketHolo {
         packet.doubles.write(1, loc.y)
         packet.doubles.write(2, loc.z)
 
+        sendServerPacket(playerList, packet)
+    }
+
+    fun destroyAS(player: Player, entityID: Int) {
+        val packet = PacketContainer(PacketType.Play.Server.ENTITY_DESTROY)
+        packet.modifier.writeDefaults()
+        packet.integers.write(0, 1)
+        packet.integers.write(1, entityID)
+
         sendServerPacket(player, packet)
     }
 
-    fun setMetadata(player: Player, entityID: Int) {
+    fun setMetadata(playerList: MutableList<Player>, entityID: Int, canClick: Boolean) {
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
         packet.modifier.writeDefaults()
         packet.integers.write(0, entityID)
@@ -69,13 +88,22 @@ class PacketHolo {
                 WrappedDataWatcher.Registry.get(Byte::class.javaObjectType)),
             (0x08 or 0x01).toByte()
         )
+        // marker or no
+        if (!canClick) {
+            metadata.setObject(
+                WrappedDataWatcher.WrappedDataWatcherObject(
+                    14,
+                    WrappedDataWatcher.Registry.get(Byte::class.javaObjectType)),
+                0x10.toByte()
+            )
+        }
 
         packet.watchableCollectionModifier.write(0, metadata.watchableObjects)
 
-        sendServerPacket(player, packet)
+        sendServerPacket(playerList, packet)
     }
 
-    fun setText(player: Player, entityID: Int, text: String) {
+    fun setText(playerList: MutableList<Player>, entityID: Int, text: String) {
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
         packet.modifier.writeDefaults()
         packet.integers.write(0, entityID)
@@ -97,10 +125,10 @@ class PacketHolo {
 
         packet.watchableCollectionModifier.write(0, metadata.watchableObjects)
 
-        sendServerPacket(player, packet)
+        sendServerPacket(playerList, packet)
     }
 
-    fun setItem(player: Player, entityID: Int, item: ItemStack) {
+    fun setItem(playerList: MutableList<Player>, entityID: Int, item: ItemStack) {
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_EQUIPMENT)
         packet.integers.write(0, entityID)
         packet.slotStackPairLists.write(
@@ -111,13 +139,13 @@ class PacketHolo {
                     item)
             ))
 
-        sendServerPacket(player, packet)
+        sendServerPacket(playerList, packet)
     }
 
     /*
     重写
      */
-    /*fun sendHolo(player: Player,
+    /*fun sendHolo(playerList: MutableList<Player>,
                  id: String,
                  loc: Location,
                  contents: MutableList<String>,
@@ -147,9 +175,61 @@ class PacketHolo {
             holoEntityIDMap[id] = ids
         }
     }*/
+    fun sendHolo(playerList: MutableList<Player>,
+                 id: String,
+                 loc: Location,
+                 textList: MutableList<String>,
+                 itemList: MutableList<ItemStack>,
+                 entityIDs: MutableList<Int>,
+                 canClick: Boolean) {
+        /*if (holoEntityIDMap.containsKey(id)) {
+            // Msg, id不存在消息
+            return
+        }
+
+        val holoIds : MutableList<Int> = ArrayList()
+        holoEntityIDMap[id] = holoIds*/
+
+/*        for ((index) in textList.withIndex()) {
+//            val entityID = randomIntEntityID.nextInt()
+
+            spawnAS(playerList, entityID, loc)
+
+            loc.add(0.0, -0.22, 0.0)
+
+            setMetadata(playerList, entityID)
+
+            setText(playerList, entityID, textList[index])
+
+//            if (itemList.size > index) {setItem(playerList, entityID, itemList[index])}
+
+            *//*if (canClick) {
+                val ids = holoEntityIDMap[id]!!
+                ids.add(entityID)
+                holoEntityIDMap[id] = ids
+            }*//*
+        }*/
+
+        var index = 0;
+        entityIDs.forEach {
+            spawnAS(playerList, it, loc)
+
+            loc.add(0.0, -0.22, 0.0)
+
+            setMetadata(playerList, it, canClick)
+
+            if (textList.isNotEmpty()) {
+                setText(playerList, it, textList[index])
+            }else {
+                setItem(playerList, it, itemList[index])
+            }
+
+            index++
+        }
+    }
 
     /*@TSchedule
-    fun updateWrite(player: Player, entityID: Int, text: String) {
+    fun updateWrite(playerList: MutableList<Player>, entityID: Int, text: String) {
         object : BukkitRunnable() {
             override fun run() {
                 if (!player.isOnline || player.isDead) {
@@ -167,17 +247,19 @@ class PacketHolo {
 
     // 防止EntityID相似而冲突
     companion object {
+        // 给定随机entityID
         @JvmStatic
-        private val randomIntEntityID = Random()
+        val randomIntEntityID = Random()
 
-        @JvmStatic
-        private var holoEntityIDMap = mutableMapOf<String, MutableList<Int>>()
+        // holoID 对应 entityID集 作为触发交互式脚本 标识
+        /*@JvmStatic
+        var holoEntityIDMap = mutableMapOf<String, MutableList<Int>>()*/
     }
 
-    fun isHoloPacket(entityID: Int): Boolean {
+    /*fun isHoloPacket(entityID: Int): Boolean {
         holoEntityIDMap.forEach {
             if (it.value[0] == entityID) return true
         }
         return false
-    }
+    }*/
 }

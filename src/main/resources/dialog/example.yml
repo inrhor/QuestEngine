@@ -4,13 +4,13 @@ dialog1:
   target: "nbt=dialog1"
   # 触发条件
   condition:
-    - ""
+    - "questTag=questID_1"
   # 关于全息对话
   dialog:
     # 对话主体
     own:
       # 主体位置
-      location: ""
+      location: "show-nbt=dialog-addY=3.0"
       # 文字组
       text:
         # 位置基于主体位置变化
@@ -29,3 +29,4 @@ dialog1:
           - ""
     # 回复
     reply:
+      1: ""

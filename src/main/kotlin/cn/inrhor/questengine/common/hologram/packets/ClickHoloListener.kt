@@ -32,7 +32,7 @@ class ClickHoloListener : PacketAdapter(
         val packet = ev.packet
         packet.integers.read(0)
         if (packet.entityUseActions.values[0] != EnumWrappers.EntityUseAction.INTERACT) return
-        if (!PacketHolo().isHoloPacket(packet.integers.values[0])) return
+//        if (!PacketHolo().isHoloPacket(packet.integers.values[0])) return
         // run script
     }
 }
