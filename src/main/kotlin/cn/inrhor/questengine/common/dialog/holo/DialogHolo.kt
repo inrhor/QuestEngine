@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.dialog.holo
 
 import cn.inrhor.questengine.QuestEngine
+import cn.inrhor.questengine.utlis.public.MsgUtil
 import io.izzel.taboolib.module.inject.TSchedule
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
@@ -21,7 +22,7 @@ class DialogHolo(
                     cancel()
                     return
                 }
-
+                MsgUtil.send("asdasdasd   $i")
                 i++
             }
         }

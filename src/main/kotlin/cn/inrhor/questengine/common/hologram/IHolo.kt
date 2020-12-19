@@ -44,7 +44,7 @@ class IHolo(
             addEntityID()
         }
 
-        PacketHolo().sendHolo(viewers, holoID, location, textList, itemList, canClick)
+        PacketHolo().sendHolo(viewers, holoID, location, textList, itemList, entityIDs, canClick)
         val dialogHolo = DialogHolo(viewers)
         dialogHolo.runRunnable()
 
@@ -60,7 +60,7 @@ class IHolo(
      * 更新全息的内容
      */
     fun update() {
-        PacketHolo().sendHolo(viewers, holoID, location, textList, itemList, canClick)
+        PacketHolo().sendHolo(viewers, holoID, location, textList, itemList, entityIDs, canClick)
     }
 
     /**
