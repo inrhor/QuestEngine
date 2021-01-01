@@ -75,6 +75,7 @@ class IHolo(
      */
     fun removeViewer(player: Player) {
         viewers.remove(player)
+        if (!player.isOnline) return
         entityIDs.forEach {
             PacketHolo().destroyAS(player, it)
         }

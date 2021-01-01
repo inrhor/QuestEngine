@@ -10,23 +10,60 @@ dialog1:
     # 对话主体
     own:
       # 主体位置
-      location: "show-nbt=dialog-addY=3.0"
+      location: "[show][nbt=dialog][addY=3.0]"
       # 文字组
       text:
-        # 位置基于主体位置变化
-        addLocation: ""
-        # 内容
+        # 在 主体位置 基础上增加的值
+        #      方向类型可选 left right behind
+        #      乘数可正可负，越大距离越远
+        #      高度可正可负，无需解释
+        addLocation: "[方向][乘数][高度]"
+        # 内容（时间均采用Tick）
+        #      <normal>正常类型的内容<[delay=多久后开始]>
+        #      <flash>闪亮类型的内容<[delay=多久后开始]>
+        #      <write>打字类型的内容<[delay=多久后开始][speed=下个字间隔]>
         content:
-          - ""
+          - "<write>&3&lQuest &f&lEngine<[delay=0][speed=10]><flash>  &c&l任&e&l务&a&l引擎<[delay=250]>"
           - ""
       # 物品组
       item:
-        # 位置基于主体位置变化
-        addLocation: ""
-        # 内容
+        # 在 主体位置 基础上增加的值
+        addLocation: "[方向][乘数][高度]"
+        # 内容（每行仅一个物品）
         content:
-          - ""
-          - ""
+          - "在QuestEngine写好的物品库的物品ID"
+          - "app"
+      # 对话时长，结束后弹出对话回复选项
+      #      -1 为 自动根据文字组动态时长而判断
+      frame: -1
     # 回复
     reply:
-      1: ""
+      # 对话回复选项ID
+      1:
+        # 文字组
+        text:
+          addLocation: "[方向][乘数][高度]"
+          content:
+            - "&c&l牛逼！！！"
+            - "&f&l666666"
+        # 物品组
+        item:
+          # 在 主体位置 基础上增加的值
+          addLocation: "[方向][乘数][高度]"
+          # 内容（每行仅一个物品）
+          content:
+            - "在QuestEngine写好的物品库的物品ID"
+        # 脚本
+        script:
+          - "[]"
+      re:
+        text:
+          addLocation: "[方向][乘数][高度]"
+          content:
+            - "&b&l暗示评分"
+        item:
+          addLocation: "[方向][乘数][高度]"
+          content:
+            - "在QuestEngine写好的物品库的物品ID"
+        script:
+          - "[]"
