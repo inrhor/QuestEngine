@@ -7,8 +7,20 @@ class DialogFile(
 
     val ownLocation: String,
     val ownTextAddLocation: String,
-    val ownTextContent: String,
+    val ownTextContent: MutableList<String>,
+
     val ownItemAddLocation: String,
-    val ownItemContent: String
+    val ownItemContent: MutableList<String>,
+
+    val frame: Int
 ) {
+
+    /**
+     * 处理动画
+     */
+    fun animation() {
+        val textAnimation = TextAnimation(dialogID, ownTextContent)
+        textAnimation.init()
+    }
+
 }

@@ -19,11 +19,11 @@ dialog1:
         #      高度可正可负，无需解释
         addLocation: "[方向][乘数][高度]"
         # 内容（时间均采用Tick）
-        #      <normal>正常类型的内容<[delay=多久后开始]>
-        #      <flash>闪亮类型的内容<[delay=多久后开始]>
-        #      <write>打字类型的内容<[delay=多久后开始][speed=下个字间隔]>
+        #      <[normal][delay=多久后开始][正常类型的内容]>
+        #      <[flash][delay=多久后开始][闪亮类型的内容]>
+        #      <[write][delay=多久后开始][speed=下个字间隔][打字类型的内容]>
         content:
-          - "<write>&3&lQuest &f&lEngine<[delay=0][speed=10]><flash>  &c&l任&e&l务&a&l引擎<[delay=250]>"
+          - "<[write][delay=0][speed=10][&3&lQuest &f&lEngine]><[flash][delay=250][  &c&l任&e&l务&a&l引擎]>"
           - ""
       # 物品组
       item:
