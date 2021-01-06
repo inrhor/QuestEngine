@@ -5,7 +5,7 @@ import java.util.regex.Pattern
 
 class TextAnimation(
     val id: String,
-    val textContent: MutableList<String>
+    private val textContent: MutableList<String>
 ) {
 
     /**
@@ -20,22 +20,25 @@ class TextAnimation(
         textContent.forEach { a ->
             // 对每一行
 
-            // 分割 取 独立内容
+            // 分割 取 独立标签
             val pContent = Pattern.compile("<(.*)>")
-            val indContent = pContent.matcher(a)
+            val indTag = pContent.matcher(a)
 
             // 获取动态总时长
-            val timeLong = getAllTimeLong(indContent)
-            while (indContent.find()) {
+            val timeLong = getAllTimeLong(indTag)
+
+            // 对独立标签而言
+            while (indTag.find()) {
 
                 // 分割 取 内容的属性
                 val pAttribute = Pattern.compile("\\[(.*)]")
-                val attribute = pAttribute.matcher(indContent.group())
+                val attribute = pAttribute.matcher(indTag.group())
                 val delay = attribute.group(2).toInt()
 
+                var multiply = 0 // 用于write
                 for (time in 0..timeLong) {
                     if (delay >= time) {
-                        if (!hasWrite(indContent)) {
+                        if (!hasWrite(indTag)) {
                             val textList = mutableListOf(attribute.group(3))
                             textMap[line] = textList
                             continue
@@ -44,9 +47,10 @@ class TextAnimation(
                         if (attribute.group(1) == "write") {
                             // 实现打字型内容
                             val nextTime = attribute.group(3).toInt()
-                            val text = attribute.group(4)
-                            if (time == delay+nextTime) {
-
+                            if (time == delay+(nextTime*multiply)) {
+                                textList.add(attribute.group(3).substring(0, multiply))
+                                textMap[line] = textList
+                                multiply++
                             }
                         }else {
                             textList.add(attribute.group(3))
