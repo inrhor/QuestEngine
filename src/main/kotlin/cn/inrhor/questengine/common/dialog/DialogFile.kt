@@ -1,5 +1,7 @@
 package cn.inrhor.questengine.common.dialog
 
+import cn.inrhor.questengine.common.dialog.animation.TextAnimation
+
 class DialogFile(
     val dialogID: String,
     val target: String,
@@ -19,7 +21,8 @@ class DialogFile(
      * 处理动画
      */
     fun animation() {
-        val textAnimation = TextAnimation(dialogID, ownTextContent)
+        val textAnimation =
+            TextAnimation(dialogID, ownTextContent)
         textAnimation.init()
     }
 

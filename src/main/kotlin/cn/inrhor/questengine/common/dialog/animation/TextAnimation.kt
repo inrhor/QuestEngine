@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.dialog
+package cn.inrhor.questengine.common.dialog.animation
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -10,6 +10,8 @@ class TextAnimation(
 
     /**
      * 行数 对应 动态字符表
+     *
+     * 其中 动态字符表 根据 帧数，但要注意长度
      */
     private var textMap: HashMap<Int, MutableList<String>> = LinkedHashMap<Int, MutableList<String>>()
 
@@ -20,48 +22,50 @@ class TextAnimation(
 
             // 分割 取 独立内容
             val pContent = Pattern.compile("<(.*)>")
-            val content = pContent.matcher(a)
+            val indContent = pContent.matcher(a)
+
             // 获取动态总时长
-            val timeLong = getAllTimeLong(content)
-            while (content.find()) {
+            val timeLong = getAllTimeLong(indContent)
+            while (indContent.find()) {
 
                 // 分割 取 内容的属性
                 val pAttribute = Pattern.compile("\\[(.*)]")
-                val attribute = pAttribute.matcher(content.group())
+                val attribute = pAttribute.matcher(indContent.group())
                 val delay = attribute.group(2).toInt()
 
-                for (i in 0..timeLong) {
-                    if (delay >= i) {
-                        /*when (attribute.group(1)) {
-                            "normal" -> {
-
-                            }
-                            "flash" -> {
-
-                            }
-                            "write" -> {
-                                val speed = attribute.group(3)
-
-                            }
-                        }*/
-                        if (!hasWrite(content)) {
+                for (time in 0..timeLong) {
+                    if (delay >= time) {
+                        if (!hasWrite(indContent)) {
                             val textList = mutableListOf(attribute.group(3))
                             textMap[line] = textList
                             continue
                         }
-                        val textList = mutableListOf<String>()
-                        
+                        val textList = getTextContent(line)
                         if (attribute.group(1) == "write") {
+                            // 实现打字型内容
+                            val nextTime = attribute.group(3).toInt()
+                            val text = attribute.group(4)
+                            if (time == delay+nextTime) {
 
+                            }
                         }else {
-
+                            textList.add(attribute.group(3))
+                            textMap[line] = textList
                         }
-
                     }
                 }
 
             }
+            line++
         }
+    }
+
+    /**
+     * 根据行数获得动态字符表内容
+     */
+    fun getTextContent(line: Int): MutableList<String> {
+        if (textMap.containsKey(line)) return textMap[line]!!
+        return mutableListOf()
     }
 
     private fun getAllTimeLong(content: Matcher): Int {
@@ -99,11 +103,4 @@ class TextAnimation(
         }
         return false
     }
-
-    /*private fun addTimeLong(attribute: Matcher): Int {
-        if (attribute.group(1) == "write") {
-
-        }
-        return i
-    }*/
 }
