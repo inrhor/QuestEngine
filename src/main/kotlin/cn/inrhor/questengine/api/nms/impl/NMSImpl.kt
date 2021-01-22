@@ -21,10 +21,16 @@ class NMSImpl : NMS() {
             "c" to location.x,
             "d" to location.y,
             "e" to location.z,
-            "f" to (location.yaw * 256.0f / 360.0f).toInt().toByte(),
-            "g" to (location.pitch * 256.0f / 360.0f).toInt().toByte(),
             "k" to EntityTypes.ARMOR_STAND
         )
+    }
+
+    override fun initAS(player: Player, entityId: Int, isSmall: Boolean, noMarker: Boolean) {
+        updateEntityMetadata(player, entityId,
+            getMetaEntityCustomNameVisible(true),
+            getMetaEntitySilenced(true),
+            getMetaEntityGravity(false),
+            getMetaASProperties(isSmall, noMarker))
     }
 
     override fun spawnItem(player: Player, entityId: Int, uuid: UUID, location: Location, itemStack: ItemStack) {
@@ -38,13 +44,14 @@ class NMSImpl : NMS() {
             "e" to location.z,
             "k" to EntityTypes.ITEM
         )
+        updateEntityMetadata(player, entityId, getMetaEntityGravity(true), getMetaEntityItemStack(itemStack))
     }
 
-    override fun destroyAS(player: Player, entityId: Int) {
+    override fun destroyEntity(player: Player, entityId: Int) {
         sendPacket(player, PacketPlayOutEntityDestroy(entityId))
     }
 
-    override fun updateEquipmentItem(player: Player, entityId: Int, slot: EquipmentSlot, itemStack: ItemStack) {
+    override fun updateEquipmentItem(player: Player, entityId: Int, itemStack: ItemStack) {
         if (version >= 11600) {
             sendPacket(
                 player,
@@ -53,7 +60,7 @@ class NMSImpl : NMS() {
                     listOf(
                         com.mojang.datafixers.util.Pair(
                             EnumItemSlot.fromName(
-                                SimpleEquip.fromBukkit(slot).nms),
+                                SimpleEquip.fromBukkit(EquipmentSlot.HEAD).nms),
                             CraftItemStack.asNMSCopy(itemStack)))
                 )
             )
@@ -80,16 +87,13 @@ class NMSImpl : NMS() {
         return DataWatcher.Item(DataWatcherObject(7, DataWatcherRegistry.g), CraftItemStack.asNMSCopy(itemStack))
     }
 
-    override fun getMetaEntityProperties(onFire: Boolean, crouched: Boolean, sprinting: Boolean, swimming: Boolean, invisible: Boolean, glowing: Boolean, flyingElytra: Boolean): Any {
-        var bits = 0
-        bits += if (onFire) 1 else 0
-        bits += if (crouched) 2 else 0
-        bits += if (sprinting) 8 else 0
-        bits += if (swimming) 10 else 0
-        bits += if (glowing) 20 else 0
-        bits += if (invisible) 40 else 0
-        bits += if (flyingElytra) 80 else 0
-        return DataWatcher.Item(DataWatcherObject(0, DataWatcherRegistry.a), bits.toByte())
+    override fun getMetaASProperties(isSmall: Boolean, noMarker: Boolean): Any {
+        var bits = 0 // 列表
+        bits += if (isSmall) 1 else 0 // +=列表添加元素
+        bits += 0
+        bits += 8
+        bits += if (noMarker) 10 else 0
+        return DataWatcher.Item(DataWatcherObject(14, DataWatcherRegistry.a), bits.toByte())
     }
 
     override fun getMetaEntityGravity(noGravity: Boolean): Any {
@@ -108,25 +112,8 @@ class NMSImpl : NMS() {
         return DataWatcher.Item<Optional<IChatBaseComponent>>(DataWatcherObject(2, DataWatcherRegistry.f), Optional.of(ChatComponentText(name)))
     }
 
-    override fun sendEntityMetadata(player: Player, entityId: Int, vararg objects: Any) {
-        val items: MutableList<DataWatcher.Item<*>> = ArrayList()
-        for (obj in objects) {
-            items.add(obj as DataWatcher.Item<*>)
-        }
-        sendPacket(
-            player,
-            PacketPlayOutEntityMetadata(),
-            "a" to entityId,
-            "b" to items
-        )
-    }
-
-    override fun getMetaEntityInt(index: Int, value: Int): Any {
-        return DataWatcher.Item(DataWatcherObject(index, DataWatcherRegistry.b), value)
-    }
-
     override fun updateDisplayName(player: Player, entityId: Int, name: String) {
-        sendEntityMetadata(player, entityId, getMetaEntityCustomName(name))
+        updateEntityMetadata(player, entityId, getMetaEntityCustomName(name))
     }
 
     override fun updateLocation(player: Player, entityId: Int, location: Location) {
