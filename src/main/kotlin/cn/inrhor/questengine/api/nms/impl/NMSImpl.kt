@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.api.nms.impl
 
 import cn.inrhor.questengine.api.nms.NMS
+import cn.inrhor.questengine.utlis.public.MsgUtil
 import io.izzel.taboolib.module.lite.SimpleEquip
 import net.minecraft.server.v1_16_R1.*
 import org.bukkit.Location
@@ -88,11 +89,12 @@ class NMSImpl : NMS() {
     }
 
     override fun getMetaASProperties(isSmall: Boolean, noMarker: Boolean): Any {
-        var bits = 0 // 列表
-        bits += if (isSmall) 1 else 0 // +=列表添加元素
+        var bits = 0
+        /*bits += if (isSmall) 1 else 0
         bits += 0
         bits += 8
-        bits += if (noMarker) 10 else 0
+        bits += if (noMarker) 10 else 0*/
+        // 不好用，放假重写该方法
         return DataWatcher.Item(DataWatcherObject(14, DataWatcherRegistry.a), bits.toByte())
     }
 
