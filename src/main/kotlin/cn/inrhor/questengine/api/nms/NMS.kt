@@ -79,12 +79,14 @@ abstract class NMS {
     /**
      * 已设置好的盔甲架基本值
      */
-    abstract fun getMetaASProperties(isSmall: Boolean, noMarker: Boolean): Any
+    abstract fun getMetaASProperties(isSmall: Boolean, marker: Boolean): Any
 
     /**
      * 初始化盔甲架
+     *
+     * @param marker true为关闭碰撞箱
      */
-    abstract fun initAS(player: Player, entityId: Int, isSmall: Boolean, noMarker: Boolean)
+    abstract fun initAS(player: Player, entityId: Int, isSmall: Boolean, marker: Boolean)
 
     companion object {
 

@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.api.nms.impl
 
 import cn.inrhor.questengine.api.nms.NMS
-import cn.inrhor.questengine.utlis.public.MsgUtil
 import io.izzel.taboolib.module.lite.SimpleEquip
 import net.minecraft.server.v1_16_R1.*
 import org.bukkit.Location
@@ -26,12 +25,12 @@ class NMSImpl : NMS() {
         )
     }
 
-    override fun initAS(player: Player, entityId: Int, isSmall: Boolean, noMarker: Boolean) {
+    override fun initAS(player: Player, entityId: Int, isSmall: Boolean, marker: Boolean) {
         updateEntityMetadata(player, entityId,
             getMetaEntityCustomNameVisible(true),
             getMetaEntitySilenced(true),
             getMetaEntityGravity(false),
-            getMetaASProperties(isSmall, noMarker))
+            getMetaASProperties(isSmall, marker))
     }
 
     override fun spawnItem(player: Player, entityId: Int, uuid: UUID, location: Location, itemStack: ItemStack) {
@@ -88,14 +87,12 @@ class NMSImpl : NMS() {
         return DataWatcher.Item(DataWatcherObject(7, DataWatcherRegistry.g), CraftItemStack.asNMSCopy(itemStack))
     }
 
-    override fun getMetaASProperties(isSmall: Boolean, noMarker: Boolean): Any {
-        var bits = 0
-        /*bits += if (isSmall) 1 else 0
-        bits += 0
-        bits += 8
-        bits += if (noMarker) 10 else 0*/
-        // 不好用，放假重写该方法
-        return DataWatcher.Item(DataWatcherObject(14, DataWatcherRegistry.a), bits.toByte())
+    override fun getMetaASProperties(isSmall: Boolean, marker: Boolean): Any {
+        var bytes = 0
+        bytes += if (isSmall) 0x01 else 0
+        bytes += 0x08
+        bytes += if (marker) 0x10 else 0
+        return DataWatcher.Item(DataWatcherObject(14, DataWatcherRegistry.a), bytes.toByte())
     }
 
     override fun getMetaEntityGravity(noGravity: Boolean): Any {

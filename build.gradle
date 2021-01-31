@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'cn.inrhor.questengine'
-version '1.0.0'
+version '1.0.0.Beta1'
 
 sourceCompatibility = 1.8
 
@@ -25,8 +25,8 @@ dependencies {
     compile 'ink.ptms.core:v11600:11600:all'
     compile 'org.jetbrains.kotlin:kotlin-stdlib'
     compile 'org.bstats:bstats-bukkit:1.7'
-    compile 'io.izzel.taboolib:TabooLib:5.43:all'
-    compile 'io.izzel.taboolib:TabooLibLoader:2.7:all'
+    compile 'io.izzel.taboolib:TabooLib:5.52:all'
+    compile 'io.izzel.taboolib:TabooLibLoader:2.10:all'
     compile 'me.clip:placeholderapi:2.10.7'
     shadow fileTree(dir: 'libs', includes: ['*.jar'])
 }
