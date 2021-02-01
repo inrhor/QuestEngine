@@ -4,6 +4,6 @@ import cn.inrhor.questengine.common.hologram.IHolo
 import kotlin.collections.ArrayList
 
 
-object IHologramManager {
+public class IHologramManager {
     val iHologramList : MutableList<IHolo> = ArrayList()
 }

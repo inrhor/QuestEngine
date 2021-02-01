@@ -14,12 +14,12 @@ abstract class NMS {
     /**
      * 生成盔甲架
      */
-    abstract fun spawnAS(player: Player, entityId: Int, uuid: UUID, location: Location)
+    abstract fun spawnAS(players: MutableSet<Player>, entityId: Int, location: Location)
 
     /**
      * 生成物品
      */
-    abstract fun spawnItem(player: Player, entityId: Int, uuid: UUID, location: Location, itemStack: ItemStack)
+    abstract fun spawnItem(players: MutableSet<Player>, entityId: Int, location: Location, itemStack: ItemStack)
 
     /**
      * 删除实体
@@ -29,27 +29,27 @@ abstract class NMS {
     /**
      * 更新名称
      */
-    abstract fun updateDisplayName(player: Player, entityId: Int, name: String)
+    abstract fun updateDisplayName(players: MutableSet<Player>, entityId: Int, name: String)
 
     /**
      * 更新位置
      */
-    abstract fun updateLocation(player: Player, entityId: Int, location: Location)
+    abstract fun updateLocation(players: MutableSet<Player>, entityId: Int, location: Location)
 
     /**
      * 更新乘客
      */
-    abstract fun updatePassengers(player: Player, entityId: Int, vararg passengers: Int)
+    abstract fun updatePassengers(players: MutableSet<Player>, entityId: Int, vararg passengers: Int)
 
     /**
      * 更新实体头部物品
      */
-    abstract fun updateEquipmentItem(player: Player, entityId: Int, itemStack: ItemStack)
+    abstract fun updateEquipmentItem(players: MutableSet<Player>, entityId: Int, itemStack: ItemStack)
 
     /**
      * 更新实体元数据
      */
-    abstract fun updateEntityMetadata(player: Player, entityId: Int, vararg objects: Any)
+    abstract fun updateEntityMetadata(players: MutableSet<Player>, entityId: Int, vararg objects: Any)
 
     /**
      * 物品
@@ -86,7 +86,7 @@ abstract class NMS {
      *
      * @param marker true为关闭碰撞箱
      */
-    abstract fun initAS(player: Player, entityId: Int, isSmall: Boolean, marker: Boolean)
+    abstract fun initAS(players: MutableSet<Player>, entityId: Int, isSmall: Boolean, marker: Boolean)
 
     companion object {
 
@@ -94,9 +94,16 @@ abstract class NMS {
         lateinit var INSTANCE: NMS
         internal val version = Version.getCurrentVersionInt()
 
+        fun sendPacket(players: MutableSet<Player>, packet: Any, vararg fields: Pair<String, Any>) {
+            players.forEach{
+                sendPacket(it, setFields(packet, *fields))
+            }
+        }
+
         fun sendPacket(player: Player, packet: Any, vararg fields: Pair<String, Any>) {
             TPacketHandler.sendPacket(player, setFields(packet, *fields))
         }
+
         fun setFields(any: Any, vararg fields: Pair<String, Any>): Any {
             fields.forEach { (key, value) ->
                 Reflex.from(any.javaClass, any).set(key, value)

@@ -46,7 +46,7 @@ processResources {
                 'main': project.group + '.boot.PluginBoot',
                 'version': project.version,
                 'authors': ["inrhor"],
-                'softdepend': ["ProtocolLib"]
+                'softdepend': []
         )
     }
 }

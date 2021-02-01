@@ -12,12 +12,12 @@ import java.util.*
 
 class NMSImpl : NMS() {
 
-    override fun spawnAS(player: Player, entityId: Int, uuid: UUID, location: Location) {
+    override fun spawnAS(players: MutableSet<Player>, entityId: Int, location: Location) {
         sendPacket(
-            player,
+            players,
             PacketPlayOutSpawnEntity(),
             "a" to entityId,
-            "b" to uuid,
+            "b" to UUID.randomUUID(),
             "c" to location.x,
             "d" to location.y,
             "e" to location.z,
@@ -25,36 +25,36 @@ class NMSImpl : NMS() {
         )
     }
 
-    override fun initAS(player: Player, entityId: Int, isSmall: Boolean, marker: Boolean) {
-        updateEntityMetadata(player, entityId,
+    override fun initAS(players: MutableSet<Player>, entityId: Int, isSmall: Boolean, marker: Boolean) {
+        updateEntityMetadata(players, entityId,
             getMetaEntityCustomNameVisible(true),
             getMetaEntitySilenced(true),
             getMetaEntityGravity(false),
             getMetaASProperties(isSmall, marker))
     }
 
-    override fun spawnItem(player: Player, entityId: Int, uuid: UUID, location: Location, itemStack: ItemStack) {
+    override fun spawnItem(players: MutableSet<Player>, entityId: Int, location: Location, itemStack: ItemStack) {
         sendPacket(
-            player,
+            players,
             PacketPlayOutSpawnEntity(),
             "a" to entityId,
-            "b" to uuid,
+            "b" to UUID.randomUUID(),
             "c" to location.x,
             "d" to location.y,
             "e" to location.z,
             "k" to EntityTypes.ITEM
         )
-        updateEntityMetadata(player, entityId, getMetaEntityGravity(true), getMetaEntityItemStack(itemStack))
+        updateEntityMetadata(players, entityId, getMetaEntityGravity(true), getMetaEntityItemStack(itemStack))
     }
 
     override fun destroyEntity(player: Player, entityId: Int) {
         sendPacket(player, PacketPlayOutEntityDestroy(entityId))
     }
 
-    override fun updateEquipmentItem(player: Player, entityId: Int, itemStack: ItemStack) {
+    override fun updateEquipmentItem(players: MutableSet<Player>, entityId: Int, itemStack: ItemStack) {
         if (version >= 11600) {
             sendPacket(
-                player,
+                players,
                 PacketPlayOutEntityEquipment(
                     entityId,
                     listOf(
@@ -67,17 +67,17 @@ class NMSImpl : NMS() {
         }
     }
 
-    override fun updatePassengers(player: Player, entityId: Int, vararg passengers: Int) {
+    override fun updatePassengers(players: MutableSet<Player>, entityId: Int, vararg passengers: Int) {
         sendPacket(
-            player,
+            players,
             PacketPlayOutMount(),
             "a" to entityId,
             "b" to passengers)
     }
 
-    override fun updateEntityMetadata(player: Player, entityId: Int, vararg objects: Any) {
+    override fun updateEntityMetadata(players: MutableSet<Player>, entityId: Int, vararg objects: Any) {
         sendPacket(
-            player,
+            players,
             PacketPlayOutEntityMetadata(),
             "a" to entityId,
             "b" to objects.map { it as DataWatcher.Item<*> }.toList())
@@ -111,13 +111,13 @@ class NMSImpl : NMS() {
         return DataWatcher.Item<Optional<IChatBaseComponent>>(DataWatcherObject(2, DataWatcherRegistry.f), Optional.of(ChatComponentText(name)))
     }
 
-    override fun updateDisplayName(player: Player, entityId: Int, name: String) {
-        updateEntityMetadata(player, entityId, getMetaEntityCustomName(name))
+    override fun updateDisplayName(players: MutableSet<Player>, entityId: Int, name: String) {
+        updateEntityMetadata(players, entityId, getMetaEntityCustomName(name))
     }
 
-    override fun updateLocation(player: Player, entityId: Int, location: Location) {
+    override fun updateLocation(players: MutableSet<Player>, entityId: Int, location: Location) {
         sendPacket(
-            player,
+            players,
             PacketPlayOutEntityTeleport(),
             "a" to entityId,
             "b" to location.x,

@@ -7,11 +7,11 @@ import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 
 class DialogHolo(
-    val viewers: MutableList<Player>,
+    val viewers: MutableSet<Player>,
     var runnable: BukkitRunnable?
 ) {
 
-    constructor(viewers: MutableList<Player>) : this(viewers, null)
+    constructor(viewers: MutableSet<Player>) : this(viewers, null)
 
     @TSchedule
     fun runRunnable() {
