@@ -7,6 +7,7 @@ import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import java.util.*
 
 class IHolo(
     val holoID: String,
@@ -149,7 +150,11 @@ class IHolo(
                 }else return
             }else {
                 if (itemList.isNotEmpty() && itemList.size > index) {
-                    getPackets().updatePassengers(players, it, itemEntityIDs[index])
+                    // 生成物品实体
+                    val itemInt = Random().nextInt()
+                    getPackets().spawnItem(players, itemInt, loc, itemList[index])
+                    // 物品实体骑乘到盔甲架
+                    getPackets().updatePassengers(players, it, itemInt)
                 } else return
             }
 
