@@ -1,33 +1,31 @@
 package cn.inrhor.questengine.common.hologram
 
+import cn.inrhor.questengine.api.hologram.IHologramManager
 import cn.inrhor.questengine.api.nms.NMS
 import cn.inrhor.questengine.common.dialog.holo.DialogHolo
+import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.util.*
 
 class IHolo(
     val holoID: String,
     val location: Location,
 
-    val viewers: MutableSet<Player> = mutableSetOf(),
+    val viewers: MutableSet<Player>,
 
     // 实现动画方法：通过外界更改指定行的内容
     val textList: MutableList<String> = mutableListOf(),
-    val itemList: MutableList<ItemStack> = mutableListOf(),
-
-    val canClick: Boolean
+    val itemList: MutableList<ItemStack> = mutableListOf()
 ) {
 
-    constructor(holoID: String, location: Location, viewers: MutableSet<Player>, canClick: Boolean) :
-            this(holoID, location, viewers, mutableListOf(), mutableListOf(), canClick)
-    constructor(holoID: String, location: Location, viewers: MutableSet<Player>, textList: MutableList<String>, itemList: MutableList<ItemStack>) :
-            this(holoID, location, viewers, textList, itemList, false)
+    constructor(holoID: String, location: Location, viewers: MutableSet<Player>) :
+            this(holoID, location, viewers, mutableListOf(), mutableListOf())
 
     private var hasInit: Boolean = false
 
-    private val entityIDs: MutableList<Int> = mutableListOf()
+    private val textEntityIDs: MutableList<Int> = mutableListOf()
+    private val itemEntityIDs: MutableList<Int> = mutableListOf()
 
     /*val text: String = ""
     val item: ItemStack = ItemStack(Material.AIR)*/
@@ -39,29 +37,48 @@ class IHolo(
         if (hasInit) return
 
         repeat(textList.size) {
-            addEntityID()
+            addEntityID("text", it)
         }
         repeat(itemList.size) {
-            addEntityID()
+            addEntityID("item", it)
         }
 
-        sendHolo(viewers, holoID, location, textList, itemList, entityIDs, canClick)
-        val dialogHolo = DialogHolo(viewers)
-        dialogHolo.runRunnable()
+        sendTextHolo(viewers, location)
+        sendItemHolo(viewers, location)
+        /*val dialogHolo = DialogHolo(viewers)
+        dialogHolo.runRunnable()*/
 
         hasInit = true
+
+        IHologramManager().addHolo(holoID, this)
     }
 
-    private fun addEntityID() {
-        val entityID = randomIntEntityID.nextInt()
-        entityIDs.add(entityID)
+    private fun addEntityID(type: String, index: Int) {
+        val strID = "$holoID-$type-$index"
+        val entityID = strID.hashCode()
+        if (IHologramManager().existHoloEntityID(entityID)) {
+            MsgUtil.send("exist entityID $entityID $strID")
+        }
+        when (type) {
+            "text" -> {
+                textEntityIDs.add(entityID)
+            }
+            "item" -> {
+                itemEntityIDs.add(entityID)
+            }
+            else -> {
+                MsgUtil.send("null type")
+                return
+            }
+        }
+        IHologramManager().addHoloEntityID(entityID)
     }
 
     /**
      * 更新全息的内容
      */
     fun update() {
-        sendHolo(viewers, holoID, location, textList, itemList, entityIDs, canClick)
+        sendTextHolo(viewers, location)
     }
 
     /**
@@ -77,7 +94,10 @@ class IHolo(
     fun removeViewer(player: Player) {
         viewers.remove(player)
         if (!player.isOnline) return
-        entityIDs.forEach {
+        textEntityIDs.forEach {
+            getPackets().destroyEntity(player, it)
+        }
+        itemEntityIDs.forEach {
             getPackets().destroyEntity(player, it)
         }
     }
@@ -92,57 +112,45 @@ class IHolo(
         }*//*
     }*/
 
+    private fun sendTextHolo(players: MutableSet<Player>,
+                         loc: Location) {
+        sendHolo(players, loc, "text")
+    }
+
+    private fun sendItemHolo(players: MutableSet<Player>,
+                             loc: Location) {
+        sendHolo(players, loc, "item")
+    }
+
     private fun sendHolo(players: MutableSet<Player>,
-                         id: String,
-                         loc: Location,
-                         textList: MutableList<String>,
-                         itemList: MutableList<ItemStack>,
-                         entityIDs: MutableList<Int>,
-                         canClick: Boolean) {
+                             loc: Location,
+                             type: String) {
         /*if (holoEntityIDMap.containsKey(id)) {
             // Msg, id不存在消息
             return
-        }
-
-        val holoIds : MutableList<Int> = ArrayList()
-        holoEntityIDMap[id] = holoIds*/
-
-/*        for ((index) in textList.withIndex()) {
-//            val entityID = randomIntEntityID.nextInt()
-
-            spawnAS(playerList, entityID, loc)
-
-            loc.add(0.0, -0.22, 0.0)
-
-            setMetadata(playerList, entityID)
-
-            setText(playerList, entityID, textList[index])
-
-//            if (itemList.size > index) {setItem(playerList, entityID, itemList[index])}
-
-            *//*if (canClick) {
-                val ids = holoEntityIDMap[id]!!
-                ids.add(entityID)
-                holoEntityIDMap[id] = ids
-            }*//*
         }*/
 
-        var index = 0;
+        var index = 0
+        var entityIDs = textEntityIDs
+        if (type == "item") {
+            entityIDs = itemEntityIDs
+        }
         entityIDs.forEach {
-            //            spawnAS(playerList, it, loc)
             getPackets().spawnAS(players, it, loc)
 
-            loc.add(0.0, -0.22, 0.0)
+            loc.add(0.0, -0.25, 0.0)
 
-//            setMetadata(playerList, it, canClick)
-            getPackets().initAS(players, it, !canClick, canClick)
+            getPackets().initAS(players, it, isSmall = true, marker = true)
 
-            if (textList.isNotEmpty()) {
-                getPackets().updateDisplayName(players, it, textList[index])
+            MsgUtil.send("type  $type")
+            if (type == "text") {
+                if (textList.isNotEmpty() && textList.size > index) {
+                    getPackets().updateDisplayName(players, it, textList[index])
+                }else return
             }else {
-                val itemInt = randomIntEntityID.nextInt()
-                getPackets().spawnItem(players, itemInt, loc, itemList[index])
-                getPackets().updatePassengers(players, it, itemInt)
+                if (itemList.isNotEmpty() && itemList.size > index) {
+                    getPackets().updatePassengers(players, it, itemEntityIDs[index])
+                } else return
             }
 
             index++
@@ -151,17 +159,6 @@ class IHolo(
 
     private fun getPackets(): NMS {
         return NMS.INSTANCE
-    }
-
-    // 防止EntityID相似而冲突
-    companion object {
-        // 给定随机entityID
-        @JvmStatic
-        val randomIntEntityID = Random()
-
-        // holoID 对应 entityID集 作为触发交互式脚本 标识
-        /*@JvmStatic
-        var holoEntityIDMap = mutableMapOf<String, MutableList<Int>>()*/
     }
 
 }
