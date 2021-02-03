@@ -34,8 +34,15 @@ class DialogManager {
     /**
      * 检查和注册对话
      */
-    fun checkDialog(yaml: YamlConfiguration) {
+    private fun checkDialog(yaml: YamlConfiguration) {
+        for (id in yaml.getKeys(false)) {
+            val config = yaml.getConfigurationSection(id)!!
+            if (config.getKeys(false).isEmpty()) { // 开头不标准
 
+            } else {
+                DialogFile().init(config)
+            }
+        }
     }
 
     /**
