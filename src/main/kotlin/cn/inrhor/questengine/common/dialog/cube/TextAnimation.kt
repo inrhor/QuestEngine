@@ -4,7 +4,6 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 class TextAnimation(
-    val id: String,
     private val textContent: MutableList<String>
 ) {
 

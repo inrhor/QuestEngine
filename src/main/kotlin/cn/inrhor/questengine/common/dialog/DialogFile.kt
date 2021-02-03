@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.dialog
 
 import cn.inrhor.questengine.common.dialog.cube.TextAnimation
+import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.configuration.ConfigurationSection
 
 class DialogFile {
@@ -16,6 +17,8 @@ class DialogFile {
 
     var ownItemAddLocation: String? = null
     var ownItemContent: MutableList<String>? = null
+
+    private var ownTextAnimation: TextAnimation? = null
 
     var frame: Int = -1
 
@@ -54,6 +57,8 @@ class DialogFile {
         this.frame = config.getInt(ownSec+"frame")
 
         DialogManager().register(this.dialogID!!, this)
+        animation()
+        MsgUtil.send("ok")
     }
 
     /**
@@ -61,8 +66,9 @@ class DialogFile {
      */
     fun animation() {
         val textAnimation =
-            TextAnimation(dialogID!!, ownTextContent!!)
+            TextAnimation(ownTextContent!!)
         textAnimation.init()
+        ownTextAnimation = textAnimation
     }
 
 }

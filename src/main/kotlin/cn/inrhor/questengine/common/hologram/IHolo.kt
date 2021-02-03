@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.hologram
 
 import cn.inrhor.questengine.api.hologram.IHologramManager
+import cn.inrhor.questengine.common.dialog.holo.DialogHolo
 import cn.inrhor.questengine.common.nms.NMS
 import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.Location
