@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.dialog
 
-import cn.inrhor.questengine.common.dialog.animation.TextAnimation
+import cn.inrhor.questengine.common.dialog.cube.TextAnimation
 
 class DialogFile(
     val dialogID: String,
@@ -8,6 +8,7 @@ class DialogFile(
     val condition: MutableList<String>,
 
     val ownLocation: String,
+
     val ownTextAddLocation: String,
     val ownTextContent: MutableList<String>,
 
@@ -18,7 +19,7 @@ class DialogFile(
 ) {
 
     /**
-     * 处理动画
+     * 处理动画到表中
      */
     fun animation() {
         val textAnimation =

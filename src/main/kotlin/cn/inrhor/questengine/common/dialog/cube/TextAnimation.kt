@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.dialog.animation
+package cn.inrhor.questengine.common.dialog.cube
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern

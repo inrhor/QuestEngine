@@ -3,10 +3,12 @@ package cn.inrhor.questengine.api.hologram
 import cn.inrhor.questengine.common.hologram.IHolo
 
 
-public class IHologramManager {
-    private val iHologramMap = mutableMapOf<String, IHolo>()
+class IHologramManager {
+    companion object {
+        private val iHologramMap = mutableMapOf<String, IHolo>()
 
-    private val holoEntityIDs: MutableSet<Int> = mutableSetOf()
+        private val holoEntityIDs: MutableSet<Int> = mutableSetOf()
+    }
 
     fun existHoloEntityID(holoEntityID: Int): Boolean {
         return holoEntityIDs.contains(holoEntityID)

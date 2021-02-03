@@ -1,6 +1,6 @@
-package cn.inrhor.questengine.api.nms.impl
+package cn.inrhor.questengine.common.nms.impl
 
-import cn.inrhor.questengine.api.nms.NMS
+import cn.inrhor.questengine.common.nms.NMS
 import io.izzel.taboolib.module.lite.SimpleEquip
 import net.minecraft.server.v1_16_R1.*
 import org.bukkit.Location

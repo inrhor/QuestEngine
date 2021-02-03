@@ -1,8 +1,7 @@
 package cn.inrhor.questengine.common.hologram
 
 import cn.inrhor.questengine.api.hologram.IHologramManager
-import cn.inrhor.questengine.api.nms.NMS
-import cn.inrhor.questengine.common.dialog.holo.DialogHolo
+import cn.inrhor.questengine.common.nms.NMS
 import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -11,7 +10,8 @@ import java.util.*
 
 class IHolo(
     val holoID: String,
-    val location: Location,
+    val textLoc: Location,
+    val itemLoc: Location,
 
     val viewers: MutableSet<Player>,
 
@@ -20,16 +20,13 @@ class IHolo(
     val itemList: MutableList<ItemStack> = mutableListOf()
 ) {
 
-    constructor(holoID: String, location: Location, viewers: MutableSet<Player>) :
-            this(holoID, location, viewers, mutableListOf(), mutableListOf())
+    constructor(holoID: String, textLoc: Location, itemLoc: Location, viewers: MutableSet<Player>) :
+            this(holoID, textLoc, itemLoc, viewers, mutableListOf(), mutableListOf())
 
     private var hasInit: Boolean = false
 
     private val textEntityIDs: MutableList<Int> = mutableListOf()
     private val itemEntityIDs: MutableList<Int> = mutableListOf()
-
-    /*val text: String = ""
-    val item: ItemStack = ItemStack(Material.AIR)*/
 
     /**
      * 初始化
@@ -44,8 +41,8 @@ class IHolo(
             addEntityID("item", it)
         }
 
-        sendTextHolo(viewers, location)
-        sendItemHolo(viewers, location)
+        sendTextHolo(viewers)
+        sendItemHolo(viewers)
         /*val dialogHolo = DialogHolo(viewers)
         dialogHolo.runRunnable()*/
 
@@ -79,7 +76,8 @@ class IHolo(
      * 更新全息的内容
      */
     fun update() {
-        sendTextHolo(viewers, location)
+        sendTextHolo(viewers)
+        sendItemHolo(viewers)
     }
 
     /**
@@ -113,18 +111,15 @@ class IHolo(
         }*//*
     }*/
 
-    private fun sendTextHolo(players: MutableSet<Player>,
-                         loc: Location) {
-        sendHolo(players, loc, "text")
+    private fun sendTextHolo(players: MutableSet<Player>) {
+        sendHolo(players, "text")
     }
 
-    private fun sendItemHolo(players: MutableSet<Player>,
-                             loc: Location) {
-        sendHolo(players, loc, "item")
+    private fun sendItemHolo(players: MutableSet<Player>) {
+        sendHolo(players, "item")
     }
 
     private fun sendHolo(players: MutableSet<Player>,
-                             loc: Location,
                              type: String) {
         /*if (holoEntityIDMap.containsKey(id)) {
             // Msg, id不存在消息
@@ -133,17 +128,18 @@ class IHolo(
 
         var index = 0
         var entityIDs = textEntityIDs
+        var entityLoc = textLoc
         if (type == "item") {
             entityIDs = itemEntityIDs
+            entityLoc = itemLoc
         }
         entityIDs.forEach {
-            getPackets().spawnAS(players, it, loc)
+            getPackets().spawnAS(players, it, entityLoc)
 
-            loc.add(0.0, -0.25, 0.0)
+            entityLoc.add(0.0, -0.25, 0.0)
 
             getPackets().initAS(players, it, isSmall = true, marker = true)
 
-            MsgUtil.send("type  $type")
             if (type == "text") {
                 if (textList.isNotEmpty() && textList.size > index) {
                     getPackets().updateDisplayName(players, it, textList[index])
@@ -152,7 +148,7 @@ class IHolo(
                 if (itemList.isNotEmpty() && itemList.size > index) {
                     // 生成物品实体
                     val itemInt = Random().nextInt()
-                    getPackets().spawnItem(players, itemInt, loc, itemList[index])
+                    getPackets().spawnItem(players, itemInt, entityLoc, itemList[index])
                     // 物品实体骑乘到盔甲架
                     getPackets().updatePassengers(players, it, itemInt)
                 } else return

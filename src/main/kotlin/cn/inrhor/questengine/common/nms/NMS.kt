@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.api.nms
+package cn.inrhor.questengine.common.nms
 
 import io.izzel.taboolib.Version
 import io.izzel.taboolib.kotlin.Reflex
@@ -89,7 +89,7 @@ abstract class NMS {
 
     companion object {
 
-        @TInject(asm = "cn.inrhor.questengine.api.nms.impl.NMSImpl")
+        @TInject(asm = "cn.inrhor.questengine.common.nms.impl.NMSImpl")
         lateinit var INSTANCE: NMS
         internal val version = Version.getCurrentVersionInt()
 
