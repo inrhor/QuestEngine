@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.common.dialog.cube
 
 import cn.inrhor.questengine.utlis.public.MsgUtil
-import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 class TextAnimation(
@@ -42,9 +41,10 @@ class TextAnimation(
                 val delay = getValue(attributes[1], "delay").toInt()
 
                 var multiply = 0 // 用于write
-                MsgUtil.send("time $timeLong")
                 for (time in 0..timeLong) {
-                    if (delay >= time) {
+                    // 如果 该属性的delay 小于当前的动态帧
+                    if (delay <= time) {
+                        MsgUtil.send("delay $delay   time $time")
                         if (!a.contains("<[write][delay=")) { // 如果这一行是静态的就不处理动画
                             val textList = mutableListOf(attributes[2])
                             textMap[line] = textList
@@ -54,9 +54,14 @@ class TextAnimation(
                         val a2 = attributes[2]
                         if (attributes[0] == "write") {
                             // 实现打字型内容
+                            // 实现打字型内容
                             val nextTime = getValue(a2, "speed").toInt()
                             if (time == delay+(nextTime*multiply)) {
-                                textList.add(a2.substring(0, multiply))
+                                // 截取前面字符
+                                val a3 = attributes[3]
+                                val end = multiply+colorNumber(a3)
+                                textList.add(a2.substring(0, end))
+                                MsgUtil.send("old "+a3+"  new "+a3.substring(0, end)+"   end $end")
                                 textMap[line] = textList
                                 multiply++
                             }
@@ -110,6 +115,20 @@ class TextAnimation(
         // 最终帧数
         i += finalDelay
         return i
+    }
+
+    /**
+     * 获取 &颜色 出现的次数
+     *
+     */
+    private fun colorNumber(src: String): Int {
+        var count = 0
+        val pattern = Pattern.compile("&\\d|§\\d|&[a-zA-Z]|§[a-zA-Z]")
+        val matcher = pattern.matcher(src)
+        while (matcher.find()) {
+            count++
+        }
+        return count
     }
 
     private fun getValue(str: String, attribute: String) = str.replace("$attribute=", "")
