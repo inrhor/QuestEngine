@@ -42,9 +42,10 @@ class TextAnimation(
                 val delay = getValue(attributes[1], "delay").toInt()
 
                 var multiply = 0 // 用于write
+                MsgUtil.send("time $timeLong")
                 for (time in 0..timeLong) {
                     if (delay >= time) {
-                        if (!hasWrite(indTag)) {
+                        if (!a.contains("<[write][delay=")) { // 如果这一行是静态的就不处理动画
                             val textList = mutableListOf(attributes[2])
                             textMap[line] = textList
                             continue
@@ -75,7 +76,6 @@ class TextAnimation(
      * 根据行数获得动态字符表内容
      */
     fun getTextContent(line: Int): MutableList<String> {
-        MsgUtil.send("key  "+textMap.containsKey(line) + "   e "+textMap.size)
         if (textMap.containsKey(line)) return textMap[line]!!
         return mutableListOf()
     }
@@ -110,17 +110,6 @@ class TextAnimation(
         // 最终帧数
         i += finalDelay
         return i
-    }
-
-    private fun hasWrite(content: Matcher): Boolean {
-        while (content.find()) {
-            val pAttribute = Pattern.compile("\\[(.*?)]")
-            val attribute = pAttribute.matcher(content.group())
-            val type = attribute.group(1)
-            MsgUtil.send("see $type")
-            if (type == "write") return true
-        }
-        return false
     }
 
     private fun getValue(str: String, attribute: String) = str.replace("$attribute=", "")
