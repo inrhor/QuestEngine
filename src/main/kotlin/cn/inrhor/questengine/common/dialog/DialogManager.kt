@@ -23,6 +23,10 @@ class DialogManager {
      * 注册对话
      */
     fun register(dialogID: String, dialogFile: DialogFile) {
+        if (exist(dialogID)) {
+            TLocale.sendToConsole("DIALOG.EXIST_DIALOG_ID", UseString.pluginTag, dialogID)
+            return
+        }
         dialogFileMap[dialogID] = dialogFile
     }
 
@@ -32,7 +36,7 @@ class DialogManager {
     fun loadDialog() {
         Bukkit.getScheduler().runTaskAsynchronously(QuestEngine.plugin, Runnable {
             val dialogFolder = getFile()
-            getYamlList(dialogFolder).forEach{
+            getFileList(dialogFolder).forEach{
                 MsgUtil.send("it  "+it.name)
                 checkDialog(it)
             }
@@ -42,36 +46,15 @@ class DialogManager {
     /**
      * 检查和注册对话
      */
-    private fun checkDialog(yaml: YamlConfiguration) {
-        // 我忘了我写了什么玩意
-
-        MsgUtil.send("aaa $yaml")
+    private fun checkDialog(file: File) {
+        val yaml = YamlConfiguration.loadConfiguration(file)
         if (yaml.getKeys(false).isEmpty()) {
-            MsgUtil.send("bbb empty")
-            TLocale.sendToConsole("DIALOG.EMPTY_CONTENT", UseString.pluginTag, yaml.name)
+            TLocale.sendToConsole("DIALOG.EMPTY_CONTENT", UseString.pluginTag, file.name)
             return
         }
-        /*MsgUtil.send("ccc ${yaml.name}")
-        if (exist(yaml.name)) {
-            // say
-            MsgUtil.send("ddd ${yaml.name}")
-            return
+        for (dialogID in yaml.getKeys(false)) {
+            DialogFile().init(yaml.getConfigurationSection(dialogID)!!)
         }
-        MsgUtil.send("eee ${yaml.name}")
-        DialogFile().init(yaml)*/
-
-        /*for (id in yaml.getKeys(false)) {
-            val config = yaml.getConfigurationSection(id)!!
-            if (config.getKeys(false).isEmpty()) {
-                TLocale.sendToConsole("DIALOG.EMPTY_CONTENT", UseString.pluginTag, yaml.name)
-            } else {
-                if (exist(config.name)) {
-                    // say
-                    return
-                }
-                DialogFile().init(config)
-            }
-        }*/
     }
 
     /**
@@ -87,16 +70,16 @@ class DialogManager {
     }
 
     /**
-     * 返回所有 dialog 配置
+     * 返回所有 dialog 配置文件
      */
-    private fun getYamlList(file: File): List<YamlConfiguration> =
-        mutableListOf<YamlConfiguration>().let { yamlList ->
+    private fun getFileList(file: File): List<File> =
+        mutableListOf<File>().let { files ->
             if (file.isDirectory) {
-                file.listFiles()!!.forEach { yamlList.addAll(getYamlList(it)) }
+                file.listFiles()!!.forEach { files.addAll(getFileList(it)) }
             }else if (file.name.endsWith(".yml", true)) {
-                yamlList.add(YamlConfiguration.loadConfiguration(file))
+                files.add(file)
             }
-            return@let yamlList
+            return@let files
         }
 
     /**

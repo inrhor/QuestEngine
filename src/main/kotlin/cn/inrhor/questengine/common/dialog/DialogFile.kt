@@ -23,16 +23,17 @@ class DialogFile {
     var frame: Int = -1
 
     fun init(config: ConfigurationSection) {
+        MsgUtil.send("check  "+config.getString("target"))
         if (!config.contains("target")) {
             return
         }
         if (!config.contains("condition")) {
             return
         }
-        if (!config.contains("location")) {
+        val ownSec = "dialog.own."
+        if (!config.contains(ownSec+"location")) {
             return
         }
-        val ownSec = "dialog.own."
         if (!config.contains(ownSec+"text.addLocation")) {
             return
         }
