@@ -60,9 +60,12 @@ class TextAnimation(
                                 // 截取前面字符
                                 val a3 = attributes[3]
                                 val end = multiply+colorNumber(a3)
-                                textList.add(a2.substring(0, end))
-                                MsgUtil.send("old "+a3+"  new "+a3.substring(0, end)+"   end $end")
-                                textMap[line] = textList
+                                val get = a3.substring(0, end)
+                                if (!get.endsWith("&") or !get.endsWith("§")) {
+                                    textList.add(a3.substring(0, end))
+                                    textMap[line] = textList
+                                    if (a3.length == end) return
+                                }
                                 multiply++
                             }
                         }else {
