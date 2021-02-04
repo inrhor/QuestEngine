@@ -56,7 +56,7 @@ class IHolo(
         val strID = "$holoID-$type-$index"
         val entityID = strID.hashCode()
         if (IHologramManager().existHoloEntityID(entityID)) {
-            MsgUtil.send("exist entityID $entityID $strID")
+
         }
         when (type) {
             "text" -> {

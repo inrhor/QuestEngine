@@ -5,7 +5,7 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 class TextAnimation(
-    private val textContent: MutableList<String>
+    val textContent: MutableList<String>
 ) {
 
     /**
@@ -20,39 +20,47 @@ class TextAnimation(
         textContent.forEach { a ->
             // 对每一行
 
-            // 分割 取 独立标签
-            val pContent = Pattern.compile("<(.*)>")
-            val indTag = pContent.matcher(a)
             // 获取动态总时长
-            val timeLong = getAllTimeLong(indTag)
+            val timeLong = getAllTimeLong(a)
+
+            // 分割 取 独立标签
+            val pContent = Pattern.compile("<(.*?)>")
+            val indTag = pContent.matcher(a)
 
             // 对独立标签而言
             while (indTag.find()) {
 
                 // 分割 取 内容的属性
-                val pAttribute = Pattern.compile("\\[(.*)]")
+                val pAttribute = Pattern.compile("\\[(.*?)]")
                 val attribute = pAttribute.matcher(indTag.group())
-                val delay = attribute.group(2).toInt()
+
+                val attributes = mutableListOf<String>()
+                while (attribute.find()) {
+                    attributes.add(attribute.group(1))
+                }
+
+                val delay = getValue(attributes[1], "delay").toInt()
 
                 var multiply = 0 // 用于write
                 for (time in 0..timeLong) {
                     if (delay >= time) {
                         if (!hasWrite(indTag)) {
-                            val textList = mutableListOf(attribute.group(3))
+                            val textList = mutableListOf(attributes[2])
                             textMap[line] = textList
                             continue
                         }
                         val textList = getTextContent(line)
-                        if (attribute.group(1) == "write") {
+                        val a2 = attributes[2]
+                        if (attributes[0] == "write") {
                             // 实现打字型内容
-                            val nextTime = attribute.group(3).toInt()
+                            val nextTime = getValue(a2, "speed").toInt()
                             if (time == delay+(nextTime*multiply)) {
-                                textList.add(attribute.group(3).substring(0, multiply))
+                                textList.add(a2.substring(0, multiply))
                                 textMap[line] = textList
                                 multiply++
                             }
                         }else {
-                            textList.add(attribute.group(3))
+                            textList.add(a2)
                             textMap[line] = textList
                         }
                     }
@@ -67,31 +75,36 @@ class TextAnimation(
      * 根据行数获得动态字符表内容
      */
     fun getTextContent(line: Int): MutableList<String> {
+        MsgUtil.send("key  "+textMap.containsKey(line) + "   e "+textMap.size)
         if (textMap.containsKey(line)) return textMap[line]!!
         return mutableListOf()
     }
 
-    private fun getAllTimeLong(content: Matcher): Int {
+    private fun getAllTimeLong(a: String): Int {
         // 总帧数
         var i = 0
         // 确定最终的延迟
         var finalDelay = 0
         // 分割 取 内容的属性
-        val pAttribute = Pattern.compile("\\[(.*)]")
-        while (content.find()) {
-            val attribute = pAttribute.matcher(content.group())
-            while (content.find()) {
-                val delay = attribute.group().toInt()
-                if (delay > finalDelay) {
-                    finalDelay = delay
-                }
-                // 若是打字型则增加帧数
-                if (attribute.group(1) == "write") {
-                    val speedLong = attribute.group(3).toInt()
-                    // 根据字数增加帧数
-                    val textLong = attribute.group(4).length
-                    i += speedLong * textLong
-                }
+        val pAttribute = Pattern.compile("\\[(.*?)]")
+        val pContent = Pattern.compile("<(.*?)>")
+        val indTag = pContent.matcher(a)
+        while (indTag.find()) {
+            val attribute = pAttribute.matcher(indTag.group(1))
+            val attributes = mutableListOf<String>()
+            while (attribute.find()) {
+                attributes.add(attribute.group(1))
+            }
+            val delay = getValue(attributes[1], "delay").toInt()
+            if (delay > finalDelay) {
+                finalDelay = delay
+            }
+            // 若是打字型则增加帧数
+            if (attributes[0] == "write") {
+                val speedLong = getValue(attributes[2], "speed").toInt()
+                // 根据字数增加帧数
+                val textLong = attributes[3].length
+                i += speedLong * textLong
             }
         }
         // 最终帧数
@@ -101,11 +114,14 @@ class TextAnimation(
 
     private fun hasWrite(content: Matcher): Boolean {
         while (content.find()) {
-            val pAttribute = Pattern.compile("\\[(.*)]")
+            val pAttribute = Pattern.compile("\\[(.*?)]")
             val attribute = pAttribute.matcher(content.group())
             val type = attribute.group(1)
+            MsgUtil.send("see $type")
             if (type == "write") return true
         }
         return false
     }
+
+    private fun getValue(str: String, attribute: String) = str.replace("$attribute=", "")
 }

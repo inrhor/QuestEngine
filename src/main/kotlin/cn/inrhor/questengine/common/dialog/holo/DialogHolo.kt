@@ -22,7 +22,6 @@ class DialogHolo(
                     cancel()
                     return
                 }
-                MsgUtil.send("asdasdasd   $i")
                 i++
             }
         }

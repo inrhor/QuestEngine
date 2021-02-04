@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.common.dialog
 
 import cn.inrhor.questengine.QuestEngine
-import cn.inrhor.questengine.utlis.public.MsgUtil
 import cn.inrhor.questengine.utlis.public.UseString
 import io.izzel.taboolib.module.locale.TLocale
 import io.izzel.taboolib.util.Files
@@ -37,7 +36,6 @@ class DialogManager {
         Bukkit.getScheduler().runTaskAsynchronously(QuestEngine.plugin, Runnable {
             val dialogFolder = getFile()
             getFileList(dialogFolder).forEach{
-                MsgUtil.send("it  "+it.name)
                 checkDialog(it)
             }
         })

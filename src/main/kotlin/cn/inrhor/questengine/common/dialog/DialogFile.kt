@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.common.dialog
 
 import cn.inrhor.questengine.common.dialog.cube.TextAnimation
-import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.configuration.ConfigurationSection
 
 class DialogFile {
@@ -23,7 +22,6 @@ class DialogFile {
     var frame: Int = -1
 
     fun init(config: ConfigurationSection) {
-        MsgUtil.send("check  "+config.getString("target"))
         if (!config.contains("target")) {
             return
         }
@@ -69,6 +67,10 @@ class DialogFile {
             TextAnimation(ownTextContent!!)
         textAnimation.init()
         ownTextAnimation = textAnimation
+    }
+
+    fun getOwnAnimationContent(line: Int): MutableList<String> {
+        return ownTextAnimation!!.getTextContent(line)
     }
 
 }
