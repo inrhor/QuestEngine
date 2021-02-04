@@ -7,3 +7,4 @@ DIALOG:
   NO_FILES: "{0}&r &6dialog &7文件夹&c不存在，&7开始创建 &6dialog &7文件夹"
   EMPTY_CONTENT: "{0}&r &6{1} &c没有内容或标准错误"
   EXIST_DIALOG_ID: "{0}&r &6{1} &7已有相同已注册的DialogID"
+  NO_EXIST_DIALOG_ID: "{0}&r &6{1} &c不存在该对话ID"

@@ -59,7 +59,6 @@ class DialogFile {
 
         DialogManager().register(this.dialogID!!, this)
         animation()
-        MsgUtil.send("ok")
     }
 
     /**

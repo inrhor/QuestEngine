@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.dialog.cube
 
+import cn.inrhor.questengine.utlis.public.MsgUtil
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -22,7 +23,6 @@ class TextAnimation(
             // 分割 取 独立标签
             val pContent = Pattern.compile("<(.*)>")
             val indTag = pContent.matcher(a)
-
             // 获取动态总时长
             val timeLong = getAllTimeLong(indTag)
 
@@ -78,18 +78,20 @@ class TextAnimation(
         var finalDelay = 0
         // 分割 取 内容的属性
         val pAttribute = Pattern.compile("\\[(.*)]")
-        val attribute = pAttribute.matcher(content.group())
         while (content.find()) {
-            val delay = attribute.group().toInt()
-            if (delay > finalDelay) {
-                finalDelay = delay
-            }
-            // 若是打字型则增加帧数
-            if (attribute.group(1) == "write") {
-                val speedLong = attribute.group(3).toInt()
-                // 根据字数增加帧数
-                val textLong = attribute.group(4).length
-                i += speedLong * textLong
+            val attribute = pAttribute.matcher(content.group())
+            while (content.find()) {
+                val delay = attribute.group().toInt()
+                if (delay > finalDelay) {
+                    finalDelay = delay
+                }
+                // 若是打字型则增加帧数
+                if (attribute.group(1) == "write") {
+                    val speedLong = attribute.group(3).toInt()
+                    // 根据字数增加帧数
+                    val textLong = attribute.group(4).length
+                    i += speedLong * textLong
+                }
             }
         }
         // 最终帧数

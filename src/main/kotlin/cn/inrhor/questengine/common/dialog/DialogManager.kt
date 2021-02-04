@@ -87,7 +87,13 @@ class DialogManager {
      */
     fun remove(dialogID: String) {dialogFileMap.remove(dialogID)}
 
+    /**
+     * DialogID 是否存在
+     */
     fun exist(dialogID: String) = dialogFileMap.contains(dialogID)
 
+    /**
+     * 获取对话配置内容
+     */
     fun get(dialogID: String) = dialogFileMap[dialogID]
 }
