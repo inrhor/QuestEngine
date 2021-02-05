@@ -10,15 +10,15 @@ import org.bukkit.inventory.ItemStack
 import java.util.*
 
 class IHolo(
-    val holoID: String,
-    val textLoc: Location,
-    val itemLoc: Location,
+    var holoID: String,
+    var textLoc: Location,
+    var itemLoc: Location,
 
-    val viewers: MutableSet<Player>,
+    var viewers: MutableSet<Player>,
 
     // 实现动画方法：通过外界更改指定行的内容
-    val textList: MutableList<String> = mutableListOf(),
-    val itemList: MutableList<ItemStack> = mutableListOf()
+    var textList: MutableList<String> = mutableListOf(),
+    var itemList: MutableList<ItemStack> = mutableListOf()
 ) {
 
     constructor(holoID: String, textLoc: Location, itemLoc: Location, viewers: MutableSet<Player>) :

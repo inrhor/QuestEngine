@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.dialog.animation
 
 /**
- * @param contentList 所有动画标签内容
+ * @param contentList 该动画标签的所有动态文字内容
  * @param type 文字类型
  * @param delay 延迟播放
  * @param speed 打字速度

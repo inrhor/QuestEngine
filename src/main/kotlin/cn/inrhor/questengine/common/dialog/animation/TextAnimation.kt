@@ -55,7 +55,7 @@ class TextAnimation(
                             continue
                         }
                         if (a0 == "write") {
-                            MsgUtil.send("delay $delay   time $time   a2 $a1")
+//                            MsgUtil.send("delay $delay   time $time   a2 $a1")
                             // 实现打字型内容
                             val nextTime = Util().getValue(attributes[2], "speed").toInt()
                             text.speed = nextTime
@@ -65,11 +65,16 @@ class TextAnimation(
                                 val end = multiply+Util().colorNumber(a3)
                                 val get = a3.substring(0, end)
                                 if (!(get.endsWith("&") or get.endsWith("§"))) {
+                                    MsgUtil.send("tttttttt")
                                     text.contentList.add(a3.substring(0, end))
-                                    if (a3.length == end) {
-                                        addTextMap(line, textList)
-                                        continue
+                                    text.contentList.forEach {
+                                        MsgUtil.send("text  $it")
                                     }
+                                    textList.add(text)
+                                }
+                                if (a3.length == end) {
+                                    addTextMap(line, textList)
+                                    continue
                                 }
                                 multiply++
                             }
