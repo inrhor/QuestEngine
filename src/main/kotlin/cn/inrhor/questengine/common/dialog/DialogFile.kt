@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.dialog
 
-import cn.inrhor.questengine.common.dialog.cube.TextAnimation
-import cn.inrhor.questengine.utlis.public.MsgUtil
+import cn.inrhor.questengine.common.dialog.animation.Text
+import cn.inrhor.questengine.common.dialog.animation.TextAnimation
 import org.bukkit.configuration.ConfigurationSection
 
 class DialogFile {
@@ -70,8 +70,18 @@ class DialogFile {
         ownTextAnimation = textAnimation
     }
 
-    fun getOwnAnimationContent(line: Int): MutableList<String> {
+    /**
+     * 主体文字组中这一行包含的标签内容
+     */
+    fun getOwnTheLineList(line: Int): MutableList<Text> {
         return ownTextAnimation!!.getTextContent(line)
+    }
+
+    /**
+     * 主体文字组中的内容
+     */
+    fun getOwnTextList(index: Int): MutableList<Text> {
+        return getOwnTheLineList(index)
     }
 
 }

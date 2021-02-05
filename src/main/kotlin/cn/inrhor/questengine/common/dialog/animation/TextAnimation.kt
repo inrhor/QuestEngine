@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.dialog.cube
+package cn.inrhor.questengine.common.dialog.animation
 
 import cn.inrhor.questengine.utlis.public.MsgUtil
 import java.util.regex.Pattern
@@ -12,7 +12,8 @@ class TextAnimation(
      *
      * 其中 动态字符表 根据 帧数，但要注意长度
      */
-    private var textMap: HashMap<Int, MutableList<String>> = LinkedHashMap<Int, MutableList<String>>()
+//    private var textMap: HashMap<Int, MutableList<String>> = LinkedHashMap<Int, MutableList<String>>()
+    private var textMap: HashMap<Int, MutableList<Text>> = LinkedHashMap<Int, MutableList<Text>>()
 
     fun init() {
         var line = 0
@@ -38,53 +39,61 @@ class TextAnimation(
                     attributes.add(attribute.group(1))
                 }
 
-                val delay = getValue(attributes[1], "delay").toInt()
+                val a1 = attributes[1]
+                val delay = getValue(a1, "delay").toInt()
+
+                val text = Text(delay)
 
                 var multiply = 0 // 用于write
                 for (time in 0..timeLong) {
                     // 如果 该属性的delay 小于当前的动态帧
+                    val textList = getTextContent(line)
                     if (delay <= time) {
-                        MsgUtil.send("delay $delay   time $time")
                         if (!a.contains("<[write][delay=")) { // 如果这一行是静态的就不处理动画
-                            val textList = mutableListOf(attributes[2])
+//                            val textList = mutableListOf(attributes[2])
                             textMap[line] = textList
                             continue
                         }
-                        val textList = getTextContent(line)
-                        val a2 = attributes[2]
                         if (attributes[0] == "write") {
+                            MsgUtil.send("delay $delay   time $time   a2 $a1")
                             // 实现打字型内容
-                            val nextTime = getValue(a2, "speed").toInt()
+                            val nextTime = getValue(attributes[2], "speed").toInt()
+                            text.speed = nextTime
                             if (time == delay+(nextTime*multiply)) {
                                 // 截取前面字符
                                 val a3 = attributes[3]
                                 val end = multiply+colorNumber(a3)
                                 val get = a3.substring(0, end)
                                 if (!(get.endsWith("&") or get.endsWith("§"))) {
-                                    textList.add(a3.substring(0, end))
-                                    textMap[line] = textList
-                                    if (a3.length == end) return
+                                    text.contentList.add(a3.substring(0, end))
+                                    if (a3.length == end) {
+                                        addTextMap(line, textList)
+                                        continue
+                                    }
                                 }
                                 multiply++
                             }
-                        }else {
-                            textList.add(a2)
+                        }/*else {
+                            textList.add(attributes[2])
                             textMap[line] = textList
-                        }
+                        }*/
                     }
                 }
-
             }
             line++
         }
     }
 
     /**
-     * 根据行数获得动态字符表内容
+     * 根据行数获得这一行的标签内容
      */
-    fun getTextContent(line: Int): MutableList<String> {
+    fun getTextContent(line: Int): MutableList<Text> {
         if (textMap.containsKey(line)) return textMap[line]!!
         return mutableListOf()
+    }
+
+    fun addTextMap(line: Int, textList: MutableList<Text>) {
+        textMap[line] = textList
     }
 
     private fun getAllTimeLong(a: String): Int {
