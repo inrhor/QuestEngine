@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.dialog
 
 import cn.inrhor.questengine.common.dialog.cube.TextAnimation
+import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.configuration.ConfigurationSection
 
 class DialogFile {

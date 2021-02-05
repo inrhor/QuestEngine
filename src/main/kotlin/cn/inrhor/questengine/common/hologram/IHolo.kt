@@ -56,7 +56,7 @@ class IHolo(
         val strID = "$holoID-$type-$index"
         val entityID = strID.hashCode()
         if (IHologramManager().existHoloEntityID(entityID)) {
-
+            // say
         }
         when (type) {
             "text" -> {
@@ -74,11 +74,20 @@ class IHolo(
     }
 
     /**
-     * 更新全息的内容
+     * 更新全息视觉
      */
     fun update() {
         sendTextHolo(viewers)
         sendItemHolo(viewers)
+    }
+
+    /**
+     * 更新全息内容
+     */
+    fun updateContent(line: Int) {
+        textEntityIDs.forEach {
+            getPackets().updateDisplayName(viewers, it, textList[line])
+        }
     }
 
     /**
@@ -139,13 +148,13 @@ class IHolo(
 
             entityLoc.add(0.0, -0.25, 0.0)
 
-            getPackets().initAS(players, it, isSmall = true, marker = true)
-
             if (type == "text") {
+                getPackets().initAS(players, it, showName = true, isSmall = true, marker = true)
                 if (textList.isNotEmpty() && textList.size > index) {
                     getPackets().updateDisplayName(players, it, textList[index])
                 }else return
             }else {
+                getPackets().initAS(players, it, showName = false, isSmall = true, marker = true)
                 if (itemList.isNotEmpty() && itemList.size > index) {
                     // 生成物品实体
                     val itemInt = Random().nextInt()

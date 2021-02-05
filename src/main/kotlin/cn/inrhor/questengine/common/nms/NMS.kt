@@ -31,6 +31,11 @@ abstract class NMS {
     abstract fun updateDisplayName(players: MutableSet<Player>, entityId: Int, name: String)
 
     /**
+     * 更新名称
+     */
+    abstract fun updateDisplayName(player: Player, entityId: Int, name: String)
+
+    /**
      * 更新位置
      */
     abstract fun updateLocation(players: MutableSet<Player>, entityId: Int, location: Location)
@@ -49,6 +54,11 @@ abstract class NMS {
      * 更新实体元数据
      */
     abstract fun updateEntityMetadata(players: MutableSet<Player>, entityId: Int, vararg objects: Any)
+
+    /**
+     * 更新实体元数据
+     */
+    abstract fun updateEntityMetadata(player: Player, entityId: Int, vararg objects: Any)
 
     /**
      * 物品
@@ -85,7 +95,12 @@ abstract class NMS {
      *
      * @param marker true为关闭碰撞箱
      */
-    abstract fun initAS(players: MutableSet<Player>, entityId: Int, isSmall: Boolean, marker: Boolean)
+    abstract fun initAS(players: MutableSet<Player>, entityId: Int, showName: Boolean, isSmall: Boolean, marker: Boolean)
+
+    /**
+     * 不可见
+     */
+    abstract fun getIsInvisible(): Any
 
     companion object {
 

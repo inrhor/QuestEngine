@@ -54,14 +54,13 @@ class TextAnimation(
                         val a2 = attributes[2]
                         if (attributes[0] == "write") {
                             // 实现打字型内容
-                            // 实现打字型内容
                             val nextTime = getValue(a2, "speed").toInt()
                             if (time == delay+(nextTime*multiply)) {
                                 // 截取前面字符
                                 val a3 = attributes[3]
                                 val end = multiply+colorNumber(a3)
                                 val get = a3.substring(0, end)
-                                if (!get.endsWith("&") or !get.endsWith("§")) {
+                                if (!(get.endsWith("&") or get.endsWith("§"))) {
                                     textList.add(a3.substring(0, end))
                                     textMap[line] = textList
                                     if (a3.length == end) return
