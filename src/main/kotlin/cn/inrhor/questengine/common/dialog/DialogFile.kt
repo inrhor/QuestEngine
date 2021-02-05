@@ -78,10 +78,10 @@ class DialogFile {
     }
 
     /**
-     * 主体文字组中的内容
+     * 标签内容的动态文字表
      */
-    fun getOwnTextList(index: Int): MutableList<Text> {
+    /*fun getOwnTextList(index: Int): MutableList<Text> {
         return getOwnTheLineList(index)
-    }
+    }*/
 
 }

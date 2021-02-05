@@ -134,7 +134,6 @@ class NMSImpl : NMS() {
 
     override fun updateDisplayName(player: Player, entityId: Int, name: String) {
         var colorName = TLocale.Translate.setColored(name)
-        MsgUtil.send("empty ?  "+colorName.isEmpty())
         if (colorName.isEmpty()) colorName = " "
         updateEntityMetadata(player, entityId, getMetaEntityCustomName(
             TLocale.Translate.setPlaceholders(player, colorName)

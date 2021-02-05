@@ -3,7 +3,28 @@ package cn.inrhor.questengine.common.dialog.animation
 import java.util.regex.Pattern
 
 class Util {
-    fun getAllTimeLong(a: String): Int {
+    fun getTimeLong(attributes: MutableList<String>): Int {
+        // 帧数
+        var i = 0
+        val delay = getValue(attributes[1], "delay").toInt()
+        // 确定最终的延迟
+        var finalDelay = 0
+        if (delay > finalDelay) {
+            finalDelay = delay
+        }
+        // 若是打字型则增加帧数
+        if (attributes[0] == "write") {
+            val speedLong = getValue(attributes[2], "speed").toInt()
+            // 根据字数增加帧数
+            val textLong = attributes[3].length
+            i += speedLong * textLong
+        }
+        // 最终帧数
+        i += finalDelay
+        return i
+    }
+
+/*    fun getAllTimeLong(a: String): Int {
         // 总帧数
         var i = 0
         // 确定最终的延迟
@@ -33,7 +54,7 @@ class Util {
         // 最终帧数
         i += finalDelay
         return i
-    }
+    }*/
 
     /**
      * 获取 &颜色 出现的次数
