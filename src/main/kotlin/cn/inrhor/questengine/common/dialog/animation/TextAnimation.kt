@@ -21,7 +21,7 @@ class TextAnimation(
             // 对每一行
 
             // 获取动态总时长
-            val timeLong = getAllTimeLong(a)
+            val timeLong = Util().getAllTimeLong(a)
 
             // 分割 取 独立标签
             val pContent = Pattern.compile("<(.*?)>")
@@ -40,13 +40,13 @@ class TextAnimation(
                 }
 
                 val a1 = attributes[1]
-                val delay = getValue(a1, "delay").toInt()
-
-                val text = Text(delay)
+                val delay = Util().getValue(a1, "delay").toInt()
+                val a0 = attributes[0]
+                val text = Text(a0, delay)
+                text.timeLong = timeLong
 
                 var multiply = 0 // 用于write
                 for (time in 0..timeLong) {
-                    // 如果 该属性的delay 小于当前的动态帧
                     val textList = getTextContent(line)
                     if (delay <= time) {
                         if (!a.contains("<[write][delay=")) { // 如果这一行是静态的就不处理动画
@@ -54,15 +54,15 @@ class TextAnimation(
                             textMap[line] = textList
                             continue
                         }
-                        if (attributes[0] == "write") {
+                        if (a0 == "write") {
                             MsgUtil.send("delay $delay   time $time   a2 $a1")
                             // 实现打字型内容
-                            val nextTime = getValue(attributes[2], "speed").toInt()
+                            val nextTime = Util().getValue(attributes[2], "speed").toInt()
                             text.speed = nextTime
                             if (time == delay+(nextTime*multiply)) {
                                 // 截取前面字符
                                 val a3 = attributes[3]
-                                val end = multiply+colorNumber(a3)
+                                val end = multiply+Util().colorNumber(a3)
                                 val get = a3.substring(0, end)
                                 if (!(get.endsWith("&") or get.endsWith("§"))) {
                                     text.contentList.add(a3.substring(0, end))
@@ -95,52 +95,4 @@ class TextAnimation(
     fun addTextMap(line: Int, textList: MutableList<Text>) {
         textMap[line] = textList
     }
-
-    private fun getAllTimeLong(a: String): Int {
-        // 总帧数
-        var i = 0
-        // 确定最终的延迟
-        var finalDelay = 0
-        // 分割 取 内容的属性
-        val pAttribute = Pattern.compile("\\[(.*?)]")
-        val pContent = Pattern.compile("<(.*?)>")
-        val indTag = pContent.matcher(a)
-        while (indTag.find()) {
-            val attribute = pAttribute.matcher(indTag.group(1))
-            val attributes = mutableListOf<String>()
-            while (attribute.find()) {
-                attributes.add(attribute.group(1))
-            }
-            val delay = getValue(attributes[1], "delay").toInt()
-            if (delay > finalDelay) {
-                finalDelay = delay
-            }
-            // 若是打字型则增加帧数
-            if (attributes[0] == "write") {
-                val speedLong = getValue(attributes[2], "speed").toInt()
-                // 根据字数增加帧数
-                val textLong = attributes[3].length
-                i += speedLong * textLong
-            }
-        }
-        // 最终帧数
-        i += finalDelay
-        return i
-    }
-
-    /**
-     * 获取 &颜色 出现的次数
-     *
-     */
-    private fun colorNumber(src: String): Int {
-        var count = 0
-        val pattern = Pattern.compile("&\\d|§\\d|&[a-zA-Z]|§[a-zA-Z]")
-        val matcher = pattern.matcher(src)
-        while (matcher.find()) {
-            count++
-        }
-        return count
-    }
-
-    private fun getValue(str: String, attribute: String) = str.replace("$attribute=", "")
 }
