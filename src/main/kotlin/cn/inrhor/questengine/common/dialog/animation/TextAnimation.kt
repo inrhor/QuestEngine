@@ -79,9 +79,6 @@ class TextAnimation(private val textContent: MutableList<String>) {
                 }
             }
             line++
-
-            // 根据延迟排序
-            
         }
     }
 
