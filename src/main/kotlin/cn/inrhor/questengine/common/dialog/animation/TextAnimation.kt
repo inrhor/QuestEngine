@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.common.dialog.animation
 
-import cn.inrhor.questengine.utlis.public.MsgUtil
 import java.util.regex.Pattern
 
 /**
@@ -20,9 +19,6 @@ class TextAnimation(private val textContent: MutableList<String>) {
         var line = 0
         textContent.forEach { a ->
             // 对每一行
-
-            // 获取动态总时长
-//            val timeLong = Util().getAllTimeLong(a)
 
             // 分割 取 独立标签
             val pContent = Pattern.compile("<(.*?)>")
@@ -58,15 +54,13 @@ class TextAnimation(private val textContent: MutableList<String>) {
                         val end = multiply+Util().colorNumber(abText)
                         val get = abText.substring(0, end)
 
-                        // 逻辑错误，等会重写这部分
-                        if (!(get.endsWith("&") or get.endsWith("§"))) {
+
+                        if (!Util().isColor(get)) {
                             textClass.contentList.add(abText.substring(0, end))
                         }
 
                         if (abText.length == end) {
-                            MsgUtil.send("leng")
                             if (!textTagList.contains(textClass)) {
-                                MsgUtil.send("no exist")
                                 textTagList.add(textClass)
                             }
                             addTextMap(line, textTagList)
