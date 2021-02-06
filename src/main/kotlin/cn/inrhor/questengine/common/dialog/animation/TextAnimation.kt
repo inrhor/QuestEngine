@@ -24,6 +24,9 @@ class TextAnimation(private val textContent: MutableList<String>) {
             val pContent = Pattern.compile("<(.*?)>")
             val indTag = pContent.matcher(a)
 
+            // 这一行的所有标签
+            val textTagList = getTextContent(line)
+
             // 对独立标签而言
             while (indTag.find()) {
 
@@ -36,9 +39,6 @@ class TextAnimation(private val textContent: MutableList<String>) {
                     attributes.add(attribute.group(1))
                 }
 
-                // 这一行的所有标签
-                val textTagList = getTextContent(line)
-
                 val abType = attributes[0]
                 val abDelay = Util().getValue(attributes[1], "delay").toInt()
                 val textClass = Text(abType, abDelay)
@@ -47,14 +47,13 @@ class TextAnimation(private val textContent: MutableList<String>) {
                 if (abType == "write") {
                     val abText = attributes[3]
                     val abSpeed = Util().getValue(attributes[2], "speed").toInt()
-                    textClass.speed = abSpeed
+                    textClass.speed = abSpeed-1
 //                    var multiply = 0
                     var end = 2
                     for (index in 0..abText.length) {
                         // 截取前面字符
 //                        val end = multiply+Util().colorNumber(abText)
                         if (Util().isColor(abText.substring(0, end))) {
-                            MsgUtil.send("?>>")
                             end++
                             continue
                         }
@@ -80,6 +79,9 @@ class TextAnimation(private val textContent: MutableList<String>) {
                 }
             }
             line++
+
+            // 根据延迟排序
+            
         }
     }
 

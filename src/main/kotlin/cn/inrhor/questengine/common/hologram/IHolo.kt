@@ -44,8 +44,8 @@ class IHolo(
 
         sendTextHolo(viewers)
         sendItemHolo(viewers)
-//        val dialogHolo = DialogHolo(this, viewers)
-//        dialogHolo.runRunnable()
+        val dialogHolo = DialogHolo(this, viewers)
+        dialogHolo.runRunnable()
 
         hasInit = true
 

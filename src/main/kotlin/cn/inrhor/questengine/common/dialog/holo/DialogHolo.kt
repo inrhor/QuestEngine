@@ -22,7 +22,51 @@ class DialogHolo(
         var frame = 0
         var textFrame = 0
         var writeSpeed = 0
+        val dialogFile = Dialog().getDialog(holo.holoID)!!
+        val textList = dialogFile.getOwnTheLineList(0)
         runnable = object : BukkitRunnable() {
+            override fun run() {
+//                MsgUtil.send("frame $frame   textFrame $textFrame")
+
+                var holoTextList = mutableListOf<String>()
+                repeat(holo.textList.size) {
+                    holoTextList.add("")
+                }
+
+                textList.forEach {
+                    if (textFrame >= it.contentList.size) {
+                        MsgUtil.send("cancel")
+                        frame = 0
+                        textFrame = 0
+                        writeSpeed = 0
+                        holoTextList = it.contentList
+                        cancel()
+                        return
+                    }
+//                    allTimeLong = it.timeLong
+                    MsgUtil.send("textFrame $textFrame  size "+it.contentList.size+"frame $frame")
+
+                    if (frame >= it.delay) {
+//                        MsgUtil.send("eeeFrame  $textFrame  t   speed $writeSpeed")
+                        if (writeSpeed >= it.speed) {
+//                            holo.textList[0] = it.contentList[textFrame]
+//                            holo.updateContent(0)
+                            MsgUtil.send("??  "+holoTextList[0])
+                            holoTextList[0] += it.contentList[textFrame]
+                            MsgUtil.send("asdasd??  "+holoTextList[0]+"   uuu  "+it.contentList[textFrame])
+                            holo.textList[0] = holoTextList[0]
+                            writeSpeed = 0
+                            textFrame++
+                        }else writeSpeed++
+                    }
+                }
+                frame++
+
+                holo.updateContent(0)
+            }
+        };(runnable as BukkitRunnable).runTaskTimer(QuestEngine.plugin, 0, 1L)
+
+        /*runnable = object : BukkitRunnable() {
             override fun run() {
                 var holoText = ""
                 if (viewers.isEmpty()) {
@@ -42,9 +86,9 @@ class DialogHolo(
                     if (frame >= it.delay) {
 //                        MsgUtil.send("eeeFrame  $textFrame  t   speed $writeSpeed")
                         if (writeSpeed >= it.speed) {
-                            /*holo.textList[0] = it.contentList[textFrame]
-                            holo.updateContent(0)*/
-                            holoText += it.contentList[frame]
+                            *//*holo.textList[0] = it.contentList[textFrame]
+                            holo.updateContent(0)*//*
+                            holoText += it.contentList[textFrame]
                             writeSpeed = 0
                             textFrame++
                         }else writeSpeed++
@@ -55,6 +99,6 @@ class DialogHolo(
                 holo.updateContent(0)
             }
         }
-        (runnable as BukkitRunnable).runTaskTimer(QuestEngine.plugin, 0L, 1L)
+        (runnable as BukkitRunnable).runTaskTimer(QuestEngine.plugin, 0L, 1L)*/
     }
 }
