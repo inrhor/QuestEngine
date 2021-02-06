@@ -27,6 +27,9 @@ class TextAnimation(private val textContent: MutableList<String>) {
             // 这一行的所有标签
             val textTagList = getTextContent(line)
 
+            // 标签匹配索引
+            var tagIndex = 0
+
             // 对独立标签而言
             while (indTag.find()) {
 
@@ -41,7 +44,8 @@ class TextAnimation(private val textContent: MutableList<String>) {
 
                 val abType = attributes[0]
                 val abDelay = Util().getValue(attributes[1], "delay").toInt()
-                val textClass = Text(abType, abDelay)
+                val textClass = Text(abType, abDelay, tagIndex)
+                tagIndex++
                 textClass.timeLong = Util().getTimeLong(attributes)
 
                 if (abType == "write") {

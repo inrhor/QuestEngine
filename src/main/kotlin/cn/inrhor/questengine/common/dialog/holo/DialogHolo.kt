@@ -28,7 +28,8 @@ class DialogHolo(
             override fun run() {
 //                MsgUtil.send("frame $frame   textFrame $textFrame")
 
-                var holoTextList = mutableListOf<String>()
+                // 一个全息所有行内容
+                val holoTextList = mutableListOf<String>()
                 repeat(holo.textList.size) {
                     holoTextList.add("")
                 }
@@ -39,12 +40,11 @@ class DialogHolo(
                         frame = 0
                         textFrame = 0
                         writeSpeed = 0
-                        holoTextList = it.contentList
                         cancel()
                         return
                     }
 //                    allTimeLong = it.timeLong
-                    MsgUtil.send("textFrame $textFrame  size "+it.contentList.size+"frame $frame")
+//                    MsgUtil.send("textFrame $textFrame  size "+it.contentList.size+"frame $frame")
 
                     if (frame >= it.delay) {
 //                        MsgUtil.send("eeeFrame  $textFrame  t   speed $writeSpeed")
@@ -53,7 +53,7 @@ class DialogHolo(
 //                            holo.updateContent(0)
                             MsgUtil.send("??  "+holoTextList[0])
                             holoTextList[0] += it.contentList[textFrame]
-                            MsgUtil.send("asdasd??  "+holoTextList[0]+"   uuu  "+it.contentList[textFrame])
+                            MsgUtil.send("asdasd??  "+holoTextList[0])
                             holo.textList[0] = holoTextList[0]
                             writeSpeed = 0
                             textFrame++
