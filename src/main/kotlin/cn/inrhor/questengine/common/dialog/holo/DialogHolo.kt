@@ -43,18 +43,14 @@ class DialogHolo(
                         cancel()
                         return
                     }
-//                    allTimeLong = it.timeLong
-//                    MsgUtil.send("textFrame $textFrame  size "+it.contentList.size+"frame $frame")
 
                     if (frame >= it.delay) {
-//                        MsgUtil.send("eeeFrame  $textFrame  t   speed $writeSpeed")
                         if (writeSpeed >= it.speed) {
-//                            holo.textList[0] = it.contentList[textFrame]
-//                            holo.updateContent(0)
-                            MsgUtil.send("??  "+holoTextList[0])
-                            holoTextList[0] += it.contentList[textFrame]
-                            MsgUtil.send("asdasd??  "+holoTextList[0])
-                            holo.textList[0] = holoTextList[0]
+
+                            // 拼接算法待写 根据tagIndex排序
+                            /*holoTextList[0] += it.contentList[textFrame]
+                            holo.textList[0] = holoTextList[0]*/
+
                             writeSpeed = 0
                             textFrame++
                         }else writeSpeed++

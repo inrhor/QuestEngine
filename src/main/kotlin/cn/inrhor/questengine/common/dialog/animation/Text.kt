@@ -7,9 +7,9 @@ package cn.inrhor.questengine.common.dialog.animation
  * @param speed 打字速度
  * @param index 位于标签第几位
  */
-class Text(var contentList: MutableList<String>, var type: String, val delay: Int, var speed: Int, var timeLong: Int, var index: Int) {
-    constructor(type: String, delay: Int, index: Int):
-            this(mutableListOf(), type, delay, 0, 0, index)
-    constructor(contentList: MutableList<String>, type: String, delay: Int, index: Int):
-            this(contentList, type, delay, 0, 0, index)
+class Text(var contentList: MutableList<String>, var type: String, val delay: Int, var speed: Int, var timeLong: Int, var tagIndex: Int) {
+    constructor(type: String, delay: Int, tagIndex: Int):
+            this(mutableListOf(), type, delay, 0, 0, tagIndex)
+    constructor(contentList: MutableList<String>, type: String, delay: Int, tagIndex: Int):
+            this(contentList, type, delay, 0, 0, tagIndex)
 }
