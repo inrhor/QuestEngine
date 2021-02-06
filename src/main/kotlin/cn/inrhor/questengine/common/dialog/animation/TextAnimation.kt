@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.dialog.animation
 
+import cn.inrhor.questengine.utlis.public.MsgUtil
 import java.util.regex.Pattern
 
 /**
@@ -12,7 +13,6 @@ class TextAnimation(private val textContent: MutableList<String>) {
      *
      * 其中 动态字符表 根据 帧数，但要注意长度
      */
-//    private var textMap: HashMap<Int, MutableList<String>> = LinkedHashMap<Int, MutableList<String>>()
     private var textMap: HashMap<Int, MutableList<Text>> = LinkedHashMap<Int, MutableList<Text>>()
 
     fun init() {
@@ -48,25 +48,33 @@ class TextAnimation(private val textContent: MutableList<String>) {
                     val abText = attributes[3]
                     val abSpeed = Util().getValue(attributes[2], "speed").toInt()
                     textClass.speed = abSpeed
-                    var multiply = 0
+//                    var multiply = 0
+                    var end = 2
                     for (index in 0..abText.length) {
                         // 截取前面字符
-                        val end = multiply+Util().colorNumber(abText)
+//                        val end = multiply+Util().colorNumber(abText)
+                        if (Util().isColor(abText.substring(0, end))) {
+                            MsgUtil.send("?>>")
+                            end++
+                            continue
+                        }
+
                         val get = abText.substring(0, end)
 
+                        MsgUtil.send("check $get  "+Util().isColor(get)+"  end "+end)
 
                         if (!Util().isColor(get)) {
                             textClass.contentList.add(abText.substring(0, end))
+                            end++
                         }
 
-                        if (abText.length == end) {
+                        if (abText.length == end-1) {
                             if (!textTagList.contains(textClass)) {
                                 textTagList.add(textClass)
                             }
                             addTextMap(line, textTagList)
                             break
                         }
-                        multiply++
                     }
                     continue
                 }
