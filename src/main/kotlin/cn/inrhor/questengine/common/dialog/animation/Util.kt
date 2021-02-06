@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.dialog.animation
 
+import cn.inrhor.questengine.utlis.public.MsgUtil
 import java.util.regex.Pattern
 
 class Util {
@@ -14,13 +15,15 @@ class Util {
         }
         // 若是打字型则增加帧数
         if (attributes[0] == "write") {
-            val speedLong = getValue(attributes[2], "speed").toInt()
+            val speed = getValue(attributes[2], "speed").toInt()
             // 根据字数增加帧数
             val textLong = attributes[3].length
-            i += speedLong * textLong
+            i = speed * (textLong - colorNumber(attributes[3]))
+            MsgUtil.send("speed  $speed text  $i  "+attributes[3]+"ilong "+colorNumber(attributes[3])+"  len "+textLong)
         }
         // 最终帧数
         i += finalDelay
+        MsgUtil.send("iii  $i")
         return i
     }
 
@@ -67,7 +70,7 @@ class Util {
         while (matcher.find()) {
             count++
         }
-        return count
+        return count*2
     }
 
     fun getValue(str: String, attribute: String) = str.replace("$attribute=", "")

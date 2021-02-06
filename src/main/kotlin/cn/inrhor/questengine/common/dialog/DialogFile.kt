@@ -77,11 +77,4 @@ class DialogFile {
         return ownTextAnimation!!.getTextContent(line)
     }
 
-    /**
-     * 标签内容的动态文字表
-     */
-    /*fun getOwnTextList(index: Int): MutableList<Text> {
-        return getOwnTheLineList(index)
-    }*/
-
 }

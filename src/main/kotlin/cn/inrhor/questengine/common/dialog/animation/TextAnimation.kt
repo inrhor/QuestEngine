@@ -57,9 +57,12 @@ class TextAnimation(private val textContent: MutableList<String>) {
                         // 截取前面字符
                         val end = multiply+Util().colorNumber(abText)
                         val get = abText.substring(0, end)
+
+                        // 逻辑错误，等会重写这部分
                         if (!(get.endsWith("&") or get.endsWith("§"))) {
                             textClass.contentList.add(abText.substring(0, end))
                         }
+
                         if (abText.length == end) {
                             MsgUtil.send("leng")
                             if (!textTagList.contains(textClass)) {
@@ -73,48 +76,6 @@ class TextAnimation(private val textContent: MutableList<String>) {
                     }
                     continue
                 }
-
-//                var multiply = 0 // 用于write
-
-/*                for (time in 0..timeLong) {
-                    val textList = getTextContent(line)
-                    if (delay <= time) {
-                        if (!a.contains("<[write][delay=")) { // 如果这一行是静态的就不处理动画
-                            MsgUtil.send("else $delay   time $time   a2 $attributes[2]")
-                            text.contentList.add(attributes[2])
-                            textList.add(text)
-                            textMap[line] = textList
-                            continue
-                        }
-                        if (a0 == "write") {
-                            MsgUtil.send("delay $delay   time $time   a2 $a1")
-                            // 实现打字型内容
-                            val nextTime = Util().getValue(attributes[2], "speed").toInt()
-                            text.speed = nextTime
-//                            if (time == delay+(nextTime*multiply)) {
-                                // 截取前面字符
-                                val a3 = attributes[3]
-                                val end = multiply+Util().colorNumber(a3)
-                                val get = a3.substring(0, end)
-                                if (!(get.endsWith("&") or get.endsWith("§"))) {
-                                    MsgUtil.send("tttttttt")
-                                    text.contentList.add(a3.substring(0, end))
-                                    textList.add(text)
-                                }
-                                if (a3.length == end) {
-                                    addTextMap(line, textList)
-                                    continue
-                                }
-                                multiply++
-//                            }
-                        }*//*else { // 下次更新其它文字类型
-                            MsgUtil.send("else $delay   time $time   a2 $attributes[2]")
-                            text.contentList.add(attributes[2])
-                            textList.add(text)
-                            textMap[line] = textList
-                        }*//*
-                    }
-                }*/
             }
             line++
         }
