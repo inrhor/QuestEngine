@@ -4,7 +4,7 @@ import cn.inrhor.questengine.utlis.public.MsgUtil
 import java.util.regex.Pattern
 
 class UtilAnimation {
-    fun getTimeLong(attributes: MutableList<String>): Int {
+    /*fun getTimeLong(attributes: MutableList<String>): Int {
         // 帧数
         var i = 0
 //        val delay = getValue(attributes[1], "delay").toInt()
@@ -25,7 +25,7 @@ class UtilAnimation {
 //        i += finalDelay
         MsgUtil.send("iii  $i")
         return i
-    }
+    }*/
 
     /**
      * 获取 &颜色 出现的次数

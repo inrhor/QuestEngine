@@ -46,7 +46,7 @@ class TextAnimation(private val textContent: MutableList<String>) {
                 val abDelay = UtilAnimation().getValue(attributes[1], "delay").toInt()
                 val tagText = TagText(abType, abDelay, tagIndex)
                 tagIndex++
-                tagText.timeLong = UtilAnimation().getTimeLong(attributes)
+//                tagText.timeLong = UtilAnimation().getTimeLong(attributes)
 
                 if (abType == "write") {
                     val abText = attributes[3]

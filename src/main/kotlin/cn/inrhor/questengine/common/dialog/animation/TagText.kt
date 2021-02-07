@@ -8,9 +8,9 @@ package cn.inrhor.questengine.common.dialog.animation
  * @param tagIndex 位于标签第几位
  */
 class TagText(var contentList: MutableList<String>, var type: String, val delay: Int,
-              var speed: Int, var timeLong: Int, var tagIndex: Int) {
+              var speed: Int, var tagIndex: Int) {
     constructor(type: String, delay: Int, tagIndex: Int):
-            this(mutableListOf(), type, delay, 0, 0, tagIndex)
+            this(mutableListOf(), type, delay, 0, tagIndex)
     constructor(contentList: MutableList<String>, type: String, delay: Int, tagIndex: Int):
-            this(contentList, type, delay, 0, 0, tagIndex)
+            this(contentList, type, delay, 0, tagIndex)
 }
