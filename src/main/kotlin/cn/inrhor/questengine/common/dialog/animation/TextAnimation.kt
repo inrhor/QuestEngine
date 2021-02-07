@@ -13,7 +13,7 @@ class TextAnimation(private val textContent: MutableList<String>) {
      *
      * 其中 动态字符表 根据 帧数，但要注意长度
      */
-    private var textMap: HashMap<Int, MutableList<Text>> = LinkedHashMap<Int, MutableList<Text>>()
+    private var textMap: HashMap<Int, MutableList<TagText>> = LinkedHashMap<Int, MutableList<TagText>>()
 
     fun init() {
         var line = 0
@@ -44,7 +44,7 @@ class TextAnimation(private val textContent: MutableList<String>) {
 
                 val abType = attributes[0]
                 val abDelay = Util().getValue(attributes[1], "delay").toInt()
-                val textClass = Text(abType, abDelay, tagIndex)
+                val textClass = TagText(abType, abDelay, tagIndex)
                 tagIndex++
                 textClass.timeLong = Util().getTimeLong(attributes)
 
@@ -89,12 +89,12 @@ class TextAnimation(private val textContent: MutableList<String>) {
     /**
      * 根据行数获得这一行的标签内容
      */
-    fun getTextContent(line: Int): MutableList<Text> {
+    fun getTextContent(line: Int): MutableList<TagText> {
         if (textMap.containsKey(line)) return textMap[line]!!
         return mutableListOf()
     }
 
-    fun addTextMap(line: Int, textList: MutableList<Text>) {
+    fun addTextMap(line: Int, textList: MutableList<TagText>) {
         textMap[line] = textList
     }
 }

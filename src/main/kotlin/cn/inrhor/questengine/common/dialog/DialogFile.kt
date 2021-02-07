@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.dialog
 
-import cn.inrhor.questengine.common.dialog.animation.Text
+import cn.inrhor.questengine.common.dialog.animation.TagText
 import cn.inrhor.questengine.common.dialog.animation.TextAnimation
 import org.bukkit.configuration.ConfigurationSection
 
@@ -73,7 +73,7 @@ class DialogFile {
     /**
      * 主体文字组中这一行包含的标签内容
      */
-    fun getOwnTheLineList(line: Int): MutableList<Text> {
+    fun getOwnTheLineList(line: Int): MutableList<TagText> {
         return ownTextAnimation!!.getTextContent(line)
     }
 
