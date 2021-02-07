@@ -187,16 +187,25 @@ class DialogHolo(
 
             if (frame >= tagText.delay) {
 //                MsgUtil.send("writeSpeed $writeSpeed   speed "+tagText.speed)
+                val content = tagText.contentList[textFrame]
                 if (writeSpeed >= tagText.speed) {
 
-                    contentList.add(index, tagText.contentList[textFrame])
+                    if (contentList.size < index) {
+                        MsgUtil.send("size "+contentList.size+"  index "+index)
+                        for (i in 0 until index) {
+                            contentList.add("")
+                        }
+                        contentList.add(index, content)
+                    }else {
+                        contentList.add(index, content)
+                    }
 //                    MsgUtil.send("add $index  "+tagText.contentList[textFrame])
 
                     frameWrite.textFrame++
                     frameWrite.writeSpeed = 0
 
                 }else {
-                    contentList.add(tagText.contentList[textFrame])
+                    contentList.add(content)
                     frameWrite.writeSpeed++
                 }
             }
@@ -205,6 +214,11 @@ class DialogHolo(
             isCancelsMap[line] = isCancels
         }
 
-        return contentList.toString()
+        var text = ""
+        contentList.forEach {
+            text += it
+        }
+
+        return text
     }
 }
