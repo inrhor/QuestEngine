@@ -21,11 +21,12 @@ class DialogHolo(
 
         // 主动态帧
         var frame = 0
-        var timeLong = 0
+//        var timeLong = 0
         val dialogFile = Dialog().getDialog(holo.holoID)!!
 
         val frameWriteMap = mutableMapOf<Int, MutableList<FrameWrite>>()
 //        val textContentMap = mutableMapOf<Int, MutableList<String>>()
+        val isCancelsMap = mutableMapOf<Int, MutableList<Boolean>>()
 
         for (line in 0 until dialogFile.ownTextContent!!.size) {
             val theLineFrameWriteList = mutableListOf<FrameWrite>()
@@ -46,17 +47,23 @@ class DialogHolo(
                     theLineTextAnimation(frame, )
                 }*/
 
+                if (dialogFile.ownTextContent!!.size == isCancelsMap.size) {
+                    cancel()
+                    return
+                }
+
+
                 // 一个全息所有行内容
                 val holoTextList = mutableListOf<String>()
 
                 for (line in 0 until dialogFile.ownTextContent!!.size) {
                     val theLineTagTextList = dialogFile.getOwnTheLineList(line)
-                    val theLineTimeLong = theLineAllTimeLong(theLineTagTextList)
-                    if (timeLong < theLineTimeLong) {
-                        timeLong = theLineTimeLong
-                    }
-                    holoTextList.add(theLineTextAnimation(line, frame, timeLong,
-                        theLineTagTextList, frameWriteMap/*, textContentMap*/))
+//                    val theLineTimeLong = theLineAllTimeLong(theLineTagTextList)
+//                    if (timeLong < theLineTimeLong) {
+//                        timeLong = theLineTimeLong
+//                    }
+                    holoTextList.add(theLineTextAnimation(line, frame,
+                        theLineTagTextList, frameWriteMap, isCancelsMap/*, textContentMap*/))
                 }
 
                 holo.textList = holoTextList
@@ -127,39 +134,39 @@ class DialogHolo(
     }
 
     // 这一行动态总时长
-    fun theLineAllTimeLong(tagTextList: MutableList<TagText>): Int {
+    /*fun theLineAllTimeLong(tagTextList: MutableList<TagText>): Int {
         var timeLong = 0
         var delay = 0
         tagTextList.forEach {
-            if (it.delay >= delay) {
-                delay = it.delay
+            if (it.timeLong >= timeLong) {
                 timeLong += it.timeLong
                 MsgUtil.send("timeLong $timeLong")
-            }else {
-                timeLong = it.timeLong+delay-it.delay
-                MsgUtil.send("asdasd timeLong  $timeLong")
+            }
+            if (it.delay > delay) {
+                delay = it.delay
             }
         }
-        return timeLong
-    }
+        return timeLong+delay
+    }*/
 
     // 这一行动态标签的动画实现
     fun theLineTextAnimation(
         line: Int,
         frame: Int,
-        timeLong: Int,
         tagTextList: MutableList<TagText>,
-        frameWriteMap: MutableMap<Int, MutableList<FrameWrite>>/*,
+        frameWriteMap: MutableMap<Int, MutableList<FrameWrite>>,
+        isCancelsMap: MutableMap<Int, MutableList<Boolean>>/*,
         textContentMap: MutableMap<Int, MutableList<String>>*/): String {
 
         // test
-        MsgUtil.send("timeLong $timeLong   frame $frame")
-        if (timeLong < frame) {
+        MsgUtil.send("   frame $frame")
+        /*if (timeLong < frame) {
             runnable!!.cancel()
             return ""
-        }
+        }*/
 
         val contentList = mutableListOf<String>()
+        val isCancels = mutableListOf<Boolean>()
 
         for (index in 0 until tagTextList.size) {
             val tagText = tagTextList[index]
@@ -173,6 +180,7 @@ class DialogHolo(
 //                MsgUtil.send("textFrame $textFrame   size $size")
                 contentList.add(tagText.contentList[size-1])
                 // test
+                isCancels.add(false)
                 MsgUtil.send("cont")
                 continue
             }
@@ -192,6 +200,9 @@ class DialogHolo(
                     frameWrite.writeSpeed++
                 }
             }
+        }
+        if (isCancels.isNotEmpty() and (isCancels.size == tagTextList.size)) {
+            isCancelsMap[line] = isCancels
         }
 
         return contentList.toString()

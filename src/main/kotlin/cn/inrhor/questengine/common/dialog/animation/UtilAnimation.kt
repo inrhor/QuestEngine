@@ -7,12 +7,12 @@ class UtilAnimation {
     fun getTimeLong(attributes: MutableList<String>): Int {
         // 帧数
         var i = 0
-        val delay = getValue(attributes[1], "delay").toInt()
+//        val delay = getValue(attributes[1], "delay").toInt()
         // 确定最终的延迟
-        var finalDelay = 0
-        if (delay > finalDelay) {
-            finalDelay = delay
-        }
+//        var finalDelay = 0
+//        if (delay > finalDelay) {
+//            finalDelay = delay
+//        }
         // 若是打字型则增加帧数
         if (attributes[0] == "write") {
             val speed = getValue(attributes[2], "speed").toInt()
@@ -22,7 +22,7 @@ class UtilAnimation {
             MsgUtil.send("speed  $speed text  $i  "+attributes[3]+"ilong "+colorNumber(attributes[3])+"  len "+textLong)
         }
         // 最终帧数
-        i += finalDelay
+//        i += finalDelay
         MsgUtil.send("iii  $i")
         return i
     }
