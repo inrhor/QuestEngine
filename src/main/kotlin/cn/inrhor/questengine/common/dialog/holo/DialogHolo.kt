@@ -25,18 +25,18 @@ class DialogHolo(
         val dialogFile = Dialog().getDialog(holo.holoID)!!
 
         val frameWriteMap = mutableMapOf<Int, MutableList<FrameWrite>>()
-        val textContentMap = mutableMapOf<Int, MutableList<String>>()
+//        val textContentMap = mutableMapOf<Int, MutableList<String>>()
 
         for (line in 0 until dialogFile.ownTextContent!!.size) {
             val theLineFrameWriteList = mutableListOf<FrameWrite>()
-            dialogFile.getOwnTheLineList(line).forEach {
-                val frameWrite = FrameWrite(0, it.speed)
+            repeat(dialogFile.getOwnTheLineList(line).size) {
+                val frameWrite = FrameWrite(0, 0)
                 theLineFrameWriteList.add(frameWrite)
             }
             frameWriteMap[line] = theLineFrameWriteList
 
-            val textContentList = mutableListOf<String>()
-            textContentMap[line] = textContentList
+//            val textContentList = mutableListOf<String>()
+//            textContentMap[line] = textContentList
         }
 
         runnable = object : BukkitRunnable() {
@@ -55,20 +55,20 @@ class DialogHolo(
                     if (timeLong < theLineTimeLong) {
                         timeLong = theLineTimeLong
                     }
-                    /*holoTextList.add(theLineTextAnimation(line, frame, timeLong,
-                        theLineTagTextList, frameWriteMap, textContentMap))*/
+                    holoTextList.add(theLineTextAnimation(line, frame, timeLong,
+                        theLineTagTextList, frameWriteMap/*, textContentMap*/))
                 }
 
                 holo.textList = holoTextList
                 holo.updateContent()
-                holo.textList.forEach {
+                /*holo.textList.forEach {
                     MsgUtil.send("list  $it")
-                }
+                }*/
 
                 frame++
             }
         }
-        (runnable as BukkitRunnable).runTaskTimer(QuestEngine.plugin, 0, 1L)
+        (runnable as BukkitRunnable).runTaskTimer(QuestEngine.plugin, 0, 3L)
 
         // lj，重写
         /*var frame = 0
@@ -129,8 +129,16 @@ class DialogHolo(
     // 这一行动态总时长
     fun theLineAllTimeLong(tagTextList: MutableList<TagText>): Int {
         var timeLong = 0
+        var delay = 0
         tagTextList.forEach {
-            timeLong += it.timeLong
+            if (it.delay >= delay) {
+                delay = it.delay
+                timeLong += it.timeLong
+                MsgUtil.send("timeLong $timeLong")
+            }else {
+                timeLong = it.timeLong+delay-it.delay
+                MsgUtil.send("asdasd timeLong  $timeLong")
+            }
         }
         return timeLong
     }
@@ -141,34 +149,48 @@ class DialogHolo(
         frame: Int,
         timeLong: Int,
         tagTextList: MutableList<TagText>,
-        frameWriteMap: MutableMap<Int, MutableList<FrameWrite>>,
-        textContentMap: MutableMap<Int, MutableList<String>>): String {
+        frameWriteMap: MutableMap<Int, MutableList<FrameWrite>>/*,
+        textContentMap: MutableMap<Int, MutableList<String>>*/): String {
 
+        // test
+        MsgUtil.send("timeLong $timeLong   frame $frame")
         if (timeLong < frame) {
             runnable!!.cancel()
             return ""
         }
 
-        val contentList = textContentMap[line]!!
+        val contentList = mutableListOf<String>()
 
         for (index in 0 until tagTextList.size) {
             val tagText = tagTextList[index]
             val frameWrite = frameWriteMap[line]!![index]
             val textFrame = frameWrite.textFrame
             val writeSpeed = frameWrite.writeSpeed
+            val size = tagText.contentList.size
 
-            if (textFrame >= tagText.contentList.size) {
+            if (textFrame >= size) {
+                // test
+//                MsgUtil.send("textFrame $textFrame   size $size")
+                contentList.add(tagText.contentList[size-1])
+                // test
+                MsgUtil.send("cont")
                 continue
             }
 
             if (frame >= tagText.delay) {
+//                MsgUtil.send("writeSpeed $writeSpeed   speed "+tagText.speed)
                 if (writeSpeed >= tagText.speed) {
 
                     contentList.add(index, tagText.contentList[textFrame])
+//                    MsgUtil.send("add $index  "+tagText.contentList[textFrame])
 
                     frameWrite.textFrame++
+                    frameWrite.writeSpeed = 0
 
-                }else frameWrite.writeSpeed++
+                }else {
+                    contentList.add(tagText.contentList[textFrame])
+                    frameWrite.writeSpeed++
+                }
             }
         }
 
