@@ -3,7 +3,7 @@ package cn.inrhor.questengine.common.dialog.animation
 import cn.inrhor.questengine.utlis.public.MsgUtil
 import java.util.regex.Pattern
 
-class Util {
+class UtilAnimation {
     fun getTimeLong(attributes: MutableList<String>): Int {
         // 帧数
         var i = 0

@@ -43,30 +43,30 @@ class TextAnimation(private val textContent: MutableList<String>) {
                 }
 
                 val abType = attributes[0]
-                val abDelay = Util().getValue(attributes[1], "delay").toInt()
+                val abDelay = UtilAnimation().getValue(attributes[1], "delay").toInt()
                 val textClass = TagText(abType, abDelay, tagIndex)
                 tagIndex++
-                textClass.timeLong = Util().getTimeLong(attributes)
+                textClass.timeLong = UtilAnimation().getTimeLong(attributes)
 
                 if (abType == "write") {
                     val abText = attributes[3]
-                    val abSpeed = Util().getValue(attributes[2], "speed").toInt()
+                    val abSpeed = UtilAnimation().getValue(attributes[2], "speed").toInt()
                     textClass.speed = abSpeed-1
 //                    var multiply = 0
                     var end = 2
                     for (index in 0..abText.length) {
                         // 截取前面字符
 //                        val end = multiply+Util().colorNumber(abText)
-                        if (Util().isColor(abText.substring(0, end))) {
+                        if (UtilAnimation().isColor(abText.substring(0, end))) {
                             end++
                             continue
                         }
 
                         val get = abText.substring(0, end)
 
-                        MsgUtil.send("check $get  "+Util().isColor(get)+"  end "+end)
+                        MsgUtil.send("check $get  "+UtilAnimation().isColor(get)+"  end "+end)
 
-                        if (!Util().isColor(get)) {
+                        if (!UtilAnimation().isColor(get)) {
                             textClass.contentList.add(abText.substring(0, end))
                             end++
                         }

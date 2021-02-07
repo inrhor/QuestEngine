@@ -2,9 +2,9 @@ package cn.inrhor.questengine.common.dialog.holo
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.dialog.Dialog
-import cn.inrhor.questengine.common.dialog.animation.Util
+import cn.inrhor.questengine.common.dialog.animation.TagText
+import cn.inrhor.questengine.common.dialog.animation.UtilAnimation
 import cn.inrhor.questengine.common.hologram.IHolo
-import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 
@@ -18,6 +18,25 @@ class DialogHolo(
 
     fun runRunnable() {
 
+        runnable = object : BukkitRunnable() {
+            // 主动态帧
+            var frame = 0
+            val dialogFile = Dialog().getDialog(holo.holoID)!!
+
+            override fun run() {
+
+                // 一个全息所有行内容
+                val holoTextList = mutableListOf<String>()
+                repeat(holo.textList.size) {
+                    holoTextList.add("")
+                }
+
+
+
+                frame++
+            }
+        }
+        (runnable as BukkitRunnable).runTaskTimer(QuestEngine.plugin, 0, 1L)
 
         // lj，重写
         /*var frame = 0
@@ -73,5 +92,19 @@ class DialogHolo(
                 holo.updateContent(0)
             }
         };(runnable as BukkitRunnable).runTaskTimer(QuestEngine.plugin, 0, 1L)*/
+    }
+
+    // 这一行动态总时长
+    fun theLineAllTimeLong(tagTextList: MutableList<TagText>): Int {
+        var timeLong = 0
+        tagTextList.forEach {
+            timeLong += it.timeLong
+        }
+        return timeLong
+    }
+
+    // 这一行动态标签的动画实现
+    fun theLineTextAnimation(frame: Int, tagTextList: MutableList<TagText>) {
+
     }
 }
