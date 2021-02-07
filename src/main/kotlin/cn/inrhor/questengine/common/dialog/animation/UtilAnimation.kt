@@ -63,19 +63,19 @@ class UtilAnimation {
         return false
     }
 
-    fun getAnimationText(tagTextList: MutableList<TagText>, frame: Int): String {
+    /*fun getAnimationText(tagTextList: MutableList<TagText>, frame: Int): String {
         val textContent = mutableListOf<String>()
         tagTextList.forEach {
             if (it.delay >= frame) {
-                textContent.add(it.contentList[it.textFrame])
-                MsgUtil.send("textFrame  "+it.textFrame)
+//                textContent.add(it.contentList[it.textFrame])
+//                MsgUtil.send("textFrame  "+it.textFrame)
             }
         }
         textContent.forEach {
             MsgUtil.send("look  $it")
         }
         return textContent.toString().replace("(?:\\[|null|\\]| +)", "")
-    }
+    }*/
 
     fun getValue(str: String, attribute: String) = str.replace("$attribute=", "")
 }

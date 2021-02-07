@@ -44,14 +44,14 @@ class TextAnimation(private val textContent: MutableList<String>) {
 
                 val abType = attributes[0]
                 val abDelay = UtilAnimation().getValue(attributes[1], "delay").toInt()
-                val textClass = TagText(abType, abDelay, tagIndex)
+                val tagText = TagText(abType, abDelay, tagIndex)
                 tagIndex++
-                textClass.timeLong = UtilAnimation().getTimeLong(attributes)
+                tagText.timeLong = UtilAnimation().getTimeLong(attributes)
 
                 if (abType == "write") {
                     val abText = attributes[3]
                     val abSpeed = UtilAnimation().getValue(attributes[2], "speed").toInt()
-                    textClass.speed = abSpeed-1
+                    tagText.speed = abSpeed-1
 //                    var multiply = 0
                     var end = 2
                     for (index in 0..abText.length) {
@@ -67,13 +67,13 @@ class TextAnimation(private val textContent: MutableList<String>) {
                         MsgUtil.send("check $get  "+UtilAnimation().isColor(get)+"  end "+end)
 
                         if (!UtilAnimation().isColor(get)) {
-                            textClass.contentList.add(abText.substring(0, end))
+                            tagText.contentList.add(abText.substring(0, end))
                             end++
                         }
 
                         if (abText.length == end-1) {
-                            if (!textTagList.contains(textClass)) {
-                                textTagList.add(textClass)
+                            if (!textTagList.contains(tagText)) {
+                                textTagList.add(tagText)
                             }
                             addTextMap(line, textTagList)
                             break
