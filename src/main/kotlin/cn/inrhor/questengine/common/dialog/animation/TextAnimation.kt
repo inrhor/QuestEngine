@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.common.dialog.animation
 
-import cn.inrhor.questengine.utlis.public.MsgUtil
 import java.util.regex.Pattern
 
 /**
@@ -46,7 +45,6 @@ class TextAnimation(private val textContent: MutableList<String>) {
                 val abDelay = UtilAnimation().getValue(attributes[1], "delay").toInt()
                 val tagText = TagText(abType, abDelay, tagIndex)
                 tagIndex++
-//                tagText.timeLong = UtilAnimation().getTimeLong(attributes)
 
                 if (abType == "write") {
                     val abText = attributes[3]
@@ -56,15 +54,12 @@ class TextAnimation(private val textContent: MutableList<String>) {
                     var end = 2
                     for (index in 0..abText.length) {
                         // 截取前面字符
-//                        val end = multiply+Util().colorNumber(abText)
                         if (UtilAnimation().isColor(abText.substring(0, end))) {
                             end++
                             continue
                         }
 
                         val get = abText.substring(0, end)
-
-                        MsgUtil.send("check $get  "+UtilAnimation().isColor(get)+"  end "+end)
 
                         if (!UtilAnimation().isColor(get)) {
                             tagText.contentList.add(abText.substring(0, end))

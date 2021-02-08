@@ -85,10 +85,8 @@ class IHolo(
      * 更新全息内容
      */
     fun updateContent() {
-        textEntityIDs.forEach {
-            for (line in 0 until textList.size) {
-                getPackets().updateDisplayName(viewers, it, textList[line])
-            }
+        for (i in 0 until textEntityIDs.size) {
+            getPackets().updateDisplayName(viewers, textEntityIDs[i], textList[i])
         }
     }
 

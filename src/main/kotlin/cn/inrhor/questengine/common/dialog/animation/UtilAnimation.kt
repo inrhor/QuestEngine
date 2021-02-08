@@ -1,44 +1,67 @@
 package cn.inrhor.questengine.common.dialog.animation
 
-import cn.inrhor.questengine.utlis.public.MsgUtil
 import java.util.regex.Pattern
 
 class UtilAnimation {
-    /*fun getTimeLong(attributes: MutableList<String>): Int {
-        // 帧数
-        var i = 0
-//        val delay = getValue(attributes[1], "delay").toInt()
-        // 确定最终的延迟
-//        var finalDelay = 0
-//        if (delay > finalDelay) {
-//            finalDelay = delay
-//        }
-        // 若是打字型则增加帧数
-        if (attributes[0] == "write") {
-            val speed = getValue(attributes[2], "speed").toInt()
-            // 根据字数增加帧数
-            val textLong = attributes[3].length
-            i = speed * (textLong - colorNumber(attributes[3]))
-            MsgUtil.send("speed  $speed text  $i  "+attributes[3]+"ilong "+colorNumber(attributes[3])+"  len "+textLong)
-        }
-        // 最终帧数
-//        i += finalDelay
-        MsgUtil.send("iii  $i")
-        return i
-    }*/
 
     /**
-     * 获取 &颜色 出现的次数
-     *
+     * 这一行动态标签的动画实现
      */
-    fun colorNumber(src: String): Int {
-        var count = 0
-        val pattern = Pattern.compile("&\\d|§\\d|&[a-zA-Z]|§[a-zA-Z]")
-        val matcher = pattern.matcher(src)
-        while (matcher.find()) {
-            count++
+    fun theLineTextAnimation(
+        line: Int,
+        frame: Int,
+        tagTextList: MutableList<TagText>,
+        frameWriteMap: MutableMap<Int, MutableList<FrameWrite>>,
+        isCancelsMap: MutableMap<Int, MutableList<Boolean>>): String {
+
+        val contentList = mutableListOf<String>()
+        val isCancels = mutableListOf<Boolean>()
+
+        for (index in 0 until tagTextList.size) {
+            val tagText = tagTextList[index]
+            val frameWrite = frameWriteMap[line]!![index]
+            val textFrame = frameWrite.textFrame
+            val writeSpeed = frameWrite.writeSpeed
+            val size = tagText.contentList.size
+
+            if (textFrame >= size) {
+                contentList.add(tagText.contentList[size-1])
+                isCancels.add(false)
+                continue
+            }
+
+            if (frame >= tagText.delay) {
+                val content = tagText.contentList[textFrame]
+                if (writeSpeed >= tagText.speed) {
+
+                    if (contentList.size < index) {
+                        for (i in 0 until index) {
+                            contentList.add("")
+                        }
+                        contentList.add(index, content)
+                    }else {
+                        contentList.add(index, content)
+                    }
+
+                    frameWrite.textFrame++
+                    frameWrite.writeSpeed = 0
+
+                }else {
+                    contentList.add(content)
+                    frameWrite.writeSpeed++
+                }
+            }
         }
-        return count*2
+        if (isCancels.isNotEmpty() and (isCancels.size == tagTextList.size)) {
+            isCancelsMap[line] = isCancels
+        }
+
+        var text = ""
+        contentList.forEach {
+            text += it
+        }
+
+        return text
     }
 
     fun isColor(str: String): Boolean {
@@ -62,20 +85,6 @@ class UtilAnimation {
         }
         return false
     }
-
-    /*fun getAnimationText(tagTextList: MutableList<TagText>, frame: Int): String {
-        val textContent = mutableListOf<String>()
-        tagTextList.forEach {
-            if (it.delay >= frame) {
-//                textContent.add(it.contentList[it.textFrame])
-//                MsgUtil.send("textFrame  "+it.textFrame)
-            }
-        }
-        textContent.forEach {
-            MsgUtil.send("look  $it")
-        }
-        return textContent.toString().replace("(?:\\[|null|\\]| +)", "")
-    }*/
 
     fun getValue(str: String, attribute: String) = str.replace("$attribute=", "")
 }

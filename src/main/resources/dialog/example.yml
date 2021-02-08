@@ -23,8 +23,8 @@ dialog1:
         #      <[flash][delay=多久后开始][闪亮类型的内容]>
         #      <[write][delay=多久后开始][speed=下个字间隔][打字类型的内容]>
         content:
-          - "<[write][delay=0][speed=10][&3&lQuest &f&lEngine  &c&l任&e&l务&a&l引擎]><[flash][delay=250][  &c&l任&e&l务&a&l引擎]>"
-          - ""
+          - "<[write][delay=10][speed=4][&3&lQuest &f&lEngine]><[write][delay=20][speed=3][&r   &c&l任&e&l务&a&l引擎]>"
+          - "<[write][delay=10][speed=5][&f&l面向异世界]>"
       # 物品组
       item:
         # 在 主体位置 基础上增加的值
