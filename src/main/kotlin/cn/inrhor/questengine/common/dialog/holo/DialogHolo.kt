@@ -2,10 +2,12 @@ package cn.inrhor.questengine.common.dialog.holo
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.dialog.Dialog
-import cn.inrhor.questengine.common.dialog.animation.FrameWrite
+import cn.inrhor.questengine.common.dialog.animation.text.FrameWrite
 import cn.inrhor.questengine.common.dialog.animation.UtilAnimation
 import cn.inrhor.questengine.common.hologram.IHolo
+import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
 
 class DialogHolo(
@@ -23,7 +25,8 @@ class DialogHolo(
         val dialogFile = Dialog().getDialog(holo.holoID)!!
 
         val frameWriteMap = mutableMapOf<Int, MutableList<FrameWrite>>()
-        val isCancelsMap = mutableMapOf<Int, MutableList<Boolean>>()
+        val isCancelsTextMap = mutableMapOf<Int, MutableList<Boolean>>()
+        val isCancelsItemMap = mutableMapOf<Int, MutableList<Boolean>>()
 
         for (line in 0 until dialogFile.ownTextContent!!.size) {
             val theLineFrameWriteList = mutableListOf<FrameWrite>()
@@ -34,6 +37,9 @@ class DialogHolo(
             frameWriteMap[line] = theLineFrameWriteList
         }
 
+        val ownTextSize = dialogFile.ownTextContent!!.size
+        val ownItemSize = dialogFile.ownItemContent!!.size
+
         runnable = object : BukkitRunnable() {
             override fun run() {
 
@@ -42,21 +48,36 @@ class DialogHolo(
                     return
                 }
 
-                if (dialogFile.ownTextContent!!.size == isCancelsMap.size) {
+                if ((ownTextSize == isCancelsTextMap.size) and
+                    (ownItemSize == isCancelsItemMap.size)) {
                     cancel()
                     return
                 }
 
-                // 一个全息所有行内容
+                // 一个全息所有行文字内容
                 val holoTextList = mutableListOf<String>()
+                // 一个全息所有行物品内容
+                val holoItemList = mutableListOf<ItemStack>()
 
-                for (line in 0 until dialogFile.ownTextContent!!.size) {
+                // Text
+                for (line in 0 until ownTextSize) {
                     val theLineTagTextList = dialogFile.getOwnTheLineList(line)
                     holoTextList.add(UtilAnimation().theLineTextAnimation(line, frame,
-                        theLineTagTextList, frameWriteMap, isCancelsMap/*, textContentMap*/))
+                        theLineTagTextList, frameWriteMap, isCancelsTextMap/*, textContentMap*/))
                 }
-
                 holo.textList = holoTextList
+
+                // Item
+                for (line in 0 until ownItemSize) {
+                    val dialogItem = dialogFile.getOwnTheLineItem(line)
+                    if (dialogItem.delay >= frame) {
+                        holoItemList.add(dialogItem.item)
+                    }else {
+                        holoItemList.add(ItemStack(Material.AIR))
+                    }
+                }
+                holo.itemList = holoItemList
+
                 holo.updateContent()
 
                 frame++

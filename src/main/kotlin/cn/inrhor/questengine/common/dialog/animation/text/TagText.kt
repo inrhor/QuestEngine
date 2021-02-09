@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.dialog.animation
+package cn.inrhor.questengine.common.dialog.animation.text
 
 /**
  * @param contentList 该动画标签的所有动态文字内容

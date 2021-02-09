@@ -1,5 +1,7 @@
 package cn.inrhor.questengine.common.dialog.animation
 
+import cn.inrhor.questengine.common.dialog.animation.text.FrameWrite
+import cn.inrhor.questengine.common.dialog.animation.text.TagText
 import java.util.regex.Pattern
 
 class UtilAnimation {

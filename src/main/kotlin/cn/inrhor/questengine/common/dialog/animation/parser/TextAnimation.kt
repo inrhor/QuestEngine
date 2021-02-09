@@ -1,11 +1,13 @@
-package cn.inrhor.questengine.common.dialog.animation
+package cn.inrhor.questengine.common.dialog.animation.parser
 
+import cn.inrhor.questengine.common.dialog.animation.text.TagText
+import cn.inrhor.questengine.common.dialog.animation.UtilAnimation
 import java.util.regex.Pattern
 
 /**
- * 对话配置传递的内容列表，此类处理动画并存储
+ * 对话配置传递的文本内容列表，此类处理动画并存储
  */
-class TextAnimation(private val textContent: MutableList<String>) {
+class TextAnimation(private val textContents: MutableList<String>) {
 
     /**
      * 行数 对应 动态字符表
@@ -16,7 +18,7 @@ class TextAnimation(private val textContent: MutableList<String>) {
 
     fun init() {
         var line = 0
-        textContent.forEach { a ->
+        textContents.forEach { a ->
             // 对每一行
 
             // 分割 取 独立标签
@@ -42,15 +44,22 @@ class TextAnimation(private val textContent: MutableList<String>) {
                 }
 
                 val abType = attributes[0]
-                val abDelay = UtilAnimation().getValue(attributes[1], "delay").toInt()
-                val tagText = TagText(abType, abDelay, tagIndex)
+                val abDelay = UtilAnimation()
+                    .getValue(attributes[1], "delay").toInt()
+                val tagText =
+                    TagText(
+                        abType,
+                        abDelay,
+                        tagIndex
+                    )
                 tagIndex++
 
                 if (abType == "write") {
                     val abText = attributes[3]
-                    val abSpeed = UtilAnimation().getValue(attributes[2], "speed").toInt()
+                    val abSpeed = UtilAnimation()
+                        .getValue(attributes[2], "speed").toInt()
+
                     tagText.speed = abSpeed-1
-//                    var multiply = 0
                     var end = 2
                     for (index in 0..abText.length) {
                         // 截取前面字符

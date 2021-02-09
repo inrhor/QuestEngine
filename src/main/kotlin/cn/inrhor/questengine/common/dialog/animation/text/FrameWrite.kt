@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.dialog.animation
+package cn.inrhor.questengine.common.dialog.animation.text
 
 /**
  *

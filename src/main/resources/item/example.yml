@@ -1,0 +1,10 @@
+# 物品ID
+item_1:
+  material: "APPLE"
+  displayName: "&a对话中的物品"
+  lore:
+    - "&f你可以实现物品模型"
+  customModelData: 1000
+item_2:
+  material: "STONE"
+  customModelData: 12345

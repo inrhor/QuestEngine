@@ -1,7 +1,9 @@
 package cn.inrhor.questengine.common.dialog
 
-import cn.inrhor.questengine.common.dialog.animation.TagText
-import cn.inrhor.questengine.common.dialog.animation.TextAnimation
+import cn.inrhor.questengine.common.dialog.animation.item.DialogItem
+import cn.inrhor.questengine.common.dialog.animation.parser.ItemParser
+import cn.inrhor.questengine.common.dialog.animation.text.TagText
+import cn.inrhor.questengine.common.dialog.animation.parser.TextAnimation
 import org.bukkit.configuration.ConfigurationSection
 
 class DialogFile {
@@ -19,6 +21,7 @@ class DialogFile {
     var ownItemContent: MutableList<String>? = null
 
     private var ownTextAnimation: TextAnimation? = null
+    private var ownItemAnimation: ItemParser? = null
 
     var frame: Int = -1
 
@@ -64,10 +67,13 @@ class DialogFile {
      * 处理动画到表中
      */
     fun animation() {
-        val textAnimation =
-            TextAnimation(ownTextContent!!)
+        val textAnimation = TextAnimation(ownTextContent!!)
         textAnimation.init()
         ownTextAnimation = textAnimation
+
+        val itemAnimation = ItemParser(ownItemContent!!)
+        itemAnimation.init()
+        ownItemAnimation = itemAnimation
     }
 
     /**
@@ -75,6 +81,13 @@ class DialogFile {
      */
     fun getOwnTheLineList(line: Int): MutableList<TagText> {
         return ownTextAnimation!!.getTextContent(line)
+    }
+
+    /**
+     * 主体物品组中这一行的对话物品
+     */
+    fun getOwnTheLineItem(line: Int): DialogItem {
+        return ownItemAnimation!!.getDialogItem(line)!!
     }
 
 }

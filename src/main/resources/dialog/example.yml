@@ -1,5 +1,5 @@
 # 对话ID
-dialog1:
+dialog_1:
   # 对话目标
   target: "nbt=dialog1"
   # 触发条件
@@ -14,10 +14,11 @@ dialog1:
       # 文字组
       text:
         # 在 主体位置 基础上增加的值
+        # 格式：[方向][乘数][高度]
         #      方向类型可选 left right behind
         #      乘数可正可负，越大距离越远
         #      高度可正可负，无需解释
-        addLocation: "[方向][乘数][高度]"
+        addLocation: "[right][1][1]"
         # 内容（时间均采用Tick）
         #      <[normal][delay=多久后开始][正常类型的内容]>
         #      <[flash][delay=多久后开始][闪亮类型的内容]>
@@ -28,11 +29,12 @@ dialog1:
       # 物品组
       item:
         # 在 主体位置 基础上增加的值
-        addLocation: "[方向][乘数][高度]"
+        # 格式：[方向][乘数][高度]
+        addLocation: "[left][1][1]"
         # 内容（每行仅一个物品）
         content:
-          - "在QuestEngine写好的物品库的物品ID"
-          - "app"
+          - "[delay=20][item_1]"
+          - "[delay=60][item_2]"
       # 对话时长，结束后弹出对话回复选项
       #      -1 为 自动根据文字组动态时长而判断
       frame: -1

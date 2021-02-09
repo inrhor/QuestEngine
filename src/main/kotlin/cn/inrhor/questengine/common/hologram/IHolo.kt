@@ -28,6 +28,7 @@ class IHolo(
 
     private val textEntityIDs: MutableList<Int> = mutableListOf()
     private val itemEntityIDs: MutableList<Int> = mutableListOf()
+    private val itemStackEntityIDs: MutableList<Int> = mutableListOf()
 
     /**
      * 初始化
@@ -52,6 +53,7 @@ class IHolo(
         IHologramManager().addHolo(holoID, this)
     }
 
+    // type 分别有 text(盔甲架) item(盔甲架) itemStack(物品)
     private fun addEntityID(type: String, index: Int) {
         val strID = "$holoID-$type-$index"
         val entityID = strID.hashCode()
@@ -64,6 +66,9 @@ class IHolo(
             }
             "item" -> {
                 itemEntityIDs.add(entityID)
+            }
+            "itemStack" -> {
+                itemStackEntityIDs.add(entityID)
             }
             else -> {
                 MsgUtil.send("null type")
@@ -87,6 +92,9 @@ class IHolo(
     fun updateContent() {
         for (i in 0 until textEntityIDs.size) {
             getPackets().updateDisplayName(viewers, textEntityIDs[i], textList[i])
+        }
+        for (i in 0 until itemEntityIDs.size) {
+            getPackets().updatePassengers(viewers, itemEntityIDs[i], itemStackEntityIDs[i])
         }
     }
 
@@ -129,6 +137,10 @@ class IHolo(
         sendHolo(players, "item")
     }
 
+    private fun sendItemStack(players: MutableSet<Player>) {
+        sendHolo(players, "itemStack")
+    }
+
     private fun sendHolo(players: MutableSet<Player>,
                              type: String) {
         /*if (holoEntityIDMap.containsKey(id)) {
@@ -157,10 +169,11 @@ class IHolo(
                 getPackets().initAS(players, it, showName = false, isSmall = true, marker = true)
                 if (itemList.isNotEmpty() && itemList.size > index) {
                     // 生成物品实体
-                    val itemInt = Random().nextInt()
-                    getPackets().spawnItem(players, itemInt, entityLoc, itemList[index])
+//                    val itemInt = Random().nextInt()
+//                    getPackets().spawnItem(players, itemInt, entityLoc, itemList[index])
+
                     // 物品实体骑乘到盔甲架
-                    getPackets().updatePassengers(players, it, itemInt)
+                    getPackets().updatePassengers(players, it, itemStackInt)
                 } else return
             }
 
