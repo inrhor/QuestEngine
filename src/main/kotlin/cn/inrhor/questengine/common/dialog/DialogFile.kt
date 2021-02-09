@@ -5,6 +5,7 @@ import cn.inrhor.questengine.common.dialog.animation.parser.ItemParser
 import cn.inrhor.questengine.common.dialog.animation.text.TagText
 import cn.inrhor.questengine.common.dialog.animation.parser.TextAnimation
 import org.bukkit.configuration.ConfigurationSection
+import org.bukkit.inventory.ItemStack
 
 class DialogFile {
 
@@ -88,6 +89,13 @@ class DialogFile {
      */
     fun getOwnTheLineItem(line: Int): DialogItem {
         return ownItemAnimation!!.getDialogItem(line)!!
+    }
+
+    /**
+     * 主体物品组中的对话物品
+     */
+    fun getOwnDialogItemList(): MutableList<ItemStack> {
+        return ownItemAnimation!!.getDialogItemList()
     }
 
 }

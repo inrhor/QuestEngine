@@ -97,7 +97,10 @@ class IHolo(
             getPackets().updateDisplayName(viewers, textEntityIDs[i], textList[i])
         }
         for (i in 0 until itemEntityIDs.size) {
-            getPackets().updatePassengers(viewers, itemEntityIDs[i], itemStackEntityIDs[i])
+            getPackets().updateEntityMetadata(
+                viewers,
+                itemStackEntityIDs[i],
+                getPackets().getMetaEntityItemStack(itemList[i]))
         }
     }
 
@@ -170,18 +173,26 @@ class IHolo(
                 }else return
             }else {
                 getPackets().initAS(players, it, showName = false, isSmall = true, marker = true)
-                if (itemList.isNotEmpty() && itemList.size > index) {
-                    // 生成物品实体
+//                if (itemList.isNotEmpty() && itemList.size > index) {
+                    /*// 生成物品实体
                     val itemStackInt = itemStackEntityIDs[index]
                     getPackets().spawnItem(players, itemStackInt, entityLoc, itemList[index])
 
                     // 物品实体骑乘到盔甲架
-                    getPackets().updatePassengers(players, it, itemStackInt)
-                } else return
+                    getPackets().updatePassengers(players, it, itemStackInt)*/
+//                } else return
             }
 
             index++
         }
+    }
+
+    fun spawnItem(line: Int, loc: Location) {
+        val itemStackInt = itemStackEntityIDs[line]
+        getPackets().spawnItem(viewers, itemStackInt, loc, itemList[line])
+
+        // 物品实体骑乘到盔甲架
+        getPackets().updatePassengers(viewers, itemEntityIDs[line], itemStackInt)
     }
 
     private fun getPackets(): NMS {

@@ -5,9 +5,7 @@ import cn.inrhor.questengine.api.dialog.Dialog
 import cn.inrhor.questengine.common.dialog.animation.text.FrameWrite
 import cn.inrhor.questengine.common.dialog.animation.UtilAnimation
 import cn.inrhor.questengine.common.hologram.IHolo
-import org.bukkit.Material
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
 
 class DialogHolo(
@@ -56,8 +54,6 @@ class DialogHolo(
 
                 // 一个全息所有行文字内容
                 val holoTextList = mutableListOf<String>()
-                // 一个全息所有行物品内容
-                val holoItemList = mutableListOf<ItemStack>()
 
                 // Text
                 for (line in 0 until ownTextSize) {
@@ -70,14 +66,11 @@ class DialogHolo(
                 // Item
                 for (line in 0 until ownItemSize) {
                     val dialogItem = dialogFile.getOwnTheLineItem(line)
-                    if (dialogItem.delay >= frame) {
-                        holoItemList.add(dialogItem.item)
+                    if (dialogItem.delay == frame) {
+                        holo.spawnItem(line, holo.itemLoc)
                         isCancelsItemMap[line] = false
-                    }else {
-                        holoItemList.add(ItemStack(Material.AIR))
                     }
                 }
-                holo.itemList = holoItemList
 
                 holo.updateContent()
 

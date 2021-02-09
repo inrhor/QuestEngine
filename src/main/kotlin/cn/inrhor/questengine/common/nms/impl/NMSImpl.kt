@@ -53,6 +53,12 @@ class NMSImpl : NMS() {
         sendPacket(player, PacketPlayOutEntityDestroy(entityId))
     }
 
+    override fun destroyEntity(players: MutableSet<Player>, entityId: Int) {
+        players.forEach{
+            destroyEntity(it, entityId)
+        }
+    }
+
     override fun updateEquipmentItem(players: MutableSet<Player>, entityId: Int, itemStack: ItemStack) {
         if (version >= 11600) {
             sendPacket(

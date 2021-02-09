@@ -2,8 +2,8 @@ package cn.inrhor.questengine.common.dialog.animation.parser
 
 import cn.inrhor.questengine.common.dialog.animation.UtilAnimation
 import cn.inrhor.questengine.common.dialog.animation.item.DialogItem
-import cn.inrhor.questengine.common.dialog.animation.text.TagText
 import cn.inrhor.questengine.common.item.ItemManager
+import org.bukkit.inventory.ItemStack
 import java.util.regex.Pattern
 
 /**
@@ -15,7 +15,7 @@ class ItemParser(private val itemContents: MutableList<String>) {
      * 列表包含的物品内容
      * 每一行仅一个物品
      */
-    private var itemList = mutableListOf<DialogItem>()
+    private var dialogItemList = mutableListOf<DialogItem>()
 
     fun init() {
         for (line in 0 until this.itemContents.size) {
@@ -35,7 +35,7 @@ class ItemParser(private val itemContents: MutableList<String>) {
                 .getValue(attributes[0], "delay").toInt()
             val item = ItemManager().get(itemID)!!.item!!
             val dialogItem = DialogItem(item, delay)
-            itemList.add(dialogItem)
+            dialogItemList.add(dialogItem)
         }
     }
 
@@ -43,7 +43,16 @@ class ItemParser(private val itemContents: MutableList<String>) {
      * 根据行数获取对话物品
      */
     fun getDialogItem(line: Int): DialogItem? {
-        if (itemList.size > line) return itemList[line]
+        if (dialogItemList.size > line) return dialogItemList[line]
         return null
+    }
+
+    /**
+     * 获取物品列表
+     */
+    fun getDialogItemList(): MutableList<ItemStack> {
+        val itemList = mutableListOf<ItemStack>()
+        dialogItemList.forEach { itemList.add(it.item) }
+        return itemList
     }
 }

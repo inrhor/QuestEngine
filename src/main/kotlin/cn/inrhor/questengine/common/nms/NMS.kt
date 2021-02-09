@@ -26,6 +26,11 @@ abstract class NMS {
     abstract fun destroyEntity(player: Player, entityId: Int)
 
     /**
+     * 删除实体
+     */
+    abstract fun destroyEntity(players: MutableSet<Player>, entityId: Int)
+
+    /**
      * 更新名称
      */
     abstract fun updateDisplayName(players: MutableSet<Player>, entityId: Int, name: String)
