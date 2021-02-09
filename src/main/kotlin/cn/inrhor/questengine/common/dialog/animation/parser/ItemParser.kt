@@ -25,8 +25,7 @@ class ItemParser(private val itemContents: MutableList<String>) {
             while (attribute.find()) {
                 attributes.add(attribute.group(1))
             }
-            val itemID = UtilAnimation()
-                .getValue(attributes[1], "item")
+            val itemID = attributes[1]
             if (!ItemManager().exist(itemID)) {
                 // say
                 continue

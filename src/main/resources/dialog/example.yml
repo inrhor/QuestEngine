@@ -33,8 +33,8 @@ dialog_1:
         addLocation: "[left][1][1]"
         # 内容（每行仅一个物品）
         content:
-          - "[delay=20][item=item_1]"
-          - "[delay=60][item=item_2]"
+          - "[delay=20][item_1]"
+          - "[delay=60][item_2]"
       # 对话时长，结束后弹出对话回复选项
       #      -1 为 自动根据文字组动态时长而判断
       frame: -1
