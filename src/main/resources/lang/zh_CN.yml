@@ -3,8 +3,9 @@ LOADER:
     - "&7&l[ &c&li &7&l]&r  ┝  &3正在加载插件  &f{0}"
     - "&7&l[ &c&li &7&l]&r  ┝  &3当前插件版本  &f{1}"
     - "&7&l[ &c&li &7&l]&r  ┝  &3选择语言文本  &f{2}"
+  TIME_COST: "{0}&r 所有配置载入完成，耗时 &8{1}ms"
 DIALOG:
-  NO_FILES: "{0}&r &6dialog &7文件夹&c不存在，&7开始创建 &6dialog &7文件夹"
+  NO_FILES: "{0}&r &6dialog &8文件夹&c不存在，&8开始创建 &6dialog &8文件夹"
   EMPTY_CONTENT: "{0}&r &6{1} &c没有内容或标准错误"
-  EXIST_DIALOG_ID: "{0}&r &6{1} &7已有相同已注册的对话ID"
+  EXIST_DIALOG_ID: "{0}&r &6{1} &8已有相同已注册的对话ID"
   NO_EXIST_DIALOG_ID: "{0}&r &6{1} &c不存在该对话ID"
