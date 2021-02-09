@@ -14,7 +14,7 @@ class UtilAnimation {
         frame: Int,
         tagTextList: MutableList<TagText>,
         frameWriteMap: MutableMap<Int, MutableList<FrameWrite>>,
-        isCancelsMap: MutableMap<Int, MutableList<Boolean>>): String {
+        isCancelTextsMap: MutableMap<Int, MutableList<Boolean>>): String {
 
         val contentList = mutableListOf<String>()
         val isCancels = mutableListOf<Boolean>()
@@ -55,7 +55,7 @@ class UtilAnimation {
             }
         }
         if (isCancels.isNotEmpty() and (isCancels.size == tagTextList.size)) {
-            isCancelsMap[line] = isCancels
+            isCancelTextsMap[line] = isCancels
         }
 
         var text = ""

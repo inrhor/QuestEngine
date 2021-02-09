@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.dialog.animation.parser
 
+import cn.inrhor.questengine.common.dialog.animation.UtilAnimation
 import cn.inrhor.questengine.common.dialog.animation.item.DialogItem
 import cn.inrhor.questengine.common.dialog.animation.text.TagText
 import cn.inrhor.questengine.common.item.ItemManager
@@ -24,12 +25,14 @@ class ItemParser(private val itemContents: MutableList<String>) {
             while (attribute.find()) {
                 attributes.add(attribute.group(1))
             }
-            val itemID = attributes[1]
+            val itemID = UtilAnimation()
+                .getValue(attributes[1], "item")
             if (!ItemManager().exist(itemID)) {
                 // say
                 continue
             }
-            val delay = attributes[0].toInt()
+            val delay = UtilAnimation()
+                .getValue(attributes[0], "delay").toInt()
             val item = ItemManager().get(itemID)!!.item!!
             val dialogItem = DialogItem(item, delay)
             itemList.add(dialogItem)

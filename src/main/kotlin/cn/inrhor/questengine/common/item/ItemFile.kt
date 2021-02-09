@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.item
 
-import io.izzel.taboolib.internal.xseries.XMaterial
 import io.izzel.taboolib.util.item.ItemBuilder
+import org.bukkit.Material
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemStack
 
@@ -15,7 +15,7 @@ class ItemFile {
             return
         }
         this.itemID = config.name
-        val material = XMaterial.valueOf(config.getString("material")!!)
+        val material = Material.valueOf(config.getString("material")!!)
         val displayName = config.getString("displayName")
         val lore = config.getStringList("lore")
         val customModelData = config.getInt("customModelData")

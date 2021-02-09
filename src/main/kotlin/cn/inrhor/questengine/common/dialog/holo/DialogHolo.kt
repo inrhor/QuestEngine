@@ -26,7 +26,7 @@ class DialogHolo(
 
         val frameWriteMap = mutableMapOf<Int, MutableList<FrameWrite>>()
         val isCancelsTextMap = mutableMapOf<Int, MutableList<Boolean>>()
-        val isCancelsItemMap = mutableMapOf<Int, MutableList<Boolean>>()
+        val isCancelsItemMap = mutableMapOf<Int, Boolean>()
 
         for (line in 0 until dialogFile.ownTextContent!!.size) {
             val theLineFrameWriteList = mutableListOf<FrameWrite>()
@@ -72,6 +72,7 @@ class DialogHolo(
                     val dialogItem = dialogFile.getOwnTheLineItem(line)
                     if (dialogItem.delay >= frame) {
                         holoItemList.add(dialogItem.item)
+                        isCancelsItemMap[line] = false
                     }else {
                         holoItemList.add(ItemStack(Material.AIR))
                     }

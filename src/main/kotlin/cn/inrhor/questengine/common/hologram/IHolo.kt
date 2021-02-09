@@ -7,7 +7,6 @@ import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.util.*
 
 class IHolo(
     var holoID: String,
@@ -40,11 +39,15 @@ class IHolo(
             addEntityID("text", it)
         }
         repeat(itemList.size) {
+            addEntityID("itemStack", it)
+        }
+        repeat(itemList.size) {
             addEntityID("item", it)
         }
 
         sendTextHolo(viewers)
         sendItemHolo(viewers)
+
         val dialogHolo = DialogHolo(this, viewers)
         dialogHolo.runRunnable()
 
@@ -169,8 +172,8 @@ class IHolo(
                 getPackets().initAS(players, it, showName = false, isSmall = true, marker = true)
                 if (itemList.isNotEmpty() && itemList.size > index) {
                     // 生成物品实体
-//                    val itemInt = Random().nextInt()
-//                    getPackets().spawnItem(players, itemInt, entityLoc, itemList[index])
+                    val itemStackInt = itemStackEntityIDs[index]
+                    getPackets().spawnItem(players, itemStackInt, entityLoc, itemList[index])
 
                     // 物品实体骑乘到盔甲架
                     getPackets().updatePassengers(players, it, itemStackInt)
