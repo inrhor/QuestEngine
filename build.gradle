@@ -19,6 +19,7 @@ repositories {
     maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
     maven { url 'https://rayzr.dev/repo/' }
     maven { url "http://repo.dakanilabs.com/repository/public/" }
+    maven { url "http://repo.citizensnpcs.co/"}
 }
 
 dependencies {
@@ -28,6 +29,8 @@ dependencies {
     compile 'io.izzel.taboolib:TabooLib:5.54:all'
     compile 'io.izzel.taboolib:TabooLibLoader:2.11:all'
     compile 'me.clip:placeholderapi:2.10.7'
+    compile 'ink.ptms.adyeshach:Adyeshach:1.0.4'
+    compile 'net.citizensnpcs:citizensapi:2.0.27-SNAPSHOT'
     shadow fileTree(dir: 'libs', includes: ['*.jar'])
 }
 

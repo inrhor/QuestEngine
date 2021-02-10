@@ -1,0 +1,25 @@
+# 任务ID
+questID: "quest_1"
+# 任务名称
+name: "采集农作物任务"
+# 从哪个主线任务开始，此为主线任务ID
+startMainQuestID: "main_quest_1"
+# 任务人员模式
+# 可选如下
+#   personal  单人
+#   team  协作
+mode: "personal"
+# 关于接受任务设置
+accept:
+  # 需要满足条件数，-1为多种条件，0为无条件
+  check: -1
+  # 条件
+  condition:
+    - "permission=quest.crop.1"
+    - "%vault_eco_balance%>100"
+# 关于任务失败设置，满足条件自动放弃
+failure:
+  check: 2
+  condition:
+    - "%player_level%<10"
+    - "%vault_eco_balance%<100"
