@@ -24,4 +24,10 @@ object KetherHandler {
         } as Boolean
     }
 
+    fun getString(player: Player, script: String): String {
+        return KetherShell.eval(script) {
+            this.sender = player
+        } as String
+    }
+
 }
