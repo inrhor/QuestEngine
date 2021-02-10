@@ -11,15 +11,18 @@ startMainQuestID: "main_quest_1"
 mode: "personal"
 # 关于接受任务设置
 accept:
-  # 需要满足条件数，-1为多种条件，0为无条件
+  # 需要满足条件数
+  #   -1 为全部条件
+  #   2 为两个条件
+  #   无 则 0 或 condition 留空
   check: -1
   # 条件
   condition:
-    - "permission=quest.crop.1"
-    - "%vault_eco_balance%>100"
+    - "permission *quest.crop.1"
+    - ""
 # 关于任务失败设置，满足条件自动放弃
 failure:
   check: 2
   condition:
-    - "%player_level%<10"
-    - "%vault_eco_balance%<100"
+    - ""
+    - ""
