@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack
 class DialogFile {
 
     var dialogID: String? = null
-    var target: String? = null
+    var npcID: String? = null
     var condition: MutableList<String>? = null
 
     var ownLocation: String? = null
@@ -27,7 +27,7 @@ class DialogFile {
     var frame: Int = -1
 
     fun init(config: ConfigurationSection) {
-        if (!config.contains("target")) {
+        if (!config.contains("npcID")) {
             return
         }
         if (!config.contains("condition")) {
@@ -50,7 +50,7 @@ class DialogFile {
             return
         }
         this.dialogID = config.name
-        this.target = config.getString("target")
+        this.npcID = config.getString("npcID")
         this.condition = config.getStringList("condition")
         this.ownLocation = config.getString(ownSec+"location")
         this.ownTextAddLocation = config.getString(ownSec+"text.addLocation")

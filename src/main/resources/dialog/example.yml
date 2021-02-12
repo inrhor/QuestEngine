@@ -1,10 +1,10 @@
 # 对话ID
 dialog_1:
-  # 对话目标
-  target: "nbt=dialog1"
-  # 触发条件
+  # 交互NPC
+  npcID: "test"
+  # 对话需要满足的触发条件 Kether
   condition:
-    - "questTag=questID_1"
+    - "check qeTag *questID_1"
   # 关于全息对话
   dialog:
     # 对话主体

@@ -16,7 +16,7 @@ accept:
   #   2 为两个条件
   #   无 则 0 或 condition 留空
   check: -1
-  # 条件
+  # 条件 Kether
   condition:
     - "permission *quest.crop.1"
     - "check *inrhor is papi *%player_name"
