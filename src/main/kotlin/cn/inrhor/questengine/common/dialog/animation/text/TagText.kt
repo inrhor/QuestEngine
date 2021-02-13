@@ -9,8 +9,8 @@ package cn.inrhor.questengine.common.dialog.animation.text
  */
 class TagText(var contentList: MutableList<String>, var type: String, val delay: Int,
               var speed: Int, var tagIndex: Int) {
-    constructor(type: String, delay: Int, tagIndex: Int):
-            this(mutableListOf(), type, delay, 0, tagIndex)
+    constructor(type: String, delay: Int, speed: Int, tagIndex: Int):
+            this(mutableListOf(), type, delay, speed, tagIndex)
     constructor(contentList: MutableList<String>, type: String, delay: Int, tagIndex: Int):
             this(contentList, type, delay, 0, tagIndex)
 }

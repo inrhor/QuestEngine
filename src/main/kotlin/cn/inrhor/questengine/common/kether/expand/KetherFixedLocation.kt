@@ -2,11 +2,9 @@ package cn.inrhor.questengine.common.kether.expand
 
 import cn.inrhor.questengine.common.dialog.location.FixedLocation
 import io.izzel.taboolib.kotlin.kether.KetherError
-import io.izzel.taboolib.kotlin.kether.KetherParser
 import io.izzel.taboolib.kotlin.kether.ScriptParser
 import io.izzel.taboolib.kotlin.kether.common.api.QuestAction
 import io.izzel.taboolib.kotlin.kether.common.api.QuestContext
-import io.izzel.taboolib.kotlin.kether.common.loader.types.ArgTypes
 import java.util.concurrent.CompletableFuture
 
 class KetherFixedLocation(
@@ -28,7 +26,6 @@ class KetherFixedLocation(
     }
 
     companion object {
-        @KetherParser(["fixedLocation", "fLoc"], namespace = "QuestEngine")
         fun parser() = ScriptParser.parser {
             val offset = when (it.nextToken().toLowerCase()) {
                 "left" -> -90F
@@ -36,8 +33,8 @@ class KetherFixedLocation(
                 "behind" -> 180F
                 else -> throw KetherError.CUSTOM.create("未知方向类型")
             }
-            val multiply = it.next(ArgTypes.DOUBLE)
-            val height = it.next(ArgTypes.DOUBLE)
+            val multiply = it.nextDouble()
+            val height = it.nextDouble()
             KetherFixedLocation(offset, multiply, height)
         }
     }

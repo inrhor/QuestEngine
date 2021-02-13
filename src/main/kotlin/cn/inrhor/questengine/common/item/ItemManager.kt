@@ -60,4 +60,6 @@ class ItemManager {
      * 获取物品
      */
     fun get(itemID: String) = itemFileMap[itemID]
+
+    fun clearMap() = itemFileMap.clear()
 }

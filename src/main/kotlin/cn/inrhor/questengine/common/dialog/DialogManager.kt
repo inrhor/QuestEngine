@@ -49,4 +49,9 @@ class DialogManager {
      * 获取对话对象
      */
     fun get(dialogID: String) = dialogFileMap[dialogID]
+
+    /**
+     * 清空对话对象Map
+     */
+    fun clearMap() = dialogFileMap.clear()
 }

@@ -3,6 +3,7 @@ package cn.inrhor.questengine.common.dialog
 import cn.inrhor.questengine.common.dialog.animation.parser.ItemParser
 import cn.inrhor.questengine.common.dialog.animation.parser.TextAnimation
 import cn.inrhor.questengine.common.kether.KetherHandler
+import cn.inrhor.questengine.utlis.public.MsgUtil
 import cn.inrhor.questengine.utlis.public.UseString
 import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.configuration.file.YamlConfiguration
@@ -47,6 +48,7 @@ class DialogFile {
             val npcID = cfs.getString("npcID")!!
             val condition = cfs.getStringList("condition")
             val ownFixedLoc = KetherHandler.evalFixedLoc(cfs.getString(ownSec+"location")!!)
+            MsgUtil.send("loc "+ownFixedLoc.offset+"  "+ownFixedLoc.multiply+"  "+ownFixedLoc.height)
             val ownTextFixedLoc = KetherHandler.evalFixedLoc(cfs.getString(ownSec+"text.addLocation")!!)
             val ownTextInitContent = cfs.getStringList(ownSec+"text.content")
             val ownItemFixedLoc = KetherHandler.evalFixedLoc(cfs.getString(ownSec+"item.addLocation")!!)

@@ -9,6 +9,6 @@ object QuestEngine : Plugin() {
     @TInject(locale = "setting.lang")
     lateinit var config : TConfig
 
-    @TInject(state = TInject.State.STARTING, init = "init")
+    @TInject(state = TInject.State.STARTING, init = "init", cancel = "cancel")
     lateinit var loader : PluginLoader
 }

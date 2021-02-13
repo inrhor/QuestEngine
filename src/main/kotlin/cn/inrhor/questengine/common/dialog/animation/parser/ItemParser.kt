@@ -1,10 +1,8 @@
 package cn.inrhor.questengine.common.dialog.animation.parser
 
-import cn.inrhor.questengine.common.dialog.animation.UtilAnimation
 import cn.inrhor.questengine.common.dialog.animation.item.DialogItem
-import cn.inrhor.questengine.common.item.ItemManager
+import cn.inrhor.questengine.common.kether.KetherHandler
 import org.bukkit.inventory.ItemStack
-import java.util.regex.Pattern
 
 /**
  * 对话配置传递的物品内容列表，此类做解析并存储
@@ -19,22 +17,11 @@ class ItemParser(private val itemContents: MutableList<String>) {
 
     fun init() {
         for (line in 0 until this.itemContents.size) {
-            val pAttribute = Pattern.compile("\\[(.*?)]")
-            val attribute = pAttribute.matcher(this.itemContents[line])
-            val attributes = mutableListOf<String>()
-            while (attribute.find()) {
-                attributes.add(attribute.group(1))
+            val script = this.itemContents[line]
+            if (script.startsWith("itemNormal")) {
+                val dialogItem = KetherHandler.eval(script) as DialogItem
+                dialogItemList.add(dialogItem)
             }
-            val itemID = attributes[1]
-            if (!ItemManager().exist(itemID)) {
-                // say
-                continue
-            }
-            val delay = UtilAnimation()
-                .getValue(attributes[0], "delay").toInt()
-            val item = ItemManager().get(itemID)!!.item!!
-            val dialogItem = DialogItem(item, delay)
-            dialogItemList.add(dialogItem)
         }
     }
 

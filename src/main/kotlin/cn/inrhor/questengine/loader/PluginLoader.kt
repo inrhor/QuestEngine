@@ -2,6 +2,7 @@ package cn.inrhor.questengine.loader
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.common.dialog.DialogManager
+import cn.inrhor.questengine.common.dialog.animation.parser.TextAnimation
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.utlis.public.UseString
 import io.izzel.taboolib.module.locale.TLocale
@@ -20,6 +21,30 @@ class PluginLoader {
             }
             TLocale.sendToConsole("LOADER.TIME_COST", UseString.pluginTag, timeCost)
         })
+    }
+
+    private var reloading = false
+
+    fun cancel() {
+        Bukkit.getScheduler().cancelTasks(QuestEngine.plugin)
+        clearMap()
+        if (!reloading) {
+            // 保存数据
+        }
+    }
+
+    fun doReload() {
+        if (reloading) {
+            throw RuntimeException("reloading")
+        }
+        reloading = true
+        clearMap()
+        reloading = false
+    }
+
+    fun clearMap() {
+        DialogManager().clearMap()
+        ItemManager().clearMap()
     }
 
 }

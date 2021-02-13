@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.dialog.animation.parser
 
 import cn.inrhor.questengine.common.dialog.animation.text.TagText
 import cn.inrhor.questengine.common.dialog.animation.UtilAnimation
+import cn.inrhor.questengine.common.kether.KetherHandler
 import java.util.regex.Pattern
 
 /**
@@ -33,34 +34,20 @@ class TextAnimation(private val textContents: MutableList<String>) {
 
             // 对独立标签而言
             while (indTag.find()) {
+                val script = indTag.group(1)
+                if (indTag.group(1).startsWith("iHoloWrite")) {
+                    val holoWrite = KetherHandler.evalHoloWrite(script)
+                    val tagText =
+                        TagText(
+                            "write",
+                            holoWrite.delay,
+                            holoWrite.speedWrite-1,
+                            tagIndex
+                        )
+                    tagIndex++
 
-                // 分割 取 内容的属性
-                val pAttribute = Pattern.compile("\\[(.*?)]")
-                val attribute = pAttribute.matcher(indTag.group())
-
-                val attributes = mutableListOf<String>()
-                while (attribute.find()) {
-                    attributes.add(attribute.group(1))
-                }
-
-                val abType = attributes[0]
-                val abDelay = UtilAnimation()
-                    .getValue(attributes[1], "delay").toInt()
-                val tagText =
-                    TagText(
-                        abType,
-                        abDelay,
-                        tagIndex
-                    )
-                tagIndex++
-
-                if (abType == "write") {
-                    val abText = attributes[3]
-                    val abSpeed = UtilAnimation()
-                        .getValue(attributes[2], "speed").toInt()
-
-                    tagText.speed = abSpeed-1
                     var end = 2
+                    val abText = holoWrite.text
                     for (index in 0..abText.length) {
                         // 截取前面字符
                         if (UtilAnimation().isColor(abText.substring(0, end))) {

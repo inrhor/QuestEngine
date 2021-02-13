@@ -2,7 +2,7 @@
 dialog_1:
   # 交互NPC
   npcID: "test"
-  # 对话需要满足的触发条件 Kether
+  # 对话需要满足的触发条件
   condition:
     - "check qeTag *questID_1"
   # 关于全息对话
@@ -21,16 +21,17 @@ dialog_1:
         # 在 主体位置 基础上增加的值
         addLocation: "fixedLocation left 1.0 1.0"
         # 内容（时间均采用Tick）
+        #   iHoloWrite 延迟 打字速度 内容
         content:
-          - "iHoloWrite *10,4,'&3&lQuest &f&lEngine' iHoloWrite *20,3,'&r   &c&l任&e&l务&a&l引擎'"
-          - "iHoloWrite *10,5,'&f&l面向异世界的任务系统'"
+          - "<iHoloWrite 10 4 '&3&lQuest &f&lEngine'><iHoloWrite 20 3 '&r   &c&l任&e&l务&a&l引擎'>"
+          - "<iHoloWrite 10 5 '&f&l面向异世界的任务系统'>"
       # 物品组
       item:
         addLocation: "fixedLocation left 1.0 1.0"
         # 内容（每行仅一个物品）
         content:
-          - "[delay=20][item_1]"
-          - "[delay=60][item_2]"
+          - "itemNormal 20 item_1"
+          - "itemNormal 60 item_2"
       # 对话时长，结束后弹出对话回复选项
       #      -1 为 自动根据文字组动态时长而判断
       frame: -1
@@ -40,28 +41,28 @@ dialog_1:
       1:
         # 文字组
         text:
-          addLocation: "[方向][乘数][高度]"
+          addLocation: "fixedLocation left 1.0 1.0"
           content:
             - "&c&l牛逼！！！"
             - "&f&l666666"
         # 物品组
         item:
           # 在 主体位置 基础上增加的值
-          addLocation: "[方向][乘数][高度]"
+          addLocation: "fixedLocation left 1.0 1.0"
           # 内容（每行仅一个物品）
           content:
-            - "在QuestEngine写好的物品库的物品ID"
-        # 脚本
+            - "itemNormal 60 item_2"
+        # Kether脚本
         script:
-          - "[]"
+          - ""
       re:
         text:
-          addLocation: "[方向][乘数][高度]"
+          addLocation: "fixedLocation left 1.0 1.0"
           content:
             - "&b&l暗示评分"
         item:
-          addLocation: "[方向][乘数][高度]"
+          addLocation: "fixedLocation left 1.0 1.0"
           content:
-            - "在QuestEngine写好的物品库的物品ID"
+            - "itemNormal 60 item_1"
         script:
-          - "[]"
+          - ""
