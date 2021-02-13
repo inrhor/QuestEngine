@@ -20,23 +20,25 @@ class DialogHolo(
 
         // 主动态帧
         var frame = 0
-        val dialogFile = Dialog().getDialog(holo.holoID)!!
+        val dialogCube = Dialog().getDialog(holo.holoID)!!
 
         val frameWriteMap = mutableMapOf<Int, MutableList<FrameWrite>>()
         val isCancelsTextMap = mutableMapOf<Int, MutableList<Boolean>>()
         val isCancelsItemMap = mutableMapOf<Int, Boolean>()
 
-        for (line in 0 until dialogFile.ownTextContent!!.size) {
+        val ownTextInitContent = dialogCube.ownTextInitContent
+
+        for (line in 0 until ownTextInitContent.size) {
             val theLineFrameWriteList = mutableListOf<FrameWrite>()
-            repeat(dialogFile.getOwnTheLineList(line).size) {
+            repeat(dialogCube.getOwnTheLineList(line).size) {
                 val frameWrite = FrameWrite(0, 0)
                 theLineFrameWriteList.add(frameWrite)
             }
             frameWriteMap[line] = theLineFrameWriteList
         }
 
-        val ownTextSize = dialogFile.ownTextContent!!.size
-        val ownItemSize = dialogFile.ownItemContent!!.size
+        val ownTextSize = ownTextInitContent.size
+        val ownItemSize = dialogCube.ownItemInitContent.getDialogItemList().size
 
         runnable = object : BukkitRunnable() {
             override fun run() {
@@ -57,15 +59,15 @@ class DialogHolo(
 
                 // Text
                 for (line in 0 until ownTextSize) {
-                    val theLineTagTextList = dialogFile.getOwnTheLineList(line)
+                    val theLineTagTextList = dialogCube.getOwnTheLineList(line)
                     holoTextList.add(UtilAnimation().theLineTextAnimation(line, frame,
-                        theLineTagTextList, frameWriteMap, isCancelsTextMap/*, textContentMap*/))
+                        theLineTagTextList, frameWriteMap, isCancelsTextMap))
                 }
                 holo.textList = holoTextList
 
                 // Item
                 for (line in 0 until ownItemSize) {
-                    val dialogItem = dialogFile.getOwnTheLineItem(line)
+                    val dialogItem = dialogCube.getOwnTheLineItem(line)
                     if (dialogItem.delay == frame) {
                         holo.spawnItem(line, holo.itemLoc)
                         isCancelsItemMap[line] = false

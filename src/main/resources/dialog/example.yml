@@ -10,27 +10,23 @@ dialog_1:
     # 对话主体
     own:
       # 主体位置
-      location: "[show][nbt=dialog][addY=3.0]"
+      # 在 NPC位置 基础上增加的值
+      # 格式：fixedLocation *方向,乘数,高度
+      #      方向类型可选 left right behind
+      #      乘数可正可负，越大距离越远
+      #      高度可正可负，无需解释
+      location: "fixedLocation left 1.0 1.0"
       # 文字组
       text:
         # 在 主体位置 基础上增加的值
-        # 格式：[方向][乘数][高度]
-        #      方向类型可选 left right behind
-        #      乘数可正可负，越大距离越远
-        #      高度可正可负，无需解释
-        addLocation: "[right][1][1]"
+        addLocation: "fixedLocation left 1.0 1.0"
         # 内容（时间均采用Tick）
-        #      <[normal][delay=多久后开始][正常类型的内容]>
-        #      <[flash][delay=多久后开始][闪亮类型的内容]>
-        #      <[write][delay=多久后开始][speed=下个字间隔][打字类型的内容]>
         content:
-          - "<[write][delay=10][speed=4][&3&lQuest &f&lEngine]><[write][delay=20][speed=3][&r   &c&l任&e&l务&a&l引擎]>"
-          - "<[write][delay=10][speed=5][&f&l面向异世界]>"
+          - "iHoloWrite *10,4,'&3&lQuest &f&lEngine' iHoloWrite *20,3,'&r   &c&l任&e&l务&a&l引擎'"
+          - "iHoloWrite *10,5,'&f&l面向异世界的任务系统'"
       # 物品组
       item:
-        # 在 主体位置 基础上增加的值
-        # 格式：[方向][乘数][高度]
-        addLocation: "[left][1][1]"
+        addLocation: "fixedLocation left 1.0 1.0"
         # 内容（每行仅一个物品）
         content:
           - "[delay=20][item_1]"

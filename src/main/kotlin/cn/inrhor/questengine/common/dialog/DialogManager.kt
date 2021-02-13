@@ -3,8 +3,6 @@ package cn.inrhor.questengine.common.dialog
 import cn.inrhor.questengine.utlis.file.GetFile
 import cn.inrhor.questengine.utlis.public.UseString
 import io.izzel.taboolib.module.locale.TLocale
-import org.bukkit.configuration.file.YamlConfiguration
-import java.io.File
 import java.util.*
 
 
@@ -13,18 +11,18 @@ class DialogManager {
         /**
          * 成功注册的对话
          */
-        private var dialogFileMap: HashMap<String, DialogFile> = LinkedHashMap<String, DialogFile>()
+        private var dialogFileMap: HashMap<String, DialogCube> = LinkedHashMap()
     }
 
     /**
      * 注册对话
      */
-    fun register(dialogID: String, dialogFile: DialogFile) {
+    fun register(dialogID: String, dialogCube: DialogCube) {
         if (exist(dialogID)) {
             TLocale.sendToConsole("DIALOG.EXIST_DIALOG_ID", UseString.pluginTag, dialogID)
             return
         }
-        dialogFileMap[dialogID] = dialogFile
+        dialogFileMap[dialogID] = dialogCube
     }
 
     /**
@@ -33,21 +31,7 @@ class DialogManager {
     fun loadDialog() {
         val dialogFolder = GetFile().getFile("dialog", "DIALOG.NO_FILES")
         GetFile().getFileList(dialogFolder).forEach{
-            checkRegDialog(it)
-        }
-    }
-
-    /**
-     * 检查和注册对话
-     */
-    private fun checkRegDialog(file: File) {
-        val yaml = YamlConfiguration.loadConfiguration(file)
-        if (yaml.getKeys(false).isEmpty()) {
-            TLocale.sendToConsole("DIALOG.EMPTY_CONTENT", UseString.pluginTag, file.name)
-            return
-        }
-        for (dialogID in yaml.getKeys(false)) {
-            DialogFile().init(yaml.getConfigurationSection(dialogID)!!)
+            DialogFile().checkRegDialog(it)
         }
     }
 
@@ -62,7 +46,7 @@ class DialogManager {
     fun exist(dialogID: String) = dialogFileMap.contains(dialogID)
 
     /**
-     * 获取对话配置内容
+     * 获取对话对象
      */
     fun get(dialogID: String) = dialogFileMap[dialogID]
 }

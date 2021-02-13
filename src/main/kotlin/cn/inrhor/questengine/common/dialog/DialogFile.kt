@@ -1,101 +1,71 @@
 package cn.inrhor.questengine.common.dialog
 
-import cn.inrhor.questengine.common.dialog.animation.item.DialogItem
 import cn.inrhor.questengine.common.dialog.animation.parser.ItemParser
-import cn.inrhor.questengine.common.dialog.animation.text.TagText
 import cn.inrhor.questengine.common.dialog.animation.parser.TextAnimation
-import org.bukkit.configuration.ConfigurationSection
-import org.bukkit.inventory.ItemStack
+import cn.inrhor.questengine.common.kether.KetherHandler
+import cn.inrhor.questengine.utlis.public.UseString
+import io.izzel.taboolib.module.locale.TLocale
+import org.bukkit.configuration.file.YamlConfiguration
+import java.io.File
 
 class DialogFile {
 
-    var dialogID: String? = null
-    var npcID: String? = null
-    var condition: MutableList<String>? = null
-
-    var ownLocation: String? = null
-
-    var ownTextAddLocation: String? = null
-    var ownTextContent: MutableList<String>? = null
-
-    var ownItemAddLocation: String? = null
-    var ownItemContent: MutableList<String>? = null
-
-    private var ownTextAnimation: TextAnimation? = null
-    private var ownItemAnimation: ItemParser? = null
-
-    var frame: Int = -1
-
-    fun init(config: ConfigurationSection) {
-        if (!config.contains("npcID")) {
-            return
-        }
-        if (!config.contains("condition")) {
-            return
-        }
-        val ownSec = "dialog.own."
-        if (!config.contains(ownSec+"location")) {
-            return
-        }
-        if (!config.contains(ownSec+"text.addLocation")) {
-            return
-        }
-        if (!config.contains(ownSec+"text.content")) {
-            return
-        }
-        if (!config.contains(ownSec+"item.addLocation")) {
-            return
-        }
-        if (!config.contains(ownSec+"item.content")) {
-            return
-        }
-        this.dialogID = config.name
-        this.npcID = config.getString("npcID")
-        this.condition = config.getStringList("condition")
-        this.ownLocation = config.getString(ownSec+"location")
-        this.ownTextAddLocation = config.getString(ownSec+"text.addLocation")
-        this.ownTextContent = config.getStringList(ownSec+"text.content")
-        this.ownItemAddLocation = config.getString(ownSec+"item.addLocation")
-        this.ownItemContent = config.getStringList(ownSec+"item.content")
-
-        this.frame = config.getInt(ownSec+"frame")
-
-        DialogManager().register(this.dialogID!!, this)
-        animation()
-    }
-
     /**
-     * 处理动画到表中
+     * 检查配置和注册对话
      */
-    fun animation() {
-        val textAnimation = TextAnimation(ownTextContent!!)
-        textAnimation.init()
-        ownTextAnimation = textAnimation
+    fun checkRegDialog(file: File) {
+        val yaml = YamlConfiguration.loadConfiguration(file)
+        if (yaml.getKeys(false).isEmpty()) {
+            TLocale.sendToConsole("DIALOG.EMPTY_CONTENT", UseString.pluginTag, file.name)
+            return
+        }
+        for (dialogID in yaml.getKeys(false)) {
+            val cfs = yaml.getConfigurationSection(dialogID)!!
+            if (!cfs.contains("npcID")) {
+                return
+            }
+            if (!cfs.contains("condition")) {
+                return
+            }
+            val ownSec = "dialog.own."
+            if (!cfs.contains(ownSec+"location")) {
+                return
+            }
+            if (!cfs.contains(ownSec+"text.addLocation")) {
+                return
+            }
+            if (!cfs.contains(ownSec+"text.content")) {
+                return
+            }
+            if (!cfs.contains(ownSec+"item.addLocation")) {
+                return
+            }
+            if (!cfs.contains(ownSec+"item.content")) {
+                return
+            }
 
-        val itemAnimation = ItemParser(ownItemContent!!)
-        itemAnimation.init()
-        ownItemAnimation = itemAnimation
-    }
+            val npcID = cfs.getString("npcID")!!
+            val condition = cfs.getStringList("condition")
+            val ownFixedLoc = KetherHandler.evalFixedLoc(cfs.getString(ownSec+"location")!!)
+            val ownTextFixedLoc = KetherHandler.evalFixedLoc(cfs.getString(ownSec+"text.addLocation")!!)
+            val ownTextInitContent = cfs.getStringList(ownSec+"text.content")
+            val ownItemFixedLoc = KetherHandler.evalFixedLoc(cfs.getString(ownSec+"item.addLocation")!!)
+            val ownItemInitContent = cfs.getStringList(ownSec+"item.content")
 
-    /**
-     * 主体文字组中这一行包含的标签内容
-     */
-    fun getOwnTheLineList(line: Int): MutableList<TagText> {
-        return ownTextAnimation!!.getTextContent(line)
-    }
+            val ownTextAnimation = TextAnimation(ownTextInitContent)
+            ownTextAnimation.init()
+            val ownItemAnimation = ItemParser(ownItemInitContent)
+            ownItemAnimation.init()
 
-    /**
-     * 主体物品组中这一行的对话物品
-     */
-    fun getOwnTheLineItem(line: Int): DialogItem {
-        return ownItemAnimation!!.getDialogItem(line)!!
-    }
+            val frame = cfs.getInt(ownSec+"frame")
 
-    /**
-     * 主体物品组中的对话物品
-     */
-    fun getOwnDialogItemList(): MutableList<ItemStack> {
-        return ownItemAnimation!!.getDialogItemList()
+            val dialogCube = DialogCube(dialogID, npcID, condition, ownFixedLoc,
+                ownTextFixedLoc, ownTextInitContent, ownTextAnimation,
+                ownItemFixedLoc, ownItemAnimation,
+                frame)
+
+            DialogManager().register(dialogID, dialogCube)
+        }
     }
 
 }
