@@ -4,18 +4,12 @@ dialog_1:
   npcID: "test"
   # 对话需要满足的触发条件
   condition:
-    - "check qeTag *questID_1"
+    - "permission *dialog.prm.1"
+    - "check *inrhor is papi *%player_name%"
   # 关于全息对话
   dialog:
     # 对话主体
     own:
-      # 主体位置
-      # 在 NPC位置 基础上增加的值
-      # 格式：fixedLocation *方向,乘数,高度
-      #      方向类型可选 left right behind
-      #      乘数可正可负，越大距离越远
-      #      高度可正可负，无需解释
-      location: "fixedLocation left 1.0 1.0"
       # 文字组
       text:
         # 在 主体位置 基础上增加的值

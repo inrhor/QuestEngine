@@ -13,21 +13,21 @@ class KetherIItemNormal(
 ) : QuestAction<DialogItem>() {
 
     override fun process(context: QuestContext.Frame): CompletableFuture<DialogItem>? {
-        val fixedLocation = CompletableFuture<DialogItem>()
-        fixedLocation.complete(
+        val dialogItem = CompletableFuture<DialogItem>()
+        dialogItem.complete(
             DialogItem(
                 ItemManager().get(itemID)!!.item!!,
                 delay
             )
         )
-        return fixedLocation
+        return dialogItem
     }
 
     companion object {
         fun parser() = ScriptParser.parser {
-            val dialogID = it.nextToken()
             val delay = it.nextInt()
-            KetherIItemNormal(dialogID, delay)
+            val itemID = it.nextToken()
+            KetherIItemNormal(itemID, delay)
         }
     }
 }

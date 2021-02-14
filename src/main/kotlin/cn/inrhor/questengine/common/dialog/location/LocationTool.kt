@@ -18,7 +18,7 @@ class LocationTool {
      * @param height
      * @return
      */
-    private fun getFixedLoc(ownLoc: Location, offset: Float, multiply: Double, height: Double): Location? {
+    fun getFixedLoc(ownLoc: Location, offset: Float, multiply: Double, height: Double): Location? {
         // 复制本体位置
         val fixedLoc = ownLoc.clone()
         fixedLoc.yaw = ownLoc.yaw + offset

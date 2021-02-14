@@ -1,8 +1,13 @@
 package cn.inrhor.questengine.common.dialog
 
+import cn.inrhor.questengine.common.dialog.location.LocationTool
+import cn.inrhor.questengine.common.hologram.IHolo
+import cn.inrhor.questengine.common.kether.KetherHandler
 import cn.inrhor.questengine.utlis.file.GetFile
 import cn.inrhor.questengine.utlis.public.UseString
 import io.izzel.taboolib.module.locale.TLocale
+import org.bukkit.Location
+import org.bukkit.entity.Player
 import java.util.*
 
 
@@ -54,4 +59,29 @@ class DialogManager {
      * 清空对话对象Map
      */
     fun clearMap() = dialogFileMap.clear()
+
+    /**
+     * 根据NPCID并判断玩家集合是否满足条件，返回DialogCube
+     */
+    fun returnDialogHolo(players: MutableSet<Player>, npcID: String): DialogCube? {
+        for ((_, dialogCube) in dialogFileMap) {
+            if (dialogCube.npcID != npcID) continue
+            if (KetherHandler.evalBooleanSet(players, dialogCube.condition)) return dialogCube
+        }
+        return null
+    }
+
+    fun sendDialogHolo(players: MutableSet<Player>, npcID: String, npcLoc: Location) {
+        val dialogCube = DialogManager().returnDialogHolo(players, npcID)!!
+        val textFixedLoc = dialogCube.ownTextLoc
+        val textLoc = LocationTool().getFixedLoc(npcLoc,
+            textFixedLoc.offset, textFixedLoc.multiply, textFixedLoc.height)!!
+        val itemFixedLoc = dialogCube.ownItemLoc
+        val itemLoc = LocationTool().getFixedLoc(npcLoc,
+            itemFixedLoc.offset, itemFixedLoc.multiply, itemFixedLoc.height)!!
+        val holo = IHolo(
+            dialogCube, textLoc, itemLoc,
+            players)
+        holo.init()
+    }
 }

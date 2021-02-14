@@ -29,9 +29,6 @@ class DialogFile {
                 return
             }
             val ownSec = "dialog.own."
-            if (!cfs.contains(ownSec+"location")) {
-                return
-            }
             if (!cfs.contains(ownSec+"text.addLocation")) {
                 return
             }
@@ -47,8 +44,6 @@ class DialogFile {
 
             val npcID = cfs.getString("npcID")!!
             val condition = cfs.getStringList("condition")
-            val ownFixedLoc = KetherHandler.evalFixedLoc(cfs.getString(ownSec+"location")!!)
-            MsgUtil.send("loc "+ownFixedLoc.offset+"  "+ownFixedLoc.multiply+"  "+ownFixedLoc.height)
             val ownTextFixedLoc = KetherHandler.evalFixedLoc(cfs.getString(ownSec+"text.addLocation")!!)
             val ownTextInitContent = cfs.getStringList(ownSec+"text.content")
             val ownItemFixedLoc = KetherHandler.evalFixedLoc(cfs.getString(ownSec+"item.addLocation")!!)
@@ -61,7 +56,7 @@ class DialogFile {
 
             val frame = cfs.getInt(ownSec+"frame")
 
-            val dialogCube = DialogCube(dialogID, npcID, condition, ownFixedLoc,
+            val dialogCube = DialogCube(dialogID, npcID, condition,
                 ownTextFixedLoc, ownTextInitContent, ownTextAnimation,
                 ownItemFixedLoc, ownItemAnimation,
                 frame)

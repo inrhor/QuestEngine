@@ -1,4 +1,11 @@
-# 设置 | Setting
+# 设置
 setting:
-  # 选择语言 | Choose language
+  # 选择语言
   lang: "zh_CN"
+
+# 对话设置
+dialog:
+  # 显示形式
+  display: "holo"
+  # 交互NPC插件
+  npcPlugin: "Adyeshach"

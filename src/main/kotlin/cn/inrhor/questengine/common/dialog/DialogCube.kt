@@ -8,7 +8,6 @@ import cn.inrhor.questengine.common.dialog.location.FixedLocation
 
 class DialogCube(val dialogID: String, val npcID: String,
                  var condition: MutableList<String>,
-                 var ownFixedLoc: FixedLocation,
                  var ownTextLoc: FixedLocation, var ownTextInitContent: MutableList<String>, var ownTextAnimation: TextAnimation,
                  var ownItemLoc: FixedLocation, var ownItemInitContent: ItemParser,
                  var frame: Int) {

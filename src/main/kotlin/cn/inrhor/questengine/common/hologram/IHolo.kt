@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.hologram
 
 import cn.inrhor.questengine.api.hologram.IHologramManager
+import cn.inrhor.questengine.common.dialog.DialogCube
 import cn.inrhor.questengine.common.dialog.holo.DialogHolo
 //import cn.inrhor.questengine.common.dialog.holo.DialogHolo
 import cn.inrhor.questengine.common.nms.NMS
@@ -11,6 +12,7 @@ import org.bukkit.inventory.ItemStack
 
 class IHolo(
     var holoID: String,
+    var dialogCube: DialogCube,
     var textLoc: Location,
     var itemLoc: Location,
 
@@ -21,8 +23,9 @@ class IHolo(
     var itemList: MutableList<ItemStack> = mutableListOf()
 ) {
 
-    constructor(holoID: String, textLoc: Location, itemLoc: Location, viewers: MutableSet<Player>) :
-            this(holoID, textLoc, itemLoc, viewers, mutableListOf(), mutableListOf())
+    constructor(dialogCube: DialogCube, textLoc: Location, itemLoc: Location, viewers: MutableSet<Player>) :
+            this(dialogCube.dialogID, dialogCube, textLoc, itemLoc, viewers,
+                dialogCube.ownTextInitContent, dialogCube.ownItemInitContent.getDialogItemList())
 
     private var hasInit: Boolean = false
 
