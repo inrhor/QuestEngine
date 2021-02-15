@@ -31,7 +31,7 @@ class DialogHolo(
 
         for (line in 0 until ownTextInitContent.size) {
             val theLineFrameWriteList = mutableListOf<FrameWrite>()
-            repeat(dialogCube.getOwnTheLineList(line).size) {
+            repeat(dialogCube.getTheLineList(line).size) {
                 val frameWrite = FrameWrite(0, 0)
                 theLineFrameWriteList.add(frameWrite)
             }
@@ -49,10 +49,12 @@ class DialogHolo(
                     return
                 }
 
-                val dialogFrame = dialogCube.frame
-                if ((dialogFrame==-1) or (dialogFrame==frame)) {
-                    dialogCube.replyCubeList.forEach{
-//                        holo.sendReplyHolo()
+                if (!holo.hasSendReply) {
+                    val dialogFrame = dialogCube.frame
+                    if ((dialogFrame==-1) or (dialogFrame==frame)) {
+                        dialogCube.replyCubeList.forEach{
+                            holo.sendReplyHolo()
+                        }
                     }
                 }
 
@@ -67,7 +69,7 @@ class DialogHolo(
 
                 // Text
                 for (line in 0 until ownTextSize) {
-                    val theLineTagTextList = dialogCube.getOwnTheLineList(line)
+                    val theLineTagTextList = dialogCube.getTheLineList(line)
                     holoTextList.add(UtilAnimation().theLineTextAnimation(line, frame,
                         theLineTagTextList, frameWriteMap, isCancelsTextMap))
                 }
@@ -75,9 +77,9 @@ class DialogHolo(
 
                 // Item
                 for (line in 0 until ownItemSize) {
-                    val dialogItem = dialogCube.getOwnTheLineItem(line)
+                    val dialogItem = dialogCube.getTheLineItem(line)
                     if (dialogItem.delay == frame) {
-                        holo.spawnItem(line, holo.itemLoc)
+                        holo.spawnItem(line)
                         isCancelsItemMap[line] = false
                     }
                 }

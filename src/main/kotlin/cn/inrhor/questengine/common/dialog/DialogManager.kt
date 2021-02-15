@@ -74,15 +74,8 @@ class DialogManager {
 
     fun sendDialogHolo(players: MutableSet<Player>, npcID: String, npcLoc: Location) {
         val dialogCube = DialogManager().returnDialogHolo(players, npcID)!!
-        val textFixedLoc = dialogCube.ownTextLoc
-        val textLoc = LocationTool().getFixedLoc(npcLoc,
-            textFixedLoc.offset, textFixedLoc.multiply, textFixedLoc.height)!!
-        val itemFixedLoc = dialogCube.ownItemLoc
-        val itemLoc = LocationTool().getFixedLoc(npcLoc,
-            itemFixedLoc.offset, itemFixedLoc.multiply, itemFixedLoc.height)!!
         val holo = IHolo(
-            dialogCube, textLoc, itemLoc,
-            players)
+            dialogCube, npcLoc, players)
         holo.init()
     }
 }

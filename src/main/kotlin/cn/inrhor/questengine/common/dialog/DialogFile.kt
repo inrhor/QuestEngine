@@ -73,7 +73,9 @@ class DialogFile {
                         val itemAddLoc = KetherHandler.evalFixedLoc(
                             replySfc.getString("$replyID.item.addLocation")!!)
                         val itemContent = replySfc.getStringList("$replyID.item.content")
-                        val replyCube = ReplyCube(replyID, textAddLoc, textContent, itemAddLoc, itemContent)
+                        val replyItemAnimation = ItemParser(itemContent)
+                        replyItemAnimation.init()
+                        val replyCube = ReplyCube(replyID, textAddLoc, textContent, itemAddLoc, replyItemAnimation)
                         dialogCube.replyCubeList.add(replyCube)
                     }
                 }

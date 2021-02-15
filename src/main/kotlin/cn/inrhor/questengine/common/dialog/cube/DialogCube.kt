@@ -17,14 +17,14 @@ class DialogCube(val dialogID: String, val npcID: String,
     /**
      * 主体文字组中这一行包含的标签内容
      */
-    fun getOwnTheLineList(line: Int): MutableList<TagText> {
+    fun getTheLineList(line: Int): MutableList<TagText> {
         return ownTextAnimation.getTextContent(line)
     }
 
     /**
      * 主体物品组中这一行的对话物品
      */
-    fun getOwnTheLineItem(line: Int): DialogItem {
+    fun getTheLineItem(line: Int): DialogItem {
         return ownItemInitContent.getDialogItem(line)!!
     }
 
