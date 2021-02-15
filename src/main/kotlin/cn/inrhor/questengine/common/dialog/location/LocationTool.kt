@@ -27,4 +27,8 @@ class LocationTool {
         fixed.add(0.0, height, 0.0)
         return fixed
     }
+
+    fun getFixedLoc(ownLoc: Location, fixedLoc: FixedLocation): Location {
+        return getFixedLoc(ownLoc, fixedLoc.offset, fixedLoc.multiply, fixedLoc.height)!!
+    }
 }

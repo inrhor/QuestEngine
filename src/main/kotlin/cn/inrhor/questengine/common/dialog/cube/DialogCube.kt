@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.dialog
+package cn.inrhor.questengine.common.dialog.cube
 
 import cn.inrhor.questengine.common.dialog.animation.item.DialogItem
 import cn.inrhor.questengine.common.dialog.animation.parser.ItemParser
@@ -11,6 +11,8 @@ class DialogCube(val dialogID: String, val npcID: String,
                  var ownTextLoc: FixedLocation, var ownTextInitContent: MutableList<String>, var ownTextAnimation: TextAnimation,
                  var ownItemLoc: FixedLocation, var ownItemInitContent: ItemParser,
                  var frame: Int) {
+
+    var replyCubeList: MutableList<ReplyCube> = mutableListOf()
 
     /**
      * 主体文字组中这一行包含的标签内容

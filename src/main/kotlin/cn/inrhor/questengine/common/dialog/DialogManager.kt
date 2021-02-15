@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.dialog
 
+import cn.inrhor.questengine.common.dialog.cube.DialogCube
 import cn.inrhor.questengine.common.dialog.location.LocationTool
 import cn.inrhor.questengine.common.hologram.IHolo
 import cn.inrhor.questengine.common.kether.KetherHandler

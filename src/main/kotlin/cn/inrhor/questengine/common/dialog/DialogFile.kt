@@ -2,8 +2,9 @@ package cn.inrhor.questengine.common.dialog
 
 import cn.inrhor.questengine.common.dialog.animation.parser.ItemParser
 import cn.inrhor.questengine.common.dialog.animation.parser.TextAnimation
+import cn.inrhor.questengine.common.dialog.cube.DialogCube
+import cn.inrhor.questengine.common.dialog.cube.ReplyCube
 import cn.inrhor.questengine.common.kether.KetherHandler
-import cn.inrhor.questengine.utlis.public.MsgUtil
 import cn.inrhor.questengine.utlis.public.UseString
 import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.configuration.file.YamlConfiguration
@@ -60,6 +61,23 @@ class DialogFile {
                 ownTextFixedLoc, ownTextInitContent, ownTextAnimation,
                 ownItemFixedLoc, ownItemAnimation,
                 frame)
+
+            val replyPath = "dialog.reply"
+            if (cfs.contains("dialog.reply")) {
+                val replySfc = cfs.getConfigurationSection(replyPath)!!
+                if (replySfc.getKeys(false).isNotEmpty()) {
+                    for (replyID in replySfc.getKeys(false)) {
+                        val textAddLoc = KetherHandler.evalFixedLoc(
+                            replySfc.getString("$replyID.text.addLocation")!!)
+                        val textContent = replySfc.getStringList("$replyID.text.content")
+                        val itemAddLoc = KetherHandler.evalFixedLoc(
+                            replySfc.getString("$replyID.item.addLocation")!!)
+                        val itemContent = replySfc.getStringList("$replyID.item.content")
+                        val replyCube = ReplyCube(replyID, textAddLoc, textContent, itemAddLoc, itemContent)
+                        dialogCube.replyCubeList.add(replyCube)
+                    }
+                }
+            }
 
             DialogManager().register(dialogID, dialogCube)
         }

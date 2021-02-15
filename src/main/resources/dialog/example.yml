@@ -5,7 +5,7 @@ dialog_1:
   # 对话需要满足的触发条件
   condition:
     - "permission *dialog.prm.1"
-    - "check *inrhor is papi *%player_name%"
+    - "check player name is *inrhor"
   # 关于全息对话
   dialog:
     # 对话主体

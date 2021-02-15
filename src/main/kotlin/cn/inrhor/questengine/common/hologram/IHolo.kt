@@ -1,9 +1,9 @@
 package cn.inrhor.questengine.common.hologram
 
 import cn.inrhor.questengine.api.hologram.IHologramManager
-import cn.inrhor.questengine.common.dialog.DialogCube
+import cn.inrhor.questengine.common.dialog.cube.DialogCube
 import cn.inrhor.questengine.common.dialog.holo.DialogHolo
-//import cn.inrhor.questengine.common.dialog.holo.DialogHolo
+import cn.inrhor.questengine.common.dialog.location.LocationTool
 import cn.inrhor.questengine.common.nms.NMS
 import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.Location
@@ -28,10 +28,14 @@ class IHolo(
                 dialogCube.ownTextInitContent, dialogCube.ownItemInitContent.getDialogItemList())
 
     private var hasInit: Boolean = false
+    private var hasSendReply: Boolean = false
 
     private val textEntityIDs: MutableList<Int> = mutableListOf()
     private val itemEntityIDs: MutableList<Int> = mutableListOf()
     private val itemStackEntityIDs: MutableList<Int> = mutableListOf()
+
+    private val textReplyEntityIDs: MutableList<Int> = mutableListOf()
+    private val itemReplyEntityIDs: MutableList<Int> = mutableListOf()
 
     /**
      * 初始化
@@ -49,10 +53,10 @@ class IHolo(
             addEntityID("item", it)
         }
 
-        sendTextHolo(viewers)
-        sendItemHolo(viewers)
+        sendTextHolo()
+        sendItemHolo()
 
-        val dialogHolo = DialogHolo(this, viewers)
+        val dialogHolo = DialogHolo(this, viewers, dialogCube)
         dialogHolo.runRunnable()
 
         hasInit = true
@@ -60,7 +64,7 @@ class IHolo(
         IHologramManager().addHolo(holoID, this)
     }
 
-    // type 分别有 text(盔甲架) item(盔甲架) itemStack(物品)
+    // type 分别有 text(盔甲架) item(盔甲架) itemStack(物品) replyText replyItem
     private fun addEntityID(type: String, index: Int) {
         val strID = "$holoID-$type-$index"
         val entityID = strID.hashCode()
@@ -77,6 +81,12 @@ class IHolo(
             "itemStack" -> {
                 itemStackEntityIDs.add(entityID)
             }
+            "replyText" -> {
+                textReplyEntityIDs.add(entityID)
+            }
+            "replyItem" -> {
+                itemReplyEntityIDs.add(entityID)
+            }
             else -> {
                 MsgUtil.send("null type")
                 return
@@ -89,8 +99,8 @@ class IHolo(
      * 更新全息视觉
      */
     fun update() {
-        sendTextHolo(viewers)
-        sendItemHolo(viewers)
+        sendTextHolo()
+        sendItemHolo()
     }
 
     /**
@@ -139,20 +149,21 @@ class IHolo(
         }*//*
     }*/
 
-    private fun sendTextHolo(players: MutableSet<Player>) {
-        sendHolo(players, "text")
+    private fun sendTextHolo() {
+        sendDialogHolo("text")
     }
 
-    private fun sendItemHolo(players: MutableSet<Player>) {
-        sendHolo(players, "item")
+    private fun sendItemHolo() {
+        sendDialogHolo("item")
     }
 
-    private fun sendItemStack(players: MutableSet<Player>) {
-        sendHolo(players, "itemStack")
+    private fun sendItemStack() {
+        sendDialogHolo("itemStack")
     }
 
-    private fun sendHolo(players: MutableSet<Player>,
-                             type: String) {
+
+
+    private fun sendDialogHolo(type: String) {
         /*if (holoEntityIDMap.containsKey(id)) {
             // Msg, id不存在消息
             return
@@ -166,28 +177,43 @@ class IHolo(
             entityLoc = itemLoc
         }
         entityIDs.forEach {
-            getPackets().spawnAS(players, it, entityLoc)
+            getPackets().spawnAS(viewers, it, entityLoc)
 
             entityLoc.add(0.0, -0.25, 0.0)
 
             if (type == "text") {
-                getPackets().initAS(players, it, showName = true, isSmall = true, marker = true)
+                getPackets().initAS(viewers, it, showName = true, isSmall = true, marker = true)
                 if (textList.isNotEmpty() && textList.size > index) {
-                    getPackets().updateDisplayName(players, it, textList[index])
+                    getPackets().updateDisplayName(viewers, it, textList[index])
                 }else return
             }else {
-                getPackets().initAS(players, it, showName = false, isSmall = true, marker = true)
-//                if (itemList.isNotEmpty() && itemList.size > index) {
-                    /*// 生成物品实体
-                    val itemStackInt = itemStackEntityIDs[index]
-                    getPackets().spawnItem(players, itemStackInt, entityLoc, itemList[index])
-
-                    // 物品实体骑乘到盔甲架
-                    getPackets().updatePassengers(players, it, itemStackInt)*/
-//                } else return
+                getPackets().initAS(viewers, it, showName = false, isSmall = true, marker = true)
             }
-
             index++
+        }
+    }
+    fun sendReplyHolo(ownLoc: Location) {
+        hasSendReply = true
+        for (index in 0 until textReplyEntityIDs.size) {
+            val dialogCube = dialogCube.replyCubeList[index]
+            val textFixedLoc = dialogCube.textAddLoc
+            val textLoc = LocationTool().getFixedLoc(ownLoc, textFixedLoc)
+            val content = dialogCube.textContent
+            val entityID = textReplyEntityIDs[index]
+            if (content.isNotEmpty() && content.size > index) {
+                getPackets().spawnAS(viewers, entityID, textLoc)
+                getPackets().updateDisplayName(viewers, entityID, content[index])
+            }
+        }
+        for (index in 0 until itemReplyEntityIDs.size) {
+            val dialogCube = dialogCube.replyCubeList[index]
+            val itemFixedLoc = dialogCube.itemAddLoc
+            val itemLoc = LocationTool().getFixedLoc(ownLoc, itemFixedLoc)
+            val content = dialogCube.itemContent
+            val entityID = itemReplyEntityIDs[index]
+            if (content.isNotEmpty() && content.size > index) {
+                getPackets().spawnAS(viewers, entityID, itemLoc)
+            }
         }
     }
 

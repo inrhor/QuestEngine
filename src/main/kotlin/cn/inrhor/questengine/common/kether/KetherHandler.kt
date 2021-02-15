@@ -8,7 +8,6 @@ import cn.inrhor.questengine.common.kether.expand.KetherIItemNormal
 import io.izzel.taboolib.kotlin.kether.Kether
 import io.izzel.taboolib.kotlin.kether.KetherShell
 import io.izzel.taboolib.kotlin.kether.common.api.QuestActionParser
-import io.izzel.taboolib.kotlin.kether.common.util.LocalizedException
 import io.izzel.taboolib.module.inject.TFunction
 import org.bukkit.entity.Player
 import java.util.concurrent.TimeUnit
@@ -39,13 +38,8 @@ object KetherHandler {
     }
 
     fun eval(script: String): Any? {
-        try {
-            return KetherShell.eval(script, namespace = listOf("QuestEngine"))
-                .get(20, TimeUnit.MILLISECONDS)
-        } catch (ex: LocalizedException) {
-            ex.printStackTrace()
-        }
-        return null
+        return KetherShell.eval(script, namespace = listOf("QuestEngine"))
+            .get(20, TimeUnit.MILLISECONDS)
     }
 
     fun eval(script: MutableList<String>): Any? {

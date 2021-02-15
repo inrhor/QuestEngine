@@ -48,10 +48,7 @@ processResources {
                 'name': rootProject.name,
                 'main': project.group + '.boot.PluginBoot',
                 'version': project.version,
-                'authors': ["inrhor"],
-                'softdepend': [
-                        "Adyeshach"
-                ]
+                'authors': ["inrhor"]
         )
     }
 }
