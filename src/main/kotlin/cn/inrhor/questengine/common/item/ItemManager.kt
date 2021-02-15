@@ -13,7 +13,7 @@ class ItemManager {
         /**
          * 成功注册的物品
          */
-        private var itemFileMap: HashMap<String, ItemFile> = LinkedHashMap<String, ItemFile>()
+        private var itemFileMap: HashMap<String, ItemFile> = LinkedHashMap()
     }
 
     /**
@@ -59,7 +59,7 @@ class ItemManager {
     /**
      * 获取物品
      */
-    fun get(itemID: String) = itemFileMap[itemID]
+    fun get(itemID: String) = itemFileMap[itemID]!!.item!!
 
     fun clearMap() = itemFileMap.clear()
 }

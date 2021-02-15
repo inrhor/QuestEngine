@@ -5,6 +5,7 @@ import cn.inrhor.questengine.common.dialog.cube.DialogCube
 import cn.inrhor.questengine.common.dialog.animation.text.FrameWrite
 import cn.inrhor.questengine.common.dialog.animation.UtilAnimation
 import cn.inrhor.questengine.common.hologram.IHolo
+import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 
@@ -51,10 +52,10 @@ class DialogHolo(
 
                 if (!holo.hasSendReply) {
                     val dialogFrame = dialogCube.frame
-                    if ((dialogFrame==-1) or (dialogFrame==frame)) {
-                        dialogCube.replyCubeList.forEach{
-                            holo.sendReplyHolo()
-                        }
+                    MsgUtil.send("frame  $dialogFrame  $frame")
+                    if (dialogFrame==frame) {
+                        MsgUtil.send("send")
+                        holo.sendReplyHolo()
                     }
                 }
 

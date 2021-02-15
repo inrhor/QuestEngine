@@ -9,13 +9,13 @@ import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import java.util.HashMap
+import java.util.LinkedHashMap
 
 class IHolo(
     var holoID: String,
     var dialogCube: DialogCube,
-    var npcLoc: Location/*,
-    var textLoc: Location,
-    var itemLoc: Location*/,
+    var npcLoc: Location,
 
     var viewers: MutableSet<Player>,
 
@@ -24,8 +24,8 @@ class IHolo(
     var itemList: MutableList<ItemStack> = mutableListOf()
 ) {
 
-    constructor(dialogCube: DialogCube, npcLoc: Location/*, textLoc: Location, itemLoc: Location*/, viewers: MutableSet<Player>) :
-            this(dialogCube.dialogID, dialogCube, npcLoc/*, textLoc, itemLoc*/, viewers,
+    constructor(dialogCube: DialogCube, npcLoc: Location, viewers: MutableSet<Player>) :
+            this(dialogCube.dialogID, dialogCube, npcLoc, viewers,
                 dialogCube.ownTextInitContent, dialogCube.ownItemInitContent.getDialogItemList())
 
     private var hasInit: Boolean = false
@@ -35,9 +35,9 @@ class IHolo(
     private val itemEntityIDs: MutableList<Int> = mutableListOf()
     private val itemStackEntityIDs: MutableList<Int> = mutableListOf()
 
-    private val textReplyEntityIDs: MutableList<Int> = mutableListOf()
-    private val itemReplyEntityIDs: MutableList<Int> = mutableListOf()
-    private val stackReplyEntityIDs: MutableList<Int> = mutableListOf()
+    private val textReplyEntityIDMap: HashMap<String, MutableList<Int>> = LinkedHashMap()
+    private val itemReplyEntityIDMap: HashMap<String, MutableList<Int>> = LinkedHashMap()
+    private val stackReplyEntityIDMap: HashMap<String, MutableList<Int>> = LinkedHashMap()
 
     /**
      * 初始化
@@ -70,8 +70,8 @@ class IHolo(
      * type 分别有 text(盔甲架) item(盔甲架) itemStack(物品)
      * replyText replyItem replyStack
      */
-    private fun addEntityID(type: String, index: Int) {
-        val strID = "$holoID-$type-$index"
+    private fun addEntityID(type: String, index: Int, replyID: String = "") {
+        val strID = "$holoID-$type-$index$replyID"
         val entityID = strID.hashCode()
         if (IHologramManager().existHoloEntityID(entityID)) {
             // say
@@ -87,13 +87,22 @@ class IHolo(
                 itemStackEntityIDs.add(entityID)
             }
             "replyText" -> {
-                textReplyEntityIDs.add(entityID)
+                if (!textReplyEntityIDMap.containsKey(replyID)) {
+                    textReplyEntityIDMap[replyID] = mutableListOf()
+                }
+                textReplyEntityIDMap[replyID]!!.add(entityID)
             }
             "replyItem" -> {
-                itemReplyEntityIDs.add(entityID)
+                if (!itemReplyEntityIDMap.containsKey(replyID)) {
+                    itemReplyEntityIDMap[replyID] = mutableListOf()
+                }
+                itemReplyEntityIDMap[replyID]!!.add(entityID)
             }
             "replyStack" -> {
-                stackReplyEntityIDs.add(entityID)
+                if (!stackReplyEntityIDMap.containsKey(replyID)) {
+                    stackReplyEntityIDMap[replyID] = mutableListOf()
+                }
+                stackReplyEntityIDMap[replyID]!!.add(entityID)
             }
             else -> {
                 MsgUtil.send("null type")
@@ -202,34 +211,34 @@ class IHolo(
     }
     fun sendReplyHolo() {
         hasSendReply = true
-        for (index in 0 until textReplyEntityIDs.size) {
-            val replyCube = dialogCube.replyCubeList[index]
-            val textFixedLoc = replyCube.textAddLoc
-            val textLoc = LocationTool().getFixedLoc(npcLoc, textFixedLoc)
-            val content = replyCube.textContent
-            if (content.isNotEmpty() && content.size > index) {
-                addEntityID("replyText", index)
-                val entityID = textReplyEntityIDs[index]
-                getPackets().spawnAS(viewers, entityID, textLoc)
-                getPackets().initAS(viewers, entityID, showName = true, isSmall = true, marker = true)
-                getPackets().updateDisplayName(viewers, entityID, content[index])
+        dialogCube.replyCubeList.forEach{ replyCube ->
+            for (index in 0 until replyCube.textContent.size) {
+                val textFixedLoc = replyCube.textAddLoc
+                val textLoc = LocationTool().getFixedLoc(npcLoc, textFixedLoc)
+                val content = replyCube.textContent
+                if (content.isNotEmpty() && content.size > index) {
+                    addEntityID("replyText", index, replyCube.replyID)
+                    val entityID = textReplyEntityIDMap[replyCube.replyID]!![index]
+                    getPackets().spawnAS(viewers, entityID, textLoc.add(0.0, -index*0.25, 0.0))
+                    getPackets().initAS(viewers, entityID, showName = true, isSmall = true, marker = true)
+                    getPackets().updateDisplayName(viewers, entityID, content[index])
+                }
             }
-        }
-        for (index in 0 until itemReplyEntityIDs.size) {
-            val replyCube = dialogCube.replyCubeList[index]
-            val itemFixedLoc = replyCube.itemAddLoc
-            val itemLoc = LocationTool().getFixedLoc(npcLoc, itemFixedLoc)
-            val content = replyCube.itemContent
-            val replyItemList = content.getDialogItemList()
-            if (replyItemList.isNotEmpty() && replyItemList.size > index) {
-                addEntityID("replyItem", index)
-                addEntityID("replyStack", index)
-                val entityID = itemReplyEntityIDs[index]
-                getPackets().spawnAS(viewers, entityID, itemLoc)
-                val stackInt = stackReplyEntityIDs[index]
-                getPackets().spawnItem(viewers, stackInt, itemLoc, replyCube.getTheLineItem(index).item)
-                getPackets().initAS(viewers, entityID, showName = false, isSmall = true, marker = true)
-                getPackets().updatePassengers(viewers, entityID, stackInt)
+            for (index in 0 until replyCube.itemContent.getDialogItemList().size) {
+                val itemFixedLoc = replyCube.itemAddLoc
+                val itemLoc = LocationTool().getFixedLoc(npcLoc, itemFixedLoc)
+                val content = replyCube.itemContent
+                val replyItemList = content.getDialogItemList()
+                if (replyItemList.isNotEmpty() && replyItemList.size > index) {
+                    addEntityID("replyItem", index, replyCube.replyID)
+                    addEntityID("replyStack", index, replyCube.replyID)
+                    val entityID = itemReplyEntityIDMap[replyCube.replyID]!![index]
+                    getPackets().spawnAS(viewers, entityID, itemLoc.add(0.0, -index*0.3, 0.0))
+                    val stackInt = stackReplyEntityIDMap[replyCube.replyID]!![index]
+                    getPackets().spawnItem(viewers, stackInt, itemLoc, replyCube.getTheLineItem(index).item)
+                    getPackets().initAS(viewers, entityID, showName = false, isSmall = true, marker = true)
+                    getPackets().updatePassengers(viewers, entityID, stackInt)
+                }
             }
         }
     }

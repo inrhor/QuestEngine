@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.dialog.animation.parser
 
 import cn.inrhor.questengine.common.dialog.animation.item.DialogItem
+import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.common.kether.KetherHandler
 import org.bukkit.inventory.ItemStack
 
@@ -20,6 +21,9 @@ class ItemParser(private val itemContents: MutableList<String>) {
             val script = this.itemContents[line]
             if (script.startsWith("itemNormal")) {
                 val dialogItem = KetherHandler.eval(script) as DialogItem
+                dialogItemList.add(dialogItem)
+            }else {
+                val dialogItem = DialogItem(ItemManager().get(script), 0)
                 dialogItemList.add(dialogItem)
             }
         }
