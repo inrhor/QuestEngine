@@ -28,23 +28,23 @@ object KetherHandler {
     fun eval(player: Player, script: String): Any? {
         return KetherShell.eval(script, namespace = listOf("QuestEngine")) {
             this.sender = player
-        }.get(20, TimeUnit.MILLISECONDS)
+        }.get(1, TimeUnit.SECONDS)
     }
 
     fun eval(player: Player, script: MutableList<String>): Any? {
         return KetherShell.eval(script, namespace = listOf("QuestEngine")) {
             this.sender = player
-        }.get(20, TimeUnit.MILLISECONDS)
+        }.get(1, TimeUnit.SECONDS)
     }
 
     fun eval(script: String): Any? {
         return KetherShell.eval(script, namespace = listOf("QuestEngine"))
-            .get(20, TimeUnit.MILLISECONDS)
+            .get(1, TimeUnit.SECONDS)
     }
 
     fun eval(script: MutableList<String>): Any? {
         return KetherShell.eval(script, namespace = listOf("QuestEngine"))
-            .get(20, TimeUnit.MILLISECONDS)
+            .get(1, TimeUnit.SECONDS)
     }
 
     fun evalBoolean(player: Player, script: String): Boolean {

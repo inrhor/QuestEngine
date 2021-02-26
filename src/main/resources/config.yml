@@ -2,6 +2,7 @@
 setting:
   # 选择语言
   lang: "zh_CN"
+# 数据存储
 
 # 对话设置
 dialog:
