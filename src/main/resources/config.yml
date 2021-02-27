@@ -2,7 +2,18 @@
 setting:
   # 选择语言
   lang: "zh_CN"
+
 # 数据存储
+date:
+  # 存储类型 YAML MYSQL
+  type: YAML
+  # 数据库设置
+  host: localhost
+  port: 3306
+  user: root
+  password: "root"
+  database: quen
+  table: quest_engine
 
 # 对话设置
 dialog:
