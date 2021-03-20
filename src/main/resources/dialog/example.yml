@@ -33,6 +33,10 @@ dialog_1:
     reply:
       # 对话回复选项ID
       1:
+        # 点击框
+        hitBox:
+          addLocation: "fixedLocation left 2.5 1.5"
+          radius: 5
         # 文字组
         text:
           addLocation: "fixedLocation left 2.5 1.5"
@@ -50,6 +54,9 @@ dialog_1:
         script:
           - ""
       re:
+        hitBox:
+          addLocation: "fixedLocation left 4.5 1.5"
+          radius: 5
         text:
           addLocation: "fixedLocation left 4.5 1.5"
           content:

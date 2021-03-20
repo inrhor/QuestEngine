@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.kether.expand
 
-import cn.inrhor.questengine.common.dialog.location.FixedLocation
+import cn.inrhor.questengine.utlis.location.FixedLocation
 import io.izzel.taboolib.kotlin.kether.KetherError
 import io.izzel.taboolib.kotlin.kether.ScriptParser
 import io.izzel.taboolib.kotlin.kether.common.api.QuestAction

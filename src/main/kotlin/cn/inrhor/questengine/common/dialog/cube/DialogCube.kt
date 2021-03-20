@@ -4,7 +4,7 @@ import cn.inrhor.questengine.common.dialog.animation.item.DialogItem
 import cn.inrhor.questengine.common.dialog.animation.parser.ItemParser
 import cn.inrhor.questengine.common.dialog.animation.parser.TextAnimation
 import cn.inrhor.questengine.common.dialog.animation.text.TagText
-import cn.inrhor.questengine.common.dialog.location.FixedLocation
+import cn.inrhor.questengine.utlis.location.FixedLocation
 
 class DialogCube(val dialogID: String, val npcID: String,
                  var condition: MutableList<String>,

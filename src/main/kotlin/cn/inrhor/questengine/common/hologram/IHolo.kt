@@ -1,9 +1,10 @@
 package cn.inrhor.questengine.common.hologram
 
 import cn.inrhor.questengine.api.hologram.IHologramManager
+import cn.inrhor.questengine.common.dialog.cube.ClickBoxUtil
 import cn.inrhor.questengine.common.dialog.cube.DialogCube
 import cn.inrhor.questengine.common.dialog.holo.DialogHolo
-import cn.inrhor.questengine.common.dialog.location.LocationTool
+import cn.inrhor.questengine.utlis.location.LocationTool
 import cn.inrhor.questengine.common.nms.NMS
 import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.Location
@@ -209,9 +210,13 @@ class IHolo(
             index++
         }
     }
+
     fun sendReplyHolo() {
         hasSendReply = true
         dialogCube.replyCubeList.forEach{ replyCube ->
+            val hitBoxFixedLoc = replyCube.hitAddLocation
+            val hitBoxLoc = LocationTool().getFixedLoc(npcLoc, hitBoxFixedLoc)
+            ClickBoxUtil().sendClickBox(viewers, hitBoxLoc, replyCube.radius)
             for (index in 0 until replyCube.textContent.size) {
                 val textFixedLoc = replyCube.textAddLoc
                 val textLoc = LocationTool().getFixedLoc(npcLoc, textFixedLoc)

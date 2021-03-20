@@ -8,6 +8,9 @@ import io.izzel.taboolib.module.inject.TListener
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 
+
+
+
 @TListener(depend = ["Adyeshach"], condition = "isAdyesNPC")
 class ClickAdyesNPC: Listener {
 
@@ -19,6 +22,7 @@ class ClickAdyesNPC: Listener {
         val npcLoc = npc.getLocation()
         val npcID = npc.id
         DialogManager().sendDialogHolo(mutableSetOf(player), npcID, npcLoc)
+
     }
 
     @EventHandler

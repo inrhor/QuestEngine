@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.dialog.location
+package cn.inrhor.questengine.utlis.location
 
 class FixedLocation(var offset: Float, var multiply: Double, var height: Double) {
 }

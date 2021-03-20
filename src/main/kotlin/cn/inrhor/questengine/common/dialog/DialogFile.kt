@@ -67,6 +67,9 @@ class DialogFile {
                 val replySfc = cfs.getConfigurationSection(replyPath)!!
                 if (replySfc.getKeys(false).isNotEmpty()) {
                     for (replyID in replySfc.getKeys(false)) {
+                        val hitAddLoc = KetherHandler.evalFixedLoc(
+                            replySfc.getString("$replyID.hitBox.addLocation")!!)
+                        val radius = replySfc.getDouble("$replyID.hitBox.radius")
                         val textAddLoc = KetherHandler.evalFixedLoc(
                             replySfc.getString("$replyID.text.addLocation")!!)
                         val textContent = replySfc.getStringList("$replyID.text.content")
@@ -75,7 +78,8 @@ class DialogFile {
                         val itemContent = replySfc.getStringList("$replyID.item.content")
                         val replyItemAnimation = ItemParser(itemContent)
                         replyItemAnimation.init()
-                        val replyCube = ReplyCube(replyID, textAddLoc, textContent, itemAddLoc, replyItemAnimation)
+                        val replyCube = ReplyCube(replyID, hitAddLoc, radius,
+                            textAddLoc, textContent, itemAddLoc, replyItemAnimation)
                         dialogCube.replyCubeList.add(replyCube)
                     }
                 }

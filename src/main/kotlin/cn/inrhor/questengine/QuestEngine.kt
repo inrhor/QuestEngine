@@ -6,7 +6,7 @@ import io.izzel.taboolib.module.config.TConfig
 import io.izzel.taboolib.module.inject.TInject
 
 object QuestEngine : Plugin() {
-    @TInject(locale = "setting.lang")
+    @TInject(locale = "setting.lang", migrate = true)
     lateinit var config : TConfig
 
     @TInject(state = TInject.State.STARTING, init = "init", cancel = "cancel")

@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.dialog.location
+package cn.inrhor.questengine.utlis.location
 
 import org.bukkit.Location
 
