@@ -8,17 +8,23 @@ helloWorld:
     - "check player name is *inrhor"
   # 关于对话内容
   content:
+    # 对话内容
     dialog:
       - "&rHi! #0000-i0# &aNice to meet u! #1000-i0#"
-      - "    &8&l[&3&l 任务引擎 &r| &f&lQuestEngine &8&l]"
+      - "&8&l[&3&l 任务引擎 &r| &f&lQuestEngine &8&l]"
+    # 回复
     reply:
+      # 回复ID
       1:
+        # 内容
         text:
-          - "&aNice to meet u! #1000-i0#"
+          - "replyHover '&8&l[ &f&l点击此第一项回复 &8&l]' '&aNice to meet u! #1000-i0#'"
+          - "reply '&r more...'"
+        # Kether
         script:
           - ""
       2:
         text:
-          - "&f这是一个有趣的插件"
+          - "replyHover '&8&l[ &f&l点击此第二项回复 &8&l]' '&f这是一个有趣的插件'"
         script:
           - ""
