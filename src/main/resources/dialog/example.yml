@@ -1,69 +1,24 @@
 # 对话ID
-dialog_1:
+helloWorld:
   # 交互NPC
   npcID: "test"
   # 对话需要满足的触发条件
   condition:
     - "permission *dialog.prm.1"
     - "check player name is *inrhor"
-  # 关于全息对话
-  dialog:
-    # 对话主体
-    own:
-      # 文字组
-      text:
-        # 在 主体位置 基础上增加的值
-        addLocation: "fixedLocation left 2.5 2.5"
-        # 内容（时间均采用Tick）
-        #   iHoloWrite 延迟 打字速度 内容
-        content:
-          - "<iHoloWrite 10 4 '&3&lQuest &f&lEngine'><iHoloWrite 20 3 '&r   &c&l任&e&l务&a&l引擎'>"
-          - "<iHoloWrite 10 5 '&f&l面向异世界的任务系统'>"
-      # 物品组
-      item:
-        addLocation: "fixedLocation left 2.5 2"
-        # 内容（每行仅一个物品）
-        content:
-          - "itemNormal 20 item_1"
-          - "itemNormal 60 item_2"
-      # 对话时长，结束后弹出对话回复选项
-      #      -1 为 自动根据文字组动态时长而判断
-      frame: 20
-    # 回复
+  # 关于对话内容
+  content:
+    dialog:
+      - "&rHi! #0000-i0# &aNice to meet u! #1000-i0#"
+      - "    &8&l[&3&l 任务引擎 &r| &f&lQuestEngine &8&l]"
     reply:
-      # 对话回复选项ID
       1:
-        # 点击框
-        hitBox:
-          addLocation: "fixedLocation left 2.5 1.5"
-          radius: 5
-        # 文字组
         text:
-          addLocation: "fixedLocation left 2.5 1.5"
-          content:
-            - "&c&l牛逼！！！"
-            - "&f&l666666"
-        # 物品组
-        item:
-          # 在 主体位置 基础上增加的值
-          addLocation: "fixedLocation left 2.5 1"
-          # 内容（每行仅一个物品）
-          content:
-            - "item_2"
-        # Kether脚本
+          - "&aNice to meet u! #1000-i0#"
         script:
           - ""
-      re:
-        hitBox:
-          addLocation: "fixedLocation left 4.5 1.5"
-          radius: 5
+      2:
         text:
-          addLocation: "fixedLocation left 4.5 1.5"
-          content:
-            - "&b&l暗示评分"
-        item:
-          addLocation: "fixedLocation left 4.5 1.0"
-          content:
-            - "item_1"
+          - "&f这是一个有趣的插件"
         script:
           - ""

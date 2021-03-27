@@ -1,7 +1,5 @@
 package cn.inrhor.questengine.api.hologram
 
-import cn.inrhor.questengine.common.hologram.IHolo
-
 
 class IHologramManager {
     companion object {

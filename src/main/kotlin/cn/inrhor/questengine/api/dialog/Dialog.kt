@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.api.dialog
 
-import cn.inrhor.questengine.common.dialog.cube.DialogCube
 import cn.inrhor.questengine.common.dialog.DialogManager
 import cn.inrhor.questengine.utlis.public.UseString
 import io.izzel.taboolib.module.locale.TLocale

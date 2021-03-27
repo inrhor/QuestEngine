@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.common.database.data
 
-import cn.inrhor.questengine.common.dialog.cube.ClickBox
 import java.util.*
 
 class PlayerData(
