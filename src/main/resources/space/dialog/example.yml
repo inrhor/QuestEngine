@@ -17,14 +17,16 @@ helloWorld:
       # 回复ID
       1:
         # 内容
+        #   replyHover 执行脚本与否 悬浮文本 普通文本
+        #   reply 执行脚本与否 普通文本
         text:
-          - "replyHover '&8&l[ &f&l点击此第一项回复 &8&l]' '&aNice to meet u! #1000-i0#'"
-          - "reply '&r more...'"
+          - "replyHover true '&8&l[ &f&l点击此第一项回复 &8&l]' '&aNice to meet u! #1000-i0#'"
+          - "reply false '&r more...'"
         # Kether
         script:
           - ""
       2:
         text:
-          - "replyHover '&8&l[ &f&l点击此第二项回复 &8&l]' '&f这是一个有趣的插件'"
+          - "replyHover true '&8&l[ &f&l点击此第二项回复 &8&l]' '&f这是一个有趣的插件'"
         script:
           - ""

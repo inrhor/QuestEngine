@@ -14,8 +14,8 @@ class ChatAPI {
         interceptor = ChatPacketInterceptor(QuestEngine.plugin)
     }
 
-    fun chatInterceptor(player: Player): PlayerChatIntercept {
-        return interceptor!!.getChat(player)
+    fun playerChatInterceptor(player: Player): PlayerChatIntercept {
+        return interceptor.getChat(player)
     }
 
 

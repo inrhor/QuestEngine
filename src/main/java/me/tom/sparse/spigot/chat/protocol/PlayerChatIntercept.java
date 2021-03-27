@@ -29,8 +29,7 @@ public class PlayerChatIntercept extends ChannelDuplexHandler
 		this.interceptor = interceptor;
 		this.player = player;
 		
-		while(messageQueue.size() < 20)
-			messageQueue.add(new BaseComponent[0]);
+		while(messageQueue.size() < 30) messageQueue.add(new BaseComponent[0]);
 	}
 	
 	/**
@@ -38,10 +37,9 @@ public class PlayerChatIntercept extends ChannelDuplexHandler
 	 *
 	 * @param message the message to send
 	 */
-	public void sendMessage(BaseComponent... message)
+	public void send(BaseComponent[] message)
 	{
-		if(isPaused())
-			allowedMessages.add(message);
+		if(isPaused()) allowedMessages.add(message);
 		player.spigot().sendMessage(message);
 	}
 	
@@ -50,24 +48,20 @@ public class PlayerChatIntercept extends ChannelDuplexHandler
 		return paused;
 	}
 	
-	public void pause()
-	{
-		if(isPaused())
-			return;
+	public void pause() {
+		if (isPaused()) return;
 		paused = true;
 		allowedMessages = new ConcurrentLinkedQueue<>();
 	}
 	
 	public void resume()
 	{
-		if(!isPaused())
-			return;
+		if(!isPaused()) return;
 		paused = false;
 		
 		allowedMessages = null;
 		Queue<BaseComponent[]> q = new ConcurrentLinkedQueue<>(messageQueue);
-		for(BaseComponent[] components : q)
-			player.spigot().sendMessage(components);
+		for(BaseComponent[] components : q) player.spigot().sendMessage(components);
 	}
 	
 	public void write(ChannelHandlerContext context, Object packet, ChannelPromise promise) throws Exception
@@ -79,13 +73,12 @@ public class PlayerChatIntercept extends ChannelDuplexHandler
 			boolean paused = isPaused();
 			if(!paused || !allowed)
 			{
-				while(messageQueue.size() > 20)
+				while(messageQueue.size() > 30)
 					messageQueue.remove();
 				messageQueue.add(components);
 			}
 			
-			if(paused && !allowed)
-				return;
+			if(paused && !allowed) return;
 		}
 		
 		super.write(context, packet, promise);
