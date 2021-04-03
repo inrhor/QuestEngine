@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.loader
 
 import cn.inrhor.questengine.QuestEngine
-import cn.inrhor.questengine.api.dialog.ChatAPI
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.utlis.public.UseString
 import org.bukkit.Bukkit
@@ -9,7 +8,6 @@ import org.bukkit.Bukkit
 class PluginLoader {
 
     fun init() {
-        ChatAPI().init()
         UpdateYaml().run(UseString.getLang())
         InfoSend().logoSend()
         /*Bukkit.getScheduler().runTaskAsynchronously(QuestEngine.plugin, Runnable {
