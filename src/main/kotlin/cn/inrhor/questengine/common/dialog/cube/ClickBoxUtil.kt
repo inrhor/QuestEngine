@@ -14,11 +14,7 @@ class ClickBoxUtil {
     fun sendClickBox(viewers: MutableSet<Player>, boxLoc: Location, radius: Double) {
         val clickBox = ClickBox(boxLoc, radius)
         viewers.forEach{
-            val playerData = DataStorage.playerDataStorage[it.uniqueId]
-                ?: error(
-                    TLocale.asString("DATA.PLAYER_DATA_GET_WARN",
-                    UseString.pluginTag,
-                    it.name))
+            val playerData = DataStorage.playerDataStorage[it.uniqueId]!!
             playerData.clickBoxList.add(clickBox)
         }
     }

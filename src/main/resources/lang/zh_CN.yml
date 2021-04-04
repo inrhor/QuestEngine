@@ -9,5 +9,3 @@ DIALOG:
   EMPTY_CONTENT: "{0}&r &6{1} &c没有内容或标准错误"
   EXIST_DIALOG_ID: "{0}&r &6{1} &8已有相同已注册的对话ID"
   NO_EXIST_DIALOG_ID: "{0}&r &6{1} &c不存在该对话ID"
-DATA:
-  PLAYER_DATA_GET_WARN: "{0}&r &c获取玩家 &r{1} &c数据时出现错误"

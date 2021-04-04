@@ -1,8 +1,10 @@
 package cn.inrhor.questengine.common.hologram
 
 import cn.inrhor.questengine.api.hologram.IHologramManager
+import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.dialog.cube.ClickBoxUtil
 import cn.inrhor.questengine.common.dialog.cube.DialogCube
+import cn.inrhor.questengine.common.dialog.cube.PlayerClickBoxData
 import cn.inrhor.questengine.common.dialog.holo.DialogHolo
 import cn.inrhor.questengine.utlis.location.LocationTool
 import cn.inrhor.questengine.common.nms.NMS
@@ -65,6 +67,19 @@ class IHolo(
         hasInit = true
 
         IHologramManager().addHolo(holoID, this)
+    }
+
+    /**
+     * 启动玩家点击框检查器
+     */
+    fun startClickTask() {
+        for (player in viewers) {
+            val uuid = player.uniqueId
+            val pData = DataStorage.playerDataStorage[uuid]!!
+            val boxData = pData.clickBoxData
+            boxData.clickBoxList = pData.clickBoxList
+            boxData.startClickTask()
+        }
     }
 
     /*
