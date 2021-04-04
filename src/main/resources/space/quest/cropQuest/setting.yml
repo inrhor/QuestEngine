@@ -1,0 +1,28 @@
+# 任务ID
+questID: "quest_1"
+# 任务名称
+name: "采集农作物任务"
+# 从哪个主线任务开始，此为主线任务ID
+startMainQuestID: "main_quest_1"
+# 任务人员模式
+# 可选如下
+#   personal  单人
+#   team  协作
+mode: "personal"
+# 关于接受任务设置
+accept:
+  # 需要满足条件数
+  #   -1 为全部条件
+  #   2 为两个条件
+  #   无 则 0 或 condition 留空
+  check: -1
+  # 条件 Kether
+  condition:
+    - "permission *quest.crop.1"
+    - "check player name is *inrhor"
+    - "check player balance > *100"
+# 关于任务失败设置，满足条件自动放弃
+failure:
+  check: 1
+  condition:
+    - "check player balance < *100"
