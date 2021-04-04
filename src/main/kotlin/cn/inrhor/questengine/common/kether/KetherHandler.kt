@@ -1,7 +1,10 @@
 package cn.inrhor.questengine.common.kether
 
+import cn.inrhor.questengine.common.dialog.animation.text.type.HoloWrite
 import cn.inrhor.questengine.utlis.location.FixedLocation
 import cn.inrhor.questengine.common.kether.expand.KetherFixedLocation
+import cn.inrhor.questengine.common.kether.expand.KetherIHoloWrite
+import cn.inrhor.questengine.common.kether.expand.KetherIItemNormal
 import io.izzel.taboolib.kotlin.kether.Kether
 import io.izzel.taboolib.kotlin.kether.KetherShell
 import io.izzel.taboolib.kotlin.kether.common.api.QuestActionParser
@@ -17,7 +20,9 @@ object KetherHandler {
             Kether.addAction(name, parser, "QuestEngine")
         }
 
+        addAction(KetherIItemNormal.parser(), "itemNormal")
         addAction(KetherFixedLocation.parser(), "fixedLocation")
+        addAction(KetherIHoloWrite.parser(), "iHoloWrite")
     }
 
     fun eval(player: Player, script: String): Any? {
@@ -55,6 +60,10 @@ object KetherHandler {
             if (!(eval(it, script) as Boolean)) return false
         }
         return true
+    }
+
+    fun evalHoloWrite(script: String): HoloWrite {
+        return eval(script) as HoloWrite
     }
 
     fun evalFixedLoc(script: String): FixedLocation {

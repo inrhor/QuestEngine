@@ -8,7 +8,7 @@ import java.io.File
 
 class GetFile {
     /**
-     * 返回 dialog 文件夹的内容
+     * 返回文件夹的内容
      */
     fun getFile(child: String, say: String): File {
         val file = File(QuestEngine.plugin.dataFolder, child)

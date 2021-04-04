@@ -1,32 +1,76 @@
 # 对话ID
-helloWorld:
+dialog_1:
   # 交互NPC
   npcID: "test"
   # 对话需要满足的触发条件
   condition:
     - "permission *dialog.prm.1"
     - "check player name is *inrhor"
-  # 关于对话内容
-  content:
-    # 对话内容
-    dialog:
-      - "&rHi! #0000-i0# &aNice to meet u! #1000-i0#"
-      - "&8&l[&3&l 任务引擎 &r| &f&lQuestEngine &8&l]"
+  # 关于全息对话
+  dialog:
+    # 对话主体
+    own:
+      # 文字组
+      text:
+        # 在 主体位置 基础上增加的值
+        addLocation: "fixedLocation left 2.5 2.5"
+        # 内容（时间均采用Tick）
+        #   iHoloWrite 延迟 打字速度 内容
+        content:
+          - "<iHoloWrite 10 4 '&3&lQuest &f&lEngine'><iHoloWrite 20 3 '&r   &c&l任&e&l务&a&l引擎'>"
+          - "<iHoloWrite 10 5 '&f&l面向异世界的任务系统'>"
+      # 物品组
+      item:
+        addLocation: "fixedLocation left 2.5 2"
+        # 内容（每行仅一个物品）
+        content:
+          - "itemNormal 20 item_1"
+          - "itemNormal 60 item_2"
+      # 对话时长，结束后弹出对话回复选项
+      #      -1 为 自动根据文字组动态时长而判断
+      frame: 20
     # 回复
     reply:
-      # 回复ID
+      # 对话回复选项ID
       1:
-        # 内容
-        #   replyHover 执行脚本与否 悬浮文本 普通文本
-        #   reply 执行脚本与否 普通文本
+        # 点击框
+        hitBox:
+          addLocation: "fixedLocation left 2.0 1.5"
+          # 点击框半径
+          radius: 2
+          # 鼠标看向此点击框会显示物品
+          show:
+            # 基于 点击框 基础上改动Y值
+            addY: 0
+            # 显示的物品
+            item: "item_2"
+        # 文字组
         text:
-          - "replyHover true '&8&l[ &f&l点击此第一项回复 &8&l]' '&aNice to meet u! #1000-i0#'"
-          - "reply false '&r more...'"
-        # Kether
+          addLocation: "fixedLocation left 2.0 1.5"
+          content:
+            - "&c&l牛逼！！！"
+            - "&f&l666666"
+        # 物品组
+        item:
+          # 在 主体位置 基础上增加的值
+          addLocation: "fixedLocation left 2.0 1"
+          # 内容（每行仅一个物品）
+          content:
+            - "item_2"
+        # Kether脚本
         script:
           - ""
-      2:
+      re:
+        hitBox:
+          addLocation: "fixedLocation left 5.0 1.5"
+          radius: 2
         text:
-          - "replyHover true '&8&l[ &f&l点击此第二项回复 &8&l]' '&f这是一个有趣的插件'"
+          addLocation: "fixedLocation left 5.0 1.5"
+          content:
+            - "&b&l暗示评分"
+        item:
+          addLocation: "fixedLocation left 5.0 1.0"
+          content:
+            - "item_1"
         script:
           - ""
