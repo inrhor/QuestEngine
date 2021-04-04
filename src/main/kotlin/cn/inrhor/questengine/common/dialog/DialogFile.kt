@@ -4,6 +4,7 @@ import cn.inrhor.questengine.common.dialog.animation.parser.ItemParser
 import cn.inrhor.questengine.common.dialog.animation.parser.TextAnimation
 import cn.inrhor.questengine.common.dialog.cube.DialogCube
 import cn.inrhor.questengine.common.dialog.cube.ReplyCube
+import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.common.kether.KetherHandler
 import cn.inrhor.questengine.utlis.public.UseString
 import io.izzel.taboolib.module.locale.TLocale
@@ -70,6 +71,8 @@ class DialogFile {
                         val hitAddLoc = KetherHandler.evalFixedLoc(
                             replySfc.getString("$replyID.hitBox.addLocation")!!)
                         val radius = replySfc.getDouble("$replyID.hitBox.radius")
+                        val showAddY = replySfc.getDouble("$replyID.hitBox.show.addY")
+                        val showItem = replySfc.getString("$replyID.hitBox.show.item")!!
                         val textAddLoc = KetherHandler.evalFixedLoc(
                             replySfc.getString("$replyID.text.addLocation")!!)
                         val textContent = replySfc.getStringList("$replyID.text.content")
@@ -79,9 +82,9 @@ class DialogFile {
                         val replyItemAnimation = ItemParser(itemContent)
                         replyItemAnimation.init()
                         val replyCube = ReplyCube(replyID, hitAddLoc, radius,
+                            showAddY, ItemManager().get(showItem),
                             textAddLoc, textContent, itemAddLoc, replyItemAnimation)
-                        val rcList = dialogCube.replyCubeList
-                        rcList.add(replyCube)
+                        dialogCube.replyCubeList.add(replyCube)
                     }
                 }
             }

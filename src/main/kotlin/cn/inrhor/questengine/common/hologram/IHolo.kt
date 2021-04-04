@@ -231,7 +231,7 @@ class IHolo(
         dialogCube.replyCubeList.forEach{ replyCube ->
             val hitBoxFixedLoc = replyCube.hitAddLocation
             val hitBoxLoc = LocationTool().getFixedLoc(npcLoc, hitBoxFixedLoc)
-            ClickBoxUtil().sendClickBox(viewers, hitBoxLoc, replyCube.radius)
+            ClickBoxUtil().sendClickBox(viewers, hitBoxLoc, replyCube)
             for (index in 0 until replyCube.textContent.size) {
                 val textFixedLoc = replyCube.textAddLoc
                 val textLoc = LocationTool().getFixedLoc(npcLoc, textFixedLoc)

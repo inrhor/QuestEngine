@@ -3,13 +3,12 @@ package cn.inrhor.questengine.common.dialog.cube
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.common.nms.NMS
 import org.bukkit.Bukkit
-import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
 
 class PlayerClickBoxData(
-    val uuid: UUID,
+    private val uuid: UUID,
     var entityID: Int,
     var itemID: Int,
     var clickBoxList: MutableList<ClickBox>,
@@ -38,16 +37,25 @@ class PlayerClickBoxData(
         clickRunnable = object : BukkitRunnable() {
             override fun run() {
                 if (!player.isOnline) {
+                    destroy(player)
                     cancel()
                     return
                 }
 
                 if (!isLookingBox(viewer)) {
-
+                    getPackets().destroyEntity(player, itemID)
+                    hasSpawnItem = false
                 }
             }
         }
         (clickRunnable as BukkitRunnable).runTaskTimer(QuestEngine.plugin, 0, 10L)
+    }
+
+    fun destroy(player: Player) {
+        getPackets().destroyEntity(player, itemID)
+        hasSpawnItem = false
+        getPackets().destroyEntity(player, entityID)
+        hasSpawnASI = false
     }
 
     fun isLookingBox(viewer: MutableSet<Player>): Boolean {
@@ -55,7 +63,11 @@ class PlayerClickBoxData(
             if (box.isClick(uuid)) {
                 val loc = box.boxLoc
                 if (!hasSpawnItem) {
-                    getPackets().spawnItem(viewer, itemID, loc, )
+                    val replyCube = box.replyCube
+                    getPackets().spawnItem(
+                        viewer, itemID,
+                        loc.add(0.0, replyCube.showAddY, 0.0),
+                        replyCube.showItem)
                     getPackets().updatePassengers(viewer, entityID, itemID)
                 }
                 getPackets().updateLocation(viewer, entityID, loc)
@@ -66,7 +78,10 @@ class PlayerClickBoxData(
     }
 
     fun stopClickTask() {
-        if (clickRunnable != null) clickRunnable!!.cancel()
+        if (clickRunnable != null) {
+            destroy(Bukkit.getPlayer(uuid)!!)
+            clickRunnable!!.cancel()
+        }
     }
 
     private fun getPackets(): NMS {

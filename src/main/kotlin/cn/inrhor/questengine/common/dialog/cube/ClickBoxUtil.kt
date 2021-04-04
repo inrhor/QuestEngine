@@ -11,8 +11,8 @@ class ClickBoxUtil {
     /**
      * 发送交互点击框
      */
-    fun sendClickBox(viewers: MutableSet<Player>, boxLoc: Location, radius: Double) {
-        val clickBox = ClickBox(boxLoc, radius)
+    fun sendClickBox(viewers: MutableSet<Player>, boxLoc: Location, replyCube: ReplyCube) {
+        val clickBox = ClickBox(boxLoc, replyCube)
         viewers.forEach{
             val playerData = DataStorage.playerDataStorage[it.uniqueId]!!
             playerData.clickBoxList.add(clickBox)
