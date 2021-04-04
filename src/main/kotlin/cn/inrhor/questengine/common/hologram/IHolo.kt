@@ -261,6 +261,7 @@ class IHolo(
                 }
             }
         }
+        startClickTask()
     }
 
     fun spawnItem(line: Int) {
