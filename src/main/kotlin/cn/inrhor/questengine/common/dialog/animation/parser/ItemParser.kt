@@ -30,10 +30,10 @@ class ItemParser(private val itemContents: MutableList<String>) {
     }
 
     /**
-     * 根据行数获取对话物品
+     * 根据索引获取对话物品
      */
-    fun getDialogItem(line: Int): DialogItem? {
-        if (dialogItemList.size > line) return dialogItemList[line]
+    fun getDialogItem(index: Int): DialogItem? {
+        if (dialogItemList.size > index) return dialogItemList[index]
         return null
     }
 

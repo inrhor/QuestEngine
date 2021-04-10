@@ -78,10 +78,10 @@ class TextAnimation(private val textContents: MutableList<String>) {
     }
 
     /**
-     * 根据行数获得这一行的标签内容
+     * 根据索引获得该索引行的标签内容
      */
-    fun getTextContent(line: Int): MutableList<TagText> {
-        if (textMap.containsKey(line)) return textMap[line]!!
+    fun getTextContent(index: Int): MutableList<TagText> {
+        if (textMap.containsKey(index)) return textMap[index]!!
         return mutableListOf()
     }
 

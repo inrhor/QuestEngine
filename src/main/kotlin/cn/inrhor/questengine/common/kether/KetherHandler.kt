@@ -2,7 +2,6 @@ package cn.inrhor.questengine.common.kether
 
 import cn.inrhor.questengine.common.dialog.animation.text.type.HoloWrite
 import cn.inrhor.questengine.utlis.location.FixedLocation
-import cn.inrhor.questengine.common.kether.expand.KetherFixedLocation
 import cn.inrhor.questengine.common.kether.expand.KetherIHoloWrite
 import cn.inrhor.questengine.common.kether.expand.KetherIItemNormal
 import io.izzel.taboolib.kotlin.kether.Kether

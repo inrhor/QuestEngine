@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.dialog
 
+import cn.inrhor.questengine.common.dialog.animation.parser.ItemParser
 import cn.inrhor.questengine.common.dialog.animation.parser.TextAnimation
 import cn.inrhor.questengine.common.dialog.cube.DialogCube
 import cn.inrhor.questengine.common.dialog.cube.ReplyCube
@@ -31,9 +32,24 @@ class DialogFile {
             val npcID = cfs.getString("npcID")!!
             val condition = cfs.getStringList("condition")
             val dialog = cfs.getStringList("dialog")
-            val dtAnimation = TextAnimation(getText(dialog))
 
-            val dialogCube = DialogCube(dialogID, npcID, condition, dtAnimation)
+            val textAnimations = mutableListOf<String>()
+            val itemAnimations = mutableListOf<String>()
+            for (i in dialog) {
+                if (i.startsWith("text")) {
+                    textAnimations.add(i.substring(0, i.indexOf("text ")))
+                    break
+                }
+                if (i.startsWith("itemNormal")) {
+                    itemAnimations.add(i)
+                    break
+                }
+            }
+
+            val dtAnimation = TextAnimation(textAnimations)
+            val diParser = ItemParser(itemAnimations)
+
+            val dialogCube = DialogCube(dialogID, npcID, condition, dialog, dtAnimation, diParser)
 
             if (cfs.contains("reply")) {
                 val replySfc = cfs.getConfigurationSection("reply")!!
@@ -49,15 +65,6 @@ class DialogFile {
 
             DialogManager().register(dialogID, dialogCube)
         }
-    }
-
-    fun getText(list: MutableList<String>): MutableList<String> {
-        val textAnimations = mutableListOf<String>()
-        for (i in list) {
-            if (!i.startsWith("text")) break
-            textAnimations.add(i.substring(0, i.indexOf("text ")))
-        }
-        return textAnimations
     }
 
 }

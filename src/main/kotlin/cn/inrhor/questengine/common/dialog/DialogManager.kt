@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.dialog
 
 import cn.inrhor.questengine.common.dialog.cube.DialogCube
-import cn.inrhor.questengine.common.hologram.IHolo
+import cn.inrhor.questengine.common.hologram.HoloDialog
 import cn.inrhor.questengine.common.kether.KetherHandler
 import cn.inrhor.questengine.utlis.file.GetFile
 import cn.inrhor.questengine.utlis.public.MsgUtil
@@ -75,7 +75,7 @@ class DialogManager {
     fun sendDialogHolo(players: MutableSet<Player>, npcID: String, npcLoc: Location) {
         MsgUtil.send("test  "+returnDialogHolo(players, npcID))
         val dialogCube = returnDialogHolo(players, npcID)?: return
-        val holo = IHolo(
+        val holo = HoloDialog(
             dialogCube, npcLoc, players)
         holo.init()
     }
