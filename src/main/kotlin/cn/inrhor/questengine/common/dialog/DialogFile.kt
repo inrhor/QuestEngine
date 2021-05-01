@@ -36,17 +36,19 @@ class DialogFile {
             val textAnimations = mutableListOf<String>()
             val itemAnimations = mutableListOf<String>()
             for (i in dialog) {
-                if (i.startsWith("text")) {
-                    textAnimations.add(i.substring(0, i.indexOf("text ")))
+                val iC = i.toUpperCase()
+                if (iC.startsWith("TEXT")) {
+                    textAnimations.add(i.substring(0, iC.indexOf("TEXT ")))
                     break
                 }
-                if (i.startsWith("itemNormal")) {
+                if (iC.startsWith("ITEMNORMAL")) {
                     itemAnimations.add(i)
                     break
                 }
             }
 
             val dtAnimation = TextAnimation(textAnimations)
+            dtAnimation.init()
             val diParser = ItemParser(itemAnimations)
 
             val dialogCube = DialogCube(dialogID, npcID, condition, dialog, dtAnimation, diParser)

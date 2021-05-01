@@ -1,6 +1,9 @@
 package cn.inrhor.questengine.common.hologram
 
+import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.dialog.cube.DialogCube
+import cn.inrhor.questengine.common.hologram.asi.HoloManagerID
+import cn.inrhor.questengine.common.hologram.asi.HoloTextASI
 import cn.inrhor.questengine.common.kether.KetherHandler
 import cn.inrhor.questengine.utlis.location.LocationTool
 import org.bukkit.Location
@@ -15,9 +18,12 @@ class HoloDialog(
     constructor(dialogCube: DialogCube, npcLoc: Location, viewers: MutableSet<Player>) :
             this(dialogCube.dialogID, dialogCube, npcLoc, viewers)
 
-    fun run(type: HoloType) {
+    private val textASIs: MutableList<HoloTextASI> = mutableListOf()
+
+    fun run() {
         var holoLoc = npcLoc
         var nextY = 0.0
+        var dialogTextIndex = 0
         for (i in dialogCube.dialog) {
             val iC = i.toUpperCase()
             when {
@@ -31,33 +37,46 @@ class HoloDialog(
                 }
                 iC.startsWith("NEXTY") -> {
                     nextY = iC.substring(0, i.indexOf("NEXTY ")).toDouble()
-                }
-                iC.startsWith("HITBOX") -> {
-                    if (type != HoloType.REPLY) break
-
+                    holoLoc.add(0.0, nextY, 0.0)
                 }
                 iC.startsWith("FRAME") -> {
-                    if (type != HoloType.DIALOG) break
+
                 }
                 iC.startsWith("TEXT") -> {
-                    if (type == HoloType.DIALOG) {
-
-                    }else {
-
-                    }
+                    val entityID = HoloManagerID().generate(
+                        holoID, "text", dialogTextIndex, "")
+                    val holoTextASI = HoloTextASI(
+                        entityID, viewers,
+                        dialogCube.textAnimation.getTextContent(dialogTextIndex),
+                        holoLoc,
+                        dialogTextIndex
+                    )
+                    dialogTextIndex++
+                    textASIs.add(holoTextASI)
                 }
                 iC.startsWith("ITEMNORMAL") -> {
-                    if (type != HoloType.DIALOG) break
+
                 }
                 iC.startsWith("ITEM") -> {
-                    if (type != HoloType.REPLY) break
+
                 }
             }
         }
     }
 
-    enum class HoloType{
-        DIALOG, REPLY
+    /**
+     * 启动玩家点击框检查器
+     */
+    fun startClickTask() {
+        for (player in viewers) {
+            val uuid = player.uniqueId
+            val pData = DataStorage.playerDataStorage[uuid]!!
+            val boxData = pData.clickBoxData
+            boxData.clickBoxList = pData.clickBoxList
+            boxData.startClickTask()
+        }
     }
+
+
 
 }
