@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.common.dialog
 
-import cn.inrhor.questengine.common.dialog.cube.DialogCube
-import cn.inrhor.questengine.common.hologram.HoloDialog
+import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.common.kether.KetherHandler
 import cn.inrhor.questengine.utlis.file.GetFile
 import cn.inrhor.questengine.utlis.public.MsgUtil
@@ -17,18 +16,18 @@ class DialogManager {
         /**
          * 成功注册的对话
          */
-        private var dialogFileMap: HashMap<String, DialogCube> = LinkedHashMap()
+        private var dialogFileMap: HashMap<String, DialogModule> = LinkedHashMap()
     }
 
     /**
      * 注册对话
      */
-    fun register(dialogID: String, dialogCube: DialogCube) {
+    fun register(dialogID: String, dialogModule: DialogModule) {
         if (exist(dialogID)) {
             TLocale.sendToConsole("DIALOG.EXIST_DIALOG_ID", UseString.pluginTag, dialogID)
             return
         }
-        dialogFileMap[dialogID] = dialogCube
+        dialogFileMap[dialogID] = dialogModule
     }
 
     /**
@@ -62,21 +61,21 @@ class DialogManager {
     fun clearMap() = dialogFileMap.clear()
 
     /**
-     * 根据NPCID并判断玩家集合是否满足条件，返回DialogCube
+     * 根据NPCID并判断玩家集合是否满足条件，返回dialogModule
      */
-    fun returnDialogHolo(players: MutableSet<Player>, npcID: String): DialogCube? {
-        for ((_, dialogCube) in dialogFileMap) {
-            if (dialogCube.npcID != npcID) continue
-            if (KetherHandler.evalBooleanSet(players, dialogCube.condition)) return dialogCube
+    fun returnDialogHolo(players: MutableSet<Player>, npcID: String): DialogModule? {
+        for ((_, dialogModule) in dialogFileMap) {
+            if (dialogModule.npcID != npcID) continue
+            if (KetherHandler.evalBooleanSet(players, dialogModule.condition)) return dialogModule
         }
         return null
     }
 
     fun sendDialogHolo(players: MutableSet<Player>, npcID: String, npcLoc: Location) {
         MsgUtil.send("test  "+returnDialogHolo(players, npcID))
-        val dialogCube = returnDialogHolo(players, npcID)?: return
-        val holo = HoloDialog(
-            dialogCube, npcLoc, players)
-        holo.init()
+        val dialogModule = returnDialogHolo(players, npcID)?: return
+        /*val holo = DialogModule(
+            dialogModule, npcLoc, players)
+        holo.init()*/
     }
 }

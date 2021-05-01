@@ -1,9 +1,7 @@
 package cn.inrhor.questengine.common.dialog
 
-import cn.inrhor.questengine.common.dialog.animation.parser.ItemParser
-import cn.inrhor.questengine.common.dialog.animation.parser.TextAnimation
-import cn.inrhor.questengine.common.dialog.cube.DialogCube
-import cn.inrhor.questengine.common.dialog.cube.ReplyCube
+import cn.inrhor.questengine.api.dialog.DialogModule
+import cn.inrhor.questengine.api.dialog.ReplyModule
 import cn.inrhor.questengine.utlis.public.UseString
 import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.configuration.file.YamlConfiguration
@@ -31,27 +29,11 @@ class DialogFile {
 
             val npcID = cfs.getString("npcID")!!
             val condition = cfs.getStringList("condition")
+            val type = cfs.getString("type")?: "holo"
             val dialog = cfs.getStringList("dialog")
 
-            val textAnimations = mutableListOf<String>()
-            val itemAnimations = mutableListOf<String>()
-            for (i in dialog) {
-                val iC = i.toUpperCase()
-                if (iC.startsWith("TEXT")) {
-                    textAnimations.add(i.substring(0, iC.indexOf("TEXT ")))
-                    break
-                }
-                if (iC.startsWith("ITEMNORMAL")) {
-                    itemAnimations.add(i)
-                    break
-                }
-            }
-
-            val dtAnimation = TextAnimation(textAnimations)
-            dtAnimation.init()
-            val diParser = ItemParser(itemAnimations)
-
-            val dialogCube = DialogCube(dialogID, npcID, condition, dialog, dtAnimation, diParser)
+            val dialogModule = DialogModule(
+                dialogID, npcID, condition, type, dialog)
 
             if (cfs.contains("reply")) {
                 val replySfc = cfs.getConfigurationSection("reply")!!
@@ -59,13 +41,13 @@ class DialogFile {
                     for (replyID in replySfc.getKeys(false)) {
                         val content = replySfc.getStringList("$replyID.content")
                         val script = replySfc.getStringList("$replyID.script")
-                        val replyCube = ReplyCube(replyID, content, script)
-                        dialogCube.replyCubeList.add(replyCube)
+                        val replyCube = ReplyModule(replyID, content, script)
+                        dialogModule.replyModuleList.add(replyCube)
                     }
                 }
             }
 
-            DialogManager().register(dialogID, dialogCube)
+            DialogManager().register(dialogID, dialogModule)
         }
     }
 

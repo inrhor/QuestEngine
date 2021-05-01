@@ -6,7 +6,9 @@ dialog_1:
   condition:
     - "permission *dialog.prm.1"
     - "check player name is *inrhor"
-  # 关于全息对话
+  # 可选对话类型
+  type: holo
+  # 关于对话 如下是全息对话示例
   dialog:
     - "initLoc left 2.5 2.5"
     - "nextY 1.2"
