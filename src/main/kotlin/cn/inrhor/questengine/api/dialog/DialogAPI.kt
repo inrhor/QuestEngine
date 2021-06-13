@@ -4,7 +4,7 @@ import cn.inrhor.questengine.common.dialog.DialogManager
 import cn.inrhor.questengine.utlis.public.UseString
 import io.izzel.taboolib.module.locale.TLocale
 
-class DialogAPI {
+object DialogAPI {
     /**
      * 注册对话对象
      */

@@ -2,6 +2,7 @@ package cn.inrhor.questengine.api.dialog
 
 /**
  * 对话属性模块
+ *
  */
 class DialogModule(val dialogID: String,
                    var npcID: String,

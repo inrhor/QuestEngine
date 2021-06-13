@@ -1,21 +1,21 @@
 package cn.inrhor.questengine.common.kether.expand
 
-import cn.inrhor.questengine.common.dialog.animation.text.type.HoloWrite
+import cn.inrhor.questengine.common.dialog.optional.holo.animation.text.type.TextWrite
 import io.izzel.taboolib.kotlin.kether.ScriptParser
 import io.izzel.taboolib.kotlin.kether.common.api.QuestAction
 import io.izzel.taboolib.kotlin.kether.common.api.QuestContext
 import java.util.concurrent.CompletableFuture
 
-class KetherIHoloWrite(
+class KetherTextWrite(
     val delay: Int,
     val speedWrite: Int,
     val text: String
-) : QuestAction<HoloWrite>() {
+) : QuestAction<TextWrite>() {
 
-    override fun process(context: QuestContext.Frame): CompletableFuture<HoloWrite>? {
-        val fixedLocation = CompletableFuture<HoloWrite>()
+    override fun process(context: QuestContext.Frame): CompletableFuture<TextWrite>? {
+        val fixedLocation = CompletableFuture<TextWrite>()
         fixedLocation.complete(
-            HoloWrite(
+            TextWrite(
                 delay,
                 speedWrite,
                 text
@@ -29,7 +29,7 @@ class KetherIHoloWrite(
             val delay = it.nextInt()
             val speedWrite = it.nextInt()
             val text = it.nextToken()
-            KetherIHoloWrite(delay, speedWrite, text)
+            KetherTextWrite(delay, speedWrite, text)
         }
     }
 }
