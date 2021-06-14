@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.dialog.optional.holo.animation.parser
 
-import cn.inrhor.questengine.common.dialog.optional.holo.animation.text.DialogTextAnimation
-import cn.inrhor.questengine.common.dialog.optional.holo.animation.text.TextDialog
+import cn.inrhor.questengine.common.dialog.optional.holo.animation.text.TextAnimation
+import cn.inrhor.questengine.common.dialog.optional.holo.animation.text.TextDialogPlay
 import java.util.regex.Pattern
 
 
@@ -16,7 +16,7 @@ class TextParser(private val textContents: MutableList<String>) {
      *
      * 每行特定动态文字组模块
      */
-    private var dialogTextList = mutableListOf<TextDialog>()
+    private var dialogTextList = mutableListOf<TextDialogPlay>()
 
     fun init(type: String) {
         for (line in 0 until this.textContents.size) {
@@ -29,7 +29,7 @@ class TextParser(private val textContents: MutableList<String>) {
                 val pContent = Pattern.compile("<(.*?)>")
                 val indTag = pContent.matcher(script)
 
-                val textAnimation = DialogTextAnimation(indTag, dialogTextList)
+                val textAnimation = TextAnimation(indTag, dialogTextList)
                 textAnimation.init()
 
             }else {

@@ -1,8 +1,11 @@
 package cn.inrhor.questengine.common.dialog
 
 import cn.inrhor.questengine.api.dialog.DialogModule
+import cn.inrhor.questengine.common.dialog.optional.holo.animation.parser.ItemParser
+import cn.inrhor.questengine.common.dialog.optional.holo.animation.parser.TextParser
 import cn.inrhor.questengine.common.kether.KetherHandler
 import cn.inrhor.questengine.utlis.file.GetFile
+import cn.inrhor.questengine.utlis.location.LocationTool
 import cn.inrhor.questengine.utlis.public.MsgUtil
 import cn.inrhor.questengine.utlis.public.UseString
 import io.izzel.taboolib.module.locale.TLocale
@@ -27,6 +30,26 @@ class DialogManager {
             TLocale.sendToConsole("DIALOG.EXIST_DIALOG_ID", UseString.pluginTag, dialogID)
             return
         }
+        val itemContents = mutableListOf<String>()
+        val textContents = mutableListOf<String>()
+        for (script in dialogModule.dialog) {
+            val iUc = script.uppercase(Locale.getDefault())
+            when {
+                iUc.startsWith("TEXT") -> {
+                    textContents.add(script)
+                }
+                iUc.startsWith("ITEMNORMAL") -> {
+                    itemContents.add(script)
+                }
+            }
+        }
+        val itemParser = ItemParser(itemContents)
+        val textParser = TextParser(textContents)
+        itemParser.init()
+        textParser.init("dialog")
+
+        // 我写晕了，重新思考整理下
+
         dialogFileMap[dialogID] = dialogModule
     }
 

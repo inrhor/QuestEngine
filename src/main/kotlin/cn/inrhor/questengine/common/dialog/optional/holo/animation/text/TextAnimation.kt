@@ -7,7 +7,7 @@ import java.util.regex.Matcher
 /**
  * 处理一行多个独立标签集合动态文字
  */
-class DialogTextAnimation(val indTag: Matcher, val dialogTextList: MutableList<TextDialog>) {
+class TextAnimation(val indTag: Matcher, val dialogTextList: MutableList<TextDialogPlay>) {
 
     fun init() {
         var frame = 0
@@ -41,7 +41,7 @@ class DialogTextAnimation(val indTag: Matcher, val dialogTextList: MutableList<T
             }
         }
 
-        val textAnimation = TextDialog(texts, delay)
+        val textAnimation = TextDialogPlay(texts, delay)
         dialogTextList.add(textAnimation)
     }
 

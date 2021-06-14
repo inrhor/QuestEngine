@@ -33,7 +33,7 @@ class DialogFile {
             val dialog = cfs.getStringList("dialog")
 
             val dialogModule = DialogModule(
-                dialogID, npcID, condition, type, dialog)
+                dialogID, npcID, condition, type, dialog, mutableListOf(), mutableListOf())
 
             if (cfs.contains("reply")) {
                 val replySfc = cfs.getConfigurationSection("reply")!!
