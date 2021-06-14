@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.kether
 
-import cn.inrhor.questengine.common.dialog.optional.holo.animation.text.type.TextWrite
+import cn.inrhor.questengine.common.dialog.animation.text.type.TextWrite
 import cn.inrhor.questengine.common.kether.expand.KetherFixedLocation
 import cn.inrhor.questengine.utlis.location.FixedLocation
 import cn.inrhor.questengine.common.kether.expand.KetherTextWrite

@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.dialog.optional.holo.animation.text
+package cn.inrhor.questengine.common.dialog.animation.text
 
 import java.util.regex.Pattern
 

@@ -1,11 +1,10 @@
 package cn.inrhor.questengine.common.dialog
 
 import cn.inrhor.questengine.api.dialog.DialogModule
-import cn.inrhor.questengine.common.dialog.optional.holo.animation.parser.ItemParser
-import cn.inrhor.questengine.common.dialog.optional.holo.animation.parser.TextParser
+import cn.inrhor.questengine.common.dialog.animation.parser.ItemParser
+import cn.inrhor.questengine.common.dialog.animation.parser.TextParser
 import cn.inrhor.questengine.common.kether.KetherHandler
 import cn.inrhor.questengine.utlis.file.GetFile
-import cn.inrhor.questengine.utlis.location.LocationTool
 import cn.inrhor.questengine.utlis.public.MsgUtil
 import cn.inrhor.questengine.utlis.public.UseString
 import io.izzel.taboolib.module.locale.TLocale
@@ -48,7 +47,8 @@ class DialogManager {
         itemParser.init()
         textParser.init("dialog")
 
-        // 我写晕了，重新思考整理下
+        dialogModule.playItem = itemParser.dialogItemList
+        dialogModule.playText = textParser.dialogTextList
 
         dialogFileMap[dialogID] = dialogModule
     }

@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.kether.expand
 
-import cn.inrhor.questengine.common.dialog.optional.holo.animation.text.type.TextWrite
+import cn.inrhor.questengine.common.dialog.animation.text.type.TextWrite
 import io.izzel.taboolib.kotlin.kether.ScriptParser
 import io.izzel.taboolib.kotlin.kether.common.api.QuestAction
 import io.izzel.taboolib.kotlin.kether.common.api.QuestContext

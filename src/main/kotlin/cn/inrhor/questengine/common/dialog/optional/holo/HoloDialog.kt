@@ -35,6 +35,9 @@ class HoloDialog(
                 iUc.startsWith("NEXTY") -> {
                     nextY = i.substring(0, iUc.indexOf("NEXTY ")).toDouble()
                 }
+                iUc.startsWith("TEXT") -> {
+
+                }
             }
         }
     }
