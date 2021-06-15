@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.dialog.animation.text
 
+import cn.inrhor.questengine.common.hologram.HoloIDManager
 import cn.inrhor.questengine.common.kether.KetherHandler
 import java.util.*
 import java.util.regex.Matcher
@@ -7,7 +8,7 @@ import java.util.regex.Matcher
 /**
  * 处理一行多个独立标签集合动态文字
  */
-class TextAnimation(val indTag: Matcher, val dialogTextList: MutableList<TextDialogPlay>) {
+class TextAnimation(val dialogID: String, val line: Int, val indTag: Matcher, val dialogTextList: MutableList<TextDialogPlay>) {
 
     fun init() {
         var frame = 0
@@ -41,7 +42,11 @@ class TextAnimation(val indTag: Matcher, val dialogTextList: MutableList<TextDia
             }
         }
 
-        val textAnimation = TextDialogPlay(texts, delay)
+        val holoID = HoloIDManager().generate(dialogID, line, "text")
+//                if (HoloIDManager().existEntityID(holoID))
+        HoloIDManager().addEntityID(holoID)
+
+        val textAnimation = TextDialogPlay(holoID, texts, delay)
         dialogTextList.add(textAnimation)
     }
 

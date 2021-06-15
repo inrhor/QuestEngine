@@ -4,6 +4,7 @@ import cn.inrhor.questengine.common.dialog.animation.item.ItemDialogPlay
 import cn.inrhor.questengine.common.hologram.HoloIDManager
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.common.kether.KetherHandler
+import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.inventory.ItemStack
 import java.util.*
 
@@ -20,15 +21,18 @@ class ItemParser(private val itemContents: MutableList<String>) {
      */
     val dialogItemList = mutableListOf<ItemDialogPlay>()
 
-    fun init(holoID: String) {
+    fun init(dialogID: String) {
         for (line in 0 until this.itemContents.size) {
             val script = this.itemContents[line]
+            val holoID = HoloIDManager().generate(dialogID, line, "text")
+//                if (HoloIDManager().existEntityID(holoID))
+            HoloIDManager().addEntityID(holoID)
             if (script.uppercase(Locale.getDefault()).startsWith("ITEMNORMAL")) {
-//                val id = HoloIDManager().generate(holoID, line, "text")
                 val dialogItem = KetherHandler.eval(script) as ItemDialogPlay
+                dialogItem.holoID = holoID
                 dialogItemList.add(dialogItem)
             }else {
-                val dialogItem = ItemDialogPlay(ItemManager().get(script), 0)
+                val dialogItem = ItemDialogPlay(holoID, ItemManager().get(script), 0)
                 dialogItemList.add(dialogItem)
             }
         }

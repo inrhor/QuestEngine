@@ -12,12 +12,12 @@ class HoloIDManager {
     /**
      * type > text, item
      */
-    fun generate(holoID: String, index: Int, type: String): Int {
-        return "$holoID-dialog-$index-$type".hashCode()
+    fun generate(dialogID: String, index: Int, type: String): Int {
+        return "$dialogID-dialog-$index-$type".hashCode()
     }
 
-    fun generate(holoID: String, replyID: String, index: Int, type: String): Int {
-        return "$holoID-reply-$replyID-$index-$type".hashCode()
+    fun generate(dialogID: String, replyID: String, index: Int, type: String): Int {
+        return "$dialogID-reply-$replyID-$index-$type".hashCode()
     }
 
     fun existEntityID(holoEntityID: Int): Boolean {

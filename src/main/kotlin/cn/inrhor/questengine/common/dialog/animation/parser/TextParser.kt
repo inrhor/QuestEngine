@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.dialog.animation.parser
 
 import cn.inrhor.questengine.common.dialog.animation.text.TextAnimation
 import cn.inrhor.questengine.common.dialog.animation.text.TextDialogPlay
+import cn.inrhor.questengine.common.hologram.HoloIDManager
 import java.util.regex.Pattern
 
 
@@ -18,10 +19,14 @@ class TextParser(private val textContents: MutableList<String>) {
      */
     val dialogTextList = mutableListOf<TextDialogPlay>()
 
-    fun init(type: String) {
+    fun init(dialogID: String, type: String) {
         for (line in 0 until this.textContents.size) {
 
             val script = this.textContents[line]
+
+            val holoID = HoloIDManager().generate(dialogID, line, "text")
+//                if (HoloIDManager().existEntityID(holoID))
+            HoloIDManager().addEntityID(holoID)
 
             if (type == "dialog") {
 
@@ -29,7 +34,7 @@ class TextParser(private val textContents: MutableList<String>) {
                 val pContent = Pattern.compile("<(.*?)>")
                 val indTag = pContent.matcher(script)
 
-                val textAnimation = TextAnimation(indTag, dialogTextList)
+                val textAnimation = TextAnimation(dialogID, line, indTag, dialogTextList)
                 textAnimation.init()
 
             }else {

@@ -44,8 +44,8 @@ class DialogManager {
         }
         val itemParser = ItemParser(itemContents)
         val textParser = TextParser(textContents)
-        itemParser.init()
-        textParser.init("dialog")
+        itemParser.init(dialogID)
+        textParser.init(dialogID, "dialog")
 
         dialogModule.playItem = itemParser.dialogItemList
         dialogModule.playText = textParser.dialogTextList

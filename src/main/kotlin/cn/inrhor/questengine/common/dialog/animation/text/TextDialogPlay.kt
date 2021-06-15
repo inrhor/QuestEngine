@@ -5,5 +5,5 @@ package cn.inrhor.questengine.common.dialog.animation.text
  *
  * 用于播放
  */
-class TextDialogPlay(val texts: MutableList<String>, val startTime: Int) {
+class TextDialogPlay(val holoID: Int, val texts: MutableList<String>, val startTime: Int) {
 }
