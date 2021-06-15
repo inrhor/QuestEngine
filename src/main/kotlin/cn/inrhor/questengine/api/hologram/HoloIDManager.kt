@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.hologram
+package cn.inrhor.questengine.api.hologram
 
 /**
  * Manager > HoloID & EntityID
@@ -10,7 +10,7 @@ class HoloIDManager {
     }
 
     /**
-     * type > text, item
+     * type > text, item, itemStack
      */
     fun generate(dialogID: String, index: Int, type: String): Int {
         return "$dialogID-dialog-$index-$type".hashCode()

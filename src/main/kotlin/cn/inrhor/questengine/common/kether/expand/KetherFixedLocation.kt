@@ -35,7 +35,7 @@ class KetherFixedLocation(
             }
             val multiply = it.nextDouble()
             val height = it.nextDouble()
-            KetherNextY(offset, multiply, height)
+            KetherFixedLocation(offset, multiply, height)
         }
     }
 }

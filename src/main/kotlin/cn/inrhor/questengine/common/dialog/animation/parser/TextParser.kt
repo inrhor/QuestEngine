@@ -2,7 +2,7 @@ package cn.inrhor.questengine.common.dialog.animation.parser
 
 import cn.inrhor.questengine.common.dialog.animation.text.TextAnimation
 import cn.inrhor.questengine.common.dialog.animation.text.TextDialogPlay
-import cn.inrhor.questengine.common.hologram.HoloIDManager
+import cn.inrhor.questengine.api.hologram.HoloIDManager
 import java.util.regex.Pattern
 
 

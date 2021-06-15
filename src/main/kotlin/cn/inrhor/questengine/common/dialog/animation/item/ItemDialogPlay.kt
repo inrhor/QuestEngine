@@ -7,9 +7,9 @@ import org.bukkit.inventory.ItemStack
  * @param item 物品内容
  * @param delay 延迟播放
  */
-class ItemDialogPlay(var holoID: Int, val item: ItemStack, val delay: Int) {
+class ItemDialogPlay(var holoID: Int, var itemID: Int, val item: ItemStack, val delay: Int) {
 
     constructor(item: ItemStack, delay: Int) :
-            this(0, item, delay)
+            this(0, 0, item, delay)
 
 }
