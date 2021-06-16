@@ -5,6 +5,7 @@ import io.izzel.taboolib.kotlin.kether.KetherError
 import io.izzel.taboolib.kotlin.kether.ScriptParser
 import io.izzel.taboolib.kotlin.kether.common.api.QuestAction
 import io.izzel.taboolib.kotlin.kether.common.api.QuestContext
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 class KetherFixedLocation(
@@ -27,7 +28,7 @@ class KetherFixedLocation(
 
     companion object {
         fun parser() = ScriptParser.parser {
-            val offset = when (it.nextToken().toLowerCase()) {
+            val offset = when (it.nextToken().lowercase(Locale.getDefault())) {
                 "left" -> -90F
                 "right" -> 90F
                 "behind" -> 180F

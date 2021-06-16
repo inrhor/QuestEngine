@@ -21,8 +21,9 @@ object KetherHandler {
         }
 
         addAction(KetherIItemNormal.parser(), "itemNormal")
-        addAction(KetherFixedLocation.parser(), "fixedLocation")
-        addAction(KetherTextWrite.parser(), "iHoloWrite")
+        addAction(KetherFixedLocation.parser(), "initLoc")
+        addAction(KetherFixedLocation.parser(), "addLoc")
+        addAction(KetherTextWrite.parser(), "textWrite")
     }
 
     fun eval(player: Player, script: String): Any? {

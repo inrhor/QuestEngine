@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.dialog.animation.text
 
 import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.common.kether.KetherHandler
+import cn.inrhor.questengine.utlis.public.MsgUtil
 import java.util.*
 import java.util.regex.Matcher
 
@@ -20,6 +21,7 @@ class TextAnimation(val dialogID: String, val line: Int, val indTag: Matcher, va
             val script = indTag.group(1)
             var frameTextIndex = 0
             if (indTag.group(1).uppercase(Locale.getDefault()).startsWith("TEXTWRITE")) {
+                MsgUtil.send("eee  $script")
                 val textWrite = KetherHandler.evalTextWrite(script)
                 val abDelay = textWrite.delay
                 val abSpeed = textWrite.speedWrite
@@ -33,7 +35,7 @@ class TextAnimation(val dialogID: String, val line: Int, val indTag: Matcher, va
                     if (UtilAnimation().isColor(abText.substring(0, end))) {
                         val getText = abText.substring(0, end)
                         if (frame > 0 && speed >= abSpeed) { speed = 0; end++ }else speed++
-                        if (texts.size >= frameTextIndex) {
+                        if (texts.size > frameTextIndex) {
                             texts[frameTextIndex] = getText
                         } else texts.add(getText)
                         frameTextIndex++; frame++
