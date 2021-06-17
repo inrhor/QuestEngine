@@ -27,6 +27,7 @@ class TextAnimation(val dialogID: String, val line: Int, val indTag: Matcher, va
                 val abSpeed = textWrite.speedWrite
                 val abText = textWrite.text
                 val abTextLength = abText.length
+                var length = abTextLength
 
                 if (delay > abDelay && abDelay < 0) delay = abDelay
 
@@ -36,16 +37,15 @@ class TextAnimation(val dialogID: String, val line: Int, val indTag: Matcher, va
                     if (!UtilAnimation().isColor(abText.substring(0, end))) {
                         val getText = abText.substring(0, end)
                         MsgUtil.send("test11  $getText")
-                        if (speed >= abSpeed) { speed = 0; end++ }
-                        else  { speed++; continue }
+                        if (speed >= abSpeed) { speed = 0; end++; frame++ } else speed++
                         if (texts.size > frameTextIndex) {
                             texts[frameTextIndex] = getText
                         } else texts.add(getText)
+//                        texts.add(getText)
                         frameTextIndex++
-                    }else end++
-                    frame++
-                    MsgUtil.send("frame  $frame   ab  $abTextLength")
-                    if (frame >= abTextLength-1) break
+                    }else { end++; length -= 1 }
+                    MsgUtil.send("frame  $frame   ab  $abTextLength  lent $length")
+                    if (frame >= length-1) break
                 }
             }
         }
