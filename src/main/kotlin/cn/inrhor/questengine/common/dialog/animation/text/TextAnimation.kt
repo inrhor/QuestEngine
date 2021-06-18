@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.dialog.animation.text
 
 import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.common.kether.KetherHandler
+import cn.inrhor.questengine.utlis.public.MsgUtil
 import java.util.*
 import java.util.regex.Matcher
 
@@ -28,7 +29,8 @@ class TextAnimation(val dialogID: String, val line: Int, val indTag: Matcher, va
 
                 if (delay > abDelay && abDelay < 0) delay = abDelay
 
-                if (textWrite.delay > delay) frameTextIndex += delay
+                if (abDelay > delay) frameTextIndex += abDelay
+                MsgUtil.send("frameIndex  $frameTextIndex")
 
                 var end = 2; var speed = 0
                 for (index in 0..(abTextLength+abTextLength*abSpeed)) {
@@ -40,9 +42,19 @@ class TextAnimation(val dialogID: String, val line: Int, val indTag: Matcher, va
                         } else texts.add(getText)
                         frameTextIndex++
                     }else { end++; length -= 1 }
-                    if (frame >= length-1) break
+                    if (frame >= length-1)  {
+                        for (i in frameTextIndex until texts.size) {
+                            MsgUtil.send("index  $i   "+texts.size)
+                            texts[i] = texts[i]+abText
+                        }
+                        break
+                    }
                 }
             }
+        }
+
+        for (i in texts) {
+            MsgUtil.send("ee  $i")
         }
 
         val holoID = HoloIDManager().generate(dialogID, line, "text")
