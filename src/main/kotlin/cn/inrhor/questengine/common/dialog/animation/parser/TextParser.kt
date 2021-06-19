@@ -32,9 +32,9 @@ class TextParser(private val textContents: MutableList<String>) {
 
                 // 分割 取 独立标签
                 val pContent = Pattern.compile("<(.*?)>")
-                val indTag = pContent.matcher(script)
+//                val indTag = pContent.matcher(script)
 
-                val textAnimation = TextAnimation(dialogID, line, indTag, dialogTextList)
+                val textAnimation = TextAnimation(dialogID, line, script, pContent, dialogTextList)
                 textAnimation.init()
 
             }else {
