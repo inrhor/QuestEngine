@@ -53,7 +53,7 @@ class TextAnimation(val dialogID: String, val line: Int, val script: String, val
                             if (firstFrame) {
                                 texts.add(getText)
                             }else {
-                                    val long = frameTextIndex-texts.size
+                                val long = frameTextIndex-texts.size
                                 if (long > 0) {
                                     for (i in 0 until long) {
                                         texts.add(texts[ts])
