@@ -19,6 +19,7 @@ class TextAnimation(val dialogID: String, val line: Int, val script: String, val
         val delay = minDelay(indTag)
         indTag = pattern.matcher(script)
         // 对独立标签而言
+        var firstFrame = true
         while (indTag.find()) {
             var frame = 0
             val script = indTag.group(1)
@@ -34,12 +35,14 @@ class TextAnimation(val dialogID: String, val line: Int, val script: String, val
                 if (abDelay > delay) frameTextIndex += abDelay
                 MsgUtil.send("frameIndex  $frameTextIndex")
 
-                var end = 2; var speed = 0
+                var end = 2; var speed = 1
+                val ts = texts.size
+                val fti = frameTextIndex
                 for (index in 0..(abTextLength+abTextLength*abSpeed)) {
                     if (!UtilAnimation().isColor(abText.substring(0, end))) {
                         val getText = abText.substring(0, end)
 
-                        if (speed >= abSpeed) { speed = 0; end++; frame++ } else speed++
+                        if (speed >= abSpeed) { speed = 1; end++; frame++ } else speed++
 
                         if (texts.isEmpty()) {
                             for (i in 0..frameTextIndex) {
@@ -51,21 +54,25 @@ class TextAnimation(val dialogID: String, val line: Int, val script: String, val
                             MsgUtil.send("wqe  ff  "+texts[frameTextIndex]+getText)
                             texts[frameTextIndex] = texts[frameTextIndex]+getText
                         }else {
-                            val ts = texts.size
-                            val fti = frameTextIndex
-                            for (i in ts..fti) {
-                                if (i == fti) {
-                                    if (firstFrame) {
+                            if (firstFrame) {
+                                texts.add(getText)
+                            }else {
+                                for (i in ts..fti) {
+                                    if (i == fti) {
+                                        /*if (firstFrame) {
                                         texts.add(getText)
                                         MsgUtil.send("firstfirstfirstFrame  "+getText)
                                     }else {
                                         MsgUtil.send("tststs  "+texts[ts]+getText)
                                         texts.add(texts[ts]+getText)
+                                    }*/
+                                        MsgUtil.send("tststs  $i  $ts  $fti  " + texts[ts-1] + getText)
+                                        texts.add(texts[ts-1] + getText)
+                                    } else {
+                                        MsgUtil.send("eeeeeeeeeeeeeeeeeeeeeeeeeee")
+                                        MsgUtil.send("size-1    " + texts[ts-1])
+                                        texts.add(texts[ts-1])
                                     }
-                                }else {
-                                    MsgUtil.send("eeeeeeeeeeeeeeeeeeeeeeeeeee")
-                                    MsgUtil.send("size-1    "+texts[texts.size-1])
-                                    texts.add(texts[texts.size-1])
                                 }
                             }
                         }
@@ -80,6 +87,7 @@ class TextAnimation(val dialogID: String, val line: Int, val script: String, val
                     }
                 }
             }
+            firstFrame = false
         }
 
         for (i in texts) {
