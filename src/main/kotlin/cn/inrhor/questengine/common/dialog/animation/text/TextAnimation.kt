@@ -3,7 +3,6 @@ package cn.inrhor.questengine.common.dialog.animation.text
 import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.common.dialog.animation.text.type.TextWrite
 import cn.inrhor.questengine.common.kether.KetherHandler
-import cn.inrhor.questengine.utlis.public.MsgUtil
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -23,7 +22,7 @@ class TextAnimation(val dialogID: String, val line: Int, val script: String, val
         while (indTag.find()) {
             var frame = 0
             val script = indTag.group(1)
-            var frameTextIndex = 0
+            var frameTextIndex = 0 // 第x行的文字帧
             if (script.uppercase(Locale.getDefault()).startsWith("TEXTWRITE")) {
                 val textWrite = KetherHandler.evalTextWrite(script)
                 val abDelay = textWrite.delay
@@ -33,54 +32,40 @@ class TextAnimation(val dialogID: String, val line: Int, val script: String, val
                 var length = abTextLength
 
                 if (abDelay > delay) frameTextIndex += abDelay
-                MsgUtil.send("frameIndex  $frameTextIndex")
 
                 var end = 2; var speed = 1
-                val ts = texts.size
-                val fti = frameTextIndex
+                val ts = texts.size - 1
                 for (index in 0..(abTextLength+abTextLength*abSpeed)) {
                     if (!UtilAnimation().isColor(abText.substring(0, end))) {
                         val getText = abText.substring(0, end)
 
                         if (speed >= abSpeed) { speed = 1; end++; frame++ } else speed++
 
-                        if (texts.isEmpty()) {
+                        if (texts.isEmpty()) {  // 首次由于延迟
                             for (i in 0..frameTextIndex) {
                                 if (i == frameTextIndex) {
                                     texts.add(getText)
                                 }else texts.add("")
                             }
-                        }else if (texts.size > frameTextIndex) {
-                            MsgUtil.send("wqe  ff  "+texts[frameTextIndex]+getText)
+                        }else if (texts.size > frameTextIndex) { // 在已有帧数内
                             texts[frameTextIndex] = texts[frameTextIndex]+getText
-                        }else {
+                        }else { // 新帧数
                             if (firstFrame) {
                                 texts.add(getText)
                             }else {
-                                for (i in ts..fti) {
-                                    if (i == fti) {
-                                        /*if (firstFrame) {
-                                        texts.add(getText)
-                                        MsgUtil.send("firstfirstfirstFrame  "+getText)
-                                    }else {
-                                        MsgUtil.send("tststs  "+texts[ts]+getText)
-                                        texts.add(texts[ts]+getText)
-                                    }*/
-                                        MsgUtil.send("tststs  $i  $ts  $fti  " + texts[ts-1] + getText)
-                                        texts.add(texts[ts-1] + getText)
-                                    } else {
-                                        MsgUtil.send("eeeeeeeeeeeeeeeeeeeeeeeeeee")
-                                        MsgUtil.send("size-1    " + texts[ts-1])
-                                        texts.add(texts[ts-1])
+                                    val long = frameTextIndex-texts.size
+                                if (long > 0) {
+                                    for (i in 0 until long) {
+                                        texts.add(texts[ts])
                                     }
                                 }
+                                texts.add(texts[ts]+getText)
                             }
                         }
                         frameTextIndex++
                     }else { end++; length -= 1 }
                     if (frame >= length-1)  {
                         for (i in frameTextIndex until texts.size) {
-                            MsgUtil.send("index  $i   "+texts.size)
                             texts[i] = texts[i]+abText
                         }
                         break
@@ -88,10 +73,6 @@ class TextAnimation(val dialogID: String, val line: Int, val script: String, val
                 }
             }
             firstFrame = false
-        }
-
-        for (i in texts) {
-            MsgUtil.send("ee  $i")
         }
 
         val holoID = HoloIDManager().generate(dialogID, line, "text")
@@ -102,7 +83,7 @@ class TextAnimation(val dialogID: String, val line: Int, val script: String, val
         dialogTextList.add(textAnimation)
     }
 
-    fun minDelay(tags: Matcher): Int {
+    private fun minDelay(tags: Matcher): Int {
         val t = mutableListOf<TextWrite>()
         while (tags.find()) {
             val script = tags.group(1)
