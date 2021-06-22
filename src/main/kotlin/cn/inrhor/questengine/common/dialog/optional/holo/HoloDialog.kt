@@ -4,7 +4,6 @@ import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.api.hologram.HoloDisplay
 import cn.inrhor.questengine.common.kether.KetherHandler
 import cn.inrhor.questengine.utlis.location.LocationTool
-import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.*
@@ -30,25 +29,35 @@ class HoloDialog(
             val iUc = i.uppercase(Locale.getDefault())
             when {
                 iUc.startsWith("INITLOC") -> {
-                    MsgUtil.send("iiiiwqeqwe  $i")
                     holoLoc = LocationTool().getFixedLoc(npcLoc, KetherHandler.evalFixedLoc(i))
                 }
                 iUc.startsWith("ADDLOC") -> {
-                    MsgUtil.send("rrrr  $i")
                     holoLoc = LocationTool().getFixedLoc(holoLoc, KetherHandler.evalFixedLoc(i))
                 }
                 iUc.startsWith("NEXTY") -> {
-                    MsgUtil.send("qweeee  $i")
                     val get = i.substring(0, iUc.indexOf(" "))
                     nextY = i.substring(get.length+1, i.length).toDouble()
-                    holoLoc.add(0.0, nextY, 0.0)
                 }
                 iUc.startsWith("TEXT") -> {
                     val playText = dialogModule.playText[textIndex]
-                    val holoID = playText.holoID
                     textIndex++
+                    holoLoc.add(0.0, nextY, 0.0)
+                    HoloAnimationText(viewers, playText, holoLoc).runTask()
+                }
+                iUc.startsWith("ITEMNORMAL") -> {
+                    val playItem = dialogModule.playItem[itemIndex]
+                    val holoID = playItem.holoID
+                    itemIndex++
+                    holoLoc.add(0.0, nextY, 0.0)
+
+                    /*
+                    *  为何不放入HoloAnimationItem
+                    *  别问了，holoLoc有毛病
+                    */
                     HoloDisplay.spawnAS(holoID, viewers, holoLoc)
-                    HoloAnimationText(viewers, playText).runTask()
+                    HoloDisplay.initItemAS(holoID, viewers)
+
+                    HoloAnimationItem(viewers, playItem, holoLoc).runTask()
                 }
             }
         }

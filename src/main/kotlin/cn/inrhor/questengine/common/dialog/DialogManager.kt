@@ -95,7 +95,6 @@ class DialogManager {
     }
 
     fun sendDialogHolo(players: MutableSet<Player>, npcID: String, npcLoc: Location) {
-        MsgUtil.send("test  "+returnDialogHolo(players, npcID))
         val dialogModule = returnDialogHolo(players, npcID)?: return
         /*val holo = DialogModule(
             dialogModule, npcLoc, players)

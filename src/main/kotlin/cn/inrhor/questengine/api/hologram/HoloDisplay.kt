@@ -28,6 +28,15 @@ object HoloDisplay {
         getPackets().updatePassengers(viewers, holoID, itemID)
     }
 
+    fun initTextAS(holoID: Int, viewers: MutableSet<Player>) {
+        getPackets().initAS(viewers, holoID, showName = true, isSmall = true, marker = true)
+        updateText(holoID, viewers, "")
+    }
+
+    fun initItemAS(holoID: Int, viewers: MutableSet<Player>) {
+        getPackets().initAS(viewers, holoID, showName = false, isSmall = false, marker = false)
+    }
+
     private fun getPackets(): NMS {
         return NMS.INSTANCE
     }
