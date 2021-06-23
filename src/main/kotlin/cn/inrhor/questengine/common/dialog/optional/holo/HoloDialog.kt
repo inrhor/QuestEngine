@@ -9,7 +9,7 @@ import org.bukkit.entity.Player
 import java.util.*
 
 /**
- * 全息对话管理
+ * 全息主体对话管理
  */
 class HoloDialog(
     var dialogModule: DialogModule,
@@ -57,7 +57,13 @@ class HoloDialog(
                     HoloDisplay.spawnAS(holoID, viewers, holoLoc)
                     HoloDisplay.initItemAS(holoID, viewers)
 
-                    HoloAnimationItem(viewers, playItem, holoLoc).runTask()
+                    HoloAnimationItem(viewers, playItem, holoLoc).run()
+                }
+                iUc.startsWith("REPLY") -> { // 弹出回复选项
+                    val replyList = dialogModule.replyModuleList
+                    val get = i.substring(0, iUc.indexOf(" "))
+                    val delay = get.toLong()
+                    HoloReply(replyList, npcLoc, viewers, delay).run()
                 }
             }
         }

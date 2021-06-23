@@ -11,12 +11,12 @@ class HoloAnimationItem(var viewers: MutableSet<Player>,
                         val itemDialogPlay: ItemDialogPlay,
                         val holoLoc: Location) {
 
-    fun runTask() {
+    fun run() {
         object : BukkitRunnable() {
             override fun run() {
                 HoloDisplay.updateItem(itemDialogPlay.holoID, itemDialogPlay.itemID, viewers, holoLoc, itemDialogPlay.item)
             }
-        }.runTaskLater(QuestEngine.plugin, itemDialogPlay.delay.toLong())
+        }.runTaskLaterAsynchronously(QuestEngine.plugin, itemDialogPlay.delay.toLong())
     }
 
 }

@@ -31,7 +31,7 @@ class HoloAnimationText(var viewers: MutableSet<Player>,
                 HoloDisplay.updateText(holoID, viewers, texts[line])
                 line++
             }
-        }.runTaskTimer(QuestEngine.plugin, textDialogPlay.startTime.toLong(), 1L)
+        }.runTaskTimerAsynchronously(QuestEngine.plugin, textDialogPlay.startTime.toLong(), 1L)
 
     }
 

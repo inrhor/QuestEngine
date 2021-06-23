@@ -12,12 +12,11 @@ dialog_1:
   dialog:
     - "initLoc left 2.5 2.5"
     - "nextY 1.2"
-    - "frame 20"
+    - "reply 20"
     - "text <textWrite 40 2 '&3&lQuest &f&lEngine'><textWrite 20 2 '&r   &c&l任&e&l务&a&l引擎'>"
     - "nextY -0.3"
     - "text <textWrite 10 3 '&f&l面向异世界的任务系统'>"
     - "addLoc right 5.5 1.0"
-    - "nextY -2.4"
     - "itemNormal 20 item_1"
     - "itemNormal 60 item_2"
   reply:

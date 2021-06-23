@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.dialog
 
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.api.dialog.ReplyModule
+import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.utlis.public.UseString
 import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.configuration.file.YamlConfiguration
@@ -42,6 +43,7 @@ class DialogFile {
                         val content = replySfc.getStringList("$replyID.content")
                         val script = replySfc.getStringList("$replyID.script")
                         val replyCube = ReplyModule(replyID, content, script)
+                        replyCube.holoInit(dialogID)
                         dialogModule.replyModuleList.add(replyCube)
                     }
                 }
