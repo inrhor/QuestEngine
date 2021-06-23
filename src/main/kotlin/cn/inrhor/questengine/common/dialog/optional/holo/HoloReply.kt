@@ -50,10 +50,20 @@ class HoloReply(
                     nextY = i.substring(get.length + 1, i.length).toDouble()
                 }
                 iUc.startsWith("TEXT") -> {
-
+                    val textDisplay = replyModule.textList[textIndex]
+                    val text = textDisplay.text
+                    val holoID = textDisplay.holoID
+                    textIndex++
+                    holoLoc = holoLoc.add(0.0, nextY, 0.0)
+                    HoloReplyDisplay().text(holoID, viewers, holoLoc, text)
                 }
                 iUc.startsWith("ITEM") -> {
-
+                    val itemDisplay = replyModule.itemList[itemIndex]
+                    val holoID = itemDisplay.holoID
+                    val itemID = itemDisplay.itemID
+                    val item = itemDisplay.item
+                    itemIndex++
+                    HoloReplyDisplay().item(holoID, itemID, viewers ,holoLoc, item)
                 }
             }
         }
