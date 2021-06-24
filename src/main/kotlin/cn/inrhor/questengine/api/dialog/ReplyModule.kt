@@ -27,7 +27,7 @@ class ReplyModule(val replyID: String,
                 iUc.startsWith("TEXT") -> {
                     val holoID = HoloIDManager().generate(dialogID, replyID, textLine, "text")
                     textLine++
-                    val get = i.substring(0, iUc.indexOf(" "))
+                    val get = i.substring(i.indexOf(" ")+1)
                     val textDisplay = TextDisplay(holoID, get)
                     textList.add(textDisplay)
                 }
@@ -35,7 +35,7 @@ class ReplyModule(val replyID: String,
                     val holoID = HoloIDManager().generate(dialogID, replyID, itemLine, "item")
                     val itemID = HoloIDManager().generate(dialogID, replyID, itemLine, "itemStack")
                     itemLine++
-                    val get = i.substring(0, iUc.indexOf(" "))
+                    val get = i.substring(i.indexOf(" ")+1)
                     val item = ItemManager().get(get)
                     val itemDisplay = ItemDisplay(holoID, itemID, item)
                     itemList.add(itemDisplay)

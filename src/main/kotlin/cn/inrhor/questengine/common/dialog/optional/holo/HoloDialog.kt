@@ -35,8 +35,8 @@ class HoloDialog(
                     holoLoc = LocationTool().getFixedLoc(holoLoc, KetherHandler.evalFixedLoc(i))
                 }
                 iUc.startsWith("NEXTY") -> {
-                    val get = i.substring(0, iUc.indexOf(" "))
-                    nextY = i.substring(get.length+1, i.length).toDouble()
+                    val get = i.substring(i.indexOf(" ")+1)
+                    nextY = get.toDouble()
                 }
                 iUc.startsWith("TEXT") -> {
                     val playText = dialogModule.playText[textIndex]
@@ -61,7 +61,7 @@ class HoloDialog(
                 }
                 iUc.startsWith("REPLY") -> { // 弹出回复选项
                     val replyList = dialogModule.replyModuleList
-                    val get = i.substring(0, iUc.indexOf(" "))
+                    val get = i.substring(i.indexOf(" ")+1)
                     val delay = get.toLong()
                     HoloReply(replyList, npcLoc, viewers, delay).run()
                 }
