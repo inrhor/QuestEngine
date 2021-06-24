@@ -1,7 +1,9 @@
-package cn.inrhor.questengine.common.dialog.optional.holo
+package cn.inrhor.questengine.common.dialog.optional.holo.core
 
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.api.hologram.HoloDisplay
+import cn.inrhor.questengine.common.dialog.optional.holo.HoloAnimationItem
+import cn.inrhor.questengine.common.dialog.optional.holo.HoloAnimationText
 import cn.inrhor.questengine.common.kether.KetherHandler
 import cn.inrhor.questengine.utlis.location.LocationTool
 import org.bukkit.Location
