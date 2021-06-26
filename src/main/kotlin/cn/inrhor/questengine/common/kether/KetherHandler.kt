@@ -2,9 +2,12 @@ package cn.inrhor.questengine.common.kether
 
 import cn.inrhor.questengine.common.dialog.animation.text.type.TextWrite
 import cn.inrhor.questengine.common.kether.expand.KetherFixedLocation
+import cn.inrhor.questengine.common.kether.expand.KetherHitBox
 import cn.inrhor.questengine.utlis.location.FixedLocation
 import cn.inrhor.questengine.common.kether.expand.KetherTextWrite
 import cn.inrhor.questengine.common.kether.expand.KetherIItemNormal
+import cn.inrhor.questengine.utlis.location.FixedHoloHitBox
+import cn.inrhor.questengine.utlis.public.MsgUtil
 import io.izzel.taboolib.kotlin.kether.Kether
 import io.izzel.taboolib.kotlin.kether.KetherShell
 import io.izzel.taboolib.kotlin.kether.common.api.QuestActionParser
@@ -24,6 +27,7 @@ object KetherHandler {
         addAction(KetherFixedLocation.parser(), "initLoc")
         addAction(KetherFixedLocation.parser(), "addLoc")
         addAction(KetherTextWrite.parser(), "textWrite")
+        addAction(KetherHitBox.parser(), "hitBox")
     }
 
     fun eval(player: Player, script: String): Any? {
@@ -69,5 +73,9 @@ object KetherHandler {
 
     fun evalFixedLoc(script: String): FixedLocation {
         return eval(script) as FixedLocation
+    }
+
+    fun evalHoloHitBox(script: String): FixedHoloHitBox {
+        return eval(script) as FixedHoloHitBox
     }
 }

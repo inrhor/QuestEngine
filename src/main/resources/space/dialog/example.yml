@@ -22,7 +22,7 @@ dialog_1:
   reply:
     reply_1:
       content:
-        - "hitBox left 2.5 1.5 2 3 3 3 3 3 3 item_2 2"
+        - "hitBox left 2.5 1.5 3 3 3 3 3 3 5 item_2 2"
         - "initLoc left 2.0 1.5"
         - "nextY -1.0"
         - "text &c&l牛逼！！！"

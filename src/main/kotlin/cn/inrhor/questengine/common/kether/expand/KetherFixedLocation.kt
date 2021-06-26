@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.kether.expand
 
 import cn.inrhor.questengine.utlis.location.FixedLocation
+import cn.inrhor.questengine.utlis.location.LocationTool
 import io.izzel.taboolib.kotlin.kether.KetherError
 import io.izzel.taboolib.kotlin.kether.ScriptParser
 import io.izzel.taboolib.kotlin.kether.common.api.QuestAction
@@ -28,12 +29,7 @@ class KetherFixedLocation(
 
     companion object {
         fun parser() = ScriptParser.parser {
-            val offset = when (it.nextToken().lowercase(Locale.getDefault())) {
-                "left" -> -90F
-                "right" -> 90F
-                "behind" -> 180F
-                else -> throw KetherError.CUSTOM.create("未知方向类型")
-            }
+            val offset = LocationTool().getOffsetType(it)
             val multiply = it.nextDouble()
             val height = it.nextDouble()
             KetherFixedLocation(offset, multiply, height)

@@ -2,9 +2,11 @@ package cn.inrhor.questengine.common.dialog.optional.holo.core
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.dialog.ReplyModule
+import cn.inrhor.questengine.common.dialog.optional.holo.HoloHitBox
 import cn.inrhor.questengine.common.dialog.optional.holo.HoloReplyDisplay
 import cn.inrhor.questengine.common.kether.KetherHandler
 import cn.inrhor.questengine.utlis.location.LocationTool
+import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
@@ -38,7 +40,10 @@ class HoloReply(
             val iUc = i.uppercase(Locale.getDefault())
             when {
                 iUc.startsWith("HITBOX") -> {
-
+                    val fixedHoloHitBox = KetherHandler.evalHoloHitBox(i)
+                    val holoHitBox = HoloHitBox(replyModule, fixedHoloHitBox, viewers)
+                    val boxLoc = LocationTool().getFixedHoloBoxLoc(npcLoc, fixedHoloHitBox)
+                    holoHitBox.isViewBox(boxLoc)
                 }
                 iUc.startsWith("INITLOC") -> {
                     holoLoc = LocationTool().getFixedLoc(npcLoc, KetherHandler.evalFixedLoc(i))

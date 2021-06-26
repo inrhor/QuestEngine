@@ -16,11 +16,7 @@ import java.util.*
 class HoloDialog(
     var dialogModule: DialogModule,
     var npcLoc: Location,
-    var viewers: MutableSet<Player>,
-    var frame: Int) {
-
-    constructor(dialogModule: DialogModule, npcLoc: Location, viewers: MutableSet<Player>) :
-            this(dialogModule, npcLoc, viewers, 0)
+    var viewers: MutableSet<Player>) {
 
     fun run() {
         var holoLoc = npcLoc

@@ -1,6 +1,9 @@
 package cn.inrhor.questengine.utlis.location
 
+import io.izzel.taboolib.kotlin.kether.KetherError
+import io.izzel.taboolib.kotlin.kether.common.loader.QuestReader
 import org.bukkit.Location
+import java.util.*
 
 class LocationTool {
     /**
@@ -30,5 +33,18 @@ class LocationTool {
 
     fun getFixedLoc(ownLoc: Location, fixedLoc: FixedLocation): Location {
         return getFixedLoc(ownLoc, fixedLoc.offset, fixedLoc.multiply, fixedLoc.height)!!
+    }
+
+    fun getFixedHoloBoxLoc(ownLoc: Location, fixedHoloHitBox: FixedHoloHitBox): Location {
+        return getFixedLoc(ownLoc, fixedHoloHitBox.offset, fixedHoloHitBox.multiply, fixedHoloHitBox.height)!!
+    }
+
+    fun getOffsetType(q: QuestReader): Float {
+        return when (q.nextToken().lowercase(Locale.getDefault())) {
+            "left" -> -90F
+            "right" -> 90F
+            "behind" -> 180F
+            else -> throw KetherError.CUSTOM.create("未知方向类型")
+        }
     }
 }

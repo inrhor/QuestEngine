@@ -9,16 +9,17 @@ import java.util.*
 /**
  * 回复属性模块
  */
-class ReplyModule(val replyID: String,
+class ReplyModule(val dialogID: String,
+                  val replyID: String,
                   var content: MutableList<String>,
                   var script: MutableList<String>,
                   var textList: MutableList<TextDisplay>,
                   var itemList: MutableList<ItemDisplay>) {
 
-    constructor(replyID: String, content: MutableList<String>, script: MutableList<String>) :
-            this(replyID, content, script, mutableListOf(), mutableListOf())
+    constructor(dialogID: String, replyID: String, content: MutableList<String>, script: MutableList<String>) :
+            this(dialogID, replyID, content, script, mutableListOf(), mutableListOf())
 
-    fun holoInit(dialogID: String) {
+    fun holoInit() {
         var textLine = 0
         var itemLine = 0
         for (i in content) {

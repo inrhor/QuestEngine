@@ -10,7 +10,7 @@ class HoloIDManager {
     }
 
     /**
-     * type > text, item, itemStack
+     * type > text, item, itemStack, hitBox
      */
     fun generate(dialogID: String, index: Int, type: String): Int {
         return "$dialogID-dialog-$index-$type".hashCode()

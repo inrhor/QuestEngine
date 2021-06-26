@@ -11,11 +11,11 @@ object HoloDisplay {
         getPackets().spawnAS(viewers, holoID, loc)
     }
 
-    fun delAS(holoID: Int, viewers: MutableSet<Player>) {
+    fun delEntity(holoID: Int, viewers: MutableSet<Player>) {
         getPackets().destroyEntity(viewers, holoID)
     }
 
-    fun delAS(holoID: Int, viewer: Player) {
+    fun delEntity(holoID: Int, viewer: Player) {
         getPackets().destroyEntity(viewer, holoID)
     }
 
