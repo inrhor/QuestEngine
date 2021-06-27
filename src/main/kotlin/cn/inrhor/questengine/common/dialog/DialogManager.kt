@@ -3,6 +3,7 @@ package cn.inrhor.questengine.common.dialog
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.common.dialog.animation.parser.ItemParser
 import cn.inrhor.questengine.common.dialog.animation.parser.TextParser
+import cn.inrhor.questengine.common.dialog.optional.holo.core.HoloDialog
 import cn.inrhor.questengine.common.kether.KetherHandler
 import cn.inrhor.questengine.utlis.file.GetFile
 import cn.inrhor.questengine.utlis.public.UseString
@@ -95,8 +96,7 @@ class DialogManager {
 
     fun sendDialogHolo(players: MutableSet<Player>, npcID: String, npcLoc: Location) {
         val dialogModule = returnDialogHolo(players, npcID)?: return
-        /*val holo = DialogModule(
-            dialogModule, npcLoc, players)
-        holo.init()*/
+        val holoDialog = HoloDialog(dialogModule, npcLoc, players)
+        holoDialog.run()
     }
 }

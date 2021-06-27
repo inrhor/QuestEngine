@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.dialog.optional.holo.core
 
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.api.hologram.HoloDisplay
+import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.dialog.optional.holo.HoloAnimationItem
 import cn.inrhor.questengine.common.dialog.optional.holo.HoloAnimationText
 import cn.inrhor.questengine.common.kether.KetherHandler
@@ -18,11 +19,30 @@ class HoloDialog(
     var npcLoc: Location,
     var viewers: MutableSet<Player>) {
 
+    var endDialog = false
+
+    val packetIDs = mutableListOf<Int>()
+
+    fun end() {
+        endDialog = true
+        for (viewer in viewers) {
+            val pData = DataStorage().getPlayerData(viewer)
+            pData.dialogData.holoDialogList.remove(this)
+        }
+        for (id in packetIDs) {
+            HoloDisplay.delEntity(id, viewers)
+        }
+    }
+
     fun run() {
         var holoLoc = npcLoc
         var nextY = 0.0
         var textIndex = 0
         var itemIndex = 0
+        for (viewer in viewers) {
+            val pData = DataStorage().getPlayerData(viewer)
+            pData.dialogData.holoDialogList.add(this)
+        }
         for (i in dialogModule.dialog) {
             val iUc = i.uppercase(Locale.getDefault())
             when {
@@ -40,7 +60,8 @@ class HoloDialog(
                     val playText = dialogModule.playText[textIndex]
                     textIndex++
                     holoLoc.add(0.0, nextY, 0.0)
-                    HoloAnimationText(viewers, playText, holoLoc).runTask()
+                    HoloAnimationText(this, viewers, playText, holoLoc).runTask()
+                    packetIDs.add(playText.holoID)
                 }
                 iUc.startsWith("ITEMNORMAL") -> {
                     val playItem = dialogModule.playItem[itemIndex]
@@ -56,6 +77,9 @@ class HoloDialog(
                     HoloDisplay.initItemAS(holoID, viewers)
 
                     HoloAnimationItem(viewers, playItem, holoLoc).run()
+
+                    packetIDs.add(playItem.holoID)
+                    packetIDs.add(playItem.itemID)
                 }
                 iUc.startsWith("REPLY") -> { // 弹出回复选项
                     val replyList = dialogModule.replyModuleList

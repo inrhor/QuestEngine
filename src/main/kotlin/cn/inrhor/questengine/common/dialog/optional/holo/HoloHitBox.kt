@@ -6,16 +6,16 @@ import cn.inrhor.questengine.api.hologram.HoloDisplay
 import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.utlis.location.FixedHoloHitBox
-import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 
 class HoloHitBox(val replyModule: ReplyModule,
+                 val boxLoc: Location,
                  val fixedHoloHitBox: FixedHoloHitBox,
                  var viewers: MutableSet<Player>) {
 
-    private fun isBox(viewLoc: Location, boxLoc: Location): Boolean {
+    private fun isBox(viewLoc: Location): Boolean {
         val minX = boxLoc.x-fixedHoloHitBox.minX
         val maxX = boxLoc.x+fixedHoloHitBox.maxX
         val minY = boxLoc.y-fixedHoloHitBox.minY
@@ -31,7 +31,7 @@ class HoloHitBox(val replyModule: ReplyModule,
         return false
     }
 
-    fun isBox(boxLoc: Location): Boolean {
+    fun isBox(): Boolean {
         for (player in viewers) {
             val eyeLoc = player.eyeLocation
             val viewLoc = eyeLoc.clone()
@@ -39,14 +39,13 @@ class HoloHitBox(val replyModule: ReplyModule,
             val long = fixedHoloHitBox.long
             while (viewLoc.distance(eyeLoc) <= long) {
                 viewLoc.add(dir)
-                MsgUtil.send("isBox  "+isBox(viewLoc, boxLoc))
-                if (isBox(viewLoc, boxLoc)) return true
+                if (isBox(viewLoc)) return true
             }
         }
         return false
     }
 
-    fun isViewBox(boxLoc: Location) {
+    fun viewBox() {
         var spawnHolo = false
         var displayItem = false
         val dialogID = replyModule.dialogID
@@ -59,7 +58,7 @@ class HoloHitBox(val replyModule: ReplyModule,
                 if (viewers.isEmpty())  {
                     cancel(); return
                 }
-                if (isBox(boxLoc)) {
+                if (isBox()) {
                     if (!spawnHolo) {
                         HoloDisplay.spawnAS(holoID, viewers, boxLoc)
                         HoloDisplay.initItemAS(holoID, viewers)

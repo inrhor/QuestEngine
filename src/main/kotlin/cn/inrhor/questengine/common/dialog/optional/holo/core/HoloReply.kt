@@ -2,11 +2,12 @@ package cn.inrhor.questengine.common.dialog.optional.holo.core
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.dialog.ReplyModule
+import cn.inrhor.questengine.api.hologram.HoloDisplay
+import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.dialog.optional.holo.HoloHitBox
 import cn.inrhor.questengine.common.dialog.optional.holo.HoloReplyDisplay
 import cn.inrhor.questengine.common.kether.KetherHandler
 import cn.inrhor.questengine.utlis.location.LocationTool
-import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
@@ -20,6 +21,14 @@ class HoloReply(
     var npcLoc: Location,
     var viewers: MutableSet<Player>,
     val delay: Long) {
+
+    val packetIDs = mutableListOf<Int>()
+
+    fun end() {
+        for (id in packetIDs) {
+            HoloDisplay.delEntity(id, viewers)
+        }
+    }
 
     fun run() {
         object : BukkitRunnable() {
@@ -36,14 +45,25 @@ class HoloReply(
         var nextY = 0.0
         var textIndex = 0
         var itemIndex = 0
+        for (viewer in viewers) {
+            val pData = DataStorage().getPlayerData(viewer)
+            pData.dialogData.holoReplyList.add(this)
+        }
         for (i in replyModule.content) {
             val iUc = i.uppercase(Locale.getDefault())
             when {
                 iUc.startsWith("HITBOX") -> {
                     val fixedHoloHitBox = KetherHandler.evalHoloHitBox(i)
-                    val holoHitBox = HoloHitBox(replyModule, fixedHoloHitBox, viewers)
                     val boxLoc = LocationTool().getFixedHoloBoxLoc(npcLoc, fixedHoloHitBox)
-                    holoHitBox.isViewBox(boxLoc)
+                    val holoHitBox = HoloHitBox(replyModule, boxLoc, fixedHoloHitBox, viewers)
+                    holoHitBox.viewBox()
+                    for (viewer in viewers) {
+                        val pData = DataStorage.playerDataStorage[viewer.uniqueId]?: return
+                        val holoBoxList = pData.dialogData.holoBoxList
+                        if (!holoBoxList.equals(holoHitBox)) {
+                            holoBoxList.add(holoHitBox)
+                        }
+                    }
                 }
                 iUc.startsWith("INITLOC") -> {
                     holoLoc = LocationTool().getFixedLoc(npcLoc, KetherHandler.evalFixedLoc(i))
@@ -62,6 +82,7 @@ class HoloReply(
                     textIndex++
                     holoLoc = holoLoc.add(0.0, nextY, 0.0)
                     HoloReplyDisplay().text(holoID, viewers, holoLoc, text)
+                    packetIDs.add(holoID)
                 }
                 iUc.startsWith("ITEM") -> {
                     val itemDisplay = replyModule.itemList[itemIndex]
@@ -70,6 +91,8 @@ class HoloReply(
                     val item = itemDisplay.item
                     itemIndex++
                     HoloReplyDisplay().item(holoID, itemID, viewers ,holoLoc, item)
+                    packetIDs.add(holoID)
+                    packetIDs.add(itemID)
                 }
             }
         }
