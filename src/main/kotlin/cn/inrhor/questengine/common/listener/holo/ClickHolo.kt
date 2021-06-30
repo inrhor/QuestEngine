@@ -23,7 +23,10 @@ class ClickHolo: Listener {
                 for (script in replyModule.script) {
                     KetherHandler.eval(p, script)
                 }
-                dialogData.endHoloDialog(holoBox)
+                for (viewer in holoBox.viewers) {
+                    val data = DataStorage().getPlayerData(viewer)
+                    data.dialogData.endHoloDialog(holoBox)
+                }
                 return
             }
         }
