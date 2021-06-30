@@ -16,18 +16,14 @@ class ClickHolo: Listener {
         val p = ev.player
         if (ev.action != Action.LEFT_CLICK_AIR) return
         val pData = DataStorage().getPlayerData(p)
-        for (holoBox in pData.dialogData.holoBoxList) {
+        val dialogData = pData.dialogData
+        for (holoBox in dialogData.holoBoxList) {
             if (holoBox.isBox()) {
                 val replyModule = holoBox.replyModule
                 for (script in replyModule.script) {
                     KetherHandler.eval(p, script)
                 }
-                for (holoDialog in pData.dialogData.holoDialogList) {
-                    val dialogModule = holoDialog.dialogModule
-                    if (dialogModule.dialogID == holoBox.replyModule.dialogID) {
-                        holoDialog.end()
-                    }
-                }
+                dialogData.endHoloDialog(holoBox)
                 return
             }
         }

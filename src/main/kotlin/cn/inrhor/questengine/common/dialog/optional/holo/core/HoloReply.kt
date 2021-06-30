@@ -22,7 +22,7 @@ class HoloReply(
     var viewers: MutableSet<Player>,
     val delay: Long) {
 
-    val packetIDs = mutableListOf<Int>()
+    private val packetIDs = mutableListOf<Int>()
 
     fun end() {
         for (id in packetIDs) {

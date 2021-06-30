@@ -15,6 +15,16 @@ class HoloHitBox(val replyModule: ReplyModule,
                  val fixedHoloHitBox: FixedHoloHitBox,
                  var viewers: MutableSet<Player>) {
 
+    private val packetIDs = mutableListOf<Int>()
+    private var task: BukkitRunnable? = null
+
+    fun end() {
+        task?.cancel()
+        for (id in packetIDs) {
+            HoloDisplay.delEntity(id, viewers)
+        }
+    }
+
     private fun isBox(viewLoc: Location): Boolean {
         val minX = boxLoc.x-fixedHoloHitBox.minX
         val maxX = boxLoc.x+fixedHoloHitBox.maxX
@@ -53,7 +63,9 @@ class HoloHitBox(val replyModule: ReplyModule,
         val holoID = HoloIDManager().generate(dialogID, replyID, 0, "hitBox")
         val itemID = HoloIDManager().generate(dialogID, replyID, 1, "hitBox")
         val item = ItemManager().get(fixedHoloHitBox.itemID)
-        object : BukkitRunnable() {
+        packetIDs.add(holoID)
+        packetIDs.add(itemID)
+        task = object : BukkitRunnable() {
             override fun run() {
                 if (viewers.isEmpty())  {
                     cancel(); return
@@ -74,7 +86,8 @@ class HoloHitBox(val replyModule: ReplyModule,
                     HoloDisplay.delEntity(itemID, viewers)
                 }
             }
-        }.runTaskTimer(QuestEngine.plugin, 0, 5L)
+        }
+        (task as BukkitRunnable).runTaskTimer(QuestEngine.plugin, 0, 5L)
     }
 
 }

@@ -21,14 +21,10 @@ class HoloDialog(
 
     var endDialog = false
 
-    val packetIDs = mutableListOf<Int>()
+    private val packetIDs = mutableListOf<Int>()
 
     fun end() {
         endDialog = true
-        for (viewer in viewers) {
-            val pData = DataStorage().getPlayerData(viewer)
-            pData.dialogData.holoDialogList.remove(this)
-        }
         for (id in packetIDs) {
             HoloDisplay.delEntity(id, viewers)
         }
@@ -76,7 +72,7 @@ class HoloDialog(
                     HoloDisplay.spawnAS(holoID, viewers, holoLoc)
                     HoloDisplay.initItemAS(holoID, viewers)
 
-                    HoloAnimationItem(viewers, playItem, holoLoc).run()
+                    HoloAnimationItem(this, viewers, playItem, holoLoc).run()
 
                     packetIDs.add(playItem.holoID)
                     packetIDs.add(playItem.itemID)
