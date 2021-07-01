@@ -18,11 +18,11 @@ accept:
   check: -1
   # 条件 Kether
   condition:
-    - "permission *quest.crop.1"
-    - "check player name is *inrhor"
-    - "check player balance > *100"
+    - permission *quest.crop.1
+    - check player name is *inrhor
+    - check player balance > *100
 # 关于任务失败设置，满足条件自动放弃
 failure:
   check: 1
   condition:
-    - "check player balance < *100"
+    - check player balance < *100

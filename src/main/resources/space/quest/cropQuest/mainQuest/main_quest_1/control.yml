@@ -1,0 +1,4 @@
+kether:
+  - player gamemode to *spectator
+  - sendPacket *sword world 100 10 24
+  - player gamemode to *adventure

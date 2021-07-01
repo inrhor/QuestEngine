@@ -1,0 +1,8 @@
+# 完成任务后触发脚本 Kether
+finishReward:
+  - ""
+  - ""
+
+# 任务失败后触发脚本 Kether
+failReward:
+  - ""
