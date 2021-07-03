@@ -88,7 +88,7 @@ class DialogManager {
      */
     fun returnDialogHolo(players: MutableSet<Player>, npcID: String): DialogModule? {
         for ((_, dialogModule) in dialogFileMap) {
-            if (dialogModule.npcID != npcID) continue
+            if (dialogModule.npcIDs.equals(npcID)) continue
             if (KetherHandler.evalBooleanSet(players, dialogModule.condition)) return dialogModule
         }
         return null

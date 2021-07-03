@@ -27,6 +27,7 @@ dependencies {
     implementation 'public:Citizens:1.0.0'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
     implementation fileTree(dir: 'libs', includes: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.5.10"
 }
 
 processResources {

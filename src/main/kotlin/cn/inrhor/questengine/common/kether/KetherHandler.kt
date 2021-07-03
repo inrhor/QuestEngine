@@ -7,7 +7,6 @@ import cn.inrhor.questengine.utlis.location.FixedLocation
 import cn.inrhor.questengine.common.kether.expand.KetherTextWrite
 import cn.inrhor.questengine.common.kether.expand.KetherIItemNormal
 import cn.inrhor.questengine.utlis.location.FixedHoloHitBox
-import cn.inrhor.questengine.utlis.public.MsgUtil
 import io.izzel.taboolib.kotlin.kether.Kether
 import io.izzel.taboolib.kotlin.kether.KetherShell
 import io.izzel.taboolib.kotlin.kether.common.api.QuestActionParser
@@ -16,7 +15,6 @@ import org.bukkit.entity.Player
 import java.util.concurrent.TimeUnit
 
 object KetherHandler {
-
     @TFunction.Init
     fun init() {
         val addAction: (QuestActionParser, String) -> Unit = { parser, name ->

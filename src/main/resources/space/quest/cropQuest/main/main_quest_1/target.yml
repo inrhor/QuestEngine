@@ -1,0 +1,17 @@
+target:
+  1:
+    event: give adych item
+    adych:
+      - test
+    item: material *apple 3
+    time: s 60
+    reward: 1 false
+  2:
+    event: break block
+    block: material *stone 10
+    time: minute 5
+    reward: all false
+  3:
+    event: player die
+    time: minute 1
+    reward: 2 true

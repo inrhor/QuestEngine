@@ -8,7 +8,7 @@ import cn.inrhor.questengine.common.dialog.animation.text.TextDialogPlay
  *
  */
 class DialogModule(val dialogID: String,
-                   var npcID: String,
+                   var npcIDs: MutableList<String>,
                    var condition: MutableList<String>,
                    var type: String,
                    var dialog: MutableList<String>,

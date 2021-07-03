@@ -1,7 +1,8 @@
 # 对话ID
 dialog_1:
   # 交互NPC
-  npcID: "test"
+  npcIDs:
+    - "test"
   # 对话需要满足的触发条件
   condition:
     - permission *dialog.prm.1

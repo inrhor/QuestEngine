@@ -27,7 +27,7 @@ class DialogFile {
                 return
             }
 
-            val npcID = cfs.getString("npcID")!!
+            val npcID = cfs.getStringList("npcID")
             val condition = cfs.getStringList("condition")
             val type = cfs.getString("type")?: "holo"
             val dialog = cfs.getStringList("dialog")
