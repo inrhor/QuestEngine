@@ -59,7 +59,7 @@ class DialogManager {
     fun loadDialog() {
         val dialogFolder = GetFile().getFile("space/dialog", "DIALOG.NO_FILES")
         GetFile().getFileList(dialogFolder).forEach{
-            DialogFile().checkRegDialog(it)
+            DialogFile.checkRegDialog(it)
         }
     }
 

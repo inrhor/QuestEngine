@@ -2,7 +2,6 @@ package cn.inrhor.questengine.common.quest.target
 
 import cn.inrhor.questengine.api.quest.ConditionType
 import cn.inrhor.questengine.api.quest.TargetExtend
-import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.event.block.BlockBreakEvent
 
 class TargetBreakBlock: TargetExtend<BlockBreakEvent>() {
@@ -15,14 +14,15 @@ class TargetBreakBlock: TargetExtend<BlockBreakEvent>() {
 
     override var time = -1
 
+    override var schedule = 0
+
     init {
         tasker{
             player
         }
         val block = object: ConditionType("block"){
             override fun check(): Boolean {
-                MsgUtil.send("Block!!!!!!!!!!")
-                return true
+                return (schedule >= 3)
             }
         }
         addCondition("block", block)

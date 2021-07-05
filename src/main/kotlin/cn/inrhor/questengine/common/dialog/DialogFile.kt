@@ -7,7 +7,7 @@ import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 
-class DialogFile {
+object DialogFile {
 
     /**
      * 检查配置和注册对话

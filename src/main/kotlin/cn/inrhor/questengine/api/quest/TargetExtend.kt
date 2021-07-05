@@ -27,6 +27,11 @@ abstract class TargetExtend<E: Event> {
     abstract var reward: String
 
     /**
+     * 目标进度
+     */
+    abstract var schedule: Int
+
+    /**
      * 事件的玩家
      */
     var tasker: ((E) -> Player?) = { null }

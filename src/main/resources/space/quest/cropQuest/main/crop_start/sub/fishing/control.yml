@@ -1,0 +1,8 @@
+kether:
+  - player gamemode to *3
+  - sendPacket *packet_1 world 100 10 12
+  - tell xx
+  - wait *s 10
+  - tell xxx
+  - wait *minute 1
+  - player tp ...

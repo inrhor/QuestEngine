@@ -5,10 +5,12 @@ name: "采集农作物任务"
 # 从哪个主线任务开始，此为主线任务ID
 startMainQuestID: "main_quest_1"
 # 任务人员模式
-# 可选如下
-#   personal  单人
-#   team  协作
-mode: "personal"
+mode:
+  # 可选如下
+  #   personal  单人
+  #   team  协作
+  type: "team"
+  amount: -1
 # 关于接受任务设置
 accept:
   # 需要满足条件数
