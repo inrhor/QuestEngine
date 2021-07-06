@@ -33,11 +33,12 @@ object QuestFile {
 
         val mainQuestList = mutableListOf<QuestMainModule>()
 
-        val mainFolder = File(QuestEngine.plugin.dataFolder, "space/quest/"+file.name+"/main")
+        val mainFolder = File(QuestEngine.plugin.dataFolder,
+            "space/quest/"+file.name+"/main")
         GetFile().getFileList(mainFolder).forEach {
             val optionFile = file(file, "option.yml")
             if (!optionFile.exists()) return
-            mainQuestList.add(mainQuest(it))
+            mainQuestList.add(mainQuest(file, it, questID)!!)
         }
 
         val questModule = QuestModule(questID, name, startID,
@@ -46,12 +47,51 @@ object QuestFile {
             failCheck, failCondition,
             mainQuestList)
 
+        QuestManager().register(questID, questModule)
+
     }
 
-    private fun mainQuest(file: File): QuestMainModule {
-        val option = yaml(file)
-        val mainQuestID = option.getString("mainQuestID")
-        return QuestMainModule(mainQuestID, )
+    private fun mainQuest(file: File, mainFile: File, questID: String): QuestMainModule? {
+        val option = yaml(mainFile)
+        val mainQuestID = option.getString("mainQuestID")!!
+
+        val controlFile = file(mainFile, "control.yml")
+        val questControl = control(controlFile, questID, mainQuestID)
+
+        val rewardFile = file(mainFile, "reward.yml")
+        val questReward = reward(rewardFile, questID, mainQuestID, "")
+
+        val targetFile = file(mainFile, "target.yml")
+        val target = yaml(targetFile)
+        val questTarget = TargetManager().getTargetList(target)
+
+        val subQuestList = mutableListOf<QuestSubModule>()
+
+        val subFolder = File(QuestEngine.plugin.dataFolder,
+            "space/quest/"+file.name+"/main/"+mainFile.name+"/sub")
+        GetFile().getFileList(subFolder).forEach {
+            val optionFile = file(it, "option.yml")
+            val optionSub = yaml(it)
+            if (optionFile.exists()) {
+                val subQuestID = optionSub.getString("subQuestID")!!
+
+                val controlSubFile = file(it, "control.yml")
+                val questControlSub = control(controlSubFile, questID, subQuestID)
+
+                val rewardSubFile = file(it, "reward.yml")
+                val questRewardSub = reward(rewardSubFile, questID, mainQuestID, subQuestID)
+
+                val targetSubFile = file(it, "target.yml")
+                val targetSub = yaml(targetSubFile)
+                val questTargetSub = TargetManager().getTargetList(targetSub)
+
+                val questSubModule = QuestSubModule(subQuestID, questControlSub,
+                    questRewardSub, questTargetSub)
+
+                subQuestList.add(questSubModule)
+            }
+        }
+        return QuestMainModule(mainQuestID, subQuestList, questControl, questReward, questTarget)
     }
 
     private fun file(file: File, path: String): File {
@@ -61,5 +101,26 @@ object QuestFile {
     private fun yaml(file: File): FileConfiguration {
         return YamlConfiguration.loadConfiguration(file)
     }
+
+    private fun reward(file: File, questID: String, mainQuestID: String, subQuestID: String): QuestReward {
+        val finishReward = mutableMapOf<String, MutableList<String>>()
+        var failReward = mutableListOf<String>()
+        val rewardFile = file(file, "reward.yml")
+        if (rewardFile.exists()) {
+            val reward = yaml(rewardFile)
+            for (rewardID in reward.getConfigurationSection("finishReward")!!.getKeys(false)) {
+                finishReward[rewardID] = reward.getStringList("finishReward.$rewardID")
+            }
+            failReward = reward.getStringList("failReward")
+        }
+        return QuestReward(questID, mainQuestID, subQuestID, finishReward, failReward)
+    }
+
+    private fun control(file: File, questID: String, id: String): QuestControl {
+        val control = yaml(file)
+        val controlKether = control.getStringList("kether")
+        return QuestControl(questID, id, controlKether)
+    }
+
 
 }

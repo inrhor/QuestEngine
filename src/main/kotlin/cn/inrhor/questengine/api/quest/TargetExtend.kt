@@ -19,12 +19,12 @@ abstract class TargetExtend<E: Event> {
     /**
      * 时间
      */
-    abstract var time: Int
+    abstract var time: String
 
     /**
-     * 奖励
+     * 完成奖励
      */
-    abstract var reward: String
+    abstract var finishReward: String
 
     /**
      * 目标进度

@@ -18,7 +18,7 @@ class DialogManager {
         /**
          * 成功注册的对话
          */
-        private var dialogFileMap: HashMap<String, DialogModule> = LinkedHashMap()
+        private var dialogMap: HashMap<String, DialogModule> = LinkedHashMap()
     }
 
     /**
@@ -50,7 +50,7 @@ class DialogManager {
         dialogModule.playItem = itemParser.dialogItemList
         dialogModule.playText = textParser.dialogTextList
 
-        dialogFileMap[dialogID] = dialogModule
+        dialogMap[dialogID] = dialogModule
     }
 
     /**
@@ -66,28 +66,28 @@ class DialogManager {
     /**
      * 删除对话
      */
-    fun remove(dialogID: String) {dialogFileMap.remove(dialogID)}
+    fun remove(dialogID: String) {dialogMap.remove(dialogID)}
 
     /**
      * 对话ID 是否存在
      */
-    fun exist(dialogID: String) = dialogFileMap.contains(dialogID)
+    fun exist(dialogID: String) = dialogMap.contains(dialogID)
 
     /**
      * 获取对话对象
      */
-    fun get(dialogID: String) = dialogFileMap[dialogID]
+    fun get(dialogID: String) = dialogMap[dialogID]
 
     /**
      * 清空对话对象Map
      */
-    fun clearMap() = dialogFileMap.clear()
+    fun clearMap() = dialogMap.clear()
 
     /**
      * 根据NPCID并判断玩家集合是否满足条件，返回dialogModule
      */
     fun returnDialogHolo(players: MutableSet<Player>, npcID: String): DialogModule? {
-        for ((_, dialogModule) in dialogFileMap) {
+        for ((_, dialogModule) in dialogMap) {
             if (dialogModule.npcIDs.equals(npcID)) continue
             if (KetherHandler.evalBooleanSet(players, dialogModule.condition)) return dialogModule
         }
