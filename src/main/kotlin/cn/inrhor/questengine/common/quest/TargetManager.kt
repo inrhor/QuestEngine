@@ -23,10 +23,10 @@ class TargetManager {
         for (i in yaml.getConfigurationSection("target")!!.getKeys(false)) {
             val s = "target.$i."
             val event = yaml.getString(s+"event")
+
             if (questTargetMap.contains(event)) {
                 val target = questTargetMap[event]!!
-                target.finishReward = yaml.getString(s+"reward")!!
-                target.time = yaml.getString(s+"time")!!
+                // 新建一个类，存储YAML目标信息
             }
         }
         return targetList

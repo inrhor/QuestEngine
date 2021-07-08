@@ -5,9 +5,7 @@ import cn.inrhor.questengine.api.quest.TargetExtend
 import cn.inrhor.questengine.common.quest.TargetManager
 import org.bukkit.event.block.BlockBreakEvent
 
-class TargetBreakBlock(override var finishReward: String,
-                       override var time: String,
-                       override var schedule: Int): TargetExtend<BlockBreakEvent>() {
+object TargetBreakBlock: TargetExtend<BlockBreakEvent>() {
 
     override val name = "break block"
 
@@ -17,9 +15,10 @@ class TargetBreakBlock(override var finishReward: String,
         tasker{
             player
         }
-        val block = object: ConditionType("block"){
+        val block = object: ConditionType("block") {
             override fun check(): Boolean {
-                return (schedule >= playerData....get)
+                // player data ...
+                return true
             }
         }
         addCondition("block", block)

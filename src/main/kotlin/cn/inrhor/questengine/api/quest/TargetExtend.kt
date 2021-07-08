@@ -2,6 +2,7 @@ package cn.inrhor.questengine.api.quest
 
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
+import org.bukkit.event.EventPriority
 import kotlin.reflect.KClass
 
 abstract class TargetExtend<E: Event> {
@@ -17,19 +18,24 @@ abstract class TargetExtend<E: Event> {
     abstract val event: KClass<E>
 
     /**
-     * 时间
+     * 事件优先级
      */
-    abstract var time: String
+    open val priority = EventPriority.HIGHEST
 
     /**
-     * 完成奖励
+     * 事件忽略已取消
      */
-    abstract var finishReward: String
+    open val ignoreCancelled = true
 
     /**
-     * 目标进度
+     * 是否注册事件
      */
-    abstract var schedule: Int
+    open val isListener = true
+
+    /**
+     * 是否异步执行
+     */
+    open val isAsync = false
 
     /**
      * 事件的玩家
@@ -43,7 +49,7 @@ abstract class TargetExtend<E: Event> {
     /**
      * 事件的条件
      */
-    private val conditionList = mutableMapOf<String, ConditionType>()
+    val conditionList = mutableMapOf<String, ConditionType>()
 
     fun addCondition(content: String, conditionType: ConditionType) {
         conditionList[content] = conditionType

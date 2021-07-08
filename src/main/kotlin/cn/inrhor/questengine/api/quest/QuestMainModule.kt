@@ -6,7 +6,7 @@ import cn.inrhor.questengine.common.quest.QuestReward
 class QuestMainModule(val mainQuestID: String,
                       var subQuestList: MutableList<QuestSubModule>,
                       var questControl: QuestControl,
-                      var questReward: QuestReward,
-                      var questTargetList: MutableList<TargetExtend<*>>) {
+                      var questReward: QuestReward/*,
+                      var questTargetList: MutableList<TargetExtend<*>>*/) {
 
 }
