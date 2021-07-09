@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.api.quest
 
 import cn.inrhor.questengine.QuestEngine
-import cn.inrhor.questengine.utlis.public.MsgUtil
 import io.izzel.taboolib.TabooLibLoader
 import io.izzel.taboolib.compat.kotlin.CompatKotlin
 import io.izzel.taboolib.kotlin.SingleListener
@@ -24,7 +23,7 @@ object QuestLoader {
         if (isListener) {
             SingleListener.listen(event.java, priority, ignoreCancelled) { e ->
                 tasker(e)?.run {
-                    conditionList.forEach { (_, condition) ->
+                    conditionMap.forEach { (_, condition) ->
                         // 异步与否
 
                         /*if (condition.check()) {

@@ -63,8 +63,7 @@ object QuestFile {
 
         val targetFile = file(mainFile, "target.yml")
         val target = yaml(targetFile)
-        // 新建类，存储YAML的事件名称 时间 奖励等内容
-//        val questTarget = TargetManager().getTargetList(target)
+        val questTarget = TargetManager.getTargetList(target)
 
         val subQuestList = mutableListOf<QuestSubModule>()
 
@@ -84,8 +83,7 @@ object QuestFile {
 
                 val targetSubFile = file(it, "target.yml")
                 val targetSub = yaml(targetSubFile)
-                // 新建类，存储YAML的事件名称 时间 奖励等内容
-                val questTargetSub = TargetManager().getTargetList(targetSub)
+                val questTargetSub = TargetManager.getTargetList(targetSub)
 
                 val questSubModule = QuestSubModule(subQuestID, questControlSub,
                     questRewardSub, questTargetSub)
@@ -93,7 +91,7 @@ object QuestFile {
                 subQuestList.add(questSubModule)
             }
         }
-        return QuestMainModule(mainQuestID, subQuestList, questControl, questReward/*, questTarget*/)
+        return QuestMainModule(mainQuestID, subQuestList, questControl, questReward, questTarget)
     }
 
     private fun file(file: File, path: String): File {

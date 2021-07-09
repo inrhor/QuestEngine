@@ -49,10 +49,10 @@ abstract class TargetExtend<E: Event> {
     /**
      * 事件的条件
      */
-    val conditionList = mutableMapOf<String, ConditionType>()
+    val conditionMap = mutableMapOf<String, ConditionType>()
 
     fun addCondition(content: String, conditionType: ConditionType) {
-        conditionList[content] = conditionType
+        conditionMap[content] = conditionType
     }
 
 }

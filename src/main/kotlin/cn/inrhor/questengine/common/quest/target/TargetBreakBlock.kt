@@ -22,7 +22,7 @@ object TargetBreakBlock: TargetExtend<BlockBreakEvent>() {
             }
         }
         addCondition("block", block)
-        TargetManager().register(name, this)
+        TargetManager.register(name, this)
     }
 
 }
