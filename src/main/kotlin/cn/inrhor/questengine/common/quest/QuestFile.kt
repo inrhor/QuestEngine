@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.quest
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.quest.QuestMainModule
+import cn.inrhor.questengine.api.quest.QuestManager
 import cn.inrhor.questengine.api.quest.QuestModule
 import cn.inrhor.questengine.api.quest.QuestSubModule
 import cn.inrhor.questengine.utlis.file.GetFile
@@ -54,6 +55,7 @@ object QuestFile {
     private fun mainQuest(file: File, mainFile: File, questID: String): QuestMainModule? {
         val option = yaml(mainFile)
         val mainQuestID = option.getString("mainQuestID")!!
+        val nextMainQuestID = option.getString("nextMainQuestID")!!
 
         val controlFile = file(mainFile, "control.yml")
         val questControl = control(controlFile, questID, mainQuestID)
@@ -91,7 +93,7 @@ object QuestFile {
                 subQuestList.add(questSubModule)
             }
         }
-        return QuestMainModule(mainQuestID, subQuestList, questControl, questReward, questTarget)
+        return QuestMainModule(mainQuestID, nextMainQuestID, subQuestList, questControl, questReward, questTarget)
     }
 
     private fun file(file: File, path: String): File {

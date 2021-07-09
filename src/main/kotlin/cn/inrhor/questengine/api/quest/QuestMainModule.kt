@@ -5,6 +5,7 @@ import cn.inrhor.questengine.common.quest.QuestReward
 import cn.inrhor.questengine.common.quest.QuestTarget
 
 class QuestMainModule(val mainQuestID: String,
+                      val nextMinQuestID: String,
                       var subQuestList: MutableList<QuestSubModule>,
                       var questControl: QuestControl,
                       var questReward: QuestReward,

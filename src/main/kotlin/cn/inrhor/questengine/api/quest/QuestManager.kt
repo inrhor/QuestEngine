@@ -1,7 +1,5 @@
-package cn.inrhor.questengine.common.quest
+package cn.inrhor.questengine.api.quest
 
-import cn.inrhor.questengine.api.quest.QuestModule
-import cn.inrhor.questengine.api.quest.TargetExtend
 import java.util.HashMap
 import java.util.LinkedHashMap
 
