@@ -7,6 +7,6 @@ import cn.inrhor.questengine.common.quest.QuestTarget
 class QuestSubModule(val subQuestID: String,
                      var questControl: QuestControl,
                      var questReward: QuestReward,
-                     var questTargetList: MutableList<QuestTarget>) {
+                     var questTargetList: MutableMap<String, QuestTarget>) {
 
 }

@@ -4,10 +4,8 @@ import org.bukkit.entity.Player
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-class DataStorage {
-    companion object {
-        private val playerDataStorage = ConcurrentHashMap<UUID, PlayerData>()
-    }
+object DataStorage {
+    private val playerDataStorage = ConcurrentHashMap<UUID, PlayerData>()
 
     fun addPlayerData(uuid: UUID, playerData: PlayerData) {
         playerDataStorage[uuid] = playerData

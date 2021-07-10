@@ -11,6 +11,6 @@ class QuestSubData(
     val mainQuestID: String,
     val subQuestID: String,
     val schedule: Int,
-    var targetList: MutableList<QuestTarget>,
+    var targetList: MutableMap<String, QuestTarget>,
     var state: QuestState) {
 }

@@ -22,18 +22,18 @@ class ItemParser(private val itemContents: MutableList<String>) {
     fun init(dialogID: String) {
         for (line in 0 until this.itemContents.size) {
             val script = this.itemContents[line]
-            val holoID = HoloIDManager().generate(dialogID, line, "item")
-            val itemID = HoloIDManager().generate(dialogID, line, "itemStack")
-//                if (HoloIDManager().existEntityID(holoID))
-            HoloIDManager().addEntityID(holoID)
-            HoloIDManager().addEntityID(itemID)
+            val holoID = HoloIDManager.generate(dialogID, line, "item")
+            val itemID = HoloIDManager.generate(dialogID, line, "itemStack")
+//                if (HoloIDManager.existEntityID(holoID))
+            HoloIDManager.addEntityID(holoID)
+            HoloIDManager.addEntityID(itemID)
             if (script.uppercase(Locale.getDefault()).startsWith("ITEMNORMAL")) {
                 val dialogItem = KetherHandler.eval(script) as ItemDialogPlay
                 dialogItem.holoID = holoID
                 dialogItem.itemID = itemID
                 dialogItemList.add(dialogItem)
             }else {
-                val dialogItem = ItemDialogPlay(holoID, itemID, ItemManager().get(script), 0)
+                val dialogItem = ItemDialogPlay(holoID, itemID, ItemManager.get(script), 0)
                 dialogItemList.add(dialogItem)
             }
         }

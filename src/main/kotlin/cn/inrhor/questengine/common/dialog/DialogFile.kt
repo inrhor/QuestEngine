@@ -48,7 +48,7 @@ object DialogFile {
                 }
             }
 
-            DialogManager().register(dialogID, dialogModule)
+            DialogManager.register(dialogID, dialogModule)
         }
     }
 

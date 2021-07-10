@@ -25,7 +25,7 @@ class ItemFile {
         itemBuilder.customModelData(customModelData)
         this.item = itemBuilder.build()
 
-        ItemManager().register(this.itemID!!, this)
+        ItemManager.register(this.itemID!!, this)
     }
 
 }

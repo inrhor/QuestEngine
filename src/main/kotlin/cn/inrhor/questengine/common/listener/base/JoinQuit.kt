@@ -14,7 +14,7 @@ class JoinQuit: Listener {
     fun onPlayerJoin(ev: PlayerJoinEvent) {
         val uuid = ev.player.uniqueId
         val playerData = PlayerData(uuid)
-        DataStorage().addPlayerData(uuid, playerData)
+        DataStorage.addPlayerData(uuid, playerData)
     }
 
 }

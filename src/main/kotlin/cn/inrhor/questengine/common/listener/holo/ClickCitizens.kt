@@ -15,7 +15,7 @@ class ClickCitizens {
         val npc = ev.npc.entity
         val npcLoc = npc.location
         val npcIDName = ev.npc.name
-        DialogManager().sendDialogHolo(mutableSetOf(player), npcIDName, npcLoc)
+        DialogManager.sendDialogHolo(mutableSetOf(player), npcIDName, npcLoc)
     }
 
     @EventHandler
@@ -24,7 +24,7 @@ class ClickCitizens {
         val npc = ev.npc.entity
         val npcLoc = npc.location
         val npcIDName = ev.npc.name
-        DialogManager().sendDialogHolo(mutableSetOf(player), npcIDName, npcLoc)
+        DialogManager.sendDialogHolo(mutableSetOf(player), npcIDName, npcLoc)
     }
 
     fun isCitizensNPC() = (QuestEngine.config.getString("dialog.npcPlugin") == "Citizens")

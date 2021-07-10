@@ -15,8 +15,8 @@ class PluginLoader {
         InfoSend().logoSend()
         Bukkit.getScheduler().runTaskAsynchronously(QuestEngine.plugin, Runnable {
             val timeCost = measureTimeMillis {
-                ItemManager().loadDialog()
-                DialogManager().loadDialog()
+                ItemManager.loadDialog()
+                DialogManager.loadDialog()
             }
             TLocale.sendToConsole("LOADER.TIME_COST", UseString.pluginTag, timeCost)
         })
@@ -42,8 +42,8 @@ class PluginLoader {
     }
 
     fun clearMap() {
-        DialogManager().clearMap()
-        ItemManager().clearMap()
+        DialogManager.clearMap()
+        ItemManager.clearMap()
     }
 
 }

@@ -48,7 +48,7 @@ object QuestFile {
             failCheck, failCondition,
             mainQuestList)
 
-        QuestManager().register(questID, questModule)
+        QuestManager.register(questID, questModule)
 
     }
 

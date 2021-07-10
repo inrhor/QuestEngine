@@ -24,9 +24,9 @@ class TextParser(private val textContents: MutableList<String>) {
 
             val script = this.textContents[line]
 
-            val holoID = HoloIDManager().generate(dialogID, line, "text")
-//                if (HoloIDManager().existEntityID(holoID))
-            HoloIDManager().addEntityID(holoID)
+            val holoID = HoloIDManager.generate(dialogID, line, "text")
+//                if (HoloIDManager.existEntityID(holoID))
+            HoloIDManager.addEntityID(holoID)
 
             if (type == "dialog") {
 

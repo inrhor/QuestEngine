@@ -8,13 +8,11 @@ import java.io.File
 import java.util.HashMap
 import java.util.LinkedHashMap
 
-class ItemManager {
-    companion object {
-        /**
-         * 成功注册的物品
-         */
-        private var itemFileMap: HashMap<String, ItemFile> = LinkedHashMap()
-    }
+object ItemManager {
+    /**
+     * 成功注册的物品
+     */
+    private var itemFileMap: HashMap<String, ItemFile> = LinkedHashMap()
 
     /**
      * 注册物品

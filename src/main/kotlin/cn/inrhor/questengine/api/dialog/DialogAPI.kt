@@ -9,15 +9,15 @@ object DialogAPI {
      * 注册对话对象
      */
     fun register(dialogID: String, dialogModule: DialogModule) {
-        DialogManager().register(dialogID, dialogModule)
+        DialogManager.register(dialogID, dialogModule)
     }
 
     /**
      * 获取对话对象
      */
     fun getDialog(dialogID: String): DialogModule? {
-        if (DialogManager().exist(dialogID)) {
-            return DialogManager().get(dialogID)
+        if (DialogManager.exist(dialogID)) {
+            return DialogManager.get(dialogID)
         }
         TLocale.sendToConsole("DIALOG.NO_EXIST_DIALOG_ID", UseString.pluginTag, dialogID)
         return null
@@ -27,6 +27,6 @@ object DialogAPI {
      * 删除注册的对话对象
      */
     fun removeDialog(dialogID: String) {
-        DialogManager().remove(dialogID)
+        DialogManager.remove(dialogID)
     }
 }

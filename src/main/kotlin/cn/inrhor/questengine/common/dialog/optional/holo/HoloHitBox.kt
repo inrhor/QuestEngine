@@ -60,9 +60,9 @@ class HoloHitBox(val replyModule: ReplyModule,
         var displayItem = false
         val dialogID = replyModule.dialogID
         val replyID = replyModule.replyID
-        val holoID = HoloIDManager().generate(dialogID, replyID, 0, "hitBox")
-        val itemID = HoloIDManager().generate(dialogID, replyID, 1, "hitBox")
-        val item = ItemManager().get(fixedHoloHitBox.itemID)
+        val holoID = HoloIDManager.generate(dialogID, replyID, 0, "hitBox")
+        val itemID = HoloIDManager.generate(dialogID, replyID, 1, "hitBox")
+        val item = ItemManager.get(fixedHoloHitBox.itemID)
         packetIDs.add(holoID)
         packetIDs.add(itemID)
         task = object : BukkitRunnable() {

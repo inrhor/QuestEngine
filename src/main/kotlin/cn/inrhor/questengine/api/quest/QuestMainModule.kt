@@ -9,6 +9,6 @@ class QuestMainModule(val mainQuestID: String,
                       var subQuestList: MutableList<QuestSubModule>,
                       var questControl: QuestControl,
                       var questReward: QuestReward,
-                      var questTargetList: MutableList<QuestTarget>) {
+                      var questTargetList: MutableMap<String, QuestTarget>) {
 
 }

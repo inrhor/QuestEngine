@@ -7,18 +7,17 @@ import cn.inrhor.questengine.common.database.data.quest.QuestMainData
 import cn.inrhor.questengine.common.database.data.quest.QuestSubData
 import cn.inrhor.questengine.common.kether.KetherHandler
 import cn.inrhor.questengine.common.quest.QuestState
+import cn.inrhor.questengine.common.quest.QuestTarget
 import org.bukkit.entity.Player
 import java.util.HashMap
 import java.util.LinkedHashMap
 
-class QuestManager {
+object QuestManager {
 
-    companion object {
-        /**
-         * 注册的任务模块内容
-         */
-        private var questMap: HashMap<String, QuestModule> = LinkedHashMap()
-    }
+    /**
+     * 注册的任务模块内容
+     */
+    private var questMap: HashMap<String, QuestModule> = LinkedHashMap()
 
     /**
      * 注册任务模块内容
@@ -49,7 +48,7 @@ class QuestManager {
      * 接受任务
      */
     fun acceptQuest(player: Player, questID: String) {
-        val pData = DataStorage().getPlayerData(player)?: return
+        val pData = DataStorage.getPlayerData(player)?: return
         val questModule = getQuestModule(questID)?: return
         val startMainQuest = questModule.getStartMainQuest()?: return
         acceptMainQuest(pData, questID, startMainQuest)
@@ -61,7 +60,7 @@ class QuestManager {
      * 前提是已接受任务
      */
     fun acceptNextMainQuest(player: Player, questData: QuestData, mainQuestID: String) {
-        val pData = DataStorage().getPlayerData(player)?: return
+        val pData = DataStorage.getPlayerData(player)?: return
         val questID = questData.questID
         val questMainModule = getMainQuestModule(questID, mainQuestID)?: return
         val nextMainID = questMainModule.nextMinQuestID
@@ -128,7 +127,7 @@ class QuestManager {
      * 获得玩家任务数据
      */
     fun getQuestData(player: Player, questID: String): QuestData? {
-        val pData = DataStorage().getPlayerData(player) ?: return null
+        val pData = DataStorage.getPlayerData(player) ?: return null
         return pData.questDataList[questID]
     }
 
@@ -172,6 +171,51 @@ class QuestManager {
                         }else s.questReward.failReward
                     }
                 }
+            }
+        }
+        return null
+    }
+
+    /**
+     * 触发任务目标
+     * 给定进度，进度满额则完成目标且运行奖励脚本
+     */
+    fun targetTrigger(player: Player, name: String) {
+        /*val pData = DataStorage.getPlayerData(player)?: return
+        if (pData.questDataList.isEmpty()) return
+        pData.questDataList.forEach { questID, questData ->
+            if (questData.state == QuestState.DOING) {
+                val mainData = questData.questMainData
+                mainData.targetList.forEach {
+                    if (it.name == name) {
+                        if (it.conditionList.isEmpty()) {
+
+                        }
+                    }
+                }
+                return@forEach
+            }
+        }*/
+    }
+
+    /**
+     * 获得触发的任务目标
+     */
+    fun getDoingTarget(player: Player, name: String): QuestTarget? {
+        val questData = getDoingQuest(player)?: return null
+        val mainData = questData.questMainData
+        return mainData.targetList[name]
+    }
+
+    /**
+     * 获得正在进行中的任务
+     */
+    fun getDoingQuest(player: Player): QuestData? {
+        val pData = DataStorage.getPlayerData(player)?: return null
+        if (pData.questDataList.isEmpty()) return null
+        pData.questDataList.forEach { (_, questData) ->
+            if (questData.state == QuestState.DOING) {
+                return questData
             }
         }
         return null

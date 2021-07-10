@@ -13,13 +13,11 @@ import org.bukkit.entity.Player
 import java.util.*
 
 
-class DialogManager {
-    companion object {
-        /**
-         * 成功注册的对话
-         */
-        private var dialogMap: HashMap<String, DialogModule> = LinkedHashMap()
-    }
+object DialogManager {
+    /**
+     * 成功注册的对话
+     */
+    private var dialogMap: HashMap<String, DialogModule> = LinkedHashMap()
 
     /**
      * 注册对话

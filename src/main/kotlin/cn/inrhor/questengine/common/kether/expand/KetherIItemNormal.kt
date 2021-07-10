@@ -16,7 +16,7 @@ class KetherIItemNormal(
         val dialogItem = CompletableFuture<ItemDialogPlay>()
         dialogItem.complete(
             ItemDialogPlay(
-                ItemManager().get(itemID),
+                ItemManager.get(itemID),
                 delay
             )
         )

@@ -75,9 +75,9 @@ class TextAnimation(val dialogID: String, val line: Int, val script: String, val
             firstFrame = false
         }
 
-        val holoID = HoloIDManager().generate(dialogID, line, "text")
-//                if (HoloIDManager().existEntityID(holoID))
-        HoloIDManager().addEntityID(holoID)
+        val holoID = HoloIDManager.generate(dialogID, line, "text")
+//                if (HoloIDManager.existEntityID(holoID))
+        HoloIDManager.addEntityID(holoID)
 
         val textAnimation = TextDialogPlay(holoID, texts, delay)
         dialogTextList.add(textAnimation)

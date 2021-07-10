@@ -5,14 +5,14 @@ import org.bukkit.configuration.file.FileConfiguration
 
 object TargetManager {
 
-    val targetMap = mutableMapOf<String, TargetExtend<*>>()
+    private val targetMap = mutableMapOf<String, TargetExtend<*>>()
 
     fun register(name: String, targetExtend: TargetExtend<*>) {
         targetMap[name] = targetExtend
     }
 
-    fun getTargetList(yaml: FileConfiguration): MutableList<QuestTarget> {
-        val questTargetList = mutableListOf<QuestTarget>()
+    fun getTargetList(yaml: FileConfiguration): MutableMap<String, QuestTarget> {
+        val questTargetList = mutableMapOf<String, QuestTarget>()
         for (i in yaml.getConfigurationSection("target")!!.getKeys(false)) {
             val s = "target.$i."
             val name = yaml.getString(s+"name")?: "null"
@@ -37,9 +37,16 @@ object TargetManager {
                 }
             }
             val target = QuestTarget(name, time, reward, condition, conditionList)
-            questTargetList.add(target)
+            questTargetList[name] = target
         }
         return questTargetList
+    }
+
+    fun finishReward(content: String) {
+        val s = content.split(" ")
+        val rewardID = s[0]
+        val repeat = s[1].toBoolean()
+
     }
 
 }

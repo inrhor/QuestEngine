@@ -21,7 +21,7 @@ class ClickAdyesNPC: Listener {
         val npc = ev.entity
         val npcLoc = npc.getLocation()
         val npcID = npc.id
-        DialogManager().sendDialogHolo(mutableSetOf(player), npcID, npcLoc)
+        DialogManager.sendDialogHolo(mutableSetOf(player), npcID, npcLoc)
     }
 
     @EventHandler
@@ -30,7 +30,7 @@ class ClickAdyesNPC: Listener {
         val npc = ev.entity
         val npcLoc = npc.getLocation()
         val npcID = npc.id
-        DialogManager().sendDialogHolo(mutableSetOf(player), npcID, npcLoc)
+        DialogManager.sendDialogHolo(mutableSetOf(player), npcID, npcLoc)
     }
 
     fun isAdyesNPC() = (QuestEngine.config.getString("dialog.npcPlugin") == "Adyeshach")
