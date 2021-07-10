@@ -1,5 +1,7 @@
 package cn.inrhor.questengine.common.database.data.quest
 
+import cn.inrhor.questengine.common.quest.QuestState
+
 /**
  * 玩家一个任务数据
  *
@@ -10,5 +12,6 @@ package cn.inrhor.questengine.common.database.data.quest
 class QuestData(
     val questID: String,
     val questMainData: QuestMainData,
-    var schedule: Int) {
+    var schedule: Int,
+    var state: QuestState) {
 }

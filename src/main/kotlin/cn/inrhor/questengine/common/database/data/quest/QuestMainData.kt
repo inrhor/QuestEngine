@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.database.data.quest
 
+import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
 
 /**
@@ -14,5 +15,6 @@ class QuestMainData(
     val mainQuestID: String,
     var questSubList: MutableMap<String, QuestSubData>,
     var schedule: Int,
-    var targetList: MutableList<QuestTarget>) {
+    var targetList: MutableList<QuestTarget>,
+    var state: QuestState) {
 }
