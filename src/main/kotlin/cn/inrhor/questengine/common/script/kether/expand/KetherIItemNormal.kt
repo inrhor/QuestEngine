@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.kether.expand
+package cn.inrhor.questengine.common.script.kether.expand
 
 import cn.inrhor.questengine.common.dialog.animation.item.ItemDialogPlay
 import cn.inrhor.questengine.common.item.ItemManager

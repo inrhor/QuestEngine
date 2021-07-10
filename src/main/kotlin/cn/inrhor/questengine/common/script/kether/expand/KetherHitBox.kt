@@ -1,8 +1,7 @@
-package cn.inrhor.questengine.common.kether.expand
+package cn.inrhor.questengine.common.script.kether.expand
 
 import cn.inrhor.questengine.utlis.location.FixedHoloHitBox
 import cn.inrhor.questengine.utlis.location.LocationTool
-import cn.inrhor.questengine.utlis.public.MsgUtil
 import io.izzel.taboolib.kotlin.kether.ScriptParser
 import io.izzel.taboolib.kotlin.kether.common.api.QuestAction
 import io.izzel.taboolib.kotlin.kether.common.api.QuestContext

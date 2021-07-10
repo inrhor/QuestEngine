@@ -2,7 +2,7 @@ package cn.inrhor.questengine.common.dialog.animation.text
 
 import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.common.dialog.animation.text.type.TextWrite
-import cn.inrhor.questengine.common.kether.KetherHandler
+import cn.inrhor.questengine.common.script.kether.KetherHandler
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern

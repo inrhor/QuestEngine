@@ -1,6 +1,9 @@
 package cn.inrhor.questengine.common.quest
 
 import cn.inrhor.questengine.api.quest.TargetExtend
+import cn.inrhor.questengine.common.database.data.quest.QuestMainData
+import cn.inrhor.questengine.common.database.data.quest.QuestSubData
+import cn.inrhor.questengine.common.script.kether.KetherHandler
 import org.bukkit.configuration.file.FileConfiguration
 
 object TargetManager {
@@ -42,11 +45,28 @@ object TargetManager {
         return questTargetList
     }
 
-    fun finishReward(content: String) {
+    fun finishReward(questMainData: QuestMainData, questReward: QuestReward, content: String, repeat: Boolean) {
         val s = content.split(" ")
         val rewardID = s[0]
-        val repeat = s[1].toBoolean()
+        val repeatModule = s[1].toBoolean()
+        finishReward(questReward, rewardID, repeatModule, repeat)
+        questMainData.rewardState[rewardID] = true
+    }
 
+    fun finishReward(questSubData: QuestSubData, questReward: QuestReward, content: String, repeat: Boolean) {
+        val s = content.split(" ")
+        val rewardID = s[0]
+        val repeatModule = s[1].toBoolean()
+        finishReward(questReward, rewardID, repeatModule, repeat)
+        questSubData.rewardState[rewardID] = true
+    }
+
+    private fun finishReward(questReward: QuestReward, rewardID: String, repeatModule: Boolean, repeat: Boolean) {
+        if (!repeatModule && repeat) return
+        val reward = questReward.finishReward[rewardID]?: return
+        reward.forEach {
+            KetherHandler.eval(it)
+        }
     }
 
 }

@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.listener.holo
 
 import cn.inrhor.questengine.common.database.data.DataStorage
-import cn.inrhor.questengine.common.kether.KetherHandler
+import cn.inrhor.questengine.common.script.kether.KetherHandler
 import io.izzel.taboolib.module.inject.TListener
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener

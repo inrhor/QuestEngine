@@ -1,11 +1,11 @@
-package cn.inrhor.questengine.common.kether
+package cn.inrhor.questengine.common.script.kether
 
 import cn.inrhor.questengine.common.dialog.animation.text.type.TextWrite
-import cn.inrhor.questengine.common.kether.expand.KetherFixedLocation
-import cn.inrhor.questengine.common.kether.expand.KetherHitBox
+import cn.inrhor.questengine.common.script.kether.expand.KetherFixedLocation
+import cn.inrhor.questengine.common.script.kether.expand.KetherHitBox
 import cn.inrhor.questengine.utlis.location.FixedLocation
-import cn.inrhor.questengine.common.kether.expand.KetherTextWrite
-import cn.inrhor.questengine.common.kether.expand.KetherIItemNormal
+import cn.inrhor.questengine.common.script.kether.expand.KetherTextWrite
+import cn.inrhor.questengine.common.script.kether.expand.KetherIItemNormal
 import cn.inrhor.questengine.utlis.location.FixedHoloHitBox
 import io.izzel.taboolib.kotlin.kether.Kether
 import io.izzel.taboolib.kotlin.kether.KetherShell

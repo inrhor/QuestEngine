@@ -51,6 +51,9 @@ abstract class TargetExtend<E: Event> {
      */
     val conditionMap = mutableMapOf<String, ConditionType>()
 
+    /*
+     * 为了规范配置
+     */
     fun addCondition(content: String, conditionType: ConditionType) {
         conditionMap[content] = conditionType
     }

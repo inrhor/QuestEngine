@@ -5,9 +5,10 @@ import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.QuestMainData
 import cn.inrhor.questengine.common.database.data.quest.QuestSubData
-import cn.inrhor.questengine.common.kether.KetherHandler
+import cn.inrhor.questengine.common.script.kether.KetherHandler
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
+import cn.inrhor.questengine.common.quest.TargetSubData
 import org.bukkit.entity.Player
 import java.util.HashMap
 import java.util.LinkedHashMap
@@ -45,6 +46,21 @@ object QuestManager {
     }
 
     /**
+     * 得到支线任务模块内容
+     */
+    fun getSubQuestModule(questID: String, mainQuestID: String, subQuestID: String): QuestSubModule? {
+        val questModule = questMap[questID]?: return null
+        questModule.mainQuestList.forEach {
+            if (it.mainQuestID == mainQuestID) {
+                it.subQuestList.forEach { i ->
+                    if (i.subQuestID == subQuestID) return i
+                }
+            }
+        }
+        return null
+    }
+
+    /**
      * 接受任务
      */
     fun acceptQuest(player: Player, questID: String) {
@@ -74,10 +90,10 @@ object QuestManager {
         val mainQuestID = mainQuest.mainQuestID
         mainQuest.subQuestList.forEach {
             val subQuestID = it.subQuestID
-            val subQuestData = QuestSubData(questID, mainQuestID, subQuestID, 0, it.questTargetList, QuestState.DOING)
+            val subQuestData = QuestSubData(questID, mainQuestID, subQuestID, it.questTargetList, QuestState.DOING)
             subQuestDataList[subQuestID] = subQuestData
         }
-        val mainQuestData = QuestMainData(questID, mainQuestID, subQuestDataList, 0, mainTargetList, QuestState.DOING)
+        val mainQuestData = QuestMainData(questID, mainQuestID, subQuestDataList, mainTargetList, QuestState.DOING)
         val questData = QuestData(questID, mainQuestData, 0, QuestState.DOING)
         pData.questDataList[questID] = questData
     }
@@ -177,34 +193,29 @@ object QuestManager {
     }
 
     /**
-     * 触发任务目标
-     * 给定进度，进度满额则完成目标且运行奖励脚本
+     * 获得触发的主线任务目标
      */
-    fun targetTrigger(player: Player, name: String) {
-        /*val pData = DataStorage.getPlayerData(player)?: return
-        if (pData.questDataList.isEmpty()) return
-        pData.questDataList.forEach { questID, questData ->
-            if (questData.state == QuestState.DOING) {
-                val mainData = questData.questMainData
-                mainData.targetList.forEach {
-                    if (it.name == name) {
-                        if (it.conditionList.isEmpty()) {
-
-                        }
-                    }
-                }
-                return@forEach
-            }
-        }*/
-    }
-
-    /**
-     * 获得触发的任务目标
-     */
-    fun getDoingTarget(player: Player, name: String): QuestTarget? {
+    fun getDoingMainTarget(player: Player, name: String): QuestTarget? {
         val questData = getDoingQuest(player)?: return null
         val mainData = questData.questMainData
         return mainData.targetList[name]
+    }
+
+    /**
+     * 获得触发的支线任务目标及其支线任务数据
+     */
+    fun getDoingSubTarget(player: Player, name: String): TargetSubData? {
+        val questData = getDoingQuest(player)?: return null
+        val mainData = questData.questMainData
+        mainData.questSubList.forEach { (t, u) ->
+            if (u.state == QuestState.DOING) {
+                if (u.targetList.containsKey(name)) {
+                    val tg = u.targetList[name]?: return null
+                    return TargetSubData(t, tg)
+                }
+            }
+        }
+        return null
     }
 
     /**

@@ -14,7 +14,15 @@ class QuestMainData(
     val questID: String,
     val mainQuestID: String,
     var questSubList: MutableMap<String, QuestSubData>,
-    var schedule: Int,
+    var schedule: MutableMap<String, Int>,
     var targetList: MutableMap<String, QuestTarget>,
-    var state: QuestState) {
+    var state: QuestState,
+    var rewardState: MutableMap<String, Boolean>) {
+
+    constructor(questID: String,
+                mainQuestID: String,
+                questSubList: MutableMap<String, QuestSubData>,
+                targetList: MutableMap<String, QuestTarget>,
+                state: QuestState):
+            this(questID, mainQuestID, questSubList, mutableMapOf(), targetList, state, mutableMapOf())
 }
