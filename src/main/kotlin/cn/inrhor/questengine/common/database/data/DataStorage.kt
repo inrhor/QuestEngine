@@ -6,10 +6,18 @@ import java.util.concurrent.ConcurrentHashMap
 
 class DataStorage {
     companion object {
-        val playerDataStorage = ConcurrentHashMap<UUID, PlayerData>()
+        private val playerDataStorage = ConcurrentHashMap<UUID, PlayerData>()
     }
 
-    fun getPlayerData(player: Player): PlayerData {
-        return DataStorage.playerDataStorage[player.uniqueId]!!
+    fun addPlayerData(uuid: UUID, playerData: PlayerData) {
+        playerDataStorage[uuid] = playerData
+    }
+
+    fun getPlayerData(player: Player): PlayerData? {
+        return playerDataStorage[player.uniqueId]
+    }
+
+    fun getPlayerData(uuid: UUID): PlayerData? {
+        return playerDataStorage[uuid]
     }
 }

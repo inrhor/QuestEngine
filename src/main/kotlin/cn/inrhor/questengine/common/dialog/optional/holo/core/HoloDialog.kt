@@ -36,7 +36,7 @@ class HoloDialog(
         var textIndex = 0
         var itemIndex = 0
         for (viewer in viewers) {
-            val pData = DataStorage().getPlayerData(viewer)
+            val pData = DataStorage().getPlayerData(viewer)?: return
             pData.dialogData.holoDialogList.add(this)
         }
         for (i in dialogModule.dialog) {

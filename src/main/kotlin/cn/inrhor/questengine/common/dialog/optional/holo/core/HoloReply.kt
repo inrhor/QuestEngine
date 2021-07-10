@@ -46,7 +46,7 @@ class HoloReply(
         var textIndex = 0
         var itemIndex = 0
         for (viewer in viewers) {
-            val pData = DataStorage().getPlayerData(viewer)
+            val pData = DataStorage().getPlayerData(viewer)?: return
             pData.dialogData.holoReplyList.add(this)
         }
         for (i in replyModule.content) {
@@ -58,7 +58,7 @@ class HoloReply(
                     val holoHitBox = HoloHitBox(replyModule, boxLoc, fixedHoloHitBox, viewers)
                     holoHitBox.viewBox()
                     for (viewer in viewers) {
-                        val pData = DataStorage.playerDataStorage[viewer.uniqueId]?: return
+                        val pData = DataStorage().getPlayerData(viewer)?: return
                         val holoBoxList = pData.dialogData.holoBoxList
                         if (!holoBoxList.equals(holoHitBox)) {
                             holoBoxList.add(holoHitBox)

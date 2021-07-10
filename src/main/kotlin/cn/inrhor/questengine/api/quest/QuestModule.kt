@@ -9,4 +9,11 @@ class QuestModule(val questID: String,
                   var failCheck: Int, var failCondition: MutableList<String>,
                   var mainQuestList: MutableList<QuestMainModule>) {
 
+    fun getStartMainQuest(): QuestMainModule? {
+        mainQuestList.forEach {
+            if (it.mainQuestID == startMainQuestID) return it
+        }
+        return null
+    }
+
 }
