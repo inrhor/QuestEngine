@@ -11,7 +11,7 @@ import cn.inrhor.questengine.common.quest.QuestState
  */
 class QuestData(
     val questID: String,
-    val questMainData: QuestMainData,
+    val questMainData: QuestOpenData,
     var schedule: Int,
     var state: QuestState) {
 }

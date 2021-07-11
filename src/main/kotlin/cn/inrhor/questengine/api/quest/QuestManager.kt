@@ -4,6 +4,7 @@ import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.QuestMainData
+import cn.inrhor.questengine.common.database.data.quest.QuestOpenData
 import cn.inrhor.questengine.common.database.data.quest.QuestSubData
 import cn.inrhor.questengine.common.script.kether.KetherHandler
 import cn.inrhor.questengine.common.quest.QuestState
@@ -67,7 +68,7 @@ object QuestManager {
         val pData = DataStorage.getPlayerData(player)?: return
         val questModule = getQuestModule(questID)?: return
         val startMainQuest = questModule.getStartMainQuest()?: return
-        acceptMainQuest(pData, questID, startMainQuest)
+        acceptMainQuest(pData, questID, startMainQuest, true)
     }
 
     /**
@@ -81,21 +82,34 @@ object QuestManager {
         val questMainModule = getMainQuestModule(questID, mainQuestID)?: return
         val nextMainID = questMainModule.nextMinQuestID
         val nextMainModule = getMainQuestModule(questID, nextMainID)?: return
-        acceptMainQuest(pData, questID, nextMainModule)
+        acceptMainQuest(pData, questID, nextMainModule, false)
     }
 
-    private fun acceptMainQuest(pData: PlayerData, questID: String, mainQuest: QuestMainModule) {
+    private fun acceptMainQuest(pData: PlayerData, questID: String, mainQuest: QuestMainModule, isNewQuest: Boolean) {
+        var state = QuestState.DOING
+        if (isNewQuest && hasDoingMainQuest(pData)) state = QuestState.IDLE
         val subQuestDataList = mutableMapOf<String, QuestSubData>()
         val mainTargetList = mainQuest.questTargetList
         val mainQuestID = mainQuest.mainQuestID
         mainQuest.subQuestList.forEach {
             val subQuestID = it.subQuestID
-            val subQuestData = QuestSubData(questID, mainQuestID, subQuestID, it.questTargetList, QuestState.DOING)
+            val subQuestData = QuestSubData(questID, mainQuestID, subQuestID, it.questTargetList, state)
             subQuestDataList[subQuestID] = subQuestData
         }
-        val mainQuestData = QuestMainData(questID, mainQuestID, subQuestDataList, mainTargetList, QuestState.DOING)
-        val questData = QuestData(questID, mainQuestData, 0, QuestState.DOING)
+        val mainQuestData = QuestMainData(questID, mainQuestID, subQuestDataList, mainTargetList, state)
+        val questData = QuestData(questID, mainQuestData, 0, state)
         pData.questDataList[questID] = questData
+    }
+
+    /**
+     * 检索是否已有处于 DOING 状态的主线任务
+     */
+    fun hasDoingMainQuest(pData: PlayerData): Boolean {
+        val questData = pData.questDataList
+        questData.forEach { (_, u)->
+            if (u.questMainData.state == QuestState.DOING) return true
+        }
+        return false
     }
 
     /**
@@ -150,7 +164,7 @@ object QuestManager {
     /**
      * 获得玩家当前主线任务数据
      */
-    fun getMainQuestData(player: Player, questID: String): QuestMainData? {
+    fun getMainQuestData(player: Player, questID: String): QuestOpenData? {
         val questData = getQuestData(player, questID)?: return null
         return questData.questMainData
     }
@@ -158,7 +172,7 @@ object QuestManager {
     /**
      * 获得玩家支线任务数据
      */
-    fun getSubQuestData(player: Player, questID: String, subQuestID: String): QuestSubData? {
+    fun getSubQuestData(player: Player, questID: String, subQuestID: String): QuestOpenData? {
         val mainQuestData = getMainQuestData(player, questID)?: return null
         return mainQuestData.questSubList[subQuestID]
     }
