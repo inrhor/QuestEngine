@@ -2,8 +2,6 @@ package cn.inrhor.questengine.common.quest
 
 import cn.inrhor.questengine.api.quest.TargetExtend
 import cn.inrhor.questengine.common.database.data.quest.QuestOpenData
-import cn.inrhor.questengine.common.database.data.quest.remove.QuestMainDataL
-import cn.inrhor.questengine.common.database.data.quest.remove.QuestSubDataL
 import cn.inrhor.questengine.common.script.kether.KetherHandler
 import org.bukkit.configuration.file.FileConfiguration
 

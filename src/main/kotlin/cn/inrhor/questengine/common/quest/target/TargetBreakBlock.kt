@@ -28,23 +28,21 @@ object TargetBreakBlock: TargetExtend<BlockBreakEvent>() {
                 val mainData = questData.questMainData
                 val mainTarget = QuestManager.getDoingMainTarget(player, name)?: return false
                 val breakBlock = ev.block.type
-                targetTrigger(questID, breakBlock, mainTarget, mainData)
+                if (targetTrigger(questID, breakBlock, mainTarget, mainData)) return true
 
                 val tg = QuestManager.getDoingSubTarget(player, name)?: return false
                 val subQuestID= tg.subQuestID
                 val subData = QuestManager.getSubQuestData(player, questID, subQuestID)?: return false
                 val subTarget = tg.questTarget
-                targetTrigger(questID, breakBlock, subTarget, subData)
-
-                return true
+                return targetTrigger(questID, breakBlock, subTarget, subData)
             }
         }
         addCondition("block", block)
         TargetManager.register(name, this)
     }
 
-    fun targetTrigger(questID: String, breakBlock: Material, target: QuestTarget, data: QuestOpenData) {
-        val blockCondition = target.condition["block"]?: return
+    fun targetTrigger(questID: String, breakBlock: Material, target: QuestTarget, data: QuestOpenData): Boolean {
+        val blockCondition = target.condition["block"]?: return false
         val sp = blockCondition.split(" ")
         val material = sp[0]
         val amount = sp[1].toInt()
@@ -53,12 +51,13 @@ object TargetBreakBlock: TargetExtend<BlockBreakEvent>() {
             if (schedule != null) {
                 data.schedule[name] = schedule + 1
                 if (amount >= schedule) {
-                    val mainModule = QuestManager.getMainQuestModule(questID, data.mainQuestID)?: return
-                    val rewardRepeatState = data.rewardState[name]?: return
+                    val mainModule = QuestManager.getMainQuestModule(questID, data.mainQuestID)?: return true
+                    val rewardRepeatState = data.rewardState[name]?: return true
                     TargetManager.finishReward(data, mainModule.questReward, target.reward, rewardRepeatState)
                 }
             }
         }
+        return true
     }
 
 }
