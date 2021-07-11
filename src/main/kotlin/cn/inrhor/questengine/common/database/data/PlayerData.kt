@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.database.data
 
+import cn.inrhor.questengine.common.database.data.quest.QuestControlData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
-import cn.inrhor.questengine.common.quest.QuestControl
 import java.util.*
 
 /**
@@ -14,7 +14,7 @@ class PlayerData(
     val uuid: UUID,
     val dialogData: DialogData,
     var questDataList: MutableMap<String, QuestData>,
-    var controlList: MutableMap<String, QuestControl>
+    var controlList: MutableMap<String, QuestControlData>
 ) {
 
     constructor(uuid: UUID):
