@@ -40,12 +40,11 @@ object PacketManager {
         if (hook.lowercase(Locale.getDefault()) == "this ") {
             val id = hook[1].toString()
             val getPacketModule = packetMap[id]?: return
-            sendPacket(getPacketModule, viewers, location)
+            sendPacket(packetModule.entityID, getPacketModule, viewers, location)
         }
     }
 
-    private fun sendPacket(packetModule: PacketModule, viewers: MutableSet<Player>, location: Location) {
-        val entityID = packetModule.entityID
+    private fun sendPacket(entityID: Int, packetModule: PacketModule, viewers: MutableSet<Player>, location: Location) {
         getPackets().spawnEntity(viewers, entityID, packetModule.entityType, location)
         /*val itemEntityMap = packetModule.itemEntityID
         if (itemEntityMap.isNotEmpty()) {

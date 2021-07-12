@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.script.kether.expand.control
 
+import cn.inrhor.questengine.common.nms.NMS
 import cn.inrhor.questengine.common.packet.PacketManager
 import io.izzel.taboolib.kotlin.kether.Kether.expects
 import io.izzel.taboolib.kotlin.kether.KetherParser
@@ -56,7 +57,13 @@ class KetherPacket {
         }
 
         private fun removePacket(viewers: MutableSet<Player>, packetID: String) {
-            // PacketModule 类中读取
+            val m = PacketManager.packetMap[packetID]?: return
+            val id = m.entityID
+            getPackets().destroyEntity(viewers, id)
+        }
+
+        private fun getPackets(): NMS {
+            return NMS.INSTANCE
         }
     }
 
