@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.database.data.quest
 
 import cn.inrhor.questengine.QuestEngine
+import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.script.kether.KetherHandler
 import cn.inrhor.questengine.common.script.kether.expand.control.ControlTaskType
 import cn.inrhor.questengine.common.script.kether.expand.control.ControlType
@@ -9,7 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable
 
 class QuestControlData(
     val player: Player,
-    val controlID: String,
+    val questOpenData: QuestOpenData,
     val script: MutableList<String>,
     var line: Int,
     var waitTime: Int) {
@@ -26,6 +27,7 @@ class QuestControlData(
     private fun synRunScript(content: String) {
         object : BukkitRunnable() {
             override fun run() {
+                if (!player.isOnline || questOpenData.state != QuestState.DOING) cancel()
                 KetherHandler.eval(player, content)
             }
         }.runTaskLater(QuestEngine.plugin, waitTime.toLong())
@@ -34,6 +36,7 @@ class QuestControlData(
     private fun asyRunScript(content: String) {
         object : BukkitRunnable() {
             override fun run() {
+                if (!player.isOnline || questOpenData.state != QuestState.DOING) cancel()
                 KetherHandler.eval(player, content)
             }
         }.runTaskLaterAsynchronously(QuestEngine.plugin, waitTime.toLong())

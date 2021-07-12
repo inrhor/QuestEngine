@@ -1,5 +1,5 @@
 package cn.inrhor.questengine.common.quest
 
-class QuestControl(val questID: String, val id: String, var scriptList: MutableList<String>) {
+class QuestControl(val controlID: String, var scriptList: MutableList<String>) {
 
 }

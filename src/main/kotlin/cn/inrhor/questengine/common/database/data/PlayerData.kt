@@ -14,7 +14,7 @@ class PlayerData(
     val uuid: UUID,
     val dialogData: DialogData,
     var questDataList: MutableMap<String, QuestData>,
-    var controlList: MutableMap<String, QuestControlData>
+    var controlList: MutableMap<String, QuestControlData>/* [questID]-[mainID]-[subID] */
 ) {
 
     constructor(uuid: UUID):

@@ -4,6 +4,7 @@ import cn.inrhor.questengine.api.quest.ConditionType
 import cn.inrhor.questengine.api.quest.QuestManager
 import cn.inrhor.questengine.api.quest.TargetExtend
 import cn.inrhor.questengine.common.database.data.quest.QuestOpenData
+import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.common.quest.TargetManager
 import org.bukkit.Material
@@ -33,6 +34,7 @@ object TargetBreakBlock: TargetExtend<BlockBreakEvent>() {
                 val tg = QuestManager.getDoingSubTarget(player, name)?: return false
                 val subQuestID= tg.subQuestID
                 val subData = QuestManager.getSubQuestData(player, questID, subQuestID)?: return false
+                if (subData.state != QuestState.DOING) return false
                 val subTarget = tg.questTarget
                 return targetTrigger(questID, breakBlock, subTarget, subData)
             }

@@ -58,7 +58,7 @@ object QuestFile {
         val nextMainQuestID = option.getString("nextMainQuestID")!!
 
         val controlFile = file(mainFile, "control.yml")
-        val questControl = control(controlFile, questID, mainQuestID)
+        val questControl = control(controlFile, questID, mainQuestID, "")
 
         val rewardFile = file(mainFile, "reward.yml")
         val questReward = reward(rewardFile, questID, mainQuestID, "")
@@ -78,7 +78,7 @@ object QuestFile {
                 val subQuestID = optionSub.getString("subQuestID")!!
 
                 val controlSubFile = file(it, "control.yml")
-                val questControlSub = control(controlSubFile, questID, subQuestID)
+                val questControlSub = control(controlSubFile, questID, mainQuestID, subQuestID)
 
                 val rewardSubFile = file(it, "reward.yml")
                 val questRewardSub = reward(rewardSubFile, questID, mainQuestID, subQuestID)
@@ -118,10 +118,11 @@ object QuestFile {
         return QuestReward(questID, mainQuestID, subQuestID, finishReward, failReward)
     }
 
-    private fun control(file: File, questID: String, id: String): QuestControl {
+    private fun control(file: File, questID: String, mainQuestID: String, subQuestID: String): QuestControl {
         val control = yaml(file)
         val controlKether = control.getStringList("kether")
-        return QuestControl(questID, id, controlKether)
+        val id = QuestManager.generateControlID(questID, mainQuestID, subQuestID)
+        return QuestControl(id, controlKether)
     }
 
 

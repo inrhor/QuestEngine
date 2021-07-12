@@ -2,10 +2,7 @@ package cn.inrhor.questengine.api.quest
 
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
-import cn.inrhor.questengine.common.database.data.quest.QuestData
-import cn.inrhor.questengine.common.database.data.quest.QuestMainData
-import cn.inrhor.questengine.common.database.data.quest.QuestOpenData
-import cn.inrhor.questengine.common.database.data.quest.QuestSubData
+import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.script.kether.KetherHandler
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
@@ -68,7 +65,7 @@ object QuestManager {
         val pData = DataStorage.getPlayerData(player)?: return
         val questModule = getQuestModule(questID)?: return
         val startMainQuest = questModule.getStartMainQuest()?: return
-        acceptMainQuest(pData, questID, startMainQuest, true)
+        acceptMainQuest(player, questID, startMainQuest, true)
     }
 
     /**
@@ -77,15 +74,28 @@ object QuestManager {
      * 前提是已接受任务
      */
     fun acceptNextMainQuest(player: Player, questData: QuestData, mainQuestID: String) {
-        val pData = DataStorage.getPlayerData(player)?: return
         val questID = questData.questID
         val questMainModule = getMainQuestModule(questID, mainQuestID)?: return
         val nextMainID = questMainModule.nextMinQuestID
         val nextMainModule = getMainQuestModule(questID, nextMainID)?: return
-        acceptMainQuest(pData, questID, nextMainModule, false)
+        acceptMainQuest(player, questID, nextMainModule, false)
     }
 
-    private fun acceptMainQuest(pData: PlayerData, questID: String, mainQuest: QuestMainModule, isNewQuest: Boolean) {
+    /**
+     * 接受支线任务，前提是已接受了所在的主线任务
+     */
+    fun acceptSubQuest(player: Player, questID: String, mainQuestID: String, subQuestID: String) {
+        val mainData = getMainQuestData(player, questID)?: return
+        if (mainData.mainQuestID != mainQuestID) return
+        val subData = mainData.questSubList[subQuestID]?: return
+        subData.state = QuestState.DOING
+        val pData = DataStorage.getPlayerData(player)?: return
+        saveControl(player, pData, subData)
+        runControl(pData, questID, mainQuestID, subQuestID)
+    }
+
+    private fun acceptMainQuest(player: Player, questID: String, mainQuest: QuestMainModule, isNewQuest: Boolean) {
+        val pData = DataStorage.getPlayerData(player)?: return
         var state = QuestState.DOING
         if (isNewQuest && hasDoingMainQuest(pData)) state = QuestState.IDLE
         val subQuestDataList = mutableMapOf<String, QuestSubData>()
@@ -93,12 +103,58 @@ object QuestManager {
         val mainQuestID = mainQuest.mainQuestID
         mainQuest.subQuestList.forEach {
             val subQuestID = it.subQuestID
-            val subQuestData = QuestSubData(questID, mainQuestID, subQuestID, it.questTargetList, state)
+            val subQuestData = QuestSubData(questID, mainQuestID, subQuestID, it.questTargetList, QuestState.NOT_ACCEPT)
             subQuestDataList[subQuestID] = subQuestData
         }
         val mainQuestData = QuestMainData(questID, mainQuestID, subQuestDataList, mainTargetList, state)
         val questData = QuestData(questID, mainQuestData, 0, state)
         pData.questDataList[questID] = questData
+        saveControl(player, pData, mainQuestData)
+        runControl(pData, questID, mainQuestID, "")
+    }
+
+    /**
+     * 存储控制模块
+     */
+    fun saveControl(player: Player, pData: PlayerData, questOpenData: QuestOpenData) {
+        if (questOpenData.state != QuestState.DOING) return
+        val questID = questOpenData.questID
+        val mainQuestID = questOpenData.mainQuestID
+        val subQuestID = questOpenData.subQuestID
+        val scriptList: MutableList<String>
+        val controlID: String
+        if (subQuestID == "") {
+            val mModule = getMainQuestModule(questID, mainQuestID)?: return
+            val cModule = mModule.questControl
+            controlID = cModule.controlID
+            scriptList = cModule.scriptList
+        }else {
+            val mModule = getSubQuestModule(questID, mainQuestID, subQuestID)?: return
+            val cModule = mModule.questControl
+            controlID = cModule.controlID
+            scriptList = cModule.scriptList
+        }
+        if (controlID == "") return
+        val controlData = QuestControlData(player, questOpenData, scriptList, 0, 0)
+        pData.controlList[controlID] = controlData
+    }
+
+    fun generateControlID(questID: String, mainQuestID: String, subQuestID: String): String {
+        return "[$questID]-[$mainQuestID]-[$subQuestID]"
+    }
+
+    /**
+     * 运行控制模块
+     */
+    fun runControl(player: Player, questID: String, mainQuestID: String, subQuestID: String) {
+        val pData = DataStorage.getPlayerData(player)?: return
+        runControl(pData, questID, mainQuestID, subQuestID)
+    }
+
+    fun runControl(pData: PlayerData, questID: String, mainQuestID: String, subQuestID: String) {
+        val id = generateControlID(questID, mainQuestID, subQuestID)
+        val control = pData.controlList[id]?: return
+        control.runScript()
     }
 
     /**
