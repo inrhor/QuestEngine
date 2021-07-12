@@ -2,7 +2,9 @@
 #   重复接受会被覆盖，因此发送多个数据包需要构造多个方法
 packet_1:
   hook: normal
-  type: ARMOR_STAND
+  entityType: ARMOR_STAND
+  # all or self
+  viewer: all
   mate:
     - equip head item_1
     - displayName " " false

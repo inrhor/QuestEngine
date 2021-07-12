@@ -5,10 +5,13 @@ import io.izzel.taboolib.kotlin.Reflex
 import io.izzel.taboolib.module.inject.TInject
 import io.izzel.taboolib.module.packet.TPacketHandler
 import org.bukkit.Location
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 abstract class NMS {
+
+    abstract fun spawnEntity(players: MutableSet<Player>, entityId: Int, entityType: EntityType, location: Location)
 
     /**
      * 生成盔甲架

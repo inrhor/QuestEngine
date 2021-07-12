@@ -19,10 +19,11 @@ class KetherPacket {
         override fun process(frame: QuestContext.Frame): CompletableFuture<Void> {
             if (viewer) {
                 val player = frame.script().sender as? Player ?: error("unknown player")
-                sendPacket(listOf(player), packetID)
+                sendPacket(mutableSetOf(player), packetID)
                 return CompletableFuture.completedFuture(null)
             }
-            val viewers = Bukkit.getOnlinePlayers()
+            val viewers = mutableSetOf<Player>()
+            viewers.addAll(Bukkit.getOnlinePlayers())
             sendPacket(viewers, packetID)
             return CompletableFuture.completedFuture(null)
         }
@@ -34,7 +35,7 @@ class KetherPacket {
          *
          * 将根据packetID检索id
          */
-        private fun sendPacket(viewers: Collection<Player>, packetID: String) {
+        private fun sendPacket(viewers: MutableSet<Player>, packetID: String) {
             // PacketModule 类中读取
         }
     }
@@ -46,15 +47,16 @@ class KetherPacket {
         override fun process(frame: QuestContext.Frame): CompletableFuture<Void> {
             if (viewer) {
                 val player = frame.script().sender as? Player ?: error("unknown player")
-                removePacket(listOf(player), packetID)
+                removePacket(mutableSetOf(player), packetID)
                 return CompletableFuture.completedFuture(null)
             }
-            val viewers = Bukkit.getOnlinePlayers()
+            val viewers = mutableSetOf<Player>()
+            viewers.addAll(Bukkit.getOnlinePlayers())
             removePacket(viewers, packetID)
             return CompletableFuture.completedFuture(null)
         }
 
-        private fun removePacket(viewers: Collection<Player>, packetID: String) {
+        private fun removePacket(viewers: MutableSet<Player>, packetID: String) {
             // PacketModule 类中读取
         }
     }
