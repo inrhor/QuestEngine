@@ -1,47 +1,46 @@
 package cn.inrhor.questengine.common.script.kether.expand.control
 
+import cn.inrhor.questengine.common.packet.PacketManager
 import io.izzel.taboolib.kotlin.kether.Kether.expects
 import io.izzel.taboolib.kotlin.kether.KetherParser
 import io.izzel.taboolib.kotlin.kether.ScriptParser
+import io.izzel.taboolib.kotlin.kether.common.api.ParsedAction
 import io.izzel.taboolib.kotlin.kether.common.api.QuestAction
 import io.izzel.taboolib.kotlin.kether.common.api.QuestContext
+import io.izzel.taboolib.kotlin.kether.common.loader.types.ArgTypes
 import io.izzel.taboolib.kotlin.kether.script
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.concurrent.CompletableFuture
 
 class KetherPacket {
 
     /**
-     * type send viewer id where world loc...
+     * type send id where world loc...
      */
-    class SendPacket(val viewer: Boolean, val packetID: String): QuestAction<Void>() {
+    class SendPacket(val packetID: String, val location: ParsedAction<*>): QuestAction<Void>() {
         override fun process(frame: QuestContext.Frame): CompletableFuture<Void> {
-            if (viewer) {
+            return frame.newFrame(location).run<Location>().thenAccept {
                 val player = frame.script().sender as? Player ?: error("unknown player")
-                sendPacket(mutableSetOf(player), packetID)
-                return CompletableFuture.completedFuture(null)
+                sendPacket(packetID, player, it)
             }
-            val viewers = mutableSetOf<Player>()
-            viewers.addAll(Bukkit.getOnlinePlayers())
-            sendPacket(viewers, packetID)
-            return CompletableFuture.completedFuture(null)
         }
 
         /*
          * 需要在 packet 文件夹中构造数据包模块
          *
-         * packetID格式 packet-id
+         * packetID格式 packet-id-type[entity/item]
          *
          * 将根据packetID检索id
          */
-        private fun sendPacket(viewers: MutableSet<Player>, packetID: String) {
-            // PacketModule 类中读取
+        private fun sendPacket(packetID: String, sender: Player, location: Location) {
+            PacketManager.sendThisPacket(packetID, sender, location)
         }
     }
 
     /**
-     * packet remove viewer id
+     * packet remove viewer[all/player] id
      */
     class RemovePacket(val viewer: Boolean, val packetID: String): QuestAction<Void>() {
         override fun process(frame: QuestContext.Frame): CompletableFuture<Void> {
@@ -66,14 +65,12 @@ class KetherPacket {
         fun parser() = ScriptParser.parser {
             when (it.expects("send", "remove")) {
                 "send" -> SendPacket(
-                    try {
+                    it.nextToken(),
+                    it.run {
                         it.mark()
-                        it.expect("player")
-                        true
-                    } catch (ex: Exception) {
-                        false
-                    },
-                    it.nextToken())
+                        it.expect("where")
+                        it.next(ArgTypes.ACTION)
+                    })
                 "remove" -> RemovePacket(
                     try {
                         it.mark()
