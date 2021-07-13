@@ -1,5 +1,7 @@
 package cn.inrhor.questengine.api.collaboration
 
+import cn.inrhor.questengine.common.collaboration.TeamManager
+import cn.inrhor.questengine.common.database.data.DataStorage
 import java.util.*
 
 abstract class TeamOpen {
@@ -18,6 +20,17 @@ abstract class TeamOpen {
 
     open fun addMember(member: UUID) {
         members.add(member)
+    }
+
+    open fun delTeam() {
+        members.forEach {
+            val pData = DataStorage.getPlayerData(it)
+            if (pData != null) {
+                pData.teamData = null
+            }
+        }
+        TeamManager.teamsMap.remove(teamName)
+        members.clear()
     }
 
     open fun getAmount(): Int = members.size

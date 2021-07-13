@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.database.data
 
+import cn.inrhor.questengine.api.collaboration.TeamOpen
 import cn.inrhor.questengine.common.database.data.quest.QuestControlData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import java.util.*
@@ -12,13 +13,14 @@ import java.util.*
  */
 class PlayerData(
     val uuid: UUID,
+    var teamData: TeamOpen?,
     val dialogData: DialogData,
     var questDataList: MutableMap<String, QuestData>,
     var controlList: MutableMap<String, QuestControlData>/* [questID]-[mainID]-[subID] */
 ) {
 
     constructor(uuid: UUID):
-            this(uuid,
+            this(uuid, null,
                 DialogData(mutableListOf(), mutableListOf(), mutableListOf()),
                 mutableMapOf(),
                 mutableMapOf())
