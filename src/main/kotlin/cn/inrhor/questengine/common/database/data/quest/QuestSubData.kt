@@ -7,8 +7,9 @@ class QuestSubData(
     override val questID: String,
     override val mainQuestID: String,
     override var subQuestID: String,
+    override var time: MutableMap<String, Int>,
     override var schedule: MutableMap<String, Int>,
-    override var targetList: MutableMap<String, QuestTarget>,
+    override var targetsData: MutableMap<String, QuestTarget>,
     override var state: QuestState,
     override var rewardState: MutableMap<String, Boolean>): QuestOpenData() {
 
@@ -17,5 +18,5 @@ class QuestSubData(
                 subQuestID: String,
                 targetList: MutableMap<String, QuestTarget>,
                 state: QuestState):
-            this(questID, mainQuestID, subQuestID, mutableMapOf(), targetList, state, mutableMapOf())
+            this(questID, mainQuestID, subQuestID, mutableMapOf(), mutableMapOf(), targetList, state, mutableMapOf())
 }

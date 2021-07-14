@@ -283,7 +283,7 @@ object QuestManager {
     fun getDoingMainTarget(player: Player, name: String): QuestTarget? {
         val questData = getDoingQuest(player)?: return null
         val mainData = questData.questMainData
-        return mainData.targetList[name]
+        return mainData.targetsData[name]
     }
 
     /**
@@ -294,8 +294,8 @@ object QuestManager {
         val mainData = questData.questMainData
         mainData.questSubList.forEach { (t, u) ->
             if (u.state == QuestState.DOING) {
-                if (u.targetList.containsKey(name)) {
-                    val tg = u.targetList[name]?: return null
+                if (u.targetsData.containsKey(name)) {
+                    val tg = u.targetsData[name]?: return null
                     return TargetSubData(t, tg)
                 }
             }

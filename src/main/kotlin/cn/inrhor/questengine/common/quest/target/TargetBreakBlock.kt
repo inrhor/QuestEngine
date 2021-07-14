@@ -25,6 +25,7 @@ object TargetBreakBlock: TargetExtend<BlockBreakEvent>() {
                 val ev = event.objectInstance?: return false
                 val player = ev.player
                 val questData = QuestManager.getDoingQuest(player)?: return false
+                if (!QuestManager.matchQuestMode(questData)) return false
                 val questID = questData.questID
                 val mainData = questData.questMainData
                 val mainTarget = QuestManager.getDoingMainTarget(player, name)?: return false
