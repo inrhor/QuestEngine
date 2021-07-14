@@ -11,6 +11,8 @@ mode:
   #   collaboration  协作
   type: "collaboration"
   amount: -1
+  # 共享任务数据
+  shareData: true
 # 关于接受任务设置
 accept:
   # 需要满足条件数

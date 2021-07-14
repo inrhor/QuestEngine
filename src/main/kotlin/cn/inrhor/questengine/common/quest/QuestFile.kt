@@ -22,10 +22,14 @@ object QuestFile {
         val questID = setting.getString("questID")!!
         val name = setting.getString("name")?: "test"
         val startID = setting.getString("startMainQuestID")?: "test"
-        val modeType = setting.getString("mode.type")?: "personal"
+        var modeType = ModeType.PERSONAL
+        val modeTypeStr = setting.getString("mode.type")?: "personal"
         var modeAmount = -1
-        if (modeType == "team") {
+        var modeShareData = false
+        if (modeTypeStr == "collaboration") {
+            modeType = ModeType.COLLABORATION
             modeAmount = setting.getInt("mode.amount")
+            modeShareData = setting.getBoolean("mode.shareData")
         }
         val acceptCheck = setting.getInt("accept.check")
         val acceptCondition = setting.getStringList("accept.condition")
@@ -43,7 +47,7 @@ object QuestFile {
         }
 
         val questModule = QuestModule(questID, name, startID,
-            modeType, modeAmount,
+            modeType, modeAmount, modeShareData,
             acceptCheck, acceptCondition,
             failCheck, failCondition,
             mainQuestList)

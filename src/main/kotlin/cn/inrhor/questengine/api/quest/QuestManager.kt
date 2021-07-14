@@ -1,8 +1,10 @@
 package cn.inrhor.questengine.api.quest
 
+import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.*
+import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.script.kether.KetherHandler
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
@@ -59,6 +61,19 @@ object QuestManager {
     }
 
     /**
+     * 是否满足任务成员模式
+     */
+    fun matchQuestMode(questData: QuestData): Boolean {
+        val questID = questData.questID
+        val questModule = getQuestModule(questID)?: return false
+        if (questModule.modeType == ModeType.PERSONAL) return true
+        if (questModule.modeAmount <= 1) return true
+        val tData = questData.teamData?: return false
+        if (questModule.modeAmount >= TeamManager.getMemberAmount(tData)) return true
+        return false
+    }
+
+    /**
      * 接受任务
      */
     fun acceptQuest(player: Player, questID: String) {
@@ -107,7 +122,7 @@ object QuestManager {
             subQuestDataList[subQuestID] = subQuestData
         }
         val mainQuestData = QuestMainData(questID, mainQuestID, subQuestDataList, mainTargetList, state)
-        val questData = QuestData(questID, mainQuestData, 0, state)
+        val questData = QuestData(questID, mainQuestData, 0, state, pData.teamData)
         pData.questDataList[questID] = questData
         saveControl(player, pData, mainQuestData)
         runControl(pData, questID, mainQuestID, "")

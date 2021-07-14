@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.database.data.quest
 
+import cn.inrhor.questengine.api.collaboration.TeamOpen
 import cn.inrhor.questengine.common.quest.QuestState
 
 /**
@@ -13,5 +14,6 @@ class QuestData(
     val questID: String,
     val questMainData: QuestOpenData,
     var schedule: Int,
-    var state: QuestState) {
+    var state: QuestState,
+    var teamData: TeamOpen?) {
 }

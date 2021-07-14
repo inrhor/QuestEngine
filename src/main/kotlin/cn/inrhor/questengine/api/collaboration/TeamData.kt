@@ -6,9 +6,10 @@ class TeamData(
     override val teamUUID: UUID,
     override var teamName: String,
     override var leader: UUID,
-    override var members: MutableSet<UUID>): TeamOpen() {
+    override var members: MutableSet<UUID>,
+    override var asks: MutableSet<UUID>): TeamOpen() {
 
     constructor(teamName: String, leader: UUID):
-            this(UUID.randomUUID(), teamName, leader, mutableSetOf(leader))
+            this(UUID.randomUUID(), teamName, leader, mutableSetOf(leader), mutableSetOf())
 
 }

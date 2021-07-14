@@ -6,6 +6,14 @@ class TeamCommand: BaseMainCommand() {
 
     val create = CreateTeamCmd()
 
+    val invite = InviteTeamCmd()
+
+    val join = JoinTeamCmd()
+
+    val kick = KickTeamCmd()
+
     val del = DelTeamCmd()
+
+
 
 }

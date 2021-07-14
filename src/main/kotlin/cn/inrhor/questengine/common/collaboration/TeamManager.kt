@@ -22,6 +22,10 @@ object TeamManager {
 
     fun isLeader(pUUID: UUID, teamName: String): Boolean {
         val teamData = getTeamData(teamName)?: return false
+        return isLeader(pUUID, teamData)
+    }
+
+    fun isLeader(pUUID: UUID, teamData: TeamOpen): Boolean {
         return (teamData.leader == pUUID)
     }
 
@@ -37,6 +41,10 @@ object TeamManager {
         return teamData.getAmount()
     }
 
+    fun getMemberAmount(teamData: TeamOpen): Int {
+        return teamData.getAmount()
+    }
+
     fun createTeam(teamName: String, leader: UUID) {
         val pData = DataStorage.getPlayerData(leader)?: return
         if (hasTeam(pData)) return
@@ -49,11 +57,20 @@ object TeamManager {
     fun addMember(mUUID: UUID, teamData: TeamOpen) {
         if (teamData.members.contains(mUUID)) return
         teamData.members.add(mUUID)
+        removeAsk(mUUID, teamData)
     }
 
     fun removeMember(mUUID: UUID, teamData: TeamOpen) {
         if (!teamData.members.contains(mUUID)) return
         teamData.members.remove(mUUID)
+    }
+
+    fun removeAsk(aUUID: UUID, teamData: TeamOpen) {
+        teamData.asks.remove(aUUID)
+    }
+
+    fun addAsk(aUUID: UUID, teamData: TeamOpen) {
+        teamData.asks.add(aUUID)
     }
 
 }
