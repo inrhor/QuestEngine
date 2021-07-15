@@ -2,12 +2,10 @@ package cn.inrhor.questengine.common.database.type
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.quest.QuestManager
+import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.Database
-import cn.inrhor.questengine.common.database.data.quest.QuestData
-import cn.inrhor.questengine.common.database.data.quest.QuestMainData
-import cn.inrhor.questengine.common.database.data.quest.QuestOpenData
+import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.quest.QuestStateUtil
-import cn.inrhor.questengine.common.quest.QuestTarget
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import java.io.File
@@ -29,46 +27,56 @@ class DatabaseLocal: Database() {
             data.getConfigurationSection("quest")!!.getKeys(false).forEach {
                 val node = "quest.$it."
                 val questID = it
-                val schedule = data.getInt(node+"schedule")
-                var state = QuestStateUtil.strToState(data.getString(node+"state")?: "IDLE")
 
                 val nodeMain = node+"mainQuest."
                 val mainQuestID = data.getString(nodeMain+"mainQuestID")?: return@forEach
-                var mainState = QuestStateUtil.strToState(data.getString(nodeMain+"state")?: "IDLE")
-                val nt = nodeMain+"targets."
-                val mainTimeMap = mutableMapOf<String, Int>()
-                val mainScheduleMap = mutableMapOf<String, Int>()
-                for (name in data.getConfigurationSection(node+"targets")!!.getKeys(false)) {
-                    mainTimeMap[name] = data.getInt(nt+"time")
-                    mainScheduleMap[name] = data.getInt(nt+"schedule")
-                }
+                val mainState = QuestStateUtil.strToState(data.getString(nodeMain+"state")?: "IDLE")
                 val mainModule = QuestManager.getMainQuestModule(questID, mainQuestID)?: return
-                val targets = mainModule.questTargetList
-                val mainData = QuestMainData(questID, mainQuestID, )
+                val mainTargetDataMap = returnTargetData(data, nodeMain, QuestManager.getMainModuleTargetMap(mainModule))
+                val nodeSub = nodeMain+"subQuest."
+                val questSubDataMap = mutableMapOf<String, QuestSubData>()
 
+                for (subQuestID in data.getConfigurationSection(nodeSub+"targets")!!.getKeys(false)) {
+                    val subState = QuestStateUtil.strToState(data.getString(nodeSub+"state")?: "IDLE")
+                    val subModule = QuestManager.getSubQuestModule(questID, mainQuestID, subQuestID)?: return
+                    val rewardSub = returnRewardData(data, nodeSub)
+                    val subTargetDataMap = returnTargetData(data, nodeSub, QuestManager.getSubModuleTargetMap(subModule))
+                    val questSubData = QuestSubData(questID, mainQuestID, subQuestID, subTargetDataMap, subState, rewardSub)
+                    questSubDataMap[subQuestID] = questSubData
+                }
+
+                val rewardMain = returnRewardData(data, nodeMain)
+                val questMainData = QuestMainData(questID, mainQuestID, questSubDataMap, mainTargetDataMap, mainState, rewardMain)
+
+                val schedule = data.getInt(node+"schedule")
+                val state = QuestStateUtil.strToState(data.getString(node+"state")?: "IDLE")
+
+                val questData = QuestData(questID, questMainData, schedule, state, TeamManager.getTeamData(uuid))
+                questDataMap[questID] = questData
             }
         }
     }
 
-    /*private fun getTargets(data: YamlConfiguration, node: String): MutableMap<String, QuestTarget> {
-        val targets = mutableMapOf<String, QuestTarget>()
-        data.getConfigurationSection(node+"targets")!!.getKeys(false).forEach {
-            val nt = node+"targets."
-            val name = data.getString(nt+"name")?: return@forEach
-            val time = data.getInt(nt+"time")
+    private fun returnTargetData(data: YamlConfiguration, node: String, targetDataMap: MutableMap<String, TargetData>): MutableMap<String, TargetData> {
+        for (name in data.getConfigurationSection(node+"targets")!!.getKeys(false)) {
+            val nodeTarget = node+"targets.$name."
+            val time = data.getInt(nodeTarget+"time")
+            val scheduleMain = data.getInt(nodeTarget+"schedule")
+            val targetData = targetDataMap[name]?: continue
+            targetData.time = time
+            targetData.schedule = scheduleMain
         }
-        return targets
-    }*/
+        return targetDataMap
+    }
 
-    /*private fun mainPull(data: YamlConfiguration, node: String): MutableMap<String, QuestOpenData> {
-        if (data.contains("quest")) {
-            data.getConfigurationSection(node)!!.getKeys(false).forEach {
-                val mainID = it
-                val scheduleMain = data.getInt(node+"schedule")
-                var stateMain = QuestStateUtil.strToState(data.getString(node+"state")?: "IDLE")
-            }
+    private fun returnRewardData(data: YamlConfiguration, node: String): MutableMap<String, Boolean> {
+        val rewardMap = mutableMapOf<String, Boolean>()
+        for (rewardID in data.getConfigurationSection(node+"rewards")!!.getKeys(false)) {
+            val nodeReward = node+"rewards.$rewardID."
+            rewardMap[rewardID] = data.getBoolean(nodeReward+"has")
         }
-    }*/
+        return rewardMap
+    }
 
     override fun push(player: Player) {
 

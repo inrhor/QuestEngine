@@ -1,24 +1,21 @@
 package cn.inrhor.questengine.common.database.data.quest
 
 import cn.inrhor.questengine.common.quest.QuestState
-import cn.inrhor.questengine.common.quest.QuestTarget
 
 class QuestMainData(
     override val questID: String,
     override val mainQuestID: String,
     override var questSubList: MutableMap<String, QuestSubData>,
-    override var time: MutableMap<String, Int>,
-    override var schedule: MutableMap<String, Int>,
-    override var targetsData: MutableMap<String, QuestTarget>,
+    override var targetsData: MutableMap<String, TargetData>,
     override var state: QuestState,
     override var rewardState: MutableMap<String, Boolean>): QuestOpenData() {
 
     constructor(questID: String,
                 mainQuestID: String,
                 questSubList: MutableMap<String, QuestSubData>,
-                targetList: MutableMap<String, QuestTarget>,
+                targetList: MutableMap<String, TargetData>,
                 state: QuestState):
-            this(questID, mainQuestID, questSubList, mutableMapOf(), mutableMapOf(), targetList, state, mutableMapOf())
+            this(questID, mainQuestID, questSubList, targetList, state, mutableMapOf())
 
 
 }

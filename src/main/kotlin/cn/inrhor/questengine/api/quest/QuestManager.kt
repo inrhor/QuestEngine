@@ -116,12 +116,15 @@ object QuestManager {
         val subQuestDataList = mutableMapOf<String, QuestSubData>()
         val mainTargetList = mainQuest.questTargetList
         val mainQuestID = mainQuest.mainQuestID
-        mainQuest.subQuestList.forEach {
+            mainQuest.subQuestList.forEach {
+            val subTargetData = getSubModuleTargetMap(it)
             val subQuestID = it.subQuestID
-            val subQuestData = QuestSubData(questID, mainQuestID, subQuestID, it.questTargetList, QuestState.NOT_ACCEPT)
+            val subQuestData = QuestSubData(questID, mainQuestID, subQuestID, subTargetData, QuestState.NOT_ACCEPT)
             subQuestDataList[subQuestID] = subQuestData
         }
-        val mainQuestData = QuestMainData(questID, mainQuestID, subQuestDataList, mainTargetList, state)
+        val mainModule = getMainQuestModule(questID, mainQuestID)?: return
+        val mainTargetData = getMainModuleTargetMap(mainModule)
+        val mainQuestData = QuestMainData(questID, mainQuestID, subQuestDataList, mainTargetData, state)
         val questData = QuestData(questID, mainQuestData, 0, state, pData.teamData)
         pData.questDataList[questID] = questData
         saveControl(player, pData, mainQuestData)
@@ -283,7 +286,8 @@ object QuestManager {
     fun getDoingMainTarget(player: Player, name: String): QuestTarget? {
         val questData = getDoingQuest(player)?: return null
         val mainData = questData.questMainData
-        return mainData.targetsData[name]
+        val targetData = mainData.targetsData[name]?: return null
+        return targetData.questTarget
     }
 
     /**
@@ -296,11 +300,39 @@ object QuestManager {
             if (u.state == QuestState.DOING) {
                 if (u.targetsData.containsKey(name)) {
                     val tg = u.targetsData[name]?: return null
-                    return TargetSubData(t, tg)
+                    return TargetSubData(t, tg.questTarget)
                 }
             }
         }
         return null
+    }
+
+    /**
+     * 得到主线任务内容的任务目标，交给数据
+     *
+     * 此为初始值，可许更新
+     */
+    fun getMainModuleTargetMap(mainModule: QuestMainModule): MutableMap<String, TargetData> {
+        val targetDataMap = mutableMapOf<String, TargetData>()
+        mainModule.questTargetList.forEach { (name, questTarget) ->
+            val targetData = TargetData(name, 0, 0, questTarget)
+            targetDataMap[name] = targetData
+        }
+        return targetDataMap
+    }
+
+    /**
+     * 得到支线任务内容的任务目标，交给数据
+     *
+     * 此为初始值，可许更新
+     */
+    fun getSubModuleTargetMap(subModule: QuestSubModule): MutableMap<String, TargetData> {
+        val targetDataMap = mutableMapOf<String, TargetData>()
+        subModule.questTargetList.forEach { (name, questTarget) ->
+            val targetData = TargetData(name, 0, 0, questTarget)
+            targetDataMap[name] = targetData
+        }
+        return targetDataMap
     }
 
     /**

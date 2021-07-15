@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.common.database.data.quest
 
 import cn.inrhor.questengine.common.quest.QuestState
-import cn.inrhor.questengine.common.quest.QuestTarget
 
 abstract class QuestOpenData {
 
@@ -13,11 +12,7 @@ abstract class QuestOpenData {
 
     open lateinit var questSubList: MutableMap<String, QuestSubData>
 
-    abstract var time: MutableMap<String, Int>
-
-    abstract var schedule: MutableMap<String, Int>
-
-    abstract var targetsData: MutableMap<String, QuestTarget>
+    abstract var targetsData: MutableMap<String, TargetData>
 
     abstract var state: QuestState
 
