@@ -13,13 +13,23 @@ enum class QuestState {
 object QuestStateUtil {
 
     fun strToState(str: String): QuestState {
-        when (str.uppercase(Locale.getDefault())) {
-            "NOT_ACCEPT" -> return QuestState.NOT_ACCEPT
-            "DOING" -> return QuestState.DOING
-            "IDLE" -> return QuestState.IDLE
-            "FINISH" -> return QuestState.FINISH
+        return when (str.uppercase(Locale.getDefault())) {
+            "NOT_ACCEPT" -> QuestState.NOT_ACCEPT
+            "DOING" -> QuestState.DOING
+            "IDLE" -> QuestState.IDLE
+            "FINISH" -> QuestState.FINISH
+            else -> QuestState.FAILURE
         }
-        return QuestState.FAILURE
+    }
+
+    fun stateToStr(state: QuestState): String {
+        return when (state) {
+            QuestState.NOT_ACCEPT -> "NOT_ACCEPT"
+            QuestState.DOING -> "DOING"
+            QuestState.IDLE -> "IDLE"
+            QuestState.FINISH -> "FINISH"
+            else -> "FAILURE"
+        }
     }
 
 }

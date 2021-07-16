@@ -125,7 +125,7 @@ object QuestManager {
         val mainModule = getMainQuestModule(questID, mainQuestID)?: return
         val mainTargetData = getMainModuleTargetMap(mainModule)
         val mainQuestData = QuestMainData(questID, mainQuestID, subQuestDataList, mainTargetData, state)
-        val questData = QuestData(questID, mainQuestData, 0, state, pData.teamData)
+        val questData = QuestData(questID, mainQuestData, state, pData.teamData, mutableListOf())
         pData.questDataList[questID] = questData
         saveControl(player, pData, mainQuestData)
         runControl(pData, questID, mainQuestID, "")

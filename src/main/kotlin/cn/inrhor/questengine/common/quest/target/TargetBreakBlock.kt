@@ -50,14 +50,13 @@ object TargetBreakBlock: TargetExtend<BlockBreakEvent>() {
         val material = sp[0]
         val amount = sp[1].toInt()
         if (material == breakBlock.name) {
-            val schedule = data.schedule[name] ?: data.schedule.put(name, 0)
-            if (schedule != null) {
-                data.schedule[name] = schedule + 1
-                if (amount >= schedule) {
-                    val mainModule = QuestManager.getMainQuestModule(questID, data.mainQuestID)?: return true
-                    val rewardRepeatState = data.rewardState[name]?: return true
-                    TargetManager.finishReward(data, mainModule.questReward, target.reward, rewardRepeatState)
-                }
+            val targetData = data.targetsData[name]?: return false
+            val schedule = targetData.schedule
+            targetData.schedule = schedule + 1
+            if (amount >= schedule) {
+                val mainModule = QuestManager.getMainQuestModule(questID, data.mainQuestID)?: return true
+                val rewardRepeatState = data.rewardState[name]?: return true
+                TargetManager.finishReward(data, mainModule.questReward, target.reward, rewardRepeatState)
             }
         }
         return true

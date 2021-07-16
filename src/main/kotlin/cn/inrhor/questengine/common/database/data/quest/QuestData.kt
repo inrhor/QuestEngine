@@ -8,12 +8,11 @@ import cn.inrhor.questengine.common.quest.QuestState
  *
  * @param questID
  * @param questMainData 正在进行的主线任务
- * @param schedule 总进度
  */
 class QuestData(
     val questID: String,
     val questMainData: QuestOpenData,
-    var schedule: Int,
     var state: QuestState,
-    var teamData: TeamOpen?) {
+    var teamData: TeamOpen?,
+    var finishedMainMap: MutableList<String>) {
 }
