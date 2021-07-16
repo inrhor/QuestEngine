@@ -7,13 +7,14 @@ setting:
 date:
   # 存储类型 YAML MYSQL
   type: YAML
-  # 数据库设置
-  host: localhost
-  port: 3306
-  user: root
-  password: "root"
-  database: quen
-  table: quest_engine
+  mysql:
+    # 数据库设置
+    host: localhost
+    port: 3306
+    user: root
+    password: password
+    database: questengine
+    table: quest_engine
 
 # 对话设置
 dialog:
