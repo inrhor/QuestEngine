@@ -8,9 +8,9 @@ abstract class QuestOpenData {
 
     abstract val mainQuestID: String
 
-    open lateinit var subQuestID: String
+    open var subQuestID: String = ""
 
-    open lateinit var questSubList: MutableMap<String, QuestSubData>
+    open var questSubList: MutableMap<String, QuestSubData> = mutableMapOf()
 
     abstract var targetsData: MutableMap<String, TargetData>
 

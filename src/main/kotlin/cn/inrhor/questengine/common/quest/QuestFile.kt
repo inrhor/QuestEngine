@@ -6,13 +6,27 @@ import cn.inrhor.questengine.api.quest.QuestManager
 import cn.inrhor.questengine.api.quest.QuestModule
 import cn.inrhor.questengine.api.quest.QuestSubModule
 import cn.inrhor.questengine.utlis.file.GetFile
+import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 
 object QuestFile {
 
-    fun checkRegQuest(file: File) {
+    /**
+     * 加载并注册任务
+     */
+    fun loadDialog() {
+        val questFolder = GetFile().getFile("space/quest", "DIALOG.NO_FILES", false)
+        val lists = questFolder.listFiles()?: return
+        for (file in lists) {
+            MsgUtil.send("file  ${file.name}")
+            if (!file.isDirectory) continue
+            checkRegQuest(file)
+        }
+    }
+
+    private fun checkRegQuest(file: File) {
         val settingFile = file(file, "setting.yml")
         if (!settingFile.exists()) return
         val setting = yaml(settingFile)
@@ -38,11 +52,13 @@ object QuestFile {
 
         val mainQuestList = mutableListOf<QuestMainModule>()
 
-        val mainFolder = File(QuestEngine.plugin.dataFolder,
-            "space/quest/"+file.name+"/main")
-        GetFile().getFileList(mainFolder).forEach {
-            val optionFile = file(file, "option.yml")
+        val mainFolder = GetFile().getFile("space/quest/"+file.name+"/main", "DIALOG.NO_FILES", false)
+        val lists = mainFolder.listFiles()?: return
+        lists.forEach {
+            val optionFile = file(it, "option.yml")
+            MsgUtil.send("Main mAIN Main  ${it.name}")
             if (!optionFile.exists()) return
+            MsgUtil.send("!!!!!!!!!!!!!!!!!!!!!!")
             mainQuestList.add(mainQuest(file, it, questID)!!)
         }
 
@@ -57,7 +73,8 @@ object QuestFile {
     }
 
     private fun mainQuest(file: File, mainFile: File, questID: String): QuestMainModule? {
-        val option = yaml(mainFile)
+        val optionFile = file(mainFile, "option.yml")
+        val option = yaml(optionFile)
         val mainQuestID = option.getString("mainQuestID")!!
         val nextMainQuestID = option.getString("nextMainQuestID")!!
 
@@ -73,12 +90,12 @@ object QuestFile {
 
         val subQuestList = mutableListOf<QuestSubModule>()
 
-        val subFolder = File(QuestEngine.plugin.dataFolder,
-            "space/quest/"+file.name+"/main/"+mainFile.name+"/sub")
-        GetFile().getFileList(subFolder).forEach {
-            val optionFile = file(it, "option.yml")
-            val optionSub = yaml(it)
-            if (optionFile.exists()) {
+        val subFolder = GetFile().getFile("space/quest/"+file.name+"/main/"+mainFile.name+"/sub", "DIALOG.NO_FILES", false)
+        val lists = subFolder.listFiles()?: return null
+        lists.forEach {
+            val optionSubFile = file(it, "option.yml")
+            if (optionSubFile.exists()) {
+                val optionSub = yaml(optionSubFile)
                 val subQuestID = optionSub.getString("subQuestID")!!
 
                 val controlSubFile = file(it, "control.yml")

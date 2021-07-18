@@ -18,7 +18,7 @@ object QuestManager {
     /**
      * 注册的任务模块内容
      */
-    private var questMap: HashMap<String, QuestModule> = LinkedHashMap()
+    var questMap: HashMap<String, QuestModule> = LinkedHashMap()
 
     /**
      * 注册任务模块内容
@@ -347,6 +347,16 @@ object QuestManager {
             }
         }
         return null
+    }
+
+    /**
+     * 放弃任务
+     */
+    fun quitQuest(player: Player, questID: String) {
+        val pData = DataStorage.getPlayerData(player)?: return
+        val questData = pData.questDataList
+        if (!questData.containsKey(questID)) return
+        questData.remove(questID)
     }
 
 }

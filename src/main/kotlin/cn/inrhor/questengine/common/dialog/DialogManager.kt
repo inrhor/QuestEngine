@@ -55,7 +55,7 @@ object DialogManager {
      * 加载并注册对话
      */
     fun loadDialog() {
-        val dialogFolder = GetFile().getFile("space/dialog", "DIALOG.NO_FILES")
+        val dialogFolder = GetFile().getFile("space/dialog", "DIALOG.NO_FILES", true)
         GetFile().getFileList(dialogFolder).forEach{
             DialogFile.checkRegDialog(it)
         }

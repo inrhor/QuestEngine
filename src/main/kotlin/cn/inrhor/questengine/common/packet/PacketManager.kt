@@ -81,7 +81,7 @@ object PacketManager {
      * 加载并注册数据包文件
      */
     fun loadPacket() {
-        val packetFolder = GetFile().getFile("space/packet", "PACKET.NO_FILES")
+        val packetFolder = GetFile().getFile("space/packet", "PACKET.NO_FILES", true)
         GetFile().getFileList(packetFolder).forEach{
             checkRegPacket(it)
         }
@@ -102,7 +102,7 @@ object PacketManager {
     }
 
     fun returnEntityType(entityType: String): EntityType {
-        return EntityType.valueOf(entityType.lowercase(Locale.getDefault()))
+        return EntityType.valueOf(entityType.uppercase(Locale.getDefault()))
     }
 
     fun returnItemEntityID(packetID: String, mate: MutableList<String>): MutableMap<String, Int> {

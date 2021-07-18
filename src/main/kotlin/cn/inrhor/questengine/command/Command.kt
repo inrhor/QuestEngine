@@ -1,15 +1,17 @@
 package cn.inrhor.questengine.command
 
-import cn.inrhor.questengine.command.collaboration.TeamCommand
 import io.izzel.taboolib.module.command.base.BaseCommand
 import io.izzel.taboolib.module.command.base.BaseMainCommand
-import io.izzel.taboolib.module.command.base.CommandType
+import io.izzel.taboolib.module.command.base.BaseSubCommand
 import io.izzel.taboolib.module.command.base.SubCommand
 
-@BaseCommand(name = "iqe")
+@BaseCommand(name = "QuestEngine")
 class Command: BaseMainCommand() {
 
-    @SubCommand(permission = "QuestEngine.use", type = CommandType.PLAYER)
-    val team = TeamCommand()
+    @SubCommand(permission = "QuestEngine.admin.quest")
+    val quest: BaseSubCommand = QuestCommand()
+
+    @SubCommand(permission = "QuestEngine.use.team")
+    val team: BaseSubCommand = TeamCommand()
 
 }
