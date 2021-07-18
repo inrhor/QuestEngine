@@ -203,6 +203,19 @@ class DatabaseSQL: Database() {
         }else {
             tableSubQuest.insert(uuid, questID, mainQuestID, subQuestID, state, rewards)
         }
+        pushTarget(uuid, openData)
+    }
+
+    fun pushTarget(uuid: UUID, openData: QuestOpenData) {
+        openData.targetsData.forEach { (name, targetData) ->
+            val questID = openData.questID
+            val name = targetData.name
+            val mainID = openData.mainQuestID
+            val subID = openData.subQuestID
+            val time = targetData.time
+            val schedule = targetData.schedule
+            tableTargets.insert(uuid, name, questID, mainID, subID, time, schedule)
+        }
     }
 
 

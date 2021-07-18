@@ -131,7 +131,7 @@ class DatabaseLocal: Database() {
         data.save(file)
     }
 
-    private fun pushData(data: YamlConfiguration, node: String, openData: QuestOpenData, ) {
+    private fun pushData(data: YamlConfiguration, node: String, openData: QuestOpenData) {
         val state = QuestStateUtil.stateToStr(openData.state)
         data.set(node+"state", state)
         openData.rewardState.forEach { (rewardID, has) ->
