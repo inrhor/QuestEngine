@@ -4,7 +4,7 @@ setting:
   lang: "zh_CN"
 
 # 数据存储
-date:
+data:
   # 存储类型 YAML MYSQL
   type: YAML
   mysql:
