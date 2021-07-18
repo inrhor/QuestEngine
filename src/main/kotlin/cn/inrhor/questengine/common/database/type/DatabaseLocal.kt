@@ -118,7 +118,7 @@ class DatabaseLocal: Database() {
             val state = QuestStateUtil.stateToStr(questData.state)
             val node = "quest.$questID."
             data.set(node+"state", state)
-            val finishedMain = questData.finishedMainMap
+            val finishedMain = questData.finishedMainList
             data.set(node+"finishedMainQuest", finishedMain)
             val mainData = questData.questMainData
             val mainID = mainData.mainQuestID

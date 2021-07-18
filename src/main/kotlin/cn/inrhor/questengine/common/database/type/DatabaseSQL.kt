@@ -4,10 +4,7 @@ import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.quest.QuestManager
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage
-import cn.inrhor.questengine.common.database.data.quest.QuestData
-import cn.inrhor.questengine.common.database.data.quest.QuestMainData
-import cn.inrhor.questengine.common.database.data.quest.QuestSubData
-import cn.inrhor.questengine.common.database.data.quest.TargetData
+import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.quest.QuestStateUtil
 import io.izzel.taboolib.internal.gson.Gson
 import io.izzel.taboolib.module.db.sql.*
@@ -24,16 +21,16 @@ class DatabaseSQL: Database() {
 
     val tableQuest = SQLTable(
         table+"_user_quest",
-        SQLColumnType.VARCHAR.toColumn(36, "uuid").columnOptions(SQLColumnOption.UNIQUE_KEY),
+        SQLColumnType.VARCHAR.toColumn(36, "uuid").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(36, "questID").columnOptions(SQLColumnOption.KEY),
-        SQLColumnType.VARCHAR.toColumn(36, "questMainData").columnOptions(SQLColumnOption.KEY),
+        SQLColumnType.VARCHAR.toColumn(36, "questMainID").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(36, "state").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(256, "finishedMainQuest").columnOptions(SQLColumnOption.KEY)
     )
 
     val tableMainQuest = SQLTable(
         table+"_user_main_quest",
-        SQLColumnType.VARCHAR.toColumn(36, "uuid").columnOptions(SQLColumnOption.UNIQUE_KEY),
+        SQLColumnType.VARCHAR.toColumn(36, "uuid").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(36, "questID").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(36, "mainQuestID").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(36,"state").columnOptions(SQLColumnOption.KEY),
@@ -42,7 +39,7 @@ class DatabaseSQL: Database() {
 
     val tableSubQuest = SQLTable(
         table+"_user_sub_quest",
-        SQLColumnType.VARCHAR.toColumn(36, "uuid").columnOptions(SQLColumnOption.UNIQUE_KEY),
+        SQLColumnType.VARCHAR.toColumn(36, "uuid").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(36, "questID").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(36, "mainQuestID").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(36, "subQuestID").columnOptions(SQLColumnOption.KEY),
@@ -52,7 +49,7 @@ class DatabaseSQL: Database() {
 
     val tableTargets = SQLTable(
         table+"_user_targets",
-        SQLColumnType.VARCHAR.toColumn(36, "uuid").columnOptions(SQLColumnOption.UNIQUE_KEY),
+        SQLColumnType.VARCHAR.toColumn(36, "uuid").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(64, "name").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(36, "questID").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(36, "mainQuestID").columnOptions(SQLColumnOption.KEY),
@@ -78,12 +75,12 @@ class DatabaseSQL: Database() {
         tableQuest.select(
             Where.equals("uuid", uuid))
             .row("questID")
-            .row("questMainData")
+            .row("questMainID")
             .row("state")
             .row("finishedMainQuest")
             .to(source)
             .map {
-                it.getString("questID") to it.getString("questMainData") to it.getString("state") to it.getString("finishedMainQuest")
+                it.getString("questID") to it.getString("questMainID") to it.getString("state") to it.getString("finishedMainQuest")
             }.forEach {
                 val questID = it.first.first.first
                 val mainID = it.first.first.second
@@ -181,41 +178,30 @@ class DatabaseSQL: Database() {
         return targetDataMap
     }
 
-    /*fun l() {
-        val uuid = *//*player.uniqueId*//*"haha"
-        tableQuest.select(Where.equals("uuid", uuid))
-            .row("uuid")
-            .row("questID")
-            .row("finishedMainQuest")
-            .to(source)
-            .map {
-                it.getString("uuid") to it.getString("finishedMainQuest") to it.getString("questID")
-            }.forEach {
-                MsgUtil.send("Mysql - Test: 1>  "+it.first+"   2>  "+it.first.second+"   3>  "+it.second)
-                val s = it.first.second
-                val json = Gson().fromJson(s, MutableList::class.java)
-                json.forEach { i ->
-                    MsgUtil.send("json  $i")
-                }
-            }
-    }*/
-
-    /*private fun mainQuestData(uuid: UUID, questID: String): QuestMainData {
-        tableMainQuest.select(Where.equals("uuid", uuid), Where.equals("questID", questID))
-            .row("mainQuestID")
-            .to(source)
-            .map {
-                it.getString("mainQuestID") to it.getString("state") to it.getString("targets") to it.getString("rewards")
-            }.forEach {
-                return QuestMainData(questID, it.first, mu)
-            }
-    }*/
-
     override fun push(player: Player) {
         val uuid = player.uniqueId
         val pData = DataStorage.getPlayerData(uuid)?: return
         pData.questDataList.forEach { (questID, questData) ->
+            val mainData = questData.questMainData
+            val questMainID = mainData.mainQuestID
             val state = QuestStateUtil.stateToStr(questData.state)
+            val fmq = questData.finishedMainList
+            val fmqJson = Gson().toJson(fmq)
+            tableQuest.insert(uuid, questID, questMainID, state, fmqJson).run(source)
+            pushOpen(uuid, mainData, questID, questMainID, "")
+        }
+    }
+
+    private fun pushOpen(uuid: UUID, openData: QuestOpenData, questID: String, mainQuestID: String, subQuestID: String) {
+        val state = QuestStateUtil.stateToStr(openData.state)
+        val rewards = Gson().toJson(openData.rewardState)
+        if (subQuestID.isEmpty()) {
+            tableMainQuest.insert(uuid, questID, mainQuestID, state, rewards)
+            openData.questSubList.forEach { (subID, subData) ->
+                pushOpen(uuid, subData, questID, mainQuestID, subID)
+            }
+        }else {
+            tableSubQuest.insert(uuid, questID, mainQuestID, subQuestID, state, rewards)
         }
     }
 
