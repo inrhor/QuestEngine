@@ -1,8 +1,6 @@
 package cn.inrhor.questengine.command.quest
 
-import cn.inrhor.questengine.api.quest.QuestManager
-import io.izzel.taboolib.module.command.base.Argument
-import io.izzel.taboolib.module.command.base.BaseSubCommand
+import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender

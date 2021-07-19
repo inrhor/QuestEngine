@@ -73,4 +73,11 @@ object TeamManager {
         teamData.asks.add(aUUID)
     }
 
+    /**
+     * 更新共享任务目标数据
+     */
+    fun updateTarget() {
+
+    }
+
 }

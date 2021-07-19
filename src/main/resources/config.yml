@@ -15,10 +15,3 @@ data:
     password: password
     database: questengine
     table: quest_engine
-
-# 对话设置
-dialog:
-  # 显示形式
-  display: "holo"
-  # 交互NPC插件
-  npcPlugin: "Adyeshach"

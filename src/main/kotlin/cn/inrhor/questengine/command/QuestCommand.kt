@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.command
 
-import cn.inrhor.questengine.api.quest.QuestManager
+import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.command.quest.QuestAccept
 import io.izzel.taboolib.module.command.base.Argument
 import io.izzel.taboolib.module.command.base.BaseSubCommand

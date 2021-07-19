@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.script.kether.expand.control
 
-import cn.inrhor.questengine.api.quest.QuestManager
+import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.database.data.DataStorage
 import io.izzel.taboolib.kotlin.kether.Kether.expects
 import io.izzel.taboolib.kotlin.kether.KetherParser

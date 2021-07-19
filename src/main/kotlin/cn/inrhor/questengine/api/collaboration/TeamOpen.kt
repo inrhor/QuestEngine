@@ -2,6 +2,7 @@ package cn.inrhor.questengine.api.collaboration
 
 import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.database.data.quest.QuestData
 import java.util.*
 
 abstract class TeamOpen {

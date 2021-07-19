@@ -41,21 +41,10 @@ abstract class TargetExtend<E: Event> {
      * 事件的玩家
      */
     var tasker: ((E) -> Player?) = { null }
+        private set
 
     protected fun tasker(handle: E.() -> Player?) {
         this.tasker = handle
-    }
-
-    /**
-     * 事件的条件
-     */
-    val conditionMap = mutableMapOf<String, ConditionType>()
-
-    /*
-     * 为了规范配置
-     */
-    fun addCondition(content: String, conditionType: ConditionType) {
-        conditionMap[content] = conditionType
     }
 
 }

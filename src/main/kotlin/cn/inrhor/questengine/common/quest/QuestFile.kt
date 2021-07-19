@@ -1,9 +1,10 @@
 package cn.inrhor.questengine.common.quest
 
 import cn.inrhor.questengine.api.quest.QuestMainModule
-import cn.inrhor.questengine.api.quest.QuestManager
+import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.api.quest.QuestModule
 import cn.inrhor.questengine.api.quest.QuestSubModule
+import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.utlis.file.GetFile
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
@@ -123,9 +124,8 @@ object QuestFile {
     private fun reward(file: File, questID: String, mainQuestID: String, subQuestID: String): QuestReward {
         val finishReward = mutableMapOf<String, MutableList<String>>()
         var failReward = mutableListOf<String>()
-        val rewardFile = file(file, "reward.yml")
-        if (rewardFile.exists()) {
-            val reward = yaml(rewardFile)
+        if (file.exists()) {
+            val reward = yaml(file)
             for (rewardID in reward.getConfigurationSection("finishReward")!!.getKeys(false)) {
                 finishReward[rewardID] = reward.getStringList("finishReward.$rewardID")
             }

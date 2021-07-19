@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.quest
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.quest.TargetExtend
+import cn.inrhor.questengine.common.quest.manager.TargetManager
 import io.izzel.taboolib.TabooLibLoader
 import io.izzel.taboolib.compat.kotlin.CompatKotlin
 import io.izzel.taboolib.kotlin.SingleListener
@@ -24,11 +25,11 @@ object QuestLoader {
         if (isListener) {
             SingleListener.listen(event.java, priority, ignoreCancelled) { e ->
                 tasker(e)?.run {
-                    conditionMap.forEach { (_, condition) ->
+                    TargetManager.targetMap.values.forEach {
                         if (isAsync) {
-                            if (!condition.check()) return@forEach
+                            if (!it.check()) return@forEach
                         }else {
-                            if (!condition.check()) return@forEach
+                            if (!it.check()) return@forEach
                         }
                     }
                 }

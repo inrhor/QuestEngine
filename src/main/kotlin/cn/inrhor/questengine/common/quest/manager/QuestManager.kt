@@ -1,5 +1,8 @@
-package cn.inrhor.questengine.api.quest
+package cn.inrhor.questengine.common.quest.manager
 
+import cn.inrhor.questengine.api.quest.QuestMainModule
+import cn.inrhor.questengine.api.quest.QuestModule
+import cn.inrhor.questengine.api.quest.QuestSubModule
 import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
@@ -9,6 +12,7 @@ import cn.inrhor.questengine.common.script.kether.KetherHandler
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.common.quest.TargetSubData
+import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.entity.Player
 import java.util.HashMap
 import java.util.LinkedHashMap
@@ -74,11 +78,18 @@ object QuestManager {
     }
 
     /**
+     * 获取任务成员模式
+     */
+    fun getQuestMode(questID: String): ModeType {
+        val questModule = getQuestModule(questID)?: return ModeType.PERSONAL
+        return questModule.modeType
+    }
+
+    /**
      * 接受任务
      */
     fun acceptQuest(player: Player, questID: String) {
-        val pData = DataStorage.getPlayerData(player)?: return
-        val questModule = getQuestModule(questID)?: return
+        val questModule = getQuestModule(questID) ?: return
         val startMainQuest = questModule.getStartMainQuest()?: return
         acceptMainQuest(player, questID, startMainQuest, true)
     }
@@ -90,9 +101,9 @@ object QuestManager {
      */
     fun acceptNextMainQuest(player: Player, questData: QuestData, mainQuestID: String) {
         val questID = questData.questID
-        val questMainModule = getMainQuestModule(questID, mainQuestID)?: return
+        val questMainModule = getMainQuestModule(questID, mainQuestID) ?: return
         val nextMainID = questMainModule.nextMinQuestID
-        val nextMainModule = getMainQuestModule(questID, nextMainID)?: return
+        val nextMainModule = getMainQuestModule(questID, nextMainID) ?: return
         acceptMainQuest(player, questID, nextMainModule, false)
     }
 
@@ -100,7 +111,7 @@ object QuestManager {
      * 接受支线任务，前提是已接受了所在的主线任务
      */
     fun acceptSubQuest(player: Player, questID: String, mainQuestID: String, subQuestID: String) {
-        val mainData = getMainQuestData(player, questID)?: return
+        val mainData = getMainQuestData(player, questID) ?: return
         if (mainData.mainQuestID != mainQuestID) return
         val subData = mainData.questSubList[subQuestID]?: return
         subData.state = QuestState.DOING
@@ -114,7 +125,6 @@ object QuestManager {
         var state = QuestState.DOING
         if (isNewQuest && hasDoingMainQuest(pData)) state = QuestState.IDLE
         val subQuestDataList = mutableMapOf<String, QuestSubData>()
-        val mainTargetList = mainQuest.questTargetList
         val mainQuestID = mainQuest.mainQuestID
             mainQuest.subQuestList.forEach {
             val subTargetData = getSubModuleTargetMap(it)
@@ -122,7 +132,7 @@ object QuestManager {
             val subQuestData = QuestSubData(questID, mainQuestID, subQuestID, subTargetData, QuestState.NOT_ACCEPT)
             subQuestDataList[subQuestID] = subQuestData
         }
-        val mainModule = getMainQuestModule(questID, mainQuestID)?: return
+        val mainModule = getMainQuestModule(questID, mainQuestID) ?: return
         val mainTargetData = getMainModuleTargetMap(mainModule)
         val mainQuestData = QuestMainData(questID, mainQuestID, subQuestDataList, mainTargetData, state)
         val questData = QuestData(questID, mainQuestData, state, pData.teamData, mutableListOf())
@@ -142,12 +152,12 @@ object QuestManager {
         val scriptList: MutableList<String>
         val controlID: String
         if (subQuestID == "") {
-            val mModule = getMainQuestModule(questID, mainQuestID)?: return
+            val mModule = getMainQuestModule(questID, mainQuestID) ?: return
             val cModule = mModule.questControl
             controlID = cModule.controlID
             scriptList = cModule.scriptList
         }else {
-            val mModule = getSubQuestModule(questID, mainQuestID, subQuestID)?: return
+            val mModule = getSubQuestModule(questID, mainQuestID, subQuestID) ?: return
             val cModule = mModule.questControl
             controlID = cModule.controlID
             scriptList = cModule.scriptList
@@ -194,10 +204,10 @@ object QuestManager {
      * @param runFailReward 如果失败，是否执行当前主线任务失败脚本
      */
     fun endQuest(player: Player, questID: String, state: QuestState, runFailReward: Boolean) {
-        val questData = getQuestData(player, questID)?: return
+        val questData = getQuestData(player, questID) ?: return
         if (state == QuestState.FAILURE && runFailReward) {
             val mainQuestID = questData.questMainData.mainQuestID
-            val failReward = getReward(questID, mainQuestID, "", "", state)?: return
+            val failReward = getReward(questID, mainQuestID, "", "", state) ?: return
             failReward.forEach {
                 KetherHandler.eval(player, it)
             }
@@ -208,8 +218,8 @@ object QuestManager {
      * 结束当前主线任务，执行下一个主线任务或最终完成
      */
     fun finishMainQuest(player: Player, questID: String, mainQuestID: String) {
-        val questData = getQuestData(player, questID)?: return
-        val questMainModule = getMainQuestModule(questID, mainQuestID)?: return
+        val questData = getQuestData(player, questID) ?: return
+        val questMainModule = getMainQuestModule(questID, mainQuestID) ?: return
         val nextMainID = questMainModule.nextMinQuestID
         if (nextMainID == "") {
             questData.state = QuestState.FINISH
@@ -223,7 +233,7 @@ object QuestManager {
      * 只设定状态
      */
     fun finishSubQuest(player: Player, questID: String, subQuestID: String) {
-        val subQuestData = getSubQuestData(player, questID, subQuestID)?: return
+        val subQuestData = getSubQuestData(player, questID, subQuestID) ?: return
         subQuestData.state = QuestState.FINISH
     }
 
@@ -239,7 +249,7 @@ object QuestManager {
      * 获得玩家当前主线任务数据
      */
     fun getMainQuestData(player: Player, questID: String): QuestOpenData? {
-        val questData = getQuestData(player, questID)?: return null
+        val questData = getQuestData(player, questID) ?: return null
         return questData.questMainData
     }
 
@@ -247,7 +257,7 @@ object QuestManager {
      * 获得玩家支线任务数据
      */
     fun getSubQuestData(player: Player, questID: String, subQuestID: String): QuestOpenData? {
-        val mainQuestData = getMainQuestData(player, questID)?: return null
+        val mainQuestData = getMainQuestData(player, questID) ?: return null
         return mainQuestData.questSubList[subQuestID]
     }
 
@@ -284,8 +294,9 @@ object QuestManager {
      * 获得触发的主线任务目标
      */
     fun getDoingMainTarget(player: Player, name: String): QuestTarget? {
-        val questData = getDoingQuest(player)?: return null
+        val questData = getDoingQuest(player) ?: return null
         val mainData = questData.questMainData
+        mainData.targetsData.keys.forEach { MsgUtil.send("key   $it") }
         val targetData = mainData.targetsData[name]?: return null
         return targetData.questTarget
     }
@@ -294,7 +305,7 @@ object QuestManager {
      * 获得触发的支线任务目标及其支线任务数据
      */
     fun getDoingSubTarget(player: Player, name: String): TargetSubData? {
-        val questData = getDoingQuest(player)?: return null
+        val questData = getDoingQuest(player) ?: return null
         val mainData = questData.questMainData
         mainData.questSubList.forEach { (t, u) ->
             if (u.state == QuestState.DOING) {
