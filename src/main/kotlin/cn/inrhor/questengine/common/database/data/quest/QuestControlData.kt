@@ -15,8 +15,10 @@ class QuestControlData(
     var line: Int,
     var waitTime: Int) {
 
+    var time = 0
+
     fun runScript() {
-        if (script.isEmpty()) return
+        if (script.isEmpty() || line >= script.size) return
         val content = script[line]
         if (ControlTaskType.returnType(content) == ControlType.ASY) {
             asyRunScript(content)
@@ -27,8 +29,11 @@ class QuestControlData(
     private fun synRunScript(content: String) {
         object : BukkitRunnable() {
             override fun run() {
-                if (!player.isOnline || questOpenData.state != QuestState.DOING) cancel()
-                KetherHandler.eval(player, content)
+                if (!player.isOnline || questOpenData.state != QuestState.DOING) {
+                    cancel()
+                    return
+                }
+                eval(content)
             }
         }.runTaskLater(QuestEngine.plugin, waitTime.toLong())
     }
@@ -36,10 +41,19 @@ class QuestControlData(
     private fun asyRunScript(content: String) {
         object : BukkitRunnable() {
             override fun run() {
-                if (!player.isOnline || questOpenData.state != QuestState.DOING) cancel()
-                KetherHandler.eval(player, content)
+                if (!player.isOnline || questOpenData.state != QuestState.DOING) {
+                    cancel()
+                    return
+                }
+                eval(content)
             }
         }.runTaskLaterAsynchronously(QuestEngine.plugin, waitTime.toLong())
+    }
+
+    private fun eval(content: String) {
+        KetherHandler.eval(player, content)
+        runScript()
+        waitTime = 0
     }
 
 }

@@ -1,12 +1,10 @@
 package cn.inrhor.questengine.common.quest
 
-import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.quest.QuestMainModule
 import cn.inrhor.questengine.api.quest.QuestManager
 import cn.inrhor.questengine.api.quest.QuestModule
 import cn.inrhor.questengine.api.quest.QuestSubModule
 import cn.inrhor.questengine.utlis.file.GetFile
-import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
@@ -20,7 +18,6 @@ object QuestFile {
         val questFolder = GetFile().getFile("space/quest", "DIALOG.NO_FILES", false)
         val lists = questFolder.listFiles()?: return
         for (file in lists) {
-            MsgUtil.send("file  ${file.name}")
             if (!file.isDirectory) continue
             checkRegQuest(file)
         }
@@ -56,9 +53,7 @@ object QuestFile {
         val lists = mainFolder.listFiles()?: return
         lists.forEach {
             val optionFile = file(it, "option.yml")
-            MsgUtil.send("Main mAIN Main  ${it.name}")
             if (!optionFile.exists()) return
-            MsgUtil.send("!!!!!!!!!!!!!!!!!!!!!!")
             mainQuestList.add(mainQuest(file, it, questID)!!)
         }
 

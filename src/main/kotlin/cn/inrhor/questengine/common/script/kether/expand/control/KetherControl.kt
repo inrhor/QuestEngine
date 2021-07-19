@@ -49,7 +49,7 @@ class KetherControl {
             when (it.expects("s", "minute")) {
                 "s" -> {
                     try {
-                        val time = it.nextInt()
+                        val time = it.nextInt()*20
                         it.mark()
                         when (it.expects("main", "sub")) {
                             "sub" -> WaitTimeSub(time, it.nextToken(), it.nextToken(), it.nextToken())
@@ -61,7 +61,7 @@ class KetherControl {
                 }
                 "minute" -> {
                     try {
-                        val time = it.nextInt()*60
+                        val time = it.nextInt()*1200
                         it.mark()
                         when (it.expects("main", "sub")) {
                             "sub" -> WaitTimeSub(time, it.nextToken(), it.nextToken(), it.nextToken())

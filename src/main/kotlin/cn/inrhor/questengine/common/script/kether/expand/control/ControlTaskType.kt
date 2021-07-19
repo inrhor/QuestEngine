@@ -6,7 +6,7 @@ object ControlTaskType {
     fun returnType(str: String): ControlType {
         val i = str.lowercase(Locale.getDefault()).split(" ")
         return when(i[0]) {
-            "send packet" -> ControlType.ASY
+            "packet send", "packet remove" -> ControlType.ASY
             else -> ControlType.SYN
         }
     }
