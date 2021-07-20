@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.command
 
+import cn.inrhor.questengine.command.collaboration.*
 import io.izzel.taboolib.module.command.base.BaseCommand
 import io.izzel.taboolib.module.command.base.BaseMainCommand
 import io.izzel.taboolib.module.command.base.BaseSubCommand
@@ -12,6 +13,18 @@ class Command: BaseMainCommand() {
     val quest: BaseSubCommand = QuestCommand()
 
     @SubCommand(permission = "QuestEngine.use.team")
-    val team: BaseSubCommand = TeamCommand()
+    val teamCreate: BaseSubCommand = CreateTeamCmd()
+
+    @SubCommand(permission = "QuestEngine.use.team")
+    val teamJoin: BaseSubCommand = JoinTeamCmd()
+
+    @SubCommand(permission = "QuestEngine.use.team")
+    val teamDelete: BaseSubCommand = DelTeamCmd()
+
+    @SubCommand(permission = "QuestEngine.use.team")
+    val teamInvite: BaseSubCommand = InviteTeamCmd()
+
+    @SubCommand(permission = "QuestEngine.use.team")
+    val teamKick: BaseSubCommand = KickTeamCmd()
 
 }

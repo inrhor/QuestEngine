@@ -11,15 +11,15 @@ import java.util.*
 class QuestCommand: BaseSubCommand() {
 
     override fun getArguments() = arrayOf(
-        Argument("@COMMAND.BASE.QUESTID", true) { arrayListOf("accept", "quit") },
-        Argument("@COMMAND.BASE.QUESTID", true) { QuestManager.questMap.map { it.key } },
+        Argument("@COMMAND.QUEST.ARGUMENT", true) { arrayListOf("accept", "quit") },
+        Argument("@COMMAND.QUEST.QUESTID", true) { QuestManager.questMap.map { it.key } },
         Argument("@COMMAND.BASE.PLAYER", true)
     )
 
     override fun onCommand(sender: CommandSender, command: Command, label : String, args: Array<out String>) {
         when (args[0].lowercase(Locale.getDefault())) {
-            "accept" -> QuestAccept().onCommand(sender, command, label, args)
-            "quit" -> QuestAccept().onCommand(sender, command, label, args)
+            "accept" -> QuestAccept().onCommand(args)
+            "quit" -> QuestAccept().onCommand(args)
         }
         return
     }

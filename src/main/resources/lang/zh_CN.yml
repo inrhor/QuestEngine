@@ -12,8 +12,11 @@ DIALOG:
 COMMAND:
   BASE:
     PLAYER: "玩家"
+    ARGUMENT: "参数"
+  QUEST:
     QUESTID: "任务ID"
     MAIN_QUESTID: "主线任务ID"
     SUB_QUESTID: "支线任务ID"
-  QUEST:
     ACCEPT: "接受任务"
+  TEAM:
+    NAME: "队伍名称"
