@@ -15,7 +15,7 @@ abstract class TeamOpen {
 
     abstract var members: MutableSet<UUID>
 
-    abstract var asks: MutableSet<UUID>
+    open var asks: MutableSet<UUID> = mutableSetOf()
 
     open fun rename(newTeamName: String) {
         teamName = newTeamName

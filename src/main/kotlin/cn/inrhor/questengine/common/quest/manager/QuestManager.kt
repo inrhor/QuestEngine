@@ -13,6 +13,7 @@ import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.common.quest.TargetSubData
 import cn.inrhor.questengine.utlis.public.MsgUtil
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.util.HashMap
 import java.util.LinkedHashMap
@@ -88,10 +89,23 @@ object QuestManager {
     /**
      * 接受任务
      */
-    fun acceptQuest(player: Player, questID: String) {
+    private fun acceptQuest(player: Player, questID: String) {
+        val pData = DataStorage.getPlayerData(player)?: return
         val questModule = getQuestModule(questID) ?: return
+        if (questModule.modeType == ModeType.COLLABORATION) {
+            val tData = pData.teamData?: return
+            tData.members.forEach {
+                val m = Bukkit.getPlayer(it)?: return@forEach
+                acceptQuest(m, questModule)
+            }
+            return
+        }
+        acceptQuest(player, questModule)
+    }
+
+    private fun acceptQuest(player: Player, questModule: QuestModule) {
         val startMainQuest = questModule.getStartMainQuest()?: return
-        acceptMainQuest(player, questID, startMainQuest, true)
+        acceptMainQuest(player, questModule.questID, startMainQuest, true)
     }
 
     /**
@@ -99,7 +113,21 @@ object QuestManager {
      *
      * 前提是已接受任务
      */
-    fun acceptNextMainQuest(player: Player, questData: QuestData, mainQuestID: String) {
+    private fun acceptNextMainQuest(player: Player, questData: QuestData, mainQuestID: String) {
+        val questID = questData.questID
+        val questModule = getQuestModule(questID) ?: return
+        if (questModule.modeType == ModeType.COLLABORATION) {
+            val tData = questData.teamData?: return
+            tData.members.forEach {
+                val m = Bukkit.getPlayer(it)?: return@forEach
+                nextMainQuest(m, questData, mainQuestID)
+            }
+            return
+        }
+        nextMainQuest(player, questData, mainQuestID)
+    }
+
+    private fun nextMainQuest(player: Player, questData: QuestData, mainQuestID: String) {
         val questID = questData.questID
         val questMainModule = getMainQuestModule(questID, mainQuestID) ?: return
         val nextMainID = questMainModule.nextMinQuestID
@@ -111,6 +139,20 @@ object QuestManager {
      * 接受支线任务，前提是已接受了所在的主线任务
      */
     fun acceptSubQuest(player: Player, questID: String, mainQuestID: String, subQuestID: String) {
+        val questData = getQuestData(player, questID)?: return
+        val questModule = getQuestModule(questID) ?: return
+        if (questModule.modeType == ModeType.COLLABORATION) {
+            val tData = questData.teamData?: return
+            tData.members.forEach {
+                val m = Bukkit.getPlayer(it)?: return@forEach
+                subQuestAccept(m, questID, mainQuestID, subQuestID)
+            }
+            return
+        }
+        subQuestAccept(player, questID, mainQuestID, subQuestID)
+    }
+
+    private fun subQuestAccept(player: Player, questID: String, mainQuestID: String, subQuestID: String) {
         val mainData = getMainQuestData(player, questID) ?: return
         if (mainData.mainQuestID != mainQuestID) return
         val subData = mainData.questSubList[subQuestID]?: return
@@ -223,6 +265,15 @@ object QuestManager {
         val nextMainID = questMainModule.nextMinQuestID
         if (nextMainID == "") {
             questData.state = QuestState.FINISH
+            val questModule = getQuestModule(questID)?: return
+            if (questModule.modeType == ModeType.COLLABORATION) {
+                val tData = questData.teamData?: return
+                tData.members.forEach {
+                    val m = Bukkit.getPlayer(it)?: return@forEach
+                    val mQuestData = getQuestData(m, questID)?: return@forEach
+                    mQuestData.state = QuestState.FINISH
+                }
+            }
         }else {
             acceptNextMainQuest(player, questData, nextMainID)
         }
@@ -361,12 +412,25 @@ object QuestManager {
     }
 
     /**
-     * 放弃任务
+     * 放弃和清空任务
      */
     fun quitQuest(player: Player, questID: String) {
-        val pData = DataStorage.getPlayerData(player)?: return
+        val uuid = player.uniqueId
+        val pData = DataStorage.getPlayerData(uuid)?: return
         val questData = pData.questDataList
         if (!questData.containsKey(questID)) return
+        val questModule = getQuestModule(questID)?: return
+        val qData = questData[questID]?: return
+        if (questModule.modeType == ModeType.COLLABORATION) {
+            val tData = qData.teamData?: run { questData.remove(questID); return }
+            tData.members.forEach {
+                if (uuid == it) return@forEach
+                val mData = DataStorage.getPlayerData(it)?: return@forEach
+                val mQuestData = mData.questDataList
+                if (!mQuestData.containsKey(questID)) return@forEach
+                mQuestData.remove(questID)
+            }
+        }
         questData.remove(questID)
     }
 
