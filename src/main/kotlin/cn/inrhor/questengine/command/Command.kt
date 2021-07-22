@@ -13,10 +13,16 @@ class Command: BaseMainCommand() {
     val quest: BaseSubCommand = QuestCommand()
 
     @SubCommand(permission = "QuestEngine.use.team")
+    val teamOpen: BaseSubCommand = OpenTeamCmd()
+
+    @SubCommand(permission = "QuestEngine.use.team")
     val teamCreate: BaseSubCommand = CreateTeamCmd()
 
     @SubCommand(permission = "QuestEngine.use.team")
     val teamJoin: BaseSubCommand = JoinTeamCmd()
+
+    @SubCommand(permission = "QuestEngine.use.team")
+    val teamMembers: BaseSubCommand = MembersTeamCmd()
 
     @SubCommand(permission = "QuestEngine.use.team")
     val teamDelete: BaseSubCommand = DelTeamCmd()

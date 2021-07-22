@@ -12,11 +12,45 @@ hasTeamInfo:
       - "          &8&l[ &c&l解散队伍 &8&l]"
     hover:
       - "&8&l[ &c&l点击解散 &8&l]"
+  members:
+    content:
+      - "          &8&l[ &c&l成员列表 &8&l]"
+    hover:
+      - "&8&l[ &c&l点击查看 &8&l]"
   leave:
     content:
       - "          &8&l[ &c&l离开队伍 &8&l]"
     hover:
       - "&8&l[ &c&l点击离开 &8&l]"
+  footer:
+    - ""
+members:
+  head:
+    - ""
+    - "&8&l[ &6&l队伍系统 &8&l]"
+    - ""
+  member:
+    content:
+      - "     &r&l成员： &7%memberName%"
+    hover:
+      - "&8&l[ &c&l点击移除队伍 &8&l]"
+  footer:
+    - ""
+noTeamHome:
+  head:
+    - ""
+    - "&8&l[ &6&l队伍系统 &8&l]"
+    - ""
+  create:
+    content:
+      - "          &8&l[ &c&l创建队伍 &8&l]"
+    hover:
+      - "&8&l[ &c&l点击 &8&l]"
+  join:
+    content:
+      - "          &8&l[ &a&l加入队伍 &8&l]"
+    hover:
+      - "&8&l[ &c&l点击 &8&l]"
   footer:
     - ""
 
