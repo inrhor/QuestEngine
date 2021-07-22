@@ -1,7 +1,8 @@
 package cn.inrhor.questengine.loader
 
 import cn.inrhor.questengine.QuestEngine
-import cn.inrhor.questengine.common.database.type.DatabaseLoader
+import cn.inrhor.questengine.common.database.Database
+import cn.inrhor.questengine.common.database.type.DatabaseManager
 import cn.inrhor.questengine.common.dialog.DialogManager
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.common.packet.PacketManager
@@ -14,6 +15,17 @@ import kotlin.system.measureTimeMillis
 class PluginLoader {
 
     fun init() {
+        doLoad()
+    }
+
+    private var reloading = false
+
+    fun cancel() {
+        Bukkit.getScheduler().cancelTasks(QuestEngine.plugin)
+        clearMap()
+    }
+
+    private fun doLoad() {
         UpdateYaml().run(UseString.getLang())
         InfoSend().logoSend()
         Bukkit.getScheduler().runTaskAsynchronously(QuestEngine.plugin, Runnable {
@@ -25,17 +37,7 @@ class PluginLoader {
             }
             TLocale.sendToConsole("LOADER.TIME_COST", UseString.pluginTag, timeCost)
         })
-        DatabaseLoader.init()
-    }
-
-    private var reloading = false
-
-    fun cancel() {
-        Bukkit.getScheduler().cancelTasks(QuestEngine.plugin)
-        clearMap()
-        if (!reloading) {
-            // 保存数据
-        }
+        DatabaseManager.init()
     }
 
     fun doReload() {
@@ -44,10 +46,11 @@ class PluginLoader {
         }
         reloading = true
         clearMap()
+        doLoad()
         reloading = false
     }
 
-    fun clearMap() {
+    private fun clearMap() {
         DialogManager.clearMap()
         ItemManager.clearMap()
     }

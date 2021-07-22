@@ -7,7 +7,7 @@ enum class DatabaseType {
     ERROR, LOCAL, MYSQL
 }
 
-object DatabaseLoader {
+object DatabaseManager {
 
     var type = DatabaseType.LOCAL
 
@@ -15,6 +15,10 @@ object DatabaseLoader {
         if (QuestEngine.config.getString("data.type")!!.uppercase(Locale.getDefault()) == "MYSQL") {
             type = DatabaseType.MYSQL
         }
+    }
+
+    fun pull() {
+
     }
 
 }

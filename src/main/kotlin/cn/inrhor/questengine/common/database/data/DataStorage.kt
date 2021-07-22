@@ -7,6 +7,10 @@ import java.util.concurrent.ConcurrentHashMap
 object DataStorage {
     private val playerDataStorage = ConcurrentHashMap<UUID, PlayerData>()
 
+    fun removePlayerData(uuid: UUID) {
+        playerDataStorage.remove(uuid)
+    }
+
     fun addPlayerData(uuid: UUID, playerData: PlayerData) {
         playerDataStorage[uuid] = playerData
     }
