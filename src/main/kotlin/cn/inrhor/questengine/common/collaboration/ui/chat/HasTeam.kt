@@ -64,25 +64,24 @@ object HasTeam {
 
         val leaderName = UtilTeam.leaderName(player, tData)
 
-        val head = UtilTeam.getStr(yaml, "hasTeamInfo.head", tData, leaderName)
+        val head = UtilTeam.getStr(yaml, "members.head", tData, leaderName)
         TellrawJson.create()
             .append(TLocale.Translate.setColored(head))
             .send(player)
 
         tData.members.forEach {
-            val member = UtilTeam.getStr(yaml, "members.head", tData, leaderName)
+            val memberStr = UtilTeam.getStr(yaml, "members.member.content", tData, leaderName)
             val m = Bukkit.getPlayer(it)?: return@forEach
             val mName = m.name
-            TellrawJson.create()
-                .append(TLocale.Translate.setColored(member).replace("%memberName%", mName))
-                .send(player)
-            if (TeamManager.isLeader(uuid, tData)) {
-                val kick = UtilTeam.getStr(yaml, "members.member.hover", tData, leaderName)
-                TellrawJson.create()
-                    .append(TLocale.Translate.setColored(kick))
-                    .clickCommand("/QuestEngine teamKick $mName")
-                    .send(player)
+            val member= TellrawJson.create()
+                .append(TLocale.Translate.setColored(memberStr).replace("%memberName%", mName))
+            if (TeamManager.isLeader(uuid, tData) && it != uuid) {
+                val kickHover = UtilTeam.getStr(yaml, "members.member.hover", tData, leaderName, mName)
+                member
+                    .hoverText(kickHover)
+                    .clickSuggest("/questengine teamKick $mName")
             }
+            member.send(player)
         }
 
         val footer = UtilTeam.getStr(yaml, "members.footer", tData, leaderName)

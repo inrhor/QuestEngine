@@ -63,6 +63,8 @@ object TeamManager {
     fun removeMember(mUUID: UUID, teamData: TeamOpen) {
         if (!teamData.members.contains(mUUID)) return
         teamData.members.remove(mUUID)
+        val mData = DataStorage.getPlayerData(mUUID)?: return
+        mData.teamData = null
     }
 
     fun removeAsk(aUUID: UUID, teamData: TeamOpen) {

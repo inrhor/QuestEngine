@@ -29,7 +29,7 @@ object NoTeam {
         TellrawJson.create()
             .append(TLocale.Translate.setColored(create))
             .hoverText(TLocale.Translate.setColored(createHover))
-            .clickSuggest("/QuestEngine teamCreate")
+            .clickSuggest("/questengine teamCreate")
             .send(player)
 
         val join = UtilTeam.getStr(yaml, "noTeamHome.join.content")
@@ -37,7 +37,7 @@ object NoTeam {
         TellrawJson.create()
             .append(TLocale.Translate.setColored(join))
             .hoverText(TLocale.Translate.setColored(joinHover))
-            .clickSuggest("/QuestEngine teamJoin")
+            .clickSuggest("/questengine teamJoin")
             .send(player)
 
         val footer = UtilTeam.getStr(yaml, "noTeamHome.footer")

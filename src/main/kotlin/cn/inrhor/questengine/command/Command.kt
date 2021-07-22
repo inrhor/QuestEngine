@@ -22,6 +22,9 @@ class Command: BaseMainCommand() {
     val teamJoin: BaseSubCommand = JoinTeamCmd()
 
     @SubCommand(permission = "QuestEngine.use.team")
+    val teamLeave: BaseSubCommand = LeaveTeamCmd()
+
+    @SubCommand(permission = "QuestEngine.use.team")
     val teamMembers: BaseSubCommand = MembersTeamCmd()
 
     @SubCommand(permission = "QuestEngine.use.team")

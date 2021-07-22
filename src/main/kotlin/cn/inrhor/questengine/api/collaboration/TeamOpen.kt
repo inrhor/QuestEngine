@@ -2,7 +2,6 @@ package cn.inrhor.questengine.api.collaboration
 
 import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.data.DataStorage
-import cn.inrhor.questengine.common.database.data.quest.QuestData
 import java.util.*
 
 abstract class TeamOpen {
@@ -27,10 +26,8 @@ abstract class TeamOpen {
 
     open fun delTeam() {
         members.forEach {
-            val pData = DataStorage.getPlayerData(it)
-            if (pData != null) {
-                pData.teamData = null
-            }
+            val pData = DataStorage.getPlayerData(it)?: return@forEach
+            pData.teamData = null
         }
         TeamManager.teamsMap.remove(teamName)
         members.clear()

@@ -8,18 +8,31 @@ import org.bukkit.entity.Player
 object UtilTeam {
 
     fun getStr(yaml: YamlConfiguration, node: String, tData: TeamOpen, leaderName: String): String {
+        return getStr(yaml, node, tData, leaderName, "%memberName%")
+    }
+
+    fun getStr(yaml: YamlConfiguration, node: String, tData: TeamOpen, leaderName: String, memberName: String): String {
         var content = ""
         yaml.getStringList(node).forEach {
+            if (content.isEmpty()) {
+                content = it
+                return@forEach
+            }
             content = "$content&r\n$it"
         }
         return content.replace("%teamName%", tData.teamName, true)
             .replace("%teamAmount%", tData.members.size.toString(), true)
             .replace("%leaderName%", leaderName, true)
+            .replace("%memberName%", memberName, true)
     }
 
     fun getStr(yaml: YamlConfiguration, node: String): String {
         var content = ""
         yaml.getStringList(node).forEach {
+            if (content.isEmpty()) {
+                content = it
+                return@forEach
+            }
             content = "$content&r\n$it"
         }
         return content
