@@ -89,7 +89,7 @@ object QuestManager {
     /**
      * 接受任务
      */
-    private fun acceptQuest(player: Player, questID: String) {
+    fun acceptQuest(player: Player, questID: String) {
         val pData = DataStorage.getPlayerData(player)?: return
         val questModule = getQuestModule(questID) ?: return
         if (questModule.modeType == ModeType.COLLABORATION) {

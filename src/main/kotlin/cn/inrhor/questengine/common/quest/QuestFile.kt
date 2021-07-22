@@ -16,7 +16,7 @@ object QuestFile {
      * 加载并注册任务
      */
     fun loadDialog() {
-        val questFolder = GetFile().getFile("space/quest", "DIALOG.NO_FILES", false)
+        val questFolder = GetFile.getFile("space/quest", "DIALOG.NO_FILES", false)
         val lists = questFolder.listFiles()?: return
         for (file in lists) {
             if (!file.isDirectory) continue
@@ -50,7 +50,7 @@ object QuestFile {
 
         val mainQuestList = mutableListOf<QuestMainModule>()
 
-        val mainFolder = GetFile().getFile("space/quest/"+file.name+"/main", "DIALOG.NO_FILES", false)
+        val mainFolder = GetFile.getFile("space/quest/"+file.name+"/main", "DIALOG.NO_FILES", false)
         val lists = mainFolder.listFiles()?: return
         lists.forEach {
             val optionFile = file(it, "option.yml")
@@ -86,7 +86,7 @@ object QuestFile {
 
         val subQuestList = mutableListOf<QuestSubModule>()
 
-        val subFolder = GetFile().getFile("space/quest/"+file.name+"/main/"+mainFile.name+"/sub", "DIALOG.NO_FILES", false)
+        val subFolder = GetFile.getFile("space/quest/"+file.name+"/main/"+mainFile.name+"/sub", "DIALOG.NO_FILES", false)
         val lists = subFolder.listFiles()?: return null
         lists.forEach {
             val optionSubFile = file(it, "option.yml")

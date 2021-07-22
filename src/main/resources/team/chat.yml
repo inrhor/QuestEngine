@@ -1,0 +1,23 @@
+hasTeamInfo:
+  head:
+    - ""
+    - "&8&l[ &6&l队伍系统 &8&l]"
+    - ""
+    - "     &r&l队伍名称 &7%teamName%"
+    - "     &r&l成员数量 &7%teamAmount%"
+    - "     &r&l队长名称 &7%leaderName%"
+    - ""
+  delete:
+    content:
+      - "          &8&l[ &c&l解散队伍 &8&l]"
+    hover:
+      - "&8&l[ &c&l点击解散 &8&l]"
+  leave:
+    content:
+      - "          &8&l[ &c&l离开队伍 &8&l]"
+    hover:
+      - "&8&l[ &c&l点击离开 &8&l]"
+  footer:
+    - ""
+
+

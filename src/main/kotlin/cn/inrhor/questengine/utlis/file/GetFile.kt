@@ -4,9 +4,10 @@ import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.utlis.public.UseString
 import io.izzel.taboolib.module.locale.TLocale
 import io.izzel.taboolib.util.Files
+import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 
-class GetFile {
+object GetFile {
     /**
      * 返回文件夹的内容
      */
@@ -28,4 +29,13 @@ class GetFile {
             }
             return@let files
         }
+
+    fun yaml(path: String, yaml: String): YamlConfiguration {
+        val str = "$path/$yaml.yml"
+        val file = File(QuestEngine.plugin.dataFolder, str)
+        if (!file.exists()) {
+            Files.releaseResource(QuestEngine.plugin, str, true)
+        }
+        return YamlConfiguration.loadConfiguration(file)
+    }
 }
