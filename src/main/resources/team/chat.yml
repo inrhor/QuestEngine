@@ -17,6 +17,11 @@ hasTeamInfo:
       - "          &8&l[ &c&l成员列表 &8&l]"
     hover:
       - "&8&l[ &c&l点击查看 &8&l]"
+  asks:
+    content:
+      - "          &8&l[ &c&l入队申请列表 &8&l]"
+    hover:
+      - "&8&l[ &c&l点击查看 &8&l]"
   leave:
     content:
       - "          &8&l[ &c&l离开队伍 &8&l]"
@@ -51,6 +56,28 @@ noTeamHome:
       - "          &8&l[ &a&l加入队伍 &8&l]"
     hover:
       - "&8&l[ &c&l点击 &8&l]"
+  footer:
+    - ""
+asks:
+  head:
+    - ""
+    - "&8&l[ &6&l队伍系统 &8&l]"
+    - ""
+  info:
+    content:
+      - "     &r&l玩家： &7%memberName%"
+    hover:
+      - ""
+  agree:
+    content:
+      - "          &8&l[ &a&l批准入队 &8&l]"
+    hover:
+      - "&8&l[ &c&l点击批准 &8&l]"
+  reject:
+    content:
+      - "          &8&l[ &c&l拒绝入队 &8&l]"
+    hover:
+      - "&8&l[ &c&l点击拒绝 &8&l]"
   footer:
     - ""
 

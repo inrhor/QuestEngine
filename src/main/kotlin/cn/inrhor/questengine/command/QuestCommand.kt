@@ -11,7 +11,7 @@ import java.util.*
 class QuestCommand: BaseSubCommand() {
 
     override fun getArguments() = arrayOf(
-        Argument("@COMMAND.QUEST.ARGUMENT", true) { arrayListOf("accept", "quit") },
+        Argument("@COMMAND.BASE.ARGUMENT", true) { arrayListOf("accept", "quit") },
         Argument("@COMMAND.QUEST.QUESTID", true) { QuestManager.questMap.map { it.key } },
         Argument("@COMMAND.BASE.PLAYER", true)
     )

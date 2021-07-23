@@ -209,7 +209,6 @@ class DatabaseSQL: Database() {
     fun pushTarget(uuid: UUID, openData: QuestOpenData) {
         openData.targetsData.forEach { (name, targetData) ->
             val questID = openData.questID
-            val name = targetData.name
             val mainID = openData.mainQuestID
             val subID = openData.subQuestID
             val time = targetData.time

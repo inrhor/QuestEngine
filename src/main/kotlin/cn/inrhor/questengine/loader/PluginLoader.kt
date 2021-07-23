@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.loader
 
 import cn.inrhor.questengine.QuestEngine
-import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.type.DatabaseManager
 import cn.inrhor.questengine.common.dialog.DialogManager
 import cn.inrhor.questengine.common.item.ItemManager
@@ -15,6 +14,7 @@ import kotlin.system.measureTimeMillis
 class PluginLoader {
 
     fun init() {
+        InfoSend().logoSend()
         doLoad()
     }
 
@@ -27,7 +27,6 @@ class PluginLoader {
 
     private fun doLoad() {
         UpdateYaml().run(UseString.getLang())
-        InfoSend().logoSend()
         Bukkit.getScheduler().runTaskAsynchronously(QuestEngine.plugin, Runnable {
             val timeCost = measureTimeMillis {
                 ItemManager.loadItem()
