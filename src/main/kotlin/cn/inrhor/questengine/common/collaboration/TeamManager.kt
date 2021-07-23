@@ -14,7 +14,7 @@ object TeamManager {
     val teamsMap = mutableMapOf<String, TeamOpen>()
 
     fun hasTeam(pUUID: UUID): Boolean {
-        val pData = DataStorage.getPlayerData(pUUID)?: return false
+        val pData = DataStorage.getPlayerData(pUUID)
         return hasTeam(pData)
     }
 
@@ -32,7 +32,7 @@ object TeamManager {
     fun getTeamData(teamName: String): TeamOpen? = teamsMap[teamName]
 
     fun getTeamData(pUUID: UUID): TeamOpen? {
-        val pData = DataStorage.getPlayerData(pUUID)?: return null
+        val pData = DataStorage.getPlayerData(pUUID)
         return pData.teamData
     }
 
@@ -46,7 +46,7 @@ object TeamManager {
     }
 
     fun createTeam(teamName: String, leader: UUID) {
-        val pData = DataStorage.getPlayerData(leader)?: return
+        val pData = DataStorage.getPlayerData(leader)
         if (hasTeam(pData)) return
         if (teamsMap.containsKey(teamName)) return
         val teamData = TeamData(teamName, leader)
@@ -63,7 +63,7 @@ object TeamManager {
     fun removeMember(mUUID: UUID, teamData: TeamOpen) {
         if (!teamData.members.contains(mUUID)) return
         teamData.members.remove(mUUID)
-        val mData = DataStorage.getPlayerData(mUUID)?: return
+        val mData = DataStorage.getPlayerData(mUUID)
         mData.teamData = null
     }
 

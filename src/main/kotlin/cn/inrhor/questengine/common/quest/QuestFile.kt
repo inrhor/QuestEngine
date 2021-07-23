@@ -6,6 +6,7 @@ import cn.inrhor.questengine.api.quest.QuestModule
 import cn.inrhor.questengine.api.quest.QuestSubModule
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.utlis.file.GetFile
+import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
@@ -28,10 +29,9 @@ object QuestFile {
         val settingFile = file(file, "setting.yml")
         if (!settingFile.exists()) return
         val setting = yaml(settingFile)
-        if (!setting.contains("questID")) {
-            return
+        val questID = setting.getString("questID")?: return run {
+            TLocale.sendToConsole("QUEST.ERROR_FILE")
         }
-        val questID = setting.getString("questID")!!
         val name = setting.getString("name")?: "test"
         val startID = setting.getString("startMainQuestID")?: "test"
         var modeType = ModeType.PERSONAL
@@ -51,10 +51,14 @@ object QuestFile {
         val mainQuestList = mutableListOf<QuestMainModule>()
 
         val mainFolder = GetFile.getFile("space/quest/"+file.name+"/main", "DIALOG.NO_FILES", false)
-        val lists = mainFolder.listFiles()?: return
+        val lists = mainFolder.listFiles()?: return run {
+            TLocale.sendToConsole("QUEST.ERROR_FILE", questID)
+        }
         lists.forEach {
             val optionFile = file(it, "option.yml")
-            if (!optionFile.exists()) return
+            if (!optionFile.exists()) return run {
+                TLocale.sendToConsole("QUEST.ERROR_FILE", questID)
+            }
             mainQuestList.add(mainQuest(file, it, questID)!!)
         }
 

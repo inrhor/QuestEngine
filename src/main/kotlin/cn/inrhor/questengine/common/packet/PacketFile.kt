@@ -1,16 +1,16 @@
 package cn.inrhor.questengine.common.packet
 
+import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.configuration.ConfigurationSection
 import java.util.*
 
 object PacketFile {
 
     fun init(config: ConfigurationSection) {
-        if (!config.contains("hook")) {
-            return
-        }
         val packetID = config.name
-        val hook = config.getString("hook")?: return
+        val hook = config.getString("hook")?: return run {
+            TLocale.sendToConsole("PACKET.ERROR_FILE", config.name)
+        }
         val viewer = config.getString("viewer")?: "all"
         val packerModule = PacketModule(packetID, hook, viewer)
         val entityID = PacketManager.generate(packetID, "entity")

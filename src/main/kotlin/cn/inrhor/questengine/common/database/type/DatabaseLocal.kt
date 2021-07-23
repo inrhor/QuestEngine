@@ -14,9 +14,11 @@ import java.util.*
 
 class DatabaseLocal: Database() {
 
-    fun getLocal(uuid: UUID): YamlConfiguration? {
+    fun getLocal(uuid: UUID): YamlConfiguration {
         val file = File(QuestEngine.plugin.dataFolder, "data/$uuid")
-        if (!file.exists()) return null
+        if (!file.exists()) {
+            file.mkdirs()
+        }
         return YamlConfiguration.loadConfiguration(file)
     }
 
@@ -50,7 +52,7 @@ class DatabaseLocal: Database() {
      */
     override fun pull(player: Player) {
         val uuid = player.uniqueId
-        val data = getLocal(uuid)?: return
+        val data = getLocal(uuid)
         val questDataMap = mutableMapOf<String, QuestData>()
         if (data.contains("quest")) {
             data.getConfigurationSection("quest")!!.getKeys(false).forEach {
@@ -110,9 +112,9 @@ class DatabaseLocal: Database() {
 
     override fun push(player: Player) {
         val uuid = player.uniqueId
-        val pData = DataStorage.getPlayerData(uuid)?: return
+        val pData = DataStorage.getPlayerData(uuid)
         val file = File(QuestEngine.plugin.dataFolder, "data/$uuid")
-        if (!file.exists()) file.mkdir()
+        if (!file.exists()) file.mkdirs()
         val data = YamlConfiguration.loadConfiguration(file)
         pData.questDataList.forEach { (questID, questData) ->
             val state = QuestStateUtil.stateToStr(questData.state)

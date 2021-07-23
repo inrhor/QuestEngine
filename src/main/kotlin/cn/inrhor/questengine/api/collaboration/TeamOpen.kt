@@ -26,7 +26,7 @@ abstract class TeamOpen {
 
     open fun delTeam() {
         members.forEach {
-            val pData = DataStorage.getPlayerData(it)?: return@forEach
+            val pData = DataStorage.getPlayerData(it)
             pData.teamData = null
         }
         TeamManager.teamsMap.remove(teamName)

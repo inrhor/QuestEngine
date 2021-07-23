@@ -4,11 +4,32 @@ LOADER:
     - "&7&l[ &c&li &7&l]&r  ┝  &3当前插件版本  &f{1}"
     - "&7&l[ &c&li &7&l]&r  ┝  &3选择语言文本  &f{2}"
   TIME_COST: "{0}&r 所有配置载入完成，耗时 &8{1}ms"
+
 DIALOG:
+  ERROR_FILE: "&7&l[ &c&li &7&l]&c 对话配置不存在或缺少键值： &r{0}"
   NO_FILES: "{0}&r &6dialog &8文件夹&c不存在，&8开始创建 &6dialog &8文件夹"
   EMPTY_CONTENT: "{0}&r &6{1} &c没有内容或标准错误"
   EXIST_DIALOG_ID: "{0}&r &6{1} &8已有相同已注册的对话ID"
   NO_EXIST_DIALOG_ID: "{0}&r &6{1} &c不存在该对话ID"
+
+QUEST:
+  ERROR_FILE: "&7&l[ &c&li &7&l]&c 任务配置不存在或缺少键值： &r{0}"
+
+PACKET:
+  ERROR_FILE: "&7&l[ &c&li &7&l]&c 数据包配置不存在或缺少键值： &r{0}"
+
+DATA:
+  NULL_DATA: "&7&l[ &c&li &7&l]&r &c你没有数据，正在为你创建或拉取数据"
+
+PLAYER_NOT_ONLINE: "&7&l[ &c&li &7&l]&r &c当前玩家不在线"
+
+TEAM:
+  HAS_TEAM: "&7&l[ &c&li &7&l]&r &c你已经有了队伍"
+  NO_TEAM: "&7&l[ &c&li &7&l]&r &c你没有队伍"
+  OTHER_NO_TEAM: "&7&l[ &c&li &7&l]r &c该玩家没有队伍"
+  NO_EXIST_TEAM: "&7&l[ &c&li &7&l]&r &c该队伍不存在"
+  NOT_LEADER: "&7&l[ &c&li &7&l]&r &c你不是队长"
+
 COMMAND:
   BASE:
     PLAYER: "玩家"
@@ -32,3 +53,4 @@ COMMAND:
     INVITE: "邀请玩家加入队伍"
     KICK: "移除成员"
   RELOAD: "重载配置"
+  SUCCESSFUL_RELOAD: "&7&l[ &c&li &7&l]&a 已重载 &3&lQuestEngine &a配置文件"

@@ -13,7 +13,7 @@ object HasTeam {
     fun openInfo(player: Player) {
 
         val uuid = player.uniqueId
-        val tData = TeamManager.getTeamData(uuid)?: return
+        val tData = TeamManager.getTeamData(uuid)?: return run { TLocale.sendTo(player, "TEAM.NO_TEAM") }
 
         val yaml = GetFile.yaml("team", "chat")
 
@@ -66,7 +66,7 @@ object HasTeam {
     fun openMembers(player: Player) {
 
         val uuid = player.uniqueId
-        val tData = TeamManager.getTeamData(uuid)?: return
+        val tData = TeamManager.getTeamData(uuid)?: return run { TLocale.sendTo(player, "TEAM.NO_TEAM") }
 
         val yaml = GetFile.yaml("team", "chat")
 
@@ -102,7 +102,7 @@ object HasTeam {
     fun openAsks(player: Player) {
 
         val uuid = player.uniqueId
-        val tData = TeamManager.getTeamData(uuid)?: return
+        val tData = TeamManager.getTeamData(uuid)?: return run { TLocale.sendTo(player, "TEAM.NO_TEAM") }
 
         val yaml = GetFile.yaml("team", "chat")
 

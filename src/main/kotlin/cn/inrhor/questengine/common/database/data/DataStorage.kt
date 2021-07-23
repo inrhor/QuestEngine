@@ -1,5 +1,7 @@
 package cn.inrhor.questengine.common.database.data
 
+import io.izzel.taboolib.module.locale.TLocale
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -15,11 +17,16 @@ object DataStorage {
         playerDataStorage[uuid] = playerData
     }
 
-    fun getPlayerData(player: Player): PlayerData? {
-        return playerDataStorage[player.uniqueId]
+    fun getPlayerData(player: Player): PlayerData {
+        return getPlayerData(player.uniqueId)
     }
 
-    fun getPlayerData(uuid: UUID): PlayerData? {
-        return playerDataStorage[uuid]
+    fun getPlayerData(uuid: UUID): PlayerData {
+        var pData = playerDataStorage[uuid]
+        if (pData == null) {
+            pData = PlayerData(uuid)
+            TLocale.sendTo(Bukkit.getPlayer(uuid)!!, "DATA.NULL_DATA")
+        }
+        return pData
     }
 }

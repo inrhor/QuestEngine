@@ -21,10 +21,14 @@ object DialogFile {
         for (dialogID in yaml.getKeys(false)) {
             val cfs = yaml.getConfigurationSection(dialogID)!!
             if (!cfs.contains("npcID")) {
-                return
+                return run {
+                    TLocale.sendToConsole("DIALOG.ERROR_FILE", dialogID)
+                }
             }
             if (!cfs.contains("condition")) {
-                return
+                return run {
+                    TLocale.sendToConsole("DIALOG.ERROR_FILE", dialogID)
+                }
             }
 
             val npcID = cfs.getStringList("npcID")

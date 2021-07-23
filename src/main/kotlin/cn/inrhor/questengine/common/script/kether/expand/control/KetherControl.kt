@@ -23,7 +23,7 @@ class KetherControl {
     object WaitRun {
         fun run(frame: QuestContext.Frame, time: Int, questID: String, mainQuestID: String, subQuestID: String) {
             val player = frame.script().sender as? Player ?: error("unknown player")
-            val pData = DataStorage.getPlayerData(player)?: error("unknown player data")
+            val pData = DataStorage.getPlayerData(player)
             val cMap = pData.controlList
             val id = QuestManager.generateControlID(questID, mainQuestID, subQuestID)
             if (cMap.containsKey(id)) {

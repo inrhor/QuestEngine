@@ -90,7 +90,7 @@ object QuestManager {
      * 接受任务
      */
     fun acceptQuest(player: Player, questID: String) {
-        val pData = DataStorage.getPlayerData(player)?: return
+        val pData = DataStorage.getPlayerData(player)
         val questModule = getQuestModule(questID) ?: return
         if (questModule.modeType == ModeType.COLLABORATION) {
             val tData = pData.teamData?: return
@@ -157,13 +157,13 @@ object QuestManager {
         if (mainData.mainQuestID != mainQuestID) return
         val subData = mainData.questSubList[subQuestID]?: return
         subData.state = QuestState.DOING
-        val pData = DataStorage.getPlayerData(player)?: return
+        val pData = DataStorage.getPlayerData(player)
         saveControl(player, pData, subData)
         runControl(pData, questID, mainQuestID, subQuestID)
     }
 
     private fun acceptMainQuest(player: Player, questID: String, mainQuest: QuestMainModule, isNewQuest: Boolean) {
-        val pData = DataStorage.getPlayerData(player)?: return
+        val pData = DataStorage.getPlayerData(player)
         var state = QuestState.DOING
         if (isNewQuest && hasDoingMainQuest(pData)) state = QuestState.IDLE
         val subQuestDataList = mutableMapOf<String, QuestSubData>()
@@ -217,7 +217,7 @@ object QuestManager {
      * 运行控制模块
      */
     fun runControl(player: Player, questID: String, mainQuestID: String, subQuestID: String) {
-        val pData = DataStorage.getPlayerData(player)?: return
+        val pData = DataStorage.getPlayerData(player)
         runControl(pData, questID, mainQuestID, subQuestID)
     }
 
@@ -292,7 +292,7 @@ object QuestManager {
      * 获得玩家任务数据
      */
     fun getQuestData(player: Player, questID: String): QuestData? {
-        val pData = DataStorage.getPlayerData(player) ?: return null
+        val pData = DataStorage.getPlayerData(player)
         return pData.questDataList[questID]
     }
 
@@ -401,7 +401,7 @@ object QuestManager {
      * 获得正在进行中的任务
      */
     fun getDoingQuest(player: Player): QuestData? {
-        val pData = DataStorage.getPlayerData(player)?: return null
+        val pData = DataStorage.getPlayerData(player)
         if (pData.questDataList.isEmpty()) return null
         pData.questDataList.forEach { (_, questData) ->
             if (questData.state == QuestState.DOING) {
@@ -416,7 +416,7 @@ object QuestManager {
      */
     fun quitQuest(player: Player, questID: String) {
         val uuid = player.uniqueId
-        val pData = DataStorage.getPlayerData(uuid)?: return
+        val pData = DataStorage.getPlayerData(uuid)
         val questData = pData.questDataList
         if (!questData.containsKey(questID)) return
         val questModule = getQuestModule(questID)?: return
@@ -425,7 +425,7 @@ object QuestManager {
             val tData = qData.teamData?: run { questData.remove(questID); return }
             tData.members.forEach {
                 if (uuid == it) return@forEach
-                val mData = DataStorage.getPlayerData(it)?: return@forEach
+                val mData = DataStorage.getPlayerData(it)
                 val mQuestData = mData.questDataList
                 if (!mQuestData.containsKey(questID)) return@forEach
                 mQuestData.remove(questID)

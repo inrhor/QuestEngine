@@ -4,6 +4,7 @@ import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.quest.QuestStateUtil
 import io.izzel.taboolib.internal.gson.Gson
@@ -71,7 +72,7 @@ class DatabaseSQL: Database() {
 
     override fun pull(player: Player) {
         val uuid = player.uniqueId
-        val pData = DataStorage.getPlayerData(uuid)?: return
+        val pData = DataStorage.getPlayerData(uuid)
         tableQuest.select(
             Where.equals("uuid", uuid))
             .row("questID")
@@ -180,7 +181,7 @@ class DatabaseSQL: Database() {
 
     override fun push(player: Player) {
         val uuid = player.uniqueId
-        val pData = DataStorage.getPlayerData(uuid)?: return
+        val pData = DataStorage.getPlayerData(uuid)
         pData.questDataList.forEach { (questID, questData) ->
             val mainData = questData.questMainData
             val questMainID = mainData.mainQuestID
