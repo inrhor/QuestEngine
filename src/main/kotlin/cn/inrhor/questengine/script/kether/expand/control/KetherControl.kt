@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.script.kether.expand.control
+package cn.inrhor.questengine.script.kether.expand.control
 
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.database.data.DataStorage

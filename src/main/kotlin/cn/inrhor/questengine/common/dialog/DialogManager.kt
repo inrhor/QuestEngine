@@ -4,7 +4,7 @@ import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.common.dialog.animation.parser.ItemParser
 import cn.inrhor.questengine.common.dialog.animation.parser.TextParser
 import cn.inrhor.questengine.common.dialog.optional.holo.core.HoloDialog
-import cn.inrhor.questengine.common.script.kether.KetherHandler
+import cn.inrhor.questengine.script.kether.KetherHandler
 import cn.inrhor.questengine.utlis.file.GetFile
 import cn.inrhor.questengine.utlis.public.UseString
 import io.izzel.taboolib.module.locale.TLocale

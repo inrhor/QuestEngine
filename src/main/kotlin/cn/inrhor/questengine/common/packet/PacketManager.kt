@@ -8,7 +8,6 @@ import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.configuration.file.YamlConfiguration
-import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import java.io.File
 import java.util.*
@@ -33,14 +32,17 @@ object PacketManager {
     }
 
     fun sendThisPacket(packetID: String, sender: Player, location: Location) {
-        val packetModule = packetMap[packetID]?: return
+        val packetModule = packetMap[packetID]?: return error("packetID???")
         val viewers = mutableSetOf(sender)
         if (packetModule.viewer == "all") viewers.addAll(Bukkit.getOnlinePlayers())
-        val hook = packetModule.hook
-        if (hook.lowercase(Locale.getDefault()) == "this ") {
+        val hook = packetModule.hook.lowercase(Locale.getDefault())
+        val entityID = packetModule.entityID
+        if (hook == "this ") {
             val id = hook[1].toString()
             val getPacketModule = packetMap[id]?: return
-            sendPacket(packetModule.entityID, getPacketModule, viewers, location)
+            sendPacket(entityID, getPacketModule, viewers, location)
+        }else if (hook == "normal") {
+            sendPacket(entityID, packetModule, viewers, location)
         }
     }
 
@@ -99,10 +101,6 @@ object PacketManager {
         for (packetID in yaml.getKeys(false)) {
             PacketFile.init(yaml.getConfigurationSection(packetID)!!)
         }
-    }
-
-    fun returnEntityType(entityType: String): EntityType {
-        return EntityType.valueOf(entityType.uppercase(Locale.getDefault()))
     }
 
     fun returnItemEntityID(packetID: String, mate: MutableList<String>): MutableMap<String, Int> {

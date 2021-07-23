@@ -1,12 +1,13 @@
 package cn.inrhor.questengine.common.nms.impl
 
+import cn.inrhor.questengine.common.nms.EntityTypeUtil
 import cn.inrhor.questengine.common.nms.NMS
+import io.izzel.taboolib.Version
 import io.izzel.taboolib.module.lite.SimpleEquip
 import io.izzel.taboolib.module.locale.TLocale
 import net.minecraft.server.v1_16_R1.*
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack
-import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
@@ -14,7 +15,9 @@ import java.util.*
 
 class NMSImpl : NMS() {
 
-    override fun spawnEntity(players: MutableSet<Player>, entityId: Int, entityType: EntityType, location: Location) {
+    private val version = Version.getCurrentVersionInt()
+
+    override fun spawnEntity(players: MutableSet<Player>, entityId: Int, entityType: String, location: Location) {
         sendPacket(
             players,
             PacketPlayOutSpawnEntity(),
@@ -23,12 +26,21 @@ class NMSImpl : NMS() {
             "c" to location.x,
             "d" to location.y,
             "e" to location.z,
-            "k" to entityType
+            "k" to if (version >= 11400) EntityTypeUtil.returnTypeNMS(entityType) else EntityTypeUtil.returnInt(entityType)
         )
     }
 
     override fun spawnAS(players: MutableSet<Player>, entityId: Int, location: Location) {
-        spawnEntity(players, entityId, EntityType.ARMOR_STAND, location)
+        sendPacket(
+            players,
+            PacketPlayOutSpawnEntity(),
+            "a" to entityId,
+            "b" to UUID.randomUUID(),
+            "c" to location.x,
+            "d" to location.y,
+            "e" to location.z,
+            "k" to if (version >= 11400) EntityTypes.ARMOR_STAND else 78
+        )
     }
 
     override fun initAS(players: MutableSet<Player>, entityId: Int, showName: Boolean, isSmall: Boolean, marker: Boolean) {
@@ -41,7 +53,16 @@ class NMSImpl : NMS() {
     }
 
     override fun spawnItem(players: MutableSet<Player>, entityId: Int, location: Location, itemStack: ItemStack) {
-        spawnEntity(players, entityId, EntityType.DROPPED_ITEM , location)
+        sendPacket(
+            players,
+            PacketPlayOutSpawnEntity(),
+            "a" to entityId,
+            "b" to UUID.randomUUID(),
+            "c" to location.x,
+            "d" to location.y,
+            "e" to location.z,
+            "k" to if (version >= 11400) EntityTypes.ITEM else 2
+        )
         updateEntityMetadata(players, entityId, getMetaEntityGravity(true), getMetaEntityItemStack(itemStack))
     }
 

@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.script.kether.expand.control
+package cn.inrhor.questengine.script.kether.expand.control
 
 import cn.inrhor.questengine.common.nms.NMS
 import cn.inrhor.questengine.common.packet.PacketManager
@@ -74,13 +74,11 @@ class KetherPacket {
                 "send" -> SendPacket(
                     it.nextToken(),
                     it.run {
-                        it.mark()
                         it.expect("where")
                         it.next(ArgTypes.ACTION)
                     })
                 "remove" -> RemovePacket(
                     try {
-                        it.mark()
                         it.expect("player")
                         true
                     } catch (ex: Exception) {

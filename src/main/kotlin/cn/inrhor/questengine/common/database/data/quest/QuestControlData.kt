@@ -2,9 +2,9 @@ package cn.inrhor.questengine.common.database.data.quest
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.common.quest.QuestState
-import cn.inrhor.questengine.common.script.kether.KetherHandler
-import cn.inrhor.questengine.common.script.kether.expand.control.ControlTaskType
-import cn.inrhor.questengine.common.script.kether.expand.control.ControlType
+import cn.inrhor.questengine.script.kether.KetherHandler
+import cn.inrhor.questengine.script.kether.expand.control.ControlTaskType
+import cn.inrhor.questengine.script.kether.expand.control.ControlType
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 

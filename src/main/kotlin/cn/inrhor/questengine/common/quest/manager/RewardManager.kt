@@ -5,7 +5,7 @@ import cn.inrhor.questengine.common.database.data.quest.QuestOpenData
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestReward
 import cn.inrhor.questengine.common.quest.QuestTarget
-import cn.inrhor.questengine.common.script.kether.KetherHandler
+import cn.inrhor.questengine.script.kether.KetherHandler
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 

@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.script.kether.expand
+package cn.inrhor.questengine.script.kether.expand
 
 import cn.inrhor.questengine.common.dialog.animation.text.type.TextWrite
 import io.izzel.taboolib.kotlin.kether.ScriptParser

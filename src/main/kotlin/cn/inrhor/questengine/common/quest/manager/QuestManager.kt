@@ -8,11 +8,10 @@ import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.quest.ModeType
-import cn.inrhor.questengine.common.script.kether.KetherHandler
+import cn.inrhor.questengine.script.kether.KetherHandler
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.common.quest.TargetSubData
-import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.util.HashMap
@@ -347,7 +346,6 @@ object QuestManager {
     fun getDoingMainTarget(player: Player, name: String): QuestTarget? {
         val questData = getDoingQuest(player) ?: return null
         val mainData = questData.questMainData
-        mainData.targetsData.keys.forEach { MsgUtil.send("key   $it") }
         val targetData = mainData.targetsData[name]?: return null
         return targetData.questTarget
     }

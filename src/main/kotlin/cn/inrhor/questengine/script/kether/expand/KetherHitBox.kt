@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.script.kether.expand
+package cn.inrhor.questengine.script.kether.expand
 
 import cn.inrhor.questengine.utlis.location.FixedHoloHitBox
 import cn.inrhor.questengine.utlis.location.LocationTool

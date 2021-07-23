@@ -22,6 +22,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'ink.ptms.core:v11604:11604:all'
     implementation 'ink.ptms.core:v11600:11600:all'
     implementation 'ink.ptms.adyeshach:Adyeshach:1.1.9'
     implementation 'public:Citizens:1.0.0'

@@ -38,7 +38,7 @@ abstract class Database {
             }
         }
 
-        @EventHandler
+        /*@EventHandler
         fun join(ev: PlayerJoinEvent) {
             val uuid = ev.player.uniqueId
             val pData = PlayerData(uuid)
@@ -67,7 +67,7 @@ abstract class Database {
             Bukkit.getOnlinePlayers().forEach {
                 database.push(it)
             }
-        }
+        }*/
 
     }
 
