@@ -4,7 +4,6 @@ import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage
-import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.quest.QuestStateUtil
 import io.izzel.taboolib.internal.gson.Gson
@@ -74,7 +73,7 @@ class DatabaseSQL: Database() {
         val uuid = player.uniqueId
         val pData = DataStorage.getPlayerData(uuid)
         tableQuest.select(
-            Where.equals("uuid", uuid))
+            Where.equals("uuid", uuid.toString()))
             .row("questID")
             .row("questMainID")
             .row("state")
@@ -99,7 +98,7 @@ class DatabaseSQL: Database() {
 
     private fun pullMain(uuid: UUID, questID: String, mainQuestID: String): QuestMainData? {
         tableMainQuest.select(
-            Where.equals("uuid", uuid),
+            Where.equals("uuid", uuid.toString()),
             Where.equals("questID", questID),
             Where.equals("mainQuestID", mainQuestID))
             .row("state")
@@ -128,7 +127,7 @@ class DatabaseSQL: Database() {
     private fun pullSub(uuid: UUID, questID: String, mainQuestID: String): MutableMap<String, QuestSubData> {
         val subMap = mutableMapOf<String, QuestSubData>()
         tableSubQuest.select(
-            Where.equals("uuid", uuid),
+            Where.equals("uuid", uuid.toString()),
             Where.equals("questID", questID),
             Where.equals("mainQuestID", mainQuestID))
             .row("subQuestID")
@@ -158,7 +157,7 @@ class DatabaseSQL: Database() {
                       questID: String, mainQuestID: String, subQuestID: String,
                       targetDataMap: MutableMap<String, TargetData>): MutableMap<String, TargetData> {
         tableTargets.select(
-            Where.equals("uuid", uuid),
+            Where.equals("uuid", uuid.toString()),
             Where.equals("questID", questID),
             Where.equals("mainQuestID", mainQuestID),
             Where.equals("subQuestID", subQuestID))
@@ -170,11 +169,9 @@ class DatabaseSQL: Database() {
                 it.getString("name") to it.getInt("time") to it.getInt("schedule")
             }.forEach {
                 val name = it.first.first
-                val targetData = targetDataMap[name]
-                if (targetData != null) {
-                    targetData.time = it.first.second
-                    targetData.schedule = it.second
-                }
+                val targetData = targetDataMap[name]?: return@forEach
+                targetData.time = it.first.second
+                targetData.schedule = it.second
             }
         return targetDataMap
     }
@@ -188,35 +185,136 @@ class DatabaseSQL: Database() {
             val state = QuestStateUtil.stateToStr(questData.state)
             val fmq = questData.finishedMainList
             val fmqJson = Gson().toJson(fmq)
-            tableQuest.insert(uuid, questID, questMainID, state, fmqJson).run(source)
-            pushOpen(uuid, mainData, questID, questMainID, "")
+            tableQuest.update(
+                Where.equals("uuid", uuid.toString()),
+                Where.equals("questID", questID),
+                Where.equals("questMainID", questMainID))
+                .set("state", state)
+                .set("finishedMainQuest", fmqJson)
+                .run(source)
+            updateOpen(uuid, mainData, questID, questMainID, "")
         }
     }
 
-    private fun pushOpen(uuid: UUID, openData: QuestOpenData, questID: String, mainQuestID: String, subQuestID: String) {
+    private fun updateOpen(uuid: UUID, openData: QuestOpenData, questID: String, mainQuestID: String, subQuestID: String) {
         val state = QuestStateUtil.stateToStr(openData.state)
         val rewards = Gson().toJson(openData.rewardState)
         if (subQuestID.isEmpty()) {
-            tableMainQuest.insert(uuid, questID, mainQuestID, state, rewards)
+            tableMainQuest.update(
+                Where.equals("uuid", uuid.toString()),
+                Where.equals("questID", questID),
+                Where.equals("mainQuestID", mainQuestID))
+                .set("state", state)
+                .set("rewards", rewards)
+                .run(source)
             openData.questSubList.forEach { (subID, subData) ->
-                pushOpen(uuid, subData, questID, mainQuestID, subID)
+                updateOpen(uuid, subData, questID, mainQuestID, subID)
             }
         }else {
-            tableSubQuest.insert(uuid, questID, mainQuestID, subQuestID, state, rewards)
+            tableSubQuest.update(
+                Where.equals("uuid", uuid.toString()),
+                Where.equals("questID", questID),
+                Where.equals("mainQuestID", mainQuestID),
+                Where.equals("subQuestID", subQuestID))
+                .set("state", state)
+                .set("rewards", rewards)
+                .run(source)
         }
-        pushTarget(uuid, openData)
+        updateTarget(uuid, openData)
     }
 
-    fun pushTarget(uuid: UUID, openData: QuestOpenData) {
+    fun create(player: Player, questData: QuestData) {
+        val uuid = player.uniqueId
+        val questID = questData.questID
+        val mainData = questData.questMainData
+        val questMainID = mainData.mainQuestID
+        val state = QuestStateUtil.stateToStr(questData.state)
+        val fmq = questData.finishedMainList
+        val fmqJson = Gson().toJson(fmq)
+        tableQuest.insert(uuid.toString(), questID, questMainID, state, fmqJson).run(source)
+        createOpen(uuid, mainData, questID, questMainID, "")
+    }
+
+    private fun createOpen(uuid: UUID, openData: QuestOpenData, questID: String, mainQuestID: String, subQuestID: String) {
+        val state = QuestStateUtil.stateToStr(openData.state)
+        val rewards = Gson().toJson(openData.rewardState)
+        if (subQuestID.isEmpty()) {
+            tableMainQuest.insert(uuid.toString(), questID, mainQuestID, state, rewards).run(source)
+            openData.questSubList.forEach { (subID, subData) ->
+                createOpen(uuid, subData, questID, mainQuestID, subID)
+            }
+        }else {
+            tableSubQuest.insert(uuid.toString(), questID, mainQuestID, subQuestID, state, rewards).run(source)
+        }
+        createTarget(uuid, openData)
+    }
+
+    private fun createTarget(uuid: UUID, openData: QuestOpenData) {
         openData.targetsData.forEach { (name, targetData) ->
             val questID = openData.questID
             val mainID = openData.mainQuestID
             val subID = openData.subQuestID
             val time = targetData.time
             val schedule = targetData.schedule
-            tableTargets.insert(uuid, name, questID, mainID, subID, time, schedule)
+            tableTargets.insert(uuid.toString(), name, questID, mainID, subID, time, schedule).run(source)
         }
     }
 
+    private fun updateTarget(uuid: UUID, openData: QuestOpenData) {
+        openData.targetsData.forEach { (name, targetData) ->
+            val questID = openData.questID
+            val mainID = openData.mainQuestID
+            val subID = openData.subQuestID
+            val time = targetData.time
+            val schedule = targetData.schedule
+            tableTargets.update(
+                Where.equals("uuid", uuid.toString()),
+                Where.equals("name", name),
+                Where.equals("questID", questID),
+                Where.equals("mainQuestID", mainID),
+                Where.equals("subQuestID", subID))
+                .set("time", time)
+                .set("schedule", schedule)
+                .run(source)
+        }
+    }
+
+    /*
+        几乎错了
+
+        需要修改
+
+        接受S任务，完成，记录档案（状态）
+        再次接受S任务
+
+        所以要做个唯一ID
+     */
+
+    override fun removeQuestOpen(player: Player, questOpenData: QuestOpenData) {
+        val uuid = player.uniqueId.toString()
+        val questID = questOpenData.questID
+        val mainID = questOpenData.mainQuestID
+        val subID = questOpenData.subQuestID
+        if (subID.isEmpty()) {
+            tableMainQuest.delete(
+                Where.equals("uuid", uuid),
+                Where.equals("questID", questID),
+                Where.equals("mainQuestID", mainID))
+                .run(source)
+        }else {
+            tableMainQuest.delete(
+                Where.equals("uuid", uuid),
+                Where.equals("questID", questID),
+                Where.equals("mainQuestID", mainID),
+                Where.equals("subQuestID", subID))
+                .run(source)
+        }
+        tableTargets.delete(
+            Where.equals("uuid", uuid),
+            Where.equals("questID", questID),
+            Where.equals("mainQuestID", mainID),
+            Where.equals("subQuestID", subID))
+            .run(source)
+    }
 
 }

@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.database
 
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
+import cn.inrhor.questengine.common.database.data.quest.QuestOpenData
 import cn.inrhor.questengine.common.database.type.DatabaseLocal
 import cn.inrhor.questengine.common.database.type.DatabaseManager
 import cn.inrhor.questengine.common.database.type.DatabaseSQL
@@ -28,6 +29,11 @@ abstract class Database {
      */
     abstract fun push(player: Player)
 
+    /**
+     * 清除任务数据
+     */
+    abstract fun removeQuestOpen(player: Player, questOpenData: QuestOpenData)
+
     @TListener
     companion object : Listener {
 
@@ -38,7 +44,7 @@ abstract class Database {
             }
         }
 
-        /*@EventHandler
+        @EventHandler
         fun join(ev: PlayerJoinEvent) {
             val uuid = ev.player.uniqueId
             val pData = PlayerData(uuid)
@@ -67,7 +73,7 @@ abstract class Database {
             Bukkit.getOnlinePlayers().forEach {
                 database.push(it)
             }
-        }*/
+        }
 
     }
 

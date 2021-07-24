@@ -5,7 +5,7 @@ import cn.inrhor.questengine.utlis.public.MsgUtil
 import cn.inrhor.questengine.utlis.public.UseString
 import io.izzel.taboolib.module.locale.TLocale
 
-class InfoSend {
+object Info {
 
     fun logoSend() {
         val logo = listOf(

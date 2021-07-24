@@ -7,11 +7,15 @@ import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.*
+import cn.inrhor.questengine.common.database.type.DatabaseManager
+import cn.inrhor.questengine.common.database.type.DatabaseSQL
+import cn.inrhor.questengine.common.database.type.DatabaseType
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.script.kether.KetherHandler
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.common.quest.TargetSubData
+import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.util.HashMap
@@ -90,11 +94,15 @@ object QuestManager {
      */
     fun acceptQuest(player: Player, questID: String) {
         val pData = DataStorage.getPlayerData(player)
+        if (pData.questDataList.containsKey(questID)) {
+            TLocale.sendTo(player, "QUEST.ALREADY_ACCEPT")
+            return
+        }
         val questModule = getQuestModule(questID) ?: return
         if (questModule.modeType == ModeType.COLLABORATION) {
-            val tData = pData.teamData?: return
+            val tData = pData.teamData ?: return
             tData.members.forEach {
-                val m = Bukkit.getPlayer(it)?: return@forEach
+                val m = Bukkit.getPlayer(it) ?: return@forEach
                 acceptQuest(m, questModule)
             }
             return
@@ -180,6 +188,11 @@ object QuestManager {
         pData.questDataList[questID] = questData
         saveControl(player, pData, mainQuestData)
         runControl(pData, questID, mainQuestID, "")
+        if (isNewQuest) {
+            if (DatabaseManager.type == DatabaseType.MYSQL) {
+                DatabaseSQL().create(player, questData)
+            }
+        }
     }
 
     /**

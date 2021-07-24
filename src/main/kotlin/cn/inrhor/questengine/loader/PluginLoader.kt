@@ -14,7 +14,7 @@ import kotlin.system.measureTimeMillis
 class PluginLoader {
 
     fun init() {
-        InfoSend().logoSend()
+        Info.logoSend()
         doLoad()
     }
 
