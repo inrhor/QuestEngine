@@ -83,7 +83,7 @@ object PacketManager {
      * 加载并注册数据包文件
      */
     fun loadPacket() {
-        val packetFolder = GetFile.getFile("space/packet", "PACKET.NO_FILES", true)
+        val packetFolder = GetFile.getFile("space/packet/example.yml", "PACKET.NO_FILES", true)
         GetFile.getFileList(packetFolder).forEach{
             checkRegPacket(it)
         }

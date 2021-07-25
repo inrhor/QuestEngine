@@ -16,7 +16,7 @@ object QuestFile {
      * 加载并注册任务
      */
     fun loadDialog() {
-        val questFolder = GetFile.getFile("space/quest", "DIALOG.NO_FILES", false)
+        val questFolder = GetFile.getFile("space/quest")
         val lists = questFolder.listFiles()?: return
         for (file in lists) {
             if (!file.isDirectory) continue
@@ -49,7 +49,7 @@ object QuestFile {
 
         val innerQuestList = mutableListOf<QuestInnerModule>()
 
-        val innerFolder = GetFile.getFile("space/quest/"+file.name+"/inner", "DIALOG.NO_FILES", false)
+        val innerFolder = GetFile.getFile("space/quest/"+file.name+"/inner")
         val lists = innerFolder.listFiles()?: return run {
             TLocale.sendToConsole("QUEST.ERROR_FILE", questID)
         }

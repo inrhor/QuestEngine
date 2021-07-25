@@ -2,7 +2,7 @@ kether:
   - player gamemode to *3
   - packet send packet_1 where location *world *100 *10 *12
   - tell xx
-  - wait s 10 main quest_1 main_quest_1
+  - wait s 10 to quest_1 main_quest_1
   - tell xxx
-  - wait minute 1 main quest_1 main_quest_1
+  - wait minute 1 to quest_1 main_quest_1
   - player tp ...

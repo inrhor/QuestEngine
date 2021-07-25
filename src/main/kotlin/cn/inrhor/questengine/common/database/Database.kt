@@ -1,7 +1,21 @@
 package cn.inrhor.questengine.common.database
 
+import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
+import cn.inrhor.questengine.common.database.type.DatabaseLocal
+import cn.inrhor.questengine.common.database.type.DatabaseManager
+import cn.inrhor.questengine.common.database.type.DatabaseSQL
+import cn.inrhor.questengine.common.database.type.DatabaseType
+import io.izzel.taboolib.module.inject.TFunction
+import io.izzel.taboolib.module.inject.TListener
+import io.izzel.taboolib.module.inject.TSchedule
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import java.util.*
 
 abstract class Database {
@@ -21,7 +35,7 @@ abstract class Database {
      */
     abstract fun removeInnerQuest(player: Player, questUUID: UUID, questInnerData: QuestInnerData)
 
-    /*@TListener
+    @TListener
     companion object : Listener {
 
         val database: Database by lazy {
@@ -62,6 +76,6 @@ abstract class Database {
             }
         }
 
-    }*/
+    }
 
 }

@@ -29,7 +29,7 @@ object ItemManager {
      * 加载并注册物品文件
      */
     fun loadItem() {
-        val itemFolder = GetFile.getFile("space/item", "ITEM.NO_FILES", true)
+        val itemFolder = GetFile.getFile("space/item/example.yml", "ITEM.NO_FILES", true)
         GetFile.getFileList(itemFolder).forEach{
             checkRegItem(it)
         }

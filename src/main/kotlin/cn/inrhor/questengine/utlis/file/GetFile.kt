@@ -11,13 +11,19 @@ object GetFile {
     /**
      * 返回文件夹的内容
      */
-    fun getFile(child: String, say: String, mkdir: Boolean): File {
+    fun getFile(child: String, say: String, mkdirs: Boolean): File {
         val file = File(QuestEngine.plugin.dataFolder, child)
-        if (!file.exists() && mkdir) { // 如果 <child> 文件夹不存在就给示例配置
-            TLocale.sendToConsole(say, UseString.pluginTag)
-            Files.releaseResource(QuestEngine.plugin, "$child/example.yml", true)
+        if (!file.exists() && mkdirs) { // 如果 <child> 文件夹不存在就给示例配置
+            if (say.isNotEmpty()) {
+                TLocale.sendToConsole(say, UseString.pluginTag)
+            }
+            Files.releaseResource(QuestEngine.plugin, child, true)
         }
         return file
+    }
+
+    fun getFile(child: String): File {
+        return getFile(child, "", false)
     }
 
     fun getFileList(file: File): List<File> =

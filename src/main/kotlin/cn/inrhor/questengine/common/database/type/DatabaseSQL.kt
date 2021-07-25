@@ -22,6 +22,7 @@ class DatabaseSQL: Database() {
     val tableQuest = SQLTable(
         table+"_user_quest",
         SQLColumnType.VARCHAR.toColumn(36, "uuid").columnOptions(SQLColumnOption.KEY),
+        SQLColumnType.VARCHAR.toColumn(36, "questUUID").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(36, "questID").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(36, "innerQuestID").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(36, "state").columnOptions(SQLColumnOption.KEY),
@@ -97,14 +98,14 @@ class DatabaseSQL: Database() {
             .row("rewards")
             .to(source)
             .map {
-                it.getString("state") to it.getString("targets") to it.getString("rewards")
+                it.getString("state") to it.getString("rewards")
             }.forEach {
                 val innerModule = QuestManager.getInnerQuestModule(questID, innerQuestID)?: return@forEach
                 val targets = returnTargets(
                     uuid, questUUID, innerQuestID,
                     QuestManager.getInnerModuleTargetMap(innerModule)
                 )
-                val stateStr = it.first.first
+                val stateStr = it.first
                 val state = QuestStateUtil.strToState(stateStr)
                 val rewardsStr = it.second
                 val rewards = Gson().fromJson(rewardsStr, MutableMap::class.java) as MutableMap<String, Boolean>

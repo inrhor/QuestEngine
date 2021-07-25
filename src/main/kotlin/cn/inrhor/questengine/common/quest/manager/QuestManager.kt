@@ -3,6 +3,7 @@ package cn.inrhor.questengine.common.quest.manager
 import cn.inrhor.questengine.api.quest.QuestInnerModule
 import cn.inrhor.questengine.api.quest.QuestModule
 import cn.inrhor.questengine.common.collaboration.TeamManager
+import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.*
@@ -322,7 +323,7 @@ object QuestManager {
     }
 
     /**
-     * 放弃和清空任务
+     * 放弃和清空任务数据
      */
     fun quitQuest(player: Player, questID: String) {
         val uuid = player.uniqueId
@@ -336,11 +337,22 @@ object QuestManager {
             tData.members.forEach {
                 if (uuid == it) return@forEach
                 val mData = DataStorage.getPlayerData(it)
-                val mQuestData = mData.questDataList
-                if (!mQuestData.containsKey(questUUID)) return@forEach
-                mQuestData.remove(questUUID)
+                val mQuestList = mData.questDataList
+                if (!mQuestList.containsKey(questUUID)) return@forEach
+                val m = Bukkit.getPlayer(it)?: return@forEach
+                val mQuestData = getQuestData(uuid, questID)?: return@forEach
+                databaseRemoveInner(m, mQuestList, questUUID, mQuestData.questInnerData)
             }
         }
+        databaseRemoveInner(player, questList, questUUID, questData.questInnerData)
+    }
+
+    /*
+        还有清空 任务数据 目标数据
+     */
+
+    fun databaseRemoveInner(player: Player, questList: MutableMap<UUID, QuestData>, questUUID: UUID, questInnerData: QuestInnerData) {
+        Database.database.removeInnerQuest(player, questUUID, questInnerData)
         questList.remove(questUUID)
     }
 
