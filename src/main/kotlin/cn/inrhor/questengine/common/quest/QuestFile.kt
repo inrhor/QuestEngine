@@ -1,9 +1,8 @@
 package cn.inrhor.questengine.common.quest
 
-import cn.inrhor.questengine.api.quest.QuestMainModule
+import cn.inrhor.questengine.api.quest.QuestInnerModule
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.api.quest.QuestModule
-import cn.inrhor.questengine.api.quest.QuestSubModule
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.utlis.file.GetFile
 import io.izzel.taboolib.module.locale.TLocale
@@ -33,7 +32,7 @@ object QuestFile {
             TLocale.sendToConsole("QUEST.ERROR_FILE")
         }
         val name = setting.getString("name")?: "test"
-        val startID = setting.getString("startMainQuestID")?: "test"
+        val startID = setting.getString("startInnerQuestID")?: "test"
         var modeType = ModeType.PERSONAL
         val modeTypeStr = setting.getString("mode.type")?: "personal"
         var modeAmount = -1
@@ -48,10 +47,10 @@ object QuestFile {
         val failCheck = setting.getInt("failure.check")
         val failCondition = setting.getStringList("failure.condition")
 
-        val mainQuestList = mutableListOf<QuestMainModule>()
+        val innerQuestList = mutableListOf<QuestInnerModule>()
 
-        val mainFolder = GetFile.getFile("space/quest/"+file.name+"/main", "DIALOG.NO_FILES", false)
-        val lists = mainFolder.listFiles()?: return run {
+        val innerFolder = GetFile.getFile("space/quest/"+file.name+"/inner", "DIALOG.NO_FILES", false)
+        val lists = innerFolder.listFiles()?: return run {
             TLocale.sendToConsole("QUEST.ERROR_FILE", questID)
         }
         lists.forEach {
@@ -59,62 +58,36 @@ object QuestFile {
             if (!optionFile.exists()) return run {
                 TLocale.sendToConsole("QUEST.ERROR_FILE", questID)
             }
-            mainQuestList.add(mainQuest(file, it, questID)!!)
+            innerQuestList.add(innerQuest(it, questID))
         }
 
         val questModule = QuestModule(questID, name, startID,
             modeType, modeAmount, modeShareData,
             acceptCheck, acceptCondition,
             failCheck, failCondition,
-            mainQuestList)
+            innerQuestList)
 
         QuestManager.register(questID, questModule)
 
     }
 
-    private fun mainQuest(file: File, mainFile: File, questID: String): QuestMainModule? {
-        val optionFile = file(mainFile, "option.yml")
+    private fun innerQuest(innerFile: File, questID: String): QuestInnerModule {
+        val optionFile = file(innerFile, "option.yml")
         val option = yaml(optionFile)
-        val mainQuestID = option.getString("mainQuestID")!!
-        val nextMainQuestID = option.getString("nextMainQuestID")!!
+        val innerQuestID = option.getString("innerQuestID")!!
+        val nextInnerQuestID = option.getString("nextInnerQuestID")!!
 
-        val controlFile = file(mainFile, "control.yml")
-        val questControl = control(controlFile, questID, mainQuestID, "")
+        val controlFile = file(innerFile, "control.yml")
+        val questControl = control(controlFile, questID, innerQuestID)
 
-        val rewardFile = file(mainFile, "reward.yml")
-        val questReward = reward(rewardFile, questID, mainQuestID, "")
+        val rewardFile = file(innerFile, "reward.yml")
+        val questReward = reward(rewardFile, questID, innerQuestID)
 
-        val targetFile = file(mainFile, "target.yml")
+        val targetFile = file(innerFile, "target.yml")
         val target = yaml(targetFile)
         val questTarget = TargetManager.getTargetList(target)
 
-        val subQuestList = mutableListOf<QuestSubModule>()
-
-        val subFolder = GetFile.getFile("space/quest/"+file.name+"/main/"+mainFile.name+"/sub", "DIALOG.NO_FILES", false)
-        val lists = subFolder.listFiles()?: return null
-        lists.forEach {
-            val optionSubFile = file(it, "option.yml")
-            if (optionSubFile.exists()) {
-                val optionSub = yaml(optionSubFile)
-                val subQuestID = optionSub.getString("subQuestID")!!
-
-                val controlSubFile = file(it, "control.yml")
-                val questControlSub = control(controlSubFile, questID, mainQuestID, subQuestID)
-
-                val rewardSubFile = file(it, "reward.yml")
-                val questRewardSub = reward(rewardSubFile, questID, mainQuestID, subQuestID)
-
-                val targetSubFile = file(it, "target.yml")
-                val targetSub = yaml(targetSubFile)
-                val questTargetSub = TargetManager.getTargetList(targetSub)
-
-                val questSubModule = QuestSubModule(subQuestID, questControlSub,
-                    questRewardSub, questTargetSub)
-
-                subQuestList.add(questSubModule)
-            }
-        }
-        return QuestMainModule(mainQuestID, nextMainQuestID, subQuestList, questControl, questReward, questTarget)
+        return QuestInnerModule(innerQuestID, nextInnerQuestID, questControl, questReward, questTarget)
     }
 
     private fun file(file: File, path: String): File {
@@ -125,7 +98,7 @@ object QuestFile {
         return YamlConfiguration.loadConfiguration(file)
     }
 
-    private fun reward(file: File, questID: String, mainQuestID: String, subQuestID: String): QuestReward {
+    private fun reward(file: File, questID: String, innerQuestID: String): QuestReward {
         val finishReward = mutableMapOf<String, MutableList<String>>()
         var failReward = mutableListOf<String>()
         if (file.exists()) {
@@ -135,13 +108,13 @@ object QuestFile {
             }
             failReward = reward.getStringList("failReward")
         }
-        return QuestReward(questID, mainQuestID, subQuestID, finishReward, failReward)
+        return QuestReward(questID, innerQuestID, finishReward, failReward)
     }
 
-    private fun control(file: File, questID: String, mainQuestID: String, subQuestID: String): QuestControl {
+    private fun control(file: File, questID: String, innerQuestID: String): QuestControl {
         val control = yaml(file)
         val controlKether = control.getStringList("kether")
-        val id = QuestManager.generateControlID(questID, mainQuestID, subQuestID)
+        val id = QuestManager.generateControlID(questID, innerQuestID)
         return QuestControl(id, controlKether)
     }
 

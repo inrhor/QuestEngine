@@ -26,29 +26,21 @@ class DatabaseLocal: Database() {
         uuid.yml
 
         quest:
-            questID:
-                state: DOING
-                finishedMainQuest: []
-                main:
-                    mainQuestID:
-                        state: DOING
-                        targets:
-                            "name":
-                                time: -1
-                                schedule: 0
-                        rewards:
-                            rewardID:
-                                has: false
-                        sub:
-                            subQuestID:
-                                state: DOING
-                                targets:
-                                    "name":
-                                        time: -1
-                                        schedule: 0
-                                rewards:
-                                    rewardID:
-                                        has: false
+            UUID:
+                questID:
+                    state: DOING
+                    finishedQuest: []
+                    innerQuest:
+                        innerQuestID:
+                            state: DOING
+                            targets:
+                                "name":
+                                    time: -1
+                                    schedule: 0
+                            rewards:
+                                rewardID:
+                                    has: false
+
      */
     override fun pull(player: Player) {
         val uuid = player.uniqueId
@@ -59,31 +51,20 @@ class DatabaseLocal: Database() {
                 val node = "quest.$it."
                 val questID = it
 
-                val nodeMain = node+"mainQuest."
-                val mainQuestID = data.getString(nodeMain+"mainQuestID")?: return@forEach
-                val mainState = QuestStateUtil.strToState(data.getString(nodeMain+"state")?: "IDLE")
-                val mainModule = QuestManager.getMainQuestModule(questID, mainQuestID)?: return
-                val mainTargetDataMap = returnTargetData(data, nodeMain, QuestManager.getMainModuleTargetMap(mainModule))
-                val nodeSub = nodeMain+"subQuest."
-                val questSubDataMap = mutableMapOf<String, QuestSubData>()
+                val nodeInner = node+"innerQuest."
+                val innerQuestID = data.getString(nodeInner+"innerQuestID")?: return@forEach
+                val innerState = QuestStateUtil.strToState(data.getString(nodeInner+"state")?: "IDLE")
+                val innerModule = QuestManager.getInnerQuestModule(questID, innerQuestID)?: return
+                val innerTargetDataMap = returnTargetData(data, nodeInner, QuestManager.getInnerModuleTargetMap(innerModule))
 
-                for (subQuestID in data.getConfigurationSection(nodeSub+"targets")!!.getKeys(false)) {
-                    val subState = QuestStateUtil.strToState(data.getString(nodeSub+"state")?: "IDLE")
-                    val subModule = QuestManager.getSubQuestModule(questID, mainQuestID, subQuestID)?: return
-                    val rewardSub = returnRewardData(data, nodeSub)
-                    val subTargetDataMap = returnTargetData(data, nodeSub, QuestManager.getSubModuleTargetMap(subModule))
-                    val questSubData = QuestSubData(questID, mainQuestID, subQuestID, subTargetDataMap, subState, rewardSub)
-                    questSubDataMap[subQuestID] = questSubData
-                }
+                val finished = data.getStringList(node+"finishedQuest")
 
-                val finishedMain = data.getStringList(node+"finishedMainQuest")
-
-                val rewardMain = returnRewardData(data, nodeMain)
-                val questMainData = QuestMainData(questID, mainQuestID, questSubDataMap, mainTargetDataMap, mainState, rewardMain)
+                val rewardInner = returnRewardData(data, nodeInner)
+                val questInnerData = QuestInnerData(questID, innerQuestID, innerTargetDataMap, innerState, rewardInner)
 
                 val state = QuestStateUtil.strToState(data.getString(node+"state")?: "IDLE")
 
-                val questData = QuestData(questID, questMainData, state, TeamManager.getTeamData(uuid), finishedMain)
+                val questData = QuestData(questID, questInnerData, state, TeamManager.getTeamData(uuid), finished)
                 questDataMap[questID] = questData
             }
         }
@@ -120,26 +101,22 @@ class DatabaseLocal: Database() {
             val state = QuestStateUtil.stateToStr(questData.state)
             val node = "quest.$questID."
             data.set(node+"state", state)
-            val finishedMain = questData.finishedMainList
+            val finishedMain = questData.finishedList
             data.set(node+"finishedMainQuest", finishedMain)
-            val mainData = questData.questMainData
-            val mainID = mainData.mainQuestID
-            val nodeMain = node+"main.$mainID."
-            pushData(data, node+"main.$mainID.", mainData)
-            mainData.questSubList.forEach { (subID, subData) ->
-                pushData(data, nodeMain+"sub.$subID.", subData)
-            }
+            val innerData = questData.questInnerData
+            val innerID = innerData.innerQuestID
+            pushData(data, node+"main.$innerID.", innerData)
         }
         data.save(file)
     }
 
-    private fun pushData(data: YamlConfiguration, node: String, openData: QuestOpenData) {
-        val state = QuestStateUtil.stateToStr(openData.state)
+    private fun pushData(data: YamlConfiguration, node: String, questInnerData: QuestInnerData) {
+        val state = QuestStateUtil.stateToStr(questInnerData.state)
         data.set(node+"state", state)
-        openData.rewardState.forEach { (rewardID, has) ->
+        questInnerData.rewardState.forEach { (rewardID, has) ->
             data.set(node+"rewards.$rewardID.has", has)
         }
-        openData.targetsData.forEach { (name, targetData) ->
+        questInnerData.targetsData.forEach { (name, targetData) ->
             val time = targetData.time
             val schedule = targetData.schedule
             data.set(node+"targets.$name.time", time)

@@ -54,22 +54,15 @@ object TargetManager {
     /**
      * 计算任务目标进度，支持协同模式
      */
-    fun scheduleUtil(name: String, questID: String, questData: QuestData, targetData: TargetData, type: String): Int {
+    fun scheduleUtil(name: String, questID: String, questData: QuestData, targetData: TargetData): Int {
         val questModule = QuestManager.getQuestModule(questID)?: return 0
         if (questModule.modeType == ModeType.COLLABORATION && questModule.modeShareData && questData.teamData != null) {
             var schedule = 0
             for (mUUID in questData.teamData!!.members) {
                 val m = Bukkit.getPlayer(mUUID)?: continue
-                val mainData = questData.questMainData
-                schedule += if (type == "main") {
-                    val tgData = mainData.targetsData[name]?: continue
-                    tgData.schedule
-                }else {
-                    val tg = QuestManager.getDoingSubTarget(m, name)?: continue
-                    val subData = QuestManager.getSubQuestData(m, questID, tg.subQuestID)?: continue
-                    val tgData = subData.targetsData[name]?: continue
-                    tgData.schedule
-                }
+                val mainData = QuestManager.getInnerQuestData(m, questID)?: continue
+                val tgData = mainData.targetsData[name]?: continue
+                schedule += tgData.schedule
             }
             return schedule
         }

@@ -15,17 +15,17 @@ class KetherControl {
 
     class WaitTime(val time: Int, val questID: String, val mainQuestID: String): QuestAction<Void>() {
         override fun process(frame: QuestContext.Frame): CompletableFuture<Void> {
-            WaitRun.run(frame, time, questID, mainQuestID, "")
+            WaitRun.run(frame, time, questID, mainQuestID)
             return CompletableFuture.completedFuture(null)
         }
     }
 
     object WaitRun {
-        fun run(frame: QuestContext.Frame, time: Int, questID: String, mainQuestID: String, subQuestID: String) {
+        fun run(frame: QuestContext.Frame, time: Int, questID: String, mainQuestID: String) {
             val player = frame.script().sender as? Player ?: error("unknown player")
             val pData = DataStorage.getPlayerData(player)
             val cMap = pData.controlList
-            val id = QuestManager.generateControlID(questID, mainQuestID, subQuestID)
+            val id = QuestManager.generateControlID(questID, mainQuestID)
             if (cMap.containsKey(id)) {
                 val cData = cMap[id]?: return
                 cData.waitTime = time
@@ -33,15 +33,8 @@ class KetherControl {
         }
     }
 
-    class WaitTimeSub(val time: Int, val questID: String, val mainQuestID: String, val subQuestID: String): QuestAction<Void>() {
-        override fun process(frame: QuestContext.Frame): CompletableFuture<Void> {
-            WaitRun.run(frame, time, questID, mainQuestID, subQuestID)
-            return CompletableFuture.completedFuture(null)
-        }
-    }
-
     /**
-     * wait type time main questID mainQuestID - subQuestID
+     * wait type time to questID mainQuestID
      */
     companion object {
         @KetherParser(["wait"])
@@ -51,10 +44,8 @@ class KetherControl {
                     try {
                         val time = it.nextInt()*20
                         it.mark()
-                        when (it.expects("main", "sub")) {
-                            "sub" -> WaitTimeSub(time, it.nextToken(), it.nextToken(), it.nextToken())
-                            else -> WaitTime(time, it.nextToken(), it.nextToken())
-                        }
+                        it.expects("to")
+                        WaitTime(time, it.nextToken(), it.nextToken())
                     } catch (ex: Exception) {
                         error("error script wait")
                     }
@@ -63,10 +54,8 @@ class KetherControl {
                     try {
                         val time = it.nextInt()*1200
                         it.mark()
-                        when (it.expects("main", "sub")) {
-                            "sub" -> WaitTimeSub(time, it.nextToken(), it.nextToken(), it.nextToken())
-                            else -> WaitTime(time, it.nextToken(), it.nextToken())
-                        }
+                        it.expects("to")
+                        WaitTime(time, it.nextToken(), it.nextToken())
                     } catch (ex: Exception) {
                         error("error script wait")
                     }

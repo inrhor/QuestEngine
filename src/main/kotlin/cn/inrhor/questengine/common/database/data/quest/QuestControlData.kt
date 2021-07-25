@@ -10,7 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable
 
 class QuestControlData(
     val player: Player,
-    val questOpenData: QuestOpenData,
+    val questInnerData: QuestInnerData,
     val script: MutableList<String>,
     var line: Int,
     var waitTime: Int) {
@@ -29,7 +29,7 @@ class QuestControlData(
     private fun synRunScript(content: String) {
         object : BukkitRunnable() {
             override fun run() {
-                if (!player.isOnline || questOpenData.state != QuestState.DOING) {
+                if (!player.isOnline || questInnerData.state != QuestState.DOING) {
                     cancel()
                     return
                 }
@@ -41,7 +41,7 @@ class QuestControlData(
     private fun asyRunScript(content: String) {
         object : BukkitRunnable() {
             override fun run() {
-                if (!player.isOnline || questOpenData.state != QuestState.DOING) {
+                if (!player.isOnline || questInnerData.state != QuestState.DOING) {
                     cancel()
                     return
                 }

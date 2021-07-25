@@ -37,8 +37,7 @@ COMMAND:
     ARGUMENT: "参数"
   QUEST:
     QUESTID: "任务ID"
-    MAIN_QUESTID: "主线任务ID"
-    SUB_QUESTID: "支线任务ID"
+    MAIN_QUESTID: "内部任务ID"
     HANDLE: "任务相关命令"
   TEAM:
     NAME: "队伍名称"

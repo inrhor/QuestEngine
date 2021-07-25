@@ -4,8 +4,7 @@ import cn.inrhor.questengine.api.quest.ConditionType
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.api.quest.TargetExtend
 import cn.inrhor.questengine.common.database.data.quest.QuestData
-import cn.inrhor.questengine.common.database.data.quest.QuestOpenData
-import cn.inrhor.questengine.common.quest.QuestState
+import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
 import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.common.quest.manager.RewardManager
 import cn.inrhor.questengine.common.quest.manager.TargetManager
@@ -26,18 +25,10 @@ object TargetBreakBlock: TargetExtend<BlockBreakEvent>() {
                 override fun check(): Boolean {
                     val questData = QuestManager.getDoingQuest(player)?: return false
                     if (!QuestManager.matchQuestMode(questData)) return false
-                    val questID = questData.questID
-                    val mainData = questData.questMainData
-                    val mainTarget = QuestManager.getDoingMainTarget(player, name)?: return false
+                    val innerData = questData.questInnerData
+                    val innerTarget = QuestManager.getDoingTarget(player, name)?: return false
                     val breakBlock = block.type
-                    if (targetTrigger(player, questData, breakBlock, mainTarget, mainData, "main")) return true
-
-                    val tg = QuestManager.getDoingSubTarget(player, name)?: return false
-                    val subQuestID= tg.subQuestID
-                    val subData = QuestManager.getSubQuestData(player, questID, subQuestID)?: return false
-                    if (subData.state != QuestState.DOING) return false
-                    val subTarget = tg.questTarget
-                    return targetTrigger(player, questData, breakBlock, subTarget, subData, "sub")
+                    return (targetTrigger(player, questData, breakBlock, innerTarget, innerData))
                 }
             }
             // 刷新
@@ -48,16 +39,16 @@ object TargetBreakBlock: TargetExtend<BlockBreakEvent>() {
         TargetManager.register(name, ConditionType("block"))
     }
 
-    fun targetTrigger(player: Player, questData: QuestData, breakBlock: Material, target: QuestTarget, questOpenData: QuestOpenData, type: String): Boolean {
+    fun targetTrigger(player: Player, questData: QuestData, breakBlock: Material, target: QuestTarget, questInnerData: QuestInnerData): Boolean {
         val blockCondition = target.condition["block"]?: return false
         val sp = blockCondition.split(" ")
         val material = sp[0].uppercase(Locale.getDefault())
         val amount = sp[1].toInt()
         if (material == breakBlock.name) {
-            val targetData = questOpenData.targetsData[name]?: return false
+            val targetData = questInnerData.targetsData[name]?: return false
             targetData.schedule = targetData.schedule + 1
-            val allSchedule = TargetManager.scheduleUtil(name, questData.questID, questData,targetData, type)
-            return RewardManager.finishReward(player, questData, questOpenData, target, amount, allSchedule)
+            val allSchedule = TargetManager.scheduleUtil(name, questData.questID, questData,targetData)
+            return RewardManager.finishReward(player, questData, questInnerData, target, amount, allSchedule)
         }
         return true
     }

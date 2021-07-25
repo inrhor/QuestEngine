@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.quest.manager
 
 import cn.inrhor.questengine.common.database.data.quest.QuestData
-import cn.inrhor.questengine.common.database.data.quest.QuestOpenData
+import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestReward
 import cn.inrhor.questengine.common.quest.QuestTarget
@@ -14,44 +14,37 @@ object RewardManager {
     /**
      * 满足进度触发奖励
      */
-    fun finishReward(player: Player, questData: QuestData, questOpenData: QuestOpenData, target: QuestTarget, amount: Int, schedule: Int): Boolean {
+    fun finishReward(player: Player, questData: QuestData, questInnerData: QuestInnerData, target: QuestTarget, amount: Int, schedule: Int): Boolean {
         if (schedule >= amount) {
             val questID = questData.questID
             if (QuestManager.getQuestMode(questID) == ModeType.COLLABORATION) {
                 val team = questData.teamData ?: return false
                 for (mUUID in team.members) {
                     val m = Bukkit.getPlayer(mUUID)?: continue
-                    finishReward(m, questOpenData, target)
+                    finishReward(m, questInnerData, target)
                 }
             }else {
-                finishReward(player, questOpenData, target)
+                finishReward(player, questInnerData, target)
             }
         }
         return true
     }
 
-    private fun finishReward(player: Player, questOpenData: QuestOpenData, target: QuestTarget) {
-        val mainID = questOpenData.mainQuestID
-        val subID = questOpenData.subQuestID
-        val questID = questOpenData.questID
-        if (subID == "") {
-            val mainModule = QuestManager.getMainQuestModule(questID, mainID)?: return
-            val rewardRepeatState = questOpenData.rewardState[target.name]?: false
-            finishReward(player, questOpenData, mainModule.questReward, target.reward, rewardRepeatState)
-        }else {
-            val subModule = QuestManager.getSubQuestModule(questID, mainID, subID)?: return
-            val rewardRepeatState = questOpenData.rewardState[target.name]?: false
-            finishReward(player, questOpenData, subModule.questReward, target.reward, rewardRepeatState)
-        }
-        questOpenData.rewardState[target.name] = true
+    private fun finishReward(player: Player, questInnerData: QuestInnerData, target: QuestTarget) {
+        val mainID = questInnerData.innerQuestID
+        val questID = questInnerData.questID
+        val innerModule = QuestManager.getInnerQuestModule(questID, mainID)?: return
+        val rewardRepeatState = questInnerData.rewardState[target.name]?: false
+        finishReward(player, questInnerData, innerModule.questReward, target.reward, rewardRepeatState)
+        questInnerData.rewardState[target.name] = true
     }
 
-    private fun finishReward(player: Player, questOpenData: QuestOpenData, questReward: QuestReward, content: String, repeat: Boolean) {
+    private fun finishReward(player: Player, questInnerData: QuestInnerData, questReward: QuestReward, content: String, repeat: Boolean) {
         val s = content.split(" ")
         val rewardID = s[0]
         val repeatModule = s[1].toBoolean()
         finishReward(player, questReward, rewardID, repeatModule, repeat)
-        questOpenData.rewardState[rewardID] = true
+        questInnerData.rewardState[rewardID] = true
     }
 
     private fun finishReward(player: Player, questReward: QuestReward, rewardID: String, repeatModule: Boolean, repeat: Boolean) {

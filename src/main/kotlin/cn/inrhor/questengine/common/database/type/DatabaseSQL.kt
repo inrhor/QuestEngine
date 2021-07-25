@@ -25,7 +25,7 @@ class DatabaseSQL: Database() {
         SQLColumnType.VARCHAR.toColumn(36, "questID").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(36, "questMainID").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(36, "state").columnOptions(SQLColumnOption.KEY),
-        SQLColumnType.VARCHAR.toColumn(256, "finishedMainQuest").columnOptions(SQLColumnOption.KEY)
+        SQLColumnType.VARCHAR.toColumn(256, "finishedQuest").columnOptions(SQLColumnOption.KEY)
     )
 
     val tableMainQuest = SQLTable(
@@ -34,16 +34,6 @@ class DatabaseSQL: Database() {
         SQLColumnType.VARCHAR.toColumn(36, "questID").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(36, "mainQuestID").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(36,"state").columnOptions(SQLColumnOption.KEY),
-        SQLColumnType.VARCHAR.toColumn(256,"rewards").columnOptions(SQLColumnOption.KEY)
-    )
-
-    val tableSubQuest = SQLTable(
-        table+"_user_sub_quest",
-        SQLColumnType.VARCHAR.toColumn(36, "uuid").columnOptions(SQLColumnOption.KEY),
-        SQLColumnType.VARCHAR.toColumn(36, "questID").columnOptions(SQLColumnOption.KEY),
-        SQLColumnType.VARCHAR.toColumn(36, "mainQuestID").columnOptions(SQLColumnOption.KEY),
-        SQLColumnType.VARCHAR.toColumn(36, "subQuestID").columnOptions(SQLColumnOption.KEY),
-        SQLColumnType.VARCHAR.toColumn(36, "state").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(256,"rewards").columnOptions(SQLColumnOption.KEY)
     )
 
@@ -77,7 +67,7 @@ class DatabaseSQL: Database() {
             .row("questID")
             .row("questMainID")
             .row("state")
-            .row("finishedMainQuest")
+            .row("finishedQuest")
             .to(source)
             .map {
                 it.getString("questID") to it.getString("questMainID") to it.getString("state") to it.getString("finishedMainQuest")
@@ -107,11 +97,11 @@ class DatabaseSQL: Database() {
             .map {
                 it.getString("state") to it.getString("targets") to it.getString("rewards")
             }.forEach {
-                val mainModule = QuestManager.getMainQuestModule(questID, mainQuestID)
+                val mainModule = QuestManager.getInnerQuestModule(questID, mainQuestID)
                 if (mainModule != null) {
                     val targets = returnTargets(
                         uuid, questID, mainQuestID, "",
-                        QuestManager.getMainModuleTargetMap(mainModule)
+                        QuestManager.getInnerModuleTargetMap(mainModule)
                     )
                     val stateStr = it.first.first
                     val state = QuestStateUtil.strToState(stateStr)
@@ -137,11 +127,11 @@ class DatabaseSQL: Database() {
             .map {
                 it.getString("subQuestID") to it.getString("state") to it.getString("rewards")
             }.forEach {
-                val mainModule = QuestManager.getMainQuestModule(questID, mainQuestID)
+                val mainModule = QuestManager.getInnerQuestModule(questID, mainQuestID)
                 if (mainModule != null) {
                     val subQuestID = it.first.first
                     val targets = returnTargets(uuid, questID, mainQuestID, subQuestID,
-                        QuestManager.getMainModuleTargetMap(mainModule))
+                        QuestManager.getInnerModuleTargetMap(mainModule))
                     val stateStr = it.first.second
                     val state = QuestStateUtil.strToState(stateStr)
                     val rewardsStr = it.second
@@ -180,10 +170,10 @@ class DatabaseSQL: Database() {
         val uuid = player.uniqueId
         val pData = DataStorage.getPlayerData(uuid)
         pData.questDataList.forEach { (questID, questData) ->
-            val mainData = questData.questMainData
-            val questMainID = mainData.mainQuestID
+            val mainData = questData.questInnerData
+            val questMainID = mainData.innerQuestID
             val state = QuestStateUtil.stateToStr(questData.state)
-            val fmq = questData.finishedMainList
+            val fmq = questData.finishedList
             val fmqJson = Gson().toJson(fmq)
             tableQuest.update(
                 Where.equals("uuid", uuid.toString()),
@@ -196,7 +186,7 @@ class DatabaseSQL: Database() {
         }
     }
 
-    private fun updateOpen(uuid: UUID, openData: QuestOpenData, questID: String, mainQuestID: String, subQuestID: String) {
+    private fun updateOpen(uuid: UUID, openData: QuestInnerData, questID: String, mainQuestID: String, subQuestID: String) {
         val state = QuestStateUtil.stateToStr(openData.state)
         val rewards = Gson().toJson(openData.rewardState)
         if (subQuestID.isEmpty()) {
@@ -226,16 +216,16 @@ class DatabaseSQL: Database() {
     fun create(player: Player, questData: QuestData) {
         val uuid = player.uniqueId
         val questID = questData.questID
-        val mainData = questData.questMainData
-        val questMainID = mainData.mainQuestID
+        val mainData = questData.questInnerData
+        val questMainID = mainData.innerQuestID
         val state = QuestStateUtil.stateToStr(questData.state)
-        val fmq = questData.finishedMainList
+        val fmq = questData.finishedList
         val fmqJson = Gson().toJson(fmq)
         tableQuest.insert(uuid.toString(), questID, questMainID, state, fmqJson).run(source)
         createOpen(uuid, mainData, questID, questMainID, "")
     }
 
-    private fun createOpen(uuid: UUID, openData: QuestOpenData, questID: String, mainQuestID: String, subQuestID: String) {
+    private fun createOpen(uuid: UUID, openData: QuestInnerData, questID: String, mainQuestID: String, subQuestID: String) {
         val state = QuestStateUtil.stateToStr(openData.state)
         val rewards = Gson().toJson(openData.rewardState)
         if (subQuestID.isEmpty()) {
@@ -249,10 +239,10 @@ class DatabaseSQL: Database() {
         createTarget(uuid, openData)
     }
 
-    private fun createTarget(uuid: UUID, openData: QuestOpenData) {
+    private fun createTarget(uuid: UUID, openData: QuestInnerData) {
         openData.targetsData.forEach { (name, targetData) ->
             val questID = openData.questID
-            val mainID = openData.mainQuestID
+            val mainID = openData.innerQuestID
             val subID = openData.subQuestID
             val time = targetData.time
             val schedule = targetData.schedule
@@ -260,10 +250,10 @@ class DatabaseSQL: Database() {
         }
     }
 
-    private fun updateTarget(uuid: UUID, openData: QuestOpenData) {
+    private fun updateTarget(uuid: UUID, openData: QuestInnerData) {
         openData.targetsData.forEach { (name, targetData) ->
             val questID = openData.questID
-            val mainID = openData.mainQuestID
+            val mainID = openData.innerQuestID
             val subID = openData.subQuestID
             val time = targetData.time
             val schedule = targetData.schedule
@@ -290,11 +280,11 @@ class DatabaseSQL: Database() {
         所以要做个唯一ID
      */
 
-    override fun removeQuestOpen(player: Player, questOpenData: QuestOpenData) {
+    override fun removeQuestOpen(player: Player, questInnerData: QuestInnerData) {
         val uuid = player.uniqueId.toString()
-        val questID = questOpenData.questID
-        val mainID = questOpenData.mainQuestID
-        val subID = questOpenData.subQuestID
+        val questID = questInnerData.questID
+        val mainID = questInnerData.innerQuestID
+        val subID = questInnerData.subQuestID
         if (subID.isEmpty()) {
             tableMainQuest.delete(
                 Where.equals("uuid", uuid),
