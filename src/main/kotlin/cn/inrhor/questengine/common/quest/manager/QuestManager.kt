@@ -13,11 +13,9 @@ import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.script.kether.KetherHandler
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
-import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import java.util.HashMap
-import java.util.LinkedHashMap
+import java.util.*
 
 object QuestManager {
 
@@ -73,14 +71,21 @@ object QuestManager {
     }
 
     /**
+     * 任务数据中是否存在 QuestID
+     */
+    fun existQuestData(player: Player, questID: String): Boolean {
+        val pData = DataStorage.getPlayerData(player)
+        pData.questDataList.values.forEach {
+            if (it.questID == questID) return true
+        }
+        return false
+    }
+
+    /**
      * 接受任务
      */
     fun acceptQuest(player: Player, questID: String) {
         val pData = DataStorage.getPlayerData(player)
-        if (pData.questDataList.containsKey(questID)) {
-            TLocale.sendTo(player, "QUEST.ALREADY_ACCEPT")
-            return
-        }
         val questModule = getQuestModule(questID) ?: return
         if (questModule.modeType == ModeType.COLLABORATION) {
             val tData = pData.teamData ?: return
@@ -95,7 +100,8 @@ object QuestManager {
 
     private fun acceptQuest(player: Player, questModule: QuestModule) {
         val startInnerQuest = questModule.getStartInnerQuest()?: return
-        acceptInnerQuest(player, questModule.questID, startInnerQuest, true)
+        val questUUID = UUID.randomUUID()
+        acceptInnerQuest(player, questUUID, questModule.questID, startInnerQuest, true)
     }
 
     /**
@@ -103,29 +109,29 @@ object QuestManager {
      *
      * 前提是已接受任务
      */
-    private fun acceptNextInnerQuest(player: Player, questData: QuestData, innerQuestID: String) {
+    private fun acceptNextInnerQuest(player: Player, questUUID: UUID, questData: QuestData, innerQuestID: String) {
         val questID = questData.questID
         val questModule = getQuestModule(questID) ?: return
         if (questModule.modeType == ModeType.COLLABORATION) {
             val tData = questData.teamData?: return
             tData.members.forEach {
                 val m = Bukkit.getPlayer(it)?: return@forEach
-                nextInnerQuest(m, questData, innerQuestID)
+                nextInnerQuest(m, questUUID, questData, innerQuestID)
             }
             return
         }
-        nextInnerQuest(player, questData, innerQuestID)
+        nextInnerQuest(player, questUUID, questData, innerQuestID)
     }
 
-    private fun nextInnerQuest(player: Player, questData: QuestData, innerQuestID: String) {
+    private fun nextInnerQuest(player: Player, questUUID: UUID, questData: QuestData, innerQuestID: String) {
         val questID = questData.questID
         val questInnerModule = getInnerQuestModule(questID, innerQuestID) ?: return
         val nextInnerID = questInnerModule.nextInnerQuestID
         val nextInnerModule = getInnerQuestModule(questID, nextInnerID) ?: return
-        acceptInnerQuest(player, questID, nextInnerModule, false)
+        acceptInnerQuest(player, questUUID, questID, nextInnerModule, false)
     }
 
-    private fun acceptInnerQuest(player: Player, questID: String, innerQuest: QuestInnerModule, isNewQuest: Boolean) {
+    private fun acceptInnerQuest(player: Player, questUUID: UUID, questID: String, innerQuest: QuestInnerModule, isNewQuest: Boolean) {
         val pData = DataStorage.getPlayerData(player)
         var state = QuestState.DOING
         if (isNewQuest && hasDoingInnerQuest(pData)) state = QuestState.IDLE
@@ -133,13 +139,13 @@ object QuestManager {
         val innerModule = getInnerQuestModule(questID, innerQuestID) ?: return
         val innerTargetData = getInnerModuleTargetMap(innerModule)
         val innerQuestData = QuestInnerData(questID, innerQuestID, innerTargetData, state)
-        val questData = QuestData(questID, innerQuestData, state, pData.teamData, mutableListOf())
-        pData.questDataList[questID] = questData
+        val questData = QuestData(questUUID, questID, innerQuestData, state, pData.teamData, mutableListOf())
+        pData.questDataList[questUUID] = questData
         saveControl(player, pData, innerQuestData)
         runControl(pData, questID, innerQuestID)
         if (isNewQuest) {
             if (DatabaseManager.type == DatabaseType.MYSQL) {
-                DatabaseSQL().create(player, questData)
+                DatabaseSQL().create(player, questUUID, questData)
             }
         }
     }
@@ -198,8 +204,8 @@ object QuestManager {
      * @param state 设定任务成功与否
      * @param runFailReward 如果失败，是否执行当前内部任务失败脚本
      */
-    fun endQuest(player: Player, questID: String, state: QuestState, runFailReward: Boolean) {
-        val questData = getQuestData(player, questID) ?: return
+    fun endQuest(player: Player, questUUID: UUID, questID: String, state: QuestState, runFailReward: Boolean) {
+        val questData = getQuestData(player, questUUID) ?: return
         if (state == QuestState.FAILURE && runFailReward) {
             val innerQuestID = questData.questInnerData.innerQuestID
             val failReward = getReward(questID, innerQuestID, "", state) ?: return
@@ -214,8 +220,8 @@ object QuestManager {
      *
      * 最终完成请将 innerQuestID 设为 空
      */
-    fun finishInnerQuest(player: Player, questID: String, innerQuestID: String) {
-        val questData = getQuestData(player, questID) ?: return
+    fun finishInnerQuest(player: Player, questUUID: UUID, questID: String, innerQuestID: String) {
+        val questData = getQuestData(player, questUUID) ?: return
         val questInnerModule = getInnerQuestModule(questID, innerQuestID) ?: return
         val nextInnerID = questInnerModule.nextInnerQuestID
         if (nextInnerID == "") {
@@ -225,28 +231,39 @@ object QuestManager {
                 val tData = questData.teamData?: return
                 tData.members.forEach {
                     val m = Bukkit.getPlayer(it)?: return@forEach
-                    val mQuestData = getQuestData(m, questID)?: return@forEach
+                    val mQuestData = getQuestData(m, questUUID)?: return@forEach
                     mQuestData.state = QuestState.FINISH
                 }
             }
         }else {
-            acceptNextInnerQuest(player, questData, nextInnerID)
+            acceptNextInnerQuest(player, questUUID, questData, nextInnerID)
         }
     }
 
     /**
-     * 获得玩家任务数据
+     * 精准检索玩家任务数据
      */
-    fun getQuestData(player: Player, questID: String): QuestData? {
+    fun getQuestData(player: Player, questUUID: UUID): QuestData? {
         val pData = DataStorage.getPlayerData(player)
-        return pData.questDataList[questID]
+        return pData.questDataList[questUUID]
+    }
+
+    /**
+     * 根据 QuestID 模糊检索玩家任务数据
+     */
+    fun getQuestData(uuid: UUID, questID: String): QuestData? {
+        val pData = DataStorage.getPlayerData(uuid)
+        pData.questDataList.values.forEach {
+            if (it.questID == questID) return it
+        }
+        return null
     }
 
     /**
      * 获得玩家当前内部任务数据
      */
-    fun getInnerQuestData(player: Player, questID: String): QuestInnerData? {
-        val questData = getQuestData(player, questID) ?: return null
+    fun getInnerQuestData(player: Player, questUUID: UUID): QuestInnerData? {
+        val questData = getQuestData(player, questUUID) ?: return null
         return questData.questInnerData
     }
 
@@ -296,9 +313,9 @@ object QuestManager {
     fun getDoingQuest(player: Player): QuestData? {
         val pData = DataStorage.getPlayerData(player)
         if (pData.questDataList.isEmpty()) return null
-        pData.questDataList.forEach { (_, questData) ->
-            if (questData.state == QuestState.DOING) {
-                return questData
+        pData.questDataList.values.forEach {
+            if (it.state == QuestState.DOING) {
+                return it
             }
         }
         return null
@@ -309,22 +326,22 @@ object QuestManager {
      */
     fun quitQuest(player: Player, questID: String) {
         val uuid = player.uniqueId
-        val pData = DataStorage.getPlayerData(uuid)
-        val questData = pData.questDataList
-        if (!questData.containsKey(questID)) return
+        val questData = getQuestData(uuid, questID)?: return
         val questModule = getQuestModule(questID)?: return
-        val qData = questData[questID]?: return
+        val questUUID = questData.questUUID
+        val pData = DataStorage.getPlayerData(uuid)
+        val questList = pData.questDataList
         if (questModule.modeType == ModeType.COLLABORATION) {
-            val tData = qData.teamData?: run { questData.remove(questID); return }
+            val tData = questData.teamData?: run { questList.remove(questUUID); return }
             tData.members.forEach {
                 if (uuid == it) return@forEach
                 val mData = DataStorage.getPlayerData(it)
                 val mQuestData = mData.questDataList
-                if (!mQuestData.containsKey(questID)) return@forEach
-                mQuestData.remove(questID)
+                if (!mQuestData.containsKey(questUUID)) return@forEach
+                mQuestData.remove(questUUID)
             }
         }
-        questData.remove(questID)
+        questList.remove(questUUID)
     }
 
 }

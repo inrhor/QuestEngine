@@ -22,6 +22,12 @@ class DatabaseLocal: Database() {
         return YamlConfiguration.loadConfiguration(file)
     }
 
+    override fun removeInnerQuest(player: Player, questUUID: UUID, questInnerData: QuestInnerData) {
+        val uuid = player.uniqueId
+        val data = getLocal(uuid)
+        data.set("quest.$questUUID.innerQuest."+questInnerData.innerQuestID, null)
+    }
+
     /*
         uuid.yml
 
@@ -45,7 +51,7 @@ class DatabaseLocal: Database() {
     override fun pull(player: Player) {
         val uuid = player.uniqueId
         val data = getLocal(uuid)
-        val questDataMap = mutableMapOf<String, QuestData>()
+        val questDataMap = mutableMapOf<UUID, QuestData>()
         if (data.contains("quest")) {
             data.getConfigurationSection("quest")!!.getKeys(false).forEach {
                 val node = "quest.$it."
@@ -64,10 +70,11 @@ class DatabaseLocal: Database() {
 
                 val state = QuestStateUtil.strToState(data.getString(node+"state")?: "IDLE")
 
-                val questData = QuestData(questID, questInnerData, state, TeamManager.getTeamData(uuid), finished)
-                questDataMap[questID] = questData
+                val questData = QuestData(UUID.fromString(it), questID, questInnerData, state, TeamManager.getTeamData(uuid), finished)
+                questDataMap[UUID.fromString(it)] = questData
             }
         }
+        DataStorage.getPlayerData(uuid).questDataList = questDataMap
     }
 
     private fun returnTargetData(data: YamlConfiguration, node: String, targetDataMap: MutableMap<String, TargetData>): MutableMap<String, TargetData> {
@@ -97,9 +104,9 @@ class DatabaseLocal: Database() {
         val file = File(QuestEngine.plugin.dataFolder, "data/$uuid")
         if (!file.exists()) file.mkdirs()
         val data = YamlConfiguration.loadConfiguration(file)
-        pData.questDataList.forEach { (questID, questData) ->
+        pData.questDataList.forEach { (questUUID, questData) ->
             val state = QuestStateUtil.stateToStr(questData.state)
-            val node = "quest.$questID."
+            val node = "quest.$questUUID."
             data.set(node+"state", state)
             val finishedMain = questData.finishedList
             data.set(node+"finishedMainQuest", finishedMain)

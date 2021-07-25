@@ -15,7 +15,7 @@ class PlayerData(
     val uuid: UUID,
     var teamData: TeamOpen?,
     val dialogData: DialogData,
-    var questDataList: MutableMap<String, QuestData>,
+    var questDataList: MutableMap<UUID, QuestData>, /* UUID 对应 QuestData */
     var controlList: MutableMap<String, QuestControlData>/* [questID]-[innerQuestID] QuestManager有快捷获取 */
 ) {
 

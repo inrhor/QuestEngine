@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.database
 
 import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
 import org.bukkit.entity.Player
+import java.util.*
 
 abstract class Database {
 
@@ -16,9 +17,9 @@ abstract class Database {
     abstract fun push(player: Player)
 
     /**
-     * 清除任务数据
+     * 清除内部任务数据
      */
-    abstract fun removeQuestOpen(player: Player, questInnerData: QuestInnerData)
+    abstract fun removeInnerQuest(player: Player, questUUID: UUID, questInnerData: QuestInnerData)
 
     /*@TListener
     companion object : Listener {

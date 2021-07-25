@@ -7,6 +7,7 @@ import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestTarget
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.FileConfiguration
+import java.util.*
 
 object TargetManager {
 
@@ -54,14 +55,14 @@ object TargetManager {
     /**
      * 计算任务目标进度，支持协同模式
      */
-    fun scheduleUtil(name: String, questID: String, questData: QuestData, targetData: TargetData): Int {
-        val questModule = QuestManager.getQuestModule(questID)?: return 0
+    fun scheduleUtil(name: String, questData: QuestData, targetData: TargetData): Int {
+        val questModule = QuestManager.getQuestModule(questData.questID)?: return 0
         if (questModule.modeType == ModeType.COLLABORATION && questModule.modeShareData && questData.teamData != null) {
             var schedule = 0
             for (mUUID in questData.teamData!!.members) {
                 val m = Bukkit.getPlayer(mUUID)?: continue
-                val mainData = QuestManager.getInnerQuestData(m, questID)?: continue
-                val tgData = mainData.targetsData[name]?: continue
+                val innerData = QuestManager.getInnerQuestData(m, questData.questUUID)?: continue
+                val tgData = innerData.targetsData[name]?: continue
                 schedule += tgData.schedule
             }
             return schedule

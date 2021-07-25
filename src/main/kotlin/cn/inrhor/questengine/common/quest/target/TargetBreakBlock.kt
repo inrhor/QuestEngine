@@ -47,7 +47,7 @@ object TargetBreakBlock: TargetExtend<BlockBreakEvent>() {
         if (material == breakBlock.name) {
             val targetData = questInnerData.targetsData[name]?: return false
             targetData.schedule = targetData.schedule + 1
-            val allSchedule = TargetManager.scheduleUtil(name, questData.questID, questData,targetData)
+            val allSchedule = TargetManager.scheduleUtil(name, questData, targetData)
             return RewardManager.finishReward(player, questData, questInnerData, target, amount, allSchedule)
         }
         return true
