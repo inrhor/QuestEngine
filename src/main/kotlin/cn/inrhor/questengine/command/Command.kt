@@ -9,6 +9,9 @@ class Command: BaseMainCommand() {
     @SubCommand(permission = "QuestEngine.admin.quest", description = "@COMMAND.QUEST.HANDLE")
     val quest: BaseSubCommand = QuestCommand()
 
+    @SubCommand(permission = "QuestEngine.admin.quest", description = "@COMMAND.QUEST.HANDLE")
+    val innerQuest: BaseSubCommand = QuestInnerCommand()
+
     @SubCommand(permission = "QuestEngine.admin.reload", description = "@COMMAND.RELOAD")
     val reload: BaseSubCommand = ReloadCommand()
 

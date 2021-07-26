@@ -14,6 +14,7 @@ import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.script.kether.KetherHandler
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
+import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.util.*
@@ -132,11 +133,20 @@ object QuestManager {
         acceptInnerQuest(player, questUUID, questID, nextInnerModule, false)
     }
 
-    private fun acceptInnerQuest(player: Player, questUUID: UUID, questID: String, innerQuest: QuestInnerModule, isNewQuest: Boolean) {
+    /**
+     * 接受内部任务
+     */
+    fun acceptInnerQuest(player: Player, questData: QuestData, innerQuestID: String, isNewQuest: Boolean) {
+        val questID = questData.questID
+        val innerModule = getInnerQuestModule(questID, innerQuestID) ?: return
+        acceptInnerQuest(player, questData.questUUID, questID, innerModule, isNewQuest)
+    }
+
+    private fun acceptInnerQuest(player: Player, questUUID: UUID, questID: String, innerQuestModule: QuestInnerModule, isNewQuest: Boolean) {
         val pData = DataStorage.getPlayerData(player)
         var state = QuestState.DOING
         if (isNewQuest && hasDoingInnerQuest(pData)) state = QuestState.IDLE
-        val innerQuestID = innerQuest.innerQuestID
+        val innerQuestID = innerQuestModule.innerQuestID
         val innerModule = getInnerQuestModule(questID, innerQuestID) ?: return
         val innerTargetData = getInnerModuleTargetMap(innerModule)
         val innerQuestData = QuestInnerData(questID, innerQuestID, innerTargetData, state)
@@ -205,11 +215,11 @@ object QuestManager {
      * @param state 设定任务成功与否
      * @param runFailReward 如果失败，是否执行当前内部任务失败脚本
      */
-    fun endQuest(player: Player, questUUID: UUID, questID: String, state: QuestState, runFailReward: Boolean) {
-        val questData = getQuestData(player, questUUID) ?: return
+    fun endQuest(player: Player, questData: QuestData, state: QuestState, runFailReward: Boolean) {
+        questData.state = state
         if (state == QuestState.FAILURE && runFailReward) {
             val innerQuestID = questData.questInnerData.innerQuestID
-            val failReward = getReward(questID, innerQuestID, "", state) ?: return
+            val failReward = getReward(questData.questID, innerQuestID, "", state) ?: return
             failReward.forEach {
                 KetherHandler.eval(player, it)
             }
@@ -327,7 +337,8 @@ object QuestManager {
      */
     fun quitQuest(player: Player, questID: String) {
         val uuid = player.uniqueId
-        val questData = getQuestData(uuid, questID)?: return
+        val questData = getQuestData(uuid, questID)?: return run {
+            TLocale.sendTo(player, "QUEST.NULL_QUEST_DATA", questID) }
         val questModule = getQuestModule(questID)?: return
         val questUUID = questData.questUUID
         val pData = DataStorage.getPlayerData(uuid)
@@ -351,7 +362,11 @@ object QuestManager {
         还有清空 任务数据 目标数据
      */
 
-    fun databaseRemoveInner(player: Player, questList: MutableMap<UUID, QuestData>, questUUID: UUID, questInnerData: QuestInnerData) {
+    private fun databaseRemoveQuest() {
+
+    }
+
+    private fun databaseRemoveInner(player: Player, questList: MutableMap<UUID, QuestData>, questUUID: UUID, questInnerData: QuestInnerData) {
         Database.database.removeInnerQuest(player, questUUID, questInnerData)
         questList.remove(questUUID)
     }

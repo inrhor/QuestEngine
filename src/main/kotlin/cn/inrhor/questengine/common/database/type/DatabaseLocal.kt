@@ -22,6 +22,13 @@ class DatabaseLocal: Database() {
         return YamlConfiguration.loadConfiguration(file)
     }
 
+    override fun removeQuest(player: Player, questData: QuestData) {
+        val uuid = player.uniqueId
+        val data = getLocal(uuid)
+        val questUUID = questData.questUUID
+        data.set("quest.$questUUID", null)
+    }
+
     override fun removeInnerQuest(player: Player, questUUID: UUID, questInnerData: QuestInnerData) {
         val uuid = player.uniqueId
         val data = getLocal(uuid)

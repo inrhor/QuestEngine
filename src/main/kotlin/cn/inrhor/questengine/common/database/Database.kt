@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.database
 
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
+import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
 import cn.inrhor.questengine.common.database.type.DatabaseLocal
 import cn.inrhor.questengine.common.database.type.DatabaseManager
@@ -31,7 +32,12 @@ abstract class Database {
     abstract fun push(player: Player)
 
     /**
-     * 清除内部任务数据
+     * 清除任务数据，并清除内部任务和目标任务
+     */
+    abstract fun removeQuest(player: Player, questData: QuestData)
+
+    /**
+     * 清除内部任务数据，并清除其目标数据
      */
     abstract fun removeInnerQuest(player: Player, questUUID: UUID, questInnerData: QuestInnerData)
 

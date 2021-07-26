@@ -8,7 +8,9 @@ import cn.inrhor.questengine.common.packet.PacketManager
 import cn.inrhor.questengine.common.quest.QuestFile
 import cn.inrhor.questengine.utlis.public.UseString
 import io.izzel.taboolib.module.locale.TLocale
+import io.izzel.taboolib.util.Files
 import org.bukkit.Bukkit
+import java.io.File
 import kotlin.system.measureTimeMillis
 
 class PluginLoader {
@@ -33,6 +35,10 @@ class PluginLoader {
                 DialogManager.loadDialog()
                 PacketManager.loadPacket()
                 QuestFile.loadDialog()
+                val teamChat = File(QuestEngine.plugin.dataFolder, "team/chat.yml")
+                if (!teamChat.exists()) {
+                    Files.releaseResource(QuestEngine.plugin, "team/chat.yml", true)
+                }
             }
             TLocale.sendToConsole("LOADER.TIME_COST", UseString.pluginTag, timeCost)
         })

@@ -10,7 +10,6 @@ class QuestQuit {
     fun onCommand(sender: CommandSender, args: Array<out String>) {
 
         val questID = args[1]
-        if (!QuestManager.questMap.containsKey(questID)) return
 
         val player = Bukkit.getPlayer(args[2]) ?: return run { TLocale.sendTo(sender, "PLAYER_NOT_ONLINE") }
 

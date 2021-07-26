@@ -215,6 +215,24 @@ class DatabaseSQL: Database() {
         }
     }
 
+    override fun removeQuest(player: Player, questData: QuestData) {
+        val uuid = player.uniqueId.toString()
+        val questUUID = questData.questUUID
+        tableInnerQuest.delete(
+            Where.equals("uuid", uuid),
+            Where.equals("questUUID", questUUID.toString()))
+            .run(source)
+        tableInnerQuest.delete(
+            Where.equals("uuid", uuid),
+            Where.equals("questUUID", questUUID.toString()))
+            .run(source)
+        tableTargets.delete(
+            Where.equals("uuid", uuid),
+            Where.equals("questUUID", questUUID.toString()))
+            .run(source)
+    }
+
+
     override fun removeInnerQuest(player: Player, questUUID: UUID, questInnerData: QuestInnerData) {
         val uuid = player.uniqueId.toString()
         val questID = questInnerData.questID
