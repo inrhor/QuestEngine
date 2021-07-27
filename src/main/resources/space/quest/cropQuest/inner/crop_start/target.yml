@@ -6,12 +6,26 @@ target:
     item: apple 3
     time: s 60
     reward: 1 false
+    description:
+      - "&r将 &a3 &r个苹果给予 &6测试长官"
+      - "    &r进度 &8%schedule%"
+      - "    &r剩余时间 &8%time%"
+      - ""
   2:
     name: break block
     block: stone 10
     time: minute 5
     reward: all false
+    description:
+      - "&r挖掘石块 &a3 &r个"
+      - "    &r进度 &8%schedule%"
+      - "    &r剩余时间 &8%time%"
+      - ""
   3:
     name: player die
     time: minute 1
     reward: 2 true
+    description:
+      - "&r体验舒适的天堂"
+      - "    &r进度 &8%schedule%"
+      - ""

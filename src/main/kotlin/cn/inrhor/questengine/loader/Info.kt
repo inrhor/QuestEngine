@@ -2,7 +2,7 @@ package cn.inrhor.questengine.loader
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.utlis.public.MsgUtil
-import cn.inrhor.questengine.utlis.public.UseString
+import cn.inrhor.questengine.utlis.public.UtilString
 import io.izzel.taboolib.module.locale.TLocale
 
 object Info {
@@ -28,7 +28,7 @@ object Info {
             "LOADER.INFO",
             pluginCon.name,
             pluginCon.version,
-            UseString.getLang()
+            UtilString.getLang()
         )
     }
 

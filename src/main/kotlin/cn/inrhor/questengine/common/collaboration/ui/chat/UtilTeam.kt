@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.collaboration.ui.chat
 
 import cn.inrhor.questengine.api.collaboration.TeamOpen
+import cn.inrhor.questengine.utlis.public.UtilString
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
@@ -27,15 +28,7 @@ object UtilTeam {
     }
 
     fun getStr(yaml: YamlConfiguration, node: String): String {
-        var content = ""
-        yaml.getStringList(node).forEach {
-            if (content.isEmpty()) {
-                content = it
-                return@forEach
-            }
-            content = "$content&r\n$it"
-        }
-        return content
+        return UtilString.getJsonStr(yaml.getStringList(node))
     }
 
     fun leaderName(player: Player, tData: TeamOpen): String {

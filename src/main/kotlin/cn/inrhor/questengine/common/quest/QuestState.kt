@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.quest
 
+import io.izzel.taboolib.module.locale.TLocale
 import java.util.*
 
 enum class QuestState {
@@ -29,6 +30,18 @@ object QuestStateUtil {
             QuestState.IDLE -> "IDLE"
             QuestState.FINISH -> "FINISH"
             else -> "FAILURE"
+        }
+    }
+
+    /**
+     * 状态单位
+     */
+    fun stateUnit(state: QuestState): String {
+        return when (state) {
+            QuestState.DOING -> TLocale.asString("QUEST.STATE_DOING")
+            QuestState.FAILURE -> TLocale.asString("QUEST.STATE_FAILURE")
+            QuestState.FINISH -> TLocale.asString("QUEST.STATE_FINISH")
+            else -> TLocale.asString("QUEST.STATE_IDLE")
         }
     }
 

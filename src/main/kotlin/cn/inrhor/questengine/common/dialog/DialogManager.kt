@@ -6,7 +6,7 @@ import cn.inrhor.questengine.common.dialog.animation.parser.TextParser
 import cn.inrhor.questengine.common.dialog.optional.holo.core.HoloDialog
 import cn.inrhor.questengine.script.kether.KetherHandler
 import cn.inrhor.questengine.utlis.file.GetFile
-import cn.inrhor.questengine.utlis.public.UseString
+import cn.inrhor.questengine.utlis.public.UtilString
 import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -24,7 +24,7 @@ object DialogManager {
      */
     fun register(dialogID: String, dialogModule: DialogModule) {
         if (exist(dialogID)) {
-            TLocale.sendToConsole("DIALOG.EXIST_DIALOG_ID", UseString.pluginTag, dialogID)
+            TLocale.sendToConsole("DIALOG.EXIST_DIALOG_ID", UtilString.pluginTag, dialogID)
             return
         }
         val itemContents = mutableListOf<String>()

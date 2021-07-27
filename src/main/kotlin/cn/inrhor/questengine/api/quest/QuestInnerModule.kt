@@ -8,6 +8,7 @@ class QuestInnerModule(val innerQuestID: String,
                        val nextInnerQuestID: String,
                        var questControl: QuestControl,
                        var questReward: QuestReward,
-                       var questTargetList: MutableMap<String, QuestTarget>) {
+                       var questTargetList: MutableMap<String, QuestTarget>,
+                       var description: MutableList<String>) {
 
 }

@@ -13,15 +13,23 @@ DIALOG:
   NO_EXIST_DIALOG_ID: "{0}&r &6{1} &c不存在该对话ID"
 
 QUEST:
+  TIME_S: "秒"
+  TIME_MINUTE: "分"
+  STATE_DOING: "正在进行"
+  STATE_IDLE: "闲置中"
+  STATE_FINISH: "已完成"
+  FAILURE: "失败"
   ERROR_FILE: "&7&l[ &c&li &7&l]&c 任务配置不存在或缺少键值： &r{0}"
   ALREADY_ACCEPT: "&7&l[ &c&li &7&l]&c 已接受过任务，请完成任务"
   NULL_QUEST_DATA: "&7&l[ &c&li &7&l]&c 不存在任务数据 &r{0}"
 
 PACKET:
+  NULL_PACKET_ID: "&7&l[ &c&li &7&l]&c 不存在数据包ID： &r{0}"
   ERROR_FILE: "&7&l[ &c&li &7&l]&c 数据包配置不存在或缺少键值： &r{0}"
 
 DATA:
-  NULL_DATA: "&7&l[ &c&li &7&l]&r &c你没有数据，正在为你创建或拉取数据"
+  ERROR: "&7&l[ &c&li &7&l]&r &c数据操作发生错误"
+  NULL_DATA: "&7&l[ &c&li &7&l]&r &c你没有数据，现已为你创建或拉取数据"
 
 PLAYER_NOT_ONLINE: "&7&l[ &c&li &7&l]&r &c当前玩家不在线"
 

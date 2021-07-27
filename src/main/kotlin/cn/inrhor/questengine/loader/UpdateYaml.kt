@@ -6,12 +6,23 @@ import io.izzel.taboolib.util.Files
 import java.io.File
 import java.io.FileInputStream
 
-class UpdateYaml {
-    fun run(lang : String) {
-/*        val plugin = QuestEngine.plugin
-        val langName = "lang/$lang.yml"
-        val langYaml = File(plugin.dataFolder, langName)
-        val langFile = FileInputStream(langYaml)
-        TConfigMigrate.migrate(langFile, Files.getResourceChecked(plugin, langName))*/
+object UpdateYaml {
+
+    private fun from(child : String): MutableList<String> {
+        val plugin = QuestEngine.plugin
+        val yaml = File(plugin.dataFolder, child)
+        val file = FileInputStream(yaml)
+        return TConfigMigrate.migrate(file, plugin.getResource(child))
     }
+
+    fun run(child: String) {
+        val file = File(QuestEngine.plugin.dataFolder, child)
+        Files.write(file) { w ->
+            for (line in from(child)) {
+                w.write(line)
+                w.newLine()
+            }
+        }
+    }
+
 }

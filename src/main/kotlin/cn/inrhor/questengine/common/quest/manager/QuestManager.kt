@@ -353,17 +353,15 @@ object QuestManager {
                 val m = Bukkit.getPlayer(it)?: return@forEach
                 val mQuestData = getQuestData(uuid, questID)?: return@forEach
                 databaseRemoveInner(m, mQuestList, questUUID, mQuestData.questInnerData)
+                databaseRemoveQuest(m, mQuestData)
             }
         }
         databaseRemoveInner(player, questList, questUUID, questData.questInnerData)
+        databaseRemoveQuest(player, questData)
     }
 
-    /*
-        还有清空 任务数据 目标数据
-     */
-
-    private fun databaseRemoveQuest() {
-
+    private fun databaseRemoveQuest(player: Player, questData: QuestData) {
+        Database.database.removeQuest(player, questData)
     }
 
     private fun databaseRemoveInner(player: Player, questList: MutableMap<UUID, QuestData>, questUUID: UUID, questInnerData: QuestInnerData) {

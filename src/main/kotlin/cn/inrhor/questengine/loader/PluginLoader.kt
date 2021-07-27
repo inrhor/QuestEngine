@@ -6,7 +6,7 @@ import cn.inrhor.questengine.common.dialog.DialogManager
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.common.packet.PacketManager
 import cn.inrhor.questengine.common.quest.QuestFile
-import cn.inrhor.questengine.utlis.public.UseString
+import cn.inrhor.questengine.utlis.public.UtilString
 import io.izzel.taboolib.module.locale.TLocale
 import io.izzel.taboolib.util.Files
 import org.bukkit.Bukkit
@@ -28,7 +28,7 @@ class PluginLoader {
     }
 
     private fun doLoad() {
-        UpdateYaml().run(UseString.getLang())
+        UpdateYaml.run("lang/"+UtilString.getLang()+".yml")
         Bukkit.getScheduler().runTaskAsynchronously(QuestEngine.plugin, Runnable {
             val timeCost = measureTimeMillis {
                 ItemManager.loadItem()
@@ -40,7 +40,7 @@ class PluginLoader {
                     Files.releaseResource(QuestEngine.plugin, "team/chat.yml", true)
                 }
             }
-            TLocale.sendToConsole("LOADER.TIME_COST", UseString.pluginTag, timeCost)
+            TLocale.sendToConsole("LOADER.TIME_COST", UtilString.pluginTag, timeCost)
         })
         DatabaseManager.init()
     }

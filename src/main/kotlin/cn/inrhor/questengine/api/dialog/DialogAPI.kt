@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.api.dialog
 
 import cn.inrhor.questengine.common.dialog.DialogManager
-import cn.inrhor.questengine.utlis.public.UseString
+import cn.inrhor.questengine.utlis.public.UtilString
 import io.izzel.taboolib.module.locale.TLocale
 
 object DialogAPI {
@@ -19,7 +19,7 @@ object DialogAPI {
         if (DialogManager.exist(dialogID)) {
             return DialogManager.get(dialogID)
         }
-        TLocale.sendToConsole("DIALOG.NO_EXIST_DIALOG_ID", UseString.pluginTag, dialogID)
+        TLocale.sendToConsole("DIALOG.NO_EXIST_DIALOG_ID", UtilString.pluginTag, dialogID)
         return null
     }
 

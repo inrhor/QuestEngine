@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.item
 
 import cn.inrhor.questengine.utlis.file.GetFile
-import cn.inrhor.questengine.utlis.public.UseString
+import cn.inrhor.questengine.utlis.public.UtilString
 import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
@@ -19,7 +19,7 @@ object ItemManager {
      */
     fun register(itemID: String, itemFile: ItemFile) {
         if (exist(itemID)) {
-            TLocale.sendToConsole("ITEM.EXIST_ITEM_ID", UseString.pluginTag, itemID)
+            TLocale.sendToConsole("ITEM.EXIST_ITEM_ID", UtilString.pluginTag, itemID)
             return
         }
         itemFileMap[itemID] = itemFile
@@ -41,7 +41,7 @@ object ItemManager {
     private fun checkRegItem(file: File) {
         val yaml = YamlConfiguration.loadConfiguration(file)
         if (yaml.getKeys(false).isEmpty()) {
-            TLocale.sendToConsole("ITEM.EMPTY_CONTENT", UseString.pluginTag, file.name)
+            TLocale.sendToConsole("ITEM.EMPTY_CONTENT", UtilString.pluginTag, file.name)
             return
         }
         for (itemID in yaml.getKeys(false)) {
