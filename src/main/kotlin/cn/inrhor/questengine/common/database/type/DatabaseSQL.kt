@@ -15,8 +15,6 @@ import javax.sql.DataSource
 import java.text.SimpleDateFormat
 
 
-
-
 class DatabaseSQL: Database() {
 
     val host = SQLHost(QuestEngine.config.getConfigurationSection("data.mysql"), QuestEngine.plugin, true)
@@ -136,11 +134,11 @@ class DatabaseSQL: Database() {
             }.forEach {
                 val name = it.first.first.first
                 val targetData = targetDataMap[name]?: return@forEach
-//                targetData.time = it.first.first.second
                 targetData.schedule = it.first.first.second
-                val timeDate = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(it.first.second)
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                val timeDate = dateFormat.parse(it.first.second)
                 targetData.timeDate = timeDate
-                val endTimeDate = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(it.first.second)
+                val endTimeDate = dateFormat.parse(it.first.second)
                 targetData.endTimeDate = endTimeDate
                 targetDataMap[name] = targetData
                 targetData.runTime(player, questUUID)
@@ -206,7 +204,6 @@ class DatabaseSQL: Database() {
     private fun createTarget(uuid: UUID, questUUID: UUID, questInnerData: QuestInnerData) {
         questInnerData.targetsData.forEach { (name, targetData) ->
             val innerID = questInnerData.innerQuestID
-//            val time = targetData.time
             val schedule = targetData.schedule
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             val dateStr = dateFormat.format(targetData.timeDate)
@@ -218,7 +215,6 @@ class DatabaseSQL: Database() {
     private fun updateTarget(uuid: UUID, questUUID: UUID, questInnerData: QuestInnerData) {
         questInnerData.targetsData.forEach { (name, targetData) ->
             val innerID = questInnerData.innerQuestID
-//            val time = targetData.time
             val schedule = targetData.schedule
             tableTargets.update(
                 Where.equals("uuid", uuid.toString()),
@@ -233,7 +229,7 @@ class DatabaseSQL: Database() {
     override fun removeQuest(player: Player, questData: QuestData) {
         val uuid = player.uniqueId.toString()
         val questUUID = questData.questUUID
-        tableInnerQuest.delete(
+        tableQuest.delete(
             Where.equals("uuid", uuid),
             Where.equals("questUUID", questUUID.toString()))
             .run(source)

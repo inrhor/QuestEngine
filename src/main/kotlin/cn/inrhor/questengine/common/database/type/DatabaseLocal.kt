@@ -92,7 +92,6 @@ class DatabaseLocal: Database() {
         for (name in data.getConfigurationSection(node+"targets")!!.getKeys(false)) {
             val nodeTarget = node+"targets.$name."
             val targetData = targetDataMap[name]?: continue
-//            targetData.time = data.getInt(nodeTarget+"time")
             targetData.schedule  = data.getInt(nodeTarget+"schedule")
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             val timeDate = dateFormat.parse(data.getString(nodeTarget+"timeDate"))
@@ -141,9 +140,7 @@ class DatabaseLocal: Database() {
             data.set(node+"rewards.$rewardID.has", has)
         }
         questInnerData.targetsData.forEach { (name, targetData) ->
-//            val time = targetData.time
             val schedule = targetData.schedule
-//            data.set(node+"targets.$name.time", time)
             data.set(node+"targets.$name.schedule", schedule)
             setTimeDate(data, node+"targets.$name.timeDate", targetData.timeDate)
             val endTimeDate = targetData.endTimeDate?: return@forEach
