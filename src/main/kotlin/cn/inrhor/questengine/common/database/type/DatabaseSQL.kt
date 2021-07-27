@@ -12,6 +12,10 @@ import io.izzel.taboolib.module.db.sql.query.Where
 import org.bukkit.entity.Player
 import java.util.*
 import javax.sql.DataSource
+import java.text.SimpleDateFormat
+
+
+
 
 class DatabaseSQL: Database() {
 
@@ -45,8 +49,9 @@ class DatabaseSQL: Database() {
         SQLColumnType.VARCHAR.toColumn(36, "questUUID").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(64, "name").columnOptions(SQLColumnOption.KEY),
         SQLColumnType.VARCHAR.toColumn(36, "innerQuestID").columnOptions(SQLColumnOption.KEY),
-        SQLColumnType.INT.toColumn("time").columnOptions(SQLColumnOption.KEY),
-        SQLColumnType.INT.toColumn("schedule").columnOptions(SQLColumnOption.KEY)
+        SQLColumnType.INT.toColumn("schedule").columnOptions(SQLColumnOption.KEY),
+        SQLColumnType.VARCHAR.toColumn(36, "timeDate").columnOptions(SQLColumnOption.KEY),
+        SQLColumnType.VARCHAR.toColumn(36, "endDate").columnOptions(SQLColumnOption.KEY)
     )
 
     val source: DataSource by lazy {
@@ -76,7 +81,7 @@ class DatabaseSQL: Database() {
                 val questUUID = UUID.fromString(it.first.first.first.first)
                 val questID = it.first.first.first.second
                 val innerID = it.first.first.second
-                val innerData = pullInner(uuid, questUUID, questID, innerID)
+                val innerData = pullInner(player, questUUID, questID, innerID)
                 if (innerData != null) {
                     val stateStr = it.first.second
                     val state = QuestStateUtil.strToState(stateStr)
@@ -88,7 +93,8 @@ class DatabaseSQL: Database() {
             }
     }
 
-    private fun pullInner(uuid: UUID, questUUID: UUID, questID: String, innerQuestID: String): QuestInnerData? {
+    private fun pullInner(player: Player, questUUID: UUID, questID: String, innerQuestID: String): QuestInnerData? {
+        val uuid = player.uniqueId
         tableInnerQuest.select(
             Where.equals("uuid", uuid.toString()),
             Where.equals("questUUID", questUUID.toString()),
@@ -101,8 +107,7 @@ class DatabaseSQL: Database() {
                 it.getString("state") to it.getString("rewards")
             }.forEach {
                 val innerModule = QuestManager.getInnerQuestModule(questID, innerQuestID)?: return@forEach
-                val targets = returnTargets(
-                    uuid, questUUID, innerQuestID,
+                val targets = returnTargets(player, questUUID, innerQuestID,
                     QuestManager.getInnerModuleTargetMap(innerModule)
                 )
                 val stateStr = it.first
@@ -114,23 +119,31 @@ class DatabaseSQL: Database() {
         return null
     }
 
-    private fun returnTargets(uuid: UUID, questUUID: UUID, innerQuestID: String,
+    private fun returnTargets(player: Player, questUUID: UUID, innerQuestID: String,
                               targetDataMap: MutableMap<String, TargetData>): MutableMap<String, TargetData> {
+        val uuid = player.uniqueId
         tableTargets.select(
             Where.equals("uuid", uuid.toString()),
             Where.equals("questUUID", questUUID.toString()),
             Where.equals("innerQuestID", innerQuestID))
             .row("name")
-            .row("time")
             .row("schedule")
+            .row("timeDate")
+            .row("endDate")
             .to(source)
             .map {
-                it.getString("name") to it.getInt("time") to it.getInt("schedule")
+                it.getString("name") to it.getInt("schedule") to it.getString("timeDate") to it.getString("endDate")
             }.forEach {
-                val name = it.first.first
+                val name = it.first.first.first
                 val targetData = targetDataMap[name]?: return@forEach
-                targetData.time = it.first.second
-                targetData.schedule = it.second
+//                targetData.time = it.first.first.second
+                targetData.schedule = it.first.first.second
+                val timeDate = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(it.first.second)
+                targetData.timeDate = timeDate
+                val endTimeDate = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(it.first.second)
+                targetData.endTimeDate = endTimeDate
+                targetDataMap[name] = targetData
+                targetData.runTime(player, questUUID)
             }
         return targetDataMap
     }
@@ -190,26 +203,28 @@ class DatabaseSQL: Database() {
         createTarget(uuid, questUUID, questInnerData)
     }
 
-    private fun createTarget(uuid: UUID, questUUID: UUID, openData: QuestInnerData) {
-        openData.targetsData.forEach { (name, targetData) ->
-            val innerID = openData.innerQuestID
-            val time = targetData.time
+    private fun createTarget(uuid: UUID, questUUID: UUID, questInnerData: QuestInnerData) {
+        questInnerData.targetsData.forEach { (name, targetData) ->
+            val innerID = questInnerData.innerQuestID
+//            val time = targetData.time
             val schedule = targetData.schedule
-            tableTargets.insert(uuid.toString(), questUUID.toString(), name, innerID, time, schedule).run(source)
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            val dateStr = dateFormat.format(targetData.timeDate)
+            val endDateStr = dateFormat.format(targetData.endTimeDate)
+            tableTargets.insert(uuid.toString(), questUUID.toString(), name, innerID, schedule, dateStr, endDateStr).run(source)
         }
     }
 
     private fun updateTarget(uuid: UUID, questUUID: UUID, questInnerData: QuestInnerData) {
         questInnerData.targetsData.forEach { (name, targetData) ->
             val innerID = questInnerData.innerQuestID
-            val time = targetData.time
+//            val time = targetData.time
             val schedule = targetData.schedule
             tableTargets.update(
                 Where.equals("uuid", uuid.toString()),
                 Where.equals("questUUID", questUUID.toString()),
                 Where.equals("name", name),
                 Where.equals("innerQuestID", innerID))
-                .set("time", time)
                 .set("schedule", schedule)
                 .run(source)
         }

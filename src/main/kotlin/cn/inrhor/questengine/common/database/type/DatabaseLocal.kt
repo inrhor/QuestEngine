@@ -10,6 +10,7 @@ import cn.inrhor.questengine.common.quest.QuestStateUtil
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import java.io.File
+import java.text.SimpleDateFormat
 import java.util.*
 
 class DatabaseLocal: Database() {
@@ -40,19 +41,19 @@ class DatabaseLocal: Database() {
 
         quest:
             UUID:
-                questID:
-                    state: DOING
-                    finishedQuest: []
-                    innerQuest:
-                        innerQuestID:
-                            state: DOING
-                            targets:
-                                "name":
-                                    time: -1
-                                    schedule: 0
-                            rewards:
-                                rewardID:
-                                    has: false
+                questID: ""
+                state: DOING
+                finishedQuest: []
+                innerQuest:
+                    innerQuestID:
+                        state: DOING
+                        targets:
+                            "name":
+                            time: -1
+                            schedule: 0
+                        rewards:
+                            rewardID:
+                            has: false
 
      */
     override fun pull(player: Player) {
@@ -62,13 +63,16 @@ class DatabaseLocal: Database() {
         if (data.contains("quest")) {
             data.getConfigurationSection("quest")!!.getKeys(false).forEach {
                 val node = "quest.$it."
-                val questID = it
+                val questUUid = UUID.fromString(it)
+                val questID = data.getString(node+"questID")?: return@forEach
 
                 val nodeInner = node+"innerQuest."
                 val innerQuestID = data.getString(nodeInner+"innerQuestID")?: return@forEach
                 val innerState = QuestStateUtil.strToState(data.getString(nodeInner+"state")?: "IDLE")
                 val innerModule = QuestManager.getInnerQuestModule(questID, innerQuestID)?: return
-                val innerTargetDataMap = returnTargetData(data, nodeInner, QuestManager.getInnerModuleTargetMap(innerModule))
+                val innerTargetDataMap = returnTargets(
+                    player, questUUid,
+                    data, nodeInner, QuestManager.getInnerModuleTargetMap(innerModule))
 
                 val finished = data.getStringList(node+"finishedQuest")
 
@@ -84,14 +88,19 @@ class DatabaseLocal: Database() {
         DataStorage.getPlayerData(uuid).questDataList = questDataMap
     }
 
-    private fun returnTargetData(data: YamlConfiguration, node: String, targetDataMap: MutableMap<String, TargetData>): MutableMap<String, TargetData> {
+    private fun returnTargets(player: Player, questUUID: UUID, data: YamlConfiguration, node: String, targetDataMap: MutableMap<String, TargetData>): MutableMap<String, TargetData> {
         for (name in data.getConfigurationSection(node+"targets")!!.getKeys(false)) {
             val nodeTarget = node+"targets.$name."
-            val time = data.getInt(nodeTarget+"time")
-            val scheduleMain = data.getInt(nodeTarget+"schedule")
             val targetData = targetDataMap[name]?: continue
-            targetData.time = time
-            targetData.schedule = scheduleMain
+//            targetData.time = data.getInt(nodeTarget+"time")
+            targetData.schedule  = data.getInt(nodeTarget+"schedule")
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            val timeDate = dateFormat.parse(data.getString(nodeTarget+"timeDate"))
+            targetData.timeDate = timeDate
+            val endTimeDate = dateFormat.parse(data.getString(nodeTarget+"endTimeDate"))
+            targetData.endTimeDate = endTimeDate
+            targetDataMap[name] = targetData
+            targetData.runTime(player, questUUID)
         }
         return targetDataMap
     }
@@ -114,12 +123,13 @@ class DatabaseLocal: Database() {
         pData.questDataList.forEach { (questUUID, questData) ->
             val state = QuestStateUtil.stateToStr(questData.state)
             val node = "quest.$questUUID."
+            data.set(node+"questID", questData.questID)
             data.set(node+"state", state)
             val finishedMain = questData.finishedList
             data.set(node+"finishedMainQuest", finishedMain)
             val innerData = questData.questInnerData
             val innerID = innerData.innerQuestID
-            pushData(data, node+"main.$innerID.", innerData)
+            pushData(data, node+"innerQuest.$innerID.", innerData)
         }
         data.save(file)
     }
@@ -131,11 +141,21 @@ class DatabaseLocal: Database() {
             data.set(node+"rewards.$rewardID.has", has)
         }
         questInnerData.targetsData.forEach { (name, targetData) ->
-            val time = targetData.time
+//            val time = targetData.time
             val schedule = targetData.schedule
-            data.set(node+"targets.$name.time", time)
+//            data.set(node+"targets.$name.time", time)
             data.set(node+"targets.$name.schedule", schedule)
+            setTimeDate(data, node+"targets.$name.timeDate", targetData.timeDate)
+            val endTimeDate = targetData.endTimeDate?: return@forEach
+            setTimeDate(data, node + "targets.$name.endTimeDate", endTimeDate)
         }
     }
 
+    private fun setTimeDate(data: YamlConfiguration, timeNode: String, date: Date) {
+        if (!data.contains(timeNode)) {
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            val dateStr = dateFormat.format(date)
+            data.set("$timeNode.timeDate", dateStr)
+        }
+    }
 }

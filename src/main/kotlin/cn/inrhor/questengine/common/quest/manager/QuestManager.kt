@@ -14,6 +14,8 @@ import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.script.kether.KetherHandler
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
+import cn.inrhor.questengine.utlis.public.UtilString
+import cn.inrhor.questengine.utlis.time.TimeUtil
 import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -148,8 +150,27 @@ object QuestManager {
         if (isNewQuest && hasDoingInnerQuest(pData)) state = QuestState.IDLE
         val innerQuestID = innerQuestModule.innerQuestID
         val innerModule = getInnerQuestModule(questID, innerQuestID) ?: return
-        val innerTargetData = getInnerModuleTargetMap(innerModule)
-        val innerQuestData = QuestInnerData(questID, innerQuestID, innerTargetData, state)
+        val targetDataMap = mutableMapOf<String, TargetData>()
+        innerModule.questTargetList.forEach { (name, target) ->
+            val timeStr = target.time.lowercase(Locale.getDefault())
+            val nowDate = Date()
+            var endTime: Date? = null
+            var timeUnit = "s"
+            if (timeStr != "always") {
+                val timeSpit = timeStr.split(" ")
+                timeUnit = timeSpit[0]
+                val time = timeSpit[1].toInt()
+                when (timeUnit) {
+                    "minute" -> endTime = TimeUtil.addDate(nowDate, Calendar.MINUTE, time)
+                    "s" -> endTime = TimeUtil.addDate(nowDate, Calendar.SECOND, time)
+                }
+            }
+
+            val targetData = TargetData(name, timeUnit, 0, target, nowDate, endTime)
+            targetData.runTime(player, questUUID)
+            targetDataMap[name] = targetData
+        }
+        val innerQuestData = QuestInnerData(questID, innerQuestID, targetDataMap, state)
         val questData = QuestData(questUUID, questID, innerQuestData, state, pData.teamData, mutableListOf())
         pData.questDataList[questUUID] = questData
         saveControl(player, pData, innerQuestData)
@@ -224,6 +245,18 @@ object QuestManager {
                 KetherHandler.eval(player, it)
             }
         }
+    }
+
+    /**
+     * 结束任务，最终结束
+     * 成功脚本在目标完成时运行
+     *
+     * @param state 设定任务成功与否
+     * @param runFailReward 如果失败，是否执行当前内部任务失败脚本
+     */
+    fun endQuest(player: Player, questUUID: UUID, state: QuestState, runFailReward: Boolean) {
+        val questData = getQuestData(player, questUUID)?: return
+        endQuest(player, questData, state, runFailReward)
     }
 
     /**
@@ -311,8 +344,9 @@ object QuestManager {
      */
     fun getInnerModuleTargetMap(innerModule: QuestInnerModule): MutableMap<String, TargetData> {
         val targetDataMap = mutableMapOf<String, TargetData>()
+        val date = Date()
         innerModule.questTargetList.forEach { (name, questTarget) ->
-            val targetData = TargetData(name, 0, 0, questTarget)
+            val targetData = TargetData(name, TimeUtil.timeUnit(questTarget), 0, questTarget, date, null)
             targetDataMap[name] = targetData
         }
         return targetDataMap

@@ -15,6 +15,8 @@ DIALOG:
 QUEST:
   TIME_S: "秒"
   TIME_MINUTE: "分"
+  TIME_HOUR: "时"
+  TIME_DAY: "天"
   STATE_DOING: "正在进行"
   STATE_IDLE: "闲置中"
   STATE_FINISH: "已完成"

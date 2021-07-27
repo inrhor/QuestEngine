@@ -1,9 +1,9 @@
 package cn.inrhor.questengine.common.quest.ui.chat
 
 import cn.inrhor.questengine.common.quest.QuestStateUtil
-import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.utlis.public.UtilString
+import cn.inrhor.questengine.utlis.time.TimeUtil
 import io.izzel.taboolib.module.locale.TLocale
 import io.izzel.taboolib.module.tellraw.TellrawJson
 import org.bukkit.entity.Player
@@ -33,24 +33,18 @@ object QuestChat {
 
         innerModule.questTargetList.forEach { (name, target) ->
             val tData = innerData.targetsData[name]?: return@forEach
-            val time = tData.time.toString()
+            var time = "null"
+            val endDate = tData.endTimeDate
+            if (endDate != null) {
+                time = TimeUtil.remainDate(endDate)
+            }
             val tds = UtilString.getJsonStr(target.description)
                 .replace("%schedule%", tData.schedule.toString(), true)
-                .replace("%time%", time+" "+timeUnit(target), true)
+                .replace("%time%", time, true)
             TellrawJson.create()
                 .append(TLocale.Translate.setColored(tds))
                 .send(player)
         }
-    }
-
-    /**
-     * 时间单位
-     */
-    fun timeUnit(target: QuestTarget): String {
-        when (target.time.lowercase(Locale.getDefault())) {
-            "minute" -> return TLocale.asString("QUEST.TIME_MINUTE")
-        }
-        return TLocale.asString("QUEST.TIME_S")
     }
 
 }
