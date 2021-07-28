@@ -67,17 +67,11 @@ class DatabaseLocal: Database() {
                 val questID = data.getString(node+"questID")?: return@forEach
 
                 val nodeInner = node+"innerQuest."
-                val innerQuestID = data.getString(nodeInner+"innerQuestID")?: return@forEach
-                val innerState = QuestStateUtil.strToState(data.getString(nodeInner+"state")?: "IDLE")
-                val innerModule = QuestManager.getInnerQuestModule(questID, innerQuestID)?: return
-                val innerTargetDataMap = returnTargets(
-                    player, questUUid,
-                    data, nodeInner, QuestManager.getInnerModuleTargetMap(innerModule))
+
+                val innerQuestID = data.getString(node+"innerQuestID")?: return@forEach
+                val questInnerData = getInnerQuestData(data, nodeInner, player, questUUid, questID, innerQuestID)?: return@forEach
 
                 val finished = data.getStringList(node+"finishedQuest")
-
-                val rewardInner = returnRewardData(data, nodeInner)
-                val questInnerData = QuestInnerData(questID, innerQuestID, innerTargetDataMap, innerState, rewardInner)
 
                 val state = QuestStateUtil.strToState(data.getString(node+"state")?: "IDLE")
 
@@ -86,6 +80,23 @@ class DatabaseLocal: Database() {
             }
         }
         DataStorage.getPlayerData(uuid).questDataList = questDataMap
+    }
+
+    override fun getInnerQuestData(player: Player, questUUID: UUID, questID: String, innerQuestID: String): QuestInnerData? {
+        val uuid = player.uniqueId
+        val data = getLocal(uuid)
+        val node = "quest.$questUUID.innerQuest."
+        return getInnerQuestData(data, node, player, questUUID, questID, innerQuestID)
+    }
+
+    private fun getInnerQuestData(data: YamlConfiguration, node: String, player: Player, questUUID: UUID, questID: String, innerQuestID: String): QuestInnerData? {
+        val rewardInner = returnRewardData(data, node)
+        val innerState = QuestStateUtil.strToState(data.getString(node+"state")?: "IDLE")
+        val innerModule = QuestManager.getInnerQuestModule(questID, innerQuestID)?: return null
+        val innerTargetDataMap = returnTargets(
+            player, questUUID,
+            data, node, QuestManager.getInnerModuleTargetMap(innerModule))
+        return QuestInnerData(questID, innerQuestID, innerTargetDataMap, innerState, rewardInner)
     }
 
     private fun returnTargets(player: Player, questUUID: UUID, data: YamlConfiguration, node: String, targetDataMap: MutableMap<String, TargetData>): MutableMap<String, TargetData> {

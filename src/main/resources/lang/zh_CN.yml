@@ -21,6 +21,8 @@ QUEST:
   STATE_IDLE: "闲置中"
   STATE_FINISH: "已完成"
   FAILURE: "失败"
+  NOT_ACCEPT: "未接受"
+  ALWAYS: "不限时"
   ERROR_FILE: "&7&l[ &c&li &7&l]&c 任务配置不存在或缺少键值： &r{0}"
   ALREADY_ACCEPT: "&7&l[ &c&li &7&l]&c 已接受过任务，请完成任务"
   NULL_QUEST_DATA: "&7&l[ &c&li &7&l]&c 不存在任务数据 &r{0}"

@@ -312,6 +312,14 @@ object QuestManager {
     }
 
     /**
+     * 获得玩家内部任务数据
+     */
+    fun getInnerQuestData(player: Player, questUUID: UUID, innerQuestID: String): QuestInnerData? {
+        val questData = getQuestData(player, questUUID) ?: return null
+        return Database.database.getInnerQuestData(player, questUUID, questData.questID, innerQuestID)
+    }
+
+    /**
      * 得到奖励脚本，成功与否
      * 成功的一般是在目标完成时得到
      */

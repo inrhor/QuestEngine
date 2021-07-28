@@ -79,7 +79,7 @@ class DatabaseSQL: Database() {
                 val questUUID = UUID.fromString(it.first.first.first.first)
                 val questID = it.first.first.first.second
                 val innerID = it.first.first.second
-                val innerData = pullInner(player, questUUID, questID, innerID)
+                val innerData = getInnerQuestData(player, questUUID, questID, innerID)
                 if (innerData != null) {
                     val stateStr = it.first.second
                     val state = QuestStateUtil.strToState(stateStr)
@@ -91,7 +91,7 @@ class DatabaseSQL: Database() {
             }
     }
 
-    private fun pullInner(player: Player, questUUID: UUID, questID: String, innerQuestID: String): QuestInnerData? {
+    override fun getInnerQuestData(player: Player, questUUID: UUID, questID: String, innerQuestID: String): QuestInnerData? {
         val uuid = player.uniqueId
         tableInnerQuest.select(
             Where.equals("uuid", uuid.toString()),
