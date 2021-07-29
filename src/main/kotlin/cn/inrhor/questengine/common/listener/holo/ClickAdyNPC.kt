@@ -8,11 +8,8 @@ import io.izzel.taboolib.module.inject.TListener
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 
-
-
-
-@TListener(depend = ["Adyeshach"], condition = "isAdyesNPC")
-class ClickAdyesNPC: Listener {
+@TListener(depend = ["Adyeshach"], condition = "isAdyNPC")
+class ClickAdyNPC: Listener {
 
     @EventHandler
     fun rightClickNPC(ev: AdyeshachEntityInteractEvent) {
@@ -33,5 +30,5 @@ class ClickAdyesNPC: Listener {
         DialogManager.sendDialogHolo(mutableSetOf(player), npcID, npcLoc)
     }
 
-    fun isAdyesNPC() = (QuestEngine.config.getString("dialog.npcPlugin") == "Adyeshach")
+    fun isAdyNPC() = (QuestEngine.config.getString("dialog.npcPlugin") == "Adyeshach")
 }

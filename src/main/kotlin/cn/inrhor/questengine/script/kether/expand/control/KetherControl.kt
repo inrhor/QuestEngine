@@ -37,7 +37,7 @@ class KetherControl {
      * wait type time to questID mainQuestID
      */
     companion object {
-        @KetherParser(["wait"])
+        @KetherParser(["wait"], namespace = "QuestEngine")
         fun parser() = ScriptParser.parser {
             when (it.expects("s", "minute")) {
                 "s" -> {

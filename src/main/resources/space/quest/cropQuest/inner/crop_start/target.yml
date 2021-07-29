@@ -1,9 +1,9 @@
 target:
   1:
-    name: give adych item
-    adych:
+    name: give ady item
+    id:
       - test
-    item: apple 3
+    item: "minecraft:stone;amount:5"
     time: s 60
     reward: 1 false
     description:

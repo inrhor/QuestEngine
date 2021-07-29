@@ -68,7 +68,7 @@ class KetherPacket {
     }
 
     companion object {
-        @KetherParser(["packet"])
+        @KetherParser(["packet"], namespace = "QuestEngine")
         fun parser() = ScriptParser.parser {
             when (it.expects("send", "remove")) {
                 "send" -> SendPacket(

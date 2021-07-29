@@ -4,7 +4,6 @@ import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.common.quest.manager.QuestManager
-import cn.inrhor.questengine.utlis.public.MsgUtil
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
@@ -25,10 +24,8 @@ class TargetData(val name: String, var timeUnit: String,
                 }
                 val now = Date()
                 val between = endTimeDate!!.time - now.time
-                MsgUtil.send("between $between")
                 if (between <= 0) {
                     QuestManager.endQuest(player, questUUID, QuestState.FAILURE, true)
-                    MsgUtil.send("end Quest")
                     cancel(); return
                 }
             }

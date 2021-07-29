@@ -16,16 +16,24 @@ object RewardManager {
      */
     fun finishReward(player: Player, questData: QuestData, questInnerData: QuestInnerData, target: QuestTarget, amount: Int, schedule: Int): Boolean {
         if (schedule >= amount) {
-            val questID = questData.questID
-            if (QuestManager.getQuestMode(questID) == ModeType.COLLABORATION) {
-                val team = questData.teamData ?: return false
-                for (mUUID in team.members) {
-                    val m = Bukkit.getPlayer(mUUID)?: continue
-                    finishReward(m, questInnerData, target)
-                }
-            }else {
-                finishReward(player, questInnerData, target)
+            finishReward(player, questData, questInnerData, target)
+        }
+        return true
+    }
+
+    /**
+     * 直接触发奖励
+     */
+    fun finishReward(player: Player, questData: QuestData, questInnerData: QuestInnerData, target: QuestTarget): Boolean {
+        val questID = questData.questID
+        if (QuestManager.getQuestMode(questID) == ModeType.COLLABORATION) {
+            val team = questData.teamData ?: return false
+            for (mUUID in team.members) {
+                val m = Bukkit.getPlayer(mUUID)?: continue
+                finishReward(m, questInnerData, target)
             }
+        }else {
+            finishReward(player, questInnerData, target)
         }
         return true
     }

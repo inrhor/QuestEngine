@@ -22,15 +22,13 @@ object QuestLoader {
     }
 
     fun <T : Event> TargetExtend<T>.register() {
-        if (isListener) {
-            SingleListener.listen(event.java, priority, ignoreCancelled) { e ->
-                tasker(e)?.run {
-                    TargetManager.targetMap.values.forEach {
-                        if (isAsync) {
-                            if (!it.check()) return@forEach
-                        }else {
-                            if (!it.check()) return@forEach
-                        }
+        SingleListener.listen(event.java, priority, ignoreCancelled) { e ->
+            tasker(e)?.run {
+                TargetManager.targetMap.values.forEach {
+                    if (isAsync) {
+                        if (!it.check()) return@forEach
+                    }else {
+                        if (!it.check()) return@forEach
                     }
                 }
             }

@@ -28,11 +28,6 @@ abstract class TargetExtend<E: Event> {
     open val ignoreCancelled = true
 
     /**
-     * 是否注册事件
-     */
-    open val isListener = true
-
-    /**
      * 是否异步执行
      */
     open val isAsync = false

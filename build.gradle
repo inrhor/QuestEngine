@@ -7,9 +7,6 @@ plugins {
 group = 'cn.inrhor.questengine'
 version = '1.0.0-Alpha1'
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
-
 taboolib {
     tabooLibVersion = '5.7.2'
     loaderVersion = '3.0.4'
