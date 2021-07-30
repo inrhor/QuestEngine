@@ -19,7 +19,7 @@ object DialogAPI {
         if (DialogManager.exist(dialogID)) {
             return DialogManager.get(dialogID)
         }
-        TLocale.sendToConsole("DIALOG.NO_EXIST_DIALOG_ID", UtilString.pluginTag, dialogID)
+        console().sendLang("DIALOG.NO_EXIST_DIALOG_ID", UtilString.pluginTag, dialogID)
         return null
     }
 

@@ -1,8 +1,8 @@
 package cn.inrhor.questengine.common.database.data
 
-import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import taboolib.platform.util.sendLang
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -25,7 +25,7 @@ object DataStorage {
         var pData = playerDataStorage[uuid]
         if (pData == null) {
             pData = PlayerData(uuid)
-            TLocale.sendTo(Bukkit.getPlayer(uuid)!!, "DATA.NULL_DATA")
+            Bukkit.getPlayer(uuid)!!.sendLang("DATA.NULL_DATA")
         }
         return pData
     }

@@ -17,8 +17,4 @@ object DatabaseManager {
         }
     }
 
-    fun pull() {
-
-    }
-
 }

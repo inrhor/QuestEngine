@@ -5,9 +5,9 @@ import java.util.*
 
 object UtilString {
 
-    fun getLang() = QuestEngine.config.getString("setting.lang")!!
+    fun updateLang(): MutableList<String> = QuestEngine.config.getStringList("update.lang")
 
-    val pluginTag = "&7&l[ &c&li &7&l]&7&l[ &3&lQuestEngine &7&l]"
+    const val pluginTag = "&7&l[ &c&li &7&l]&7&l[ &3&lQuestEngine &7&l]"
 
     fun getJsonStr(list: MutableList<String>): String {
         var content = ""

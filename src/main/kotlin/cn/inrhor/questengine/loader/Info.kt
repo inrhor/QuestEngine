@@ -1,9 +1,10 @@
 package cn.inrhor.questengine.loader
 
 import cn.inrhor.questengine.QuestEngine
-import cn.inrhor.questengine.utlis.public.MsgUtil
 import cn.inrhor.questengine.utlis.public.UtilString
-import io.izzel.taboolib.module.locale.TLocale
+import taboolib.common.platform.console
+import taboolib.common.platform.info
+import taboolib.module.lang.sendLang
 
 object Info {
 
@@ -19,16 +20,15 @@ object Info {
             "                                          |___/              "
         )
         for (s in logo) {
-            MsgUtil.send(s)
+            info(s)
         }
 
         val pluginCon = QuestEngine.plugin.description
 
-        TLocale.sendToConsole(
+        console().sendLang(
             "LOADER.INFO",
             pluginCon.name,
-            pluginCon.version,
-            UtilString.getLang()
+            pluginCon.version
         )
     }
 

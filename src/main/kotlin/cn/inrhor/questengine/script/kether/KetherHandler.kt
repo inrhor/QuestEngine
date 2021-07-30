@@ -1,53 +1,32 @@
 package cn.inrhor.questengine.script.kether
 
 import cn.inrhor.questengine.common.dialog.animation.text.type.TextWrite
-import cn.inrhor.questengine.script.kether.expand.KetherFixedLocation
-import cn.inrhor.questengine.script.kether.expand.KetherHitBox
 import cn.inrhor.questengine.utlis.location.FixedLocation
-import cn.inrhor.questengine.script.kether.expand.KetherTextWrite
-import cn.inrhor.questengine.script.kether.expand.KetherIItemNormal
 import cn.inrhor.questengine.utlis.location.FixedHoloHitBox
-import io.izzel.taboolib.kotlin.kether.Kether
-import io.izzel.taboolib.kotlin.kether.KetherShell
-import io.izzel.taboolib.kotlin.kether.common.api.QuestActionParser
-import io.izzel.taboolib.module.inject.TFunction
 import org.bukkit.entity.Player
-import java.util.concurrent.TimeUnit
+import taboolib.common.platform.adaptPlayer
+import taboolib.module.kether.KetherShell
 
 object KetherHandler {
-    @TFunction.Init
-    fun init() {
-        val addAction: (QuestActionParser, String) -> Unit = { parser, name ->
-            Kether.addAction(name, parser, "QuestEngine")
+
+    fun eval(player: Player, script: String): Any {
+        return KetherShell.eval(script, namespace = listOf("QuestEngine")) {
+            sender = adaptPlayer(player)
         }
-
-        addAction(KetherIItemNormal.parser(), "itemNormal")
-        addAction(KetherFixedLocation.parser(), "initLoc")
-        addAction(KetherFixedLocation.parser(), "addLoc")
-        addAction(KetherTextWrite.parser(), "textWrite")
-        addAction(KetherHitBox.parser(), "hitBox")
     }
 
-    fun eval(player: Player, script: String): Any? {
+    fun eval(player: Player, script: MutableList<String>): Any {
         return KetherShell.eval(script, namespace = listOf("QuestEngine")) {
-            this.sender = player
-        }.get(1, TimeUnit.SECONDS)
+            sender = adaptPlayer(player)
+        }
     }
 
-    fun eval(player: Player, script: MutableList<String>): Any? {
-        return KetherShell.eval(script, namespace = listOf("QuestEngine")) {
-            this.sender = player
-        }.get(1, TimeUnit.SECONDS)
-    }
-
-    fun eval(script: String): Any? {
+    fun eval(script: String): Any {
         return KetherShell.eval(script, namespace = listOf("QuestEngine"))
-            .get(1, TimeUnit.SECONDS)
     }
 
-    fun eval(script: MutableList<String>): Any? {
+    fun eval(script: MutableList<String>): Any {
         return KetherShell.eval(script, namespace = listOf("QuestEngine"))
-            .get(1, TimeUnit.SECONDS)
     }
 
     fun evalBoolean(player: Player, script: String): Boolean {

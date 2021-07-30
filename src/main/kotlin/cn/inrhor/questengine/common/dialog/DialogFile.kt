@@ -15,19 +15,19 @@ object DialogFile {
     fun checkRegDialog(file: File) {
         val yaml = YamlConfiguration.loadConfiguration(file)
         if (yaml.getKeys(false).isEmpty()) {
-            TLocale.sendToConsole("DIALOG.EMPTY_CONTENT", UtilString.pluginTag, file.name)
+            console().sendLang("DIALOG.EMPTY_CONTENT", UtilString.pluginTag, file.name)
             return
         }
         for (dialogID in yaml.getKeys(false)) {
             val cfs = yaml.getConfigurationSection(dialogID)!!
             if (!cfs.contains("npcIDs")) {
                 return run {
-                    TLocale.sendToConsole("DIALOG.ERROR_FILE", dialogID)
+                    console().sendLang("DIALOG.ERROR_FILE", dialogID)
                 }
             }
             if (!cfs.contains("condition")) {
                 return run {
-                    TLocale.sendToConsole("DIALOG.ERROR_FILE", dialogID)
+                    console().sendLang("DIALOG.ERROR_FILE", dialogID)
                 }
             }
 

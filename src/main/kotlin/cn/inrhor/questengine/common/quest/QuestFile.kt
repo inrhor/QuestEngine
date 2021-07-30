@@ -5,9 +5,10 @@ import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.api.quest.QuestModule
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.utlis.file.GetFile
-import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
+import taboolib.common.platform.console
+import taboolib.module.lang.sendLang
 import java.io.File
 
 object QuestFile {
@@ -29,7 +30,7 @@ object QuestFile {
         if (!settingFile.exists()) return
         val setting = yaml(settingFile)
         val questID = setting.getString("questID")?: return run {
-            TLocale.sendToConsole("QUEST.ERROR_FILE")
+            console().sendLang("QUEST.ERROR_FILE")
         }
         val name = setting.getString("name")?: "test"
         val startID = setting.getString("startInnerQuestID")?: "test"
@@ -51,12 +52,12 @@ object QuestFile {
 
         val innerFolder = GetFile.getFile("space/quest/"+file.name+"/inner")
         val lists = innerFolder.listFiles()?: return run {
-            TLocale.sendToConsole("QUEST.ERROR_FILE", questID)
+            console().sendLang("QUEST.ERROR_FILE", questID)
         }
         lists.forEach {
             val optionFile = file(it, "option.yml")
             if (!optionFile.exists()) return run {
-                TLocale.sendToConsole("QUEST.ERROR_FILE", questID)
+                console().sendLang("QUEST.ERROR_FILE", questID)
             }
             innerQuestList.add(innerQuest(it, questID))
         }

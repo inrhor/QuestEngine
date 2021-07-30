@@ -2,7 +2,10 @@ package cn.inrhor.questengine.utlis.time
 
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.quest.QuestTarget
-import io.izzel.taboolib.module.locale.TLocale
+import org.bukkit.entity.Player
+import taboolib.common.platform.console
+import taboolib.module.lang.asLangText
+import taboolib.platform.util.asLangText
 import java.util.*
 import java.util.Calendar
 
@@ -20,8 +23,8 @@ object TimeUtil {
      */
     fun timeUnitLang(targetData: TargetData): String {
         when (targetData.timeUnit.lowercase(Locale.getDefault())) {
-            "s" -> return TLocale.asString("QUEST.TIME_S")
-            "minute" -> return TLocale.asString("QUEST.TIME_MINUTE")
+            "s" -> return console().asLangText("QUEST.TIME_S")
+            "minute" -> return console().asLangText("QUEST.TIME_MINUTE")
         }
         return ""
     }
@@ -37,17 +40,17 @@ object TimeUtil {
         return str.split(" ")[0]
     }
 
-    fun remainDate(future: Date): String {
+    fun remainDate(player: Player, future: Date): String {
         val nowDate = Date()
         val i = future.time - nowDate.time
         val day = i / (24 * 60 * 60 * 1000)
         val hour = i / (60 * 60 * 1000) - day * 24
         val minute = i / (60 * 1000) - day * 24 * 60 - hour * 60
         val second = i / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - minute * 60
-        val d = TLocale.asString("QUEST.TIME_DAY")
-        val h = TLocale.asString("QUEST.TIME_HOUR")
-        val m = TLocale.asString("QUEST.TIME_MINUTE")
-        val s = TLocale.asString("QUEST.TIME_S")
+        val d = player.asLangText("QUEST.TIME_DAY")
+        val h = player.asLangText("QUEST.TIME_HOUR")
+        val m = player.asLangText("QUEST.TIME_MINUTE")
+        val s = player.asLangText("QUEST.TIME_S")
         return "$day$d$hour$h$minute$m$second$s"
     }
 

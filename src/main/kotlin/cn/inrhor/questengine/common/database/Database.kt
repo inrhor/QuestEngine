@@ -8,15 +8,14 @@ import cn.inrhor.questengine.common.database.type.DatabaseLocal
 import cn.inrhor.questengine.common.database.type.DatabaseManager
 import cn.inrhor.questengine.common.database.type.DatabaseSQL
 import cn.inrhor.questengine.common.database.type.DatabaseType
-import io.izzel.taboolib.module.inject.TFunction
-import io.izzel.taboolib.module.inject.TListener
-import io.izzel.taboolib.module.inject.TSchedule
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import taboolib.common.LifeCycle
+import taboolib.common.platform.Awake
+import taboolib.common.platform.SubscribeEvent
+import taboolib.common.platform.submit
 import java.util.*
 
 abstract class Database {
@@ -46,8 +45,7 @@ abstract class Database {
      */
     abstract fun removeInnerQuest(player: Player, questUUID: UUID, questInnerData: QuestInnerData)
 
-    @TListener
-    companion object : Listener {
+    companion object {
 
         val database: Database by lazy {
             when (DatabaseManager.type) {
@@ -56,7 +54,7 @@ abstract class Database {
             }
         }
 
-        @EventHandler
+        @SubscribeEvent
         fun join(ev: PlayerJoinEvent) {
             val uuid = ev.player.uniqueId
             val pData = PlayerData(uuid)
@@ -64,21 +62,22 @@ abstract class Database {
             database.pull(ev.player)
         }
 
-        @EventHandler
+        @SubscribeEvent
         fun quit(ev: PlayerQuitEvent) {
             database.push(ev.player)
             val uuid = ev.player.uniqueId
             DataStorage.removePlayerData(uuid)
         }
 
-        @TFunction.Cancel
+        @Awake(LifeCycle.DISABLE)
         private fun cancel() {
             pushAll()
         }
 
-        @TSchedule(period = 100, async = true)
         fun updateDatabase() {
-            pushAll()
+            submit(now = true, async = true, delay = 100) {
+                pushAll()
+            }
         }
 
         private fun pushAll() {

@@ -1,28 +1,28 @@
 package cn.inrhor.questengine.loader
 
 import cn.inrhor.questengine.QuestEngine
-import io.izzel.taboolib.module.config.TConfigMigrate
-import io.izzel.taboolib.util.Files
+import cn.inrhor.questengine.utlis.public.UtilString
+import taboolib.common.platform.console
+import taboolib.module.configuration.migrateTo
+import taboolib.module.lang.sendLang
 import java.io.File
 import java.io.FileInputStream
 
 object UpdateYaml {
 
-    private fun from(child : String): MutableList<String> {
+    private fun from(child : String): ByteArray? {
         val plugin = QuestEngine.plugin
         val yaml = File(plugin.dataFolder, child)
         val file = FileInputStream(yaml)
-        return TConfigMigrate.migrate(file, plugin.getResource(child))
+        val resource = plugin.getResource(child)?: return null
+        return file.migrateTo(resource)
     }
 
     fun run(child: String) {
+        val from = from(child)?:
+        return console().sendLang("LOADER.FILE_FAIL_UPDATE", UtilString.pluginTag, child)
         val file = File(QuestEngine.plugin.dataFolder, child)
-        Files.write(file) { w ->
-            for (line in from(child)) {
-                w.write(line)
-                w.newLine()
-            }
-        }
+        file.writeBytes(from)
     }
 
 }

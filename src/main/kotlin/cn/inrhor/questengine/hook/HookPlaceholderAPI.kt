@@ -1,24 +1,17 @@
 package cn.inrhor.questengine.hook
 
-import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.quest.QuestStateUtil
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.utlis.time.TimeUtil
-import io.izzel.taboolib.module.compat.PlaceholderHook
-import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.entity.Player
-import org.bukkit.plugin.Plugin
+import taboolib.platform.compat.PlaceholderExpansion
+import taboolib.platform.util.asLangText
 import java.util.*
 
-class HookPlaceholderAPI: PlaceholderHook.Expansion {
-    override fun plugin(): Plugin {
-        return QuestEngine.plugin
-    }
+class HookPlaceholderAPI: PlaceholderExpansion {
 
-    override fun identifier(): String {
-        return "questengine"
-    }
+    override val identifier = "questengine"
 
     override fun onPlaceholderRequest(player: Player, params: String): String {
         val args = params.split("_")
@@ -36,16 +29,17 @@ class HookPlaceholderAPI: PlaceholderHook.Expansion {
     }
 
     private fun startTime(player: Player, questID: String, innerID: String, index: Int): String {
-        val targetData = getTargetData(player, questID, innerID, index)?: return TLocale.asString("QUEST.ALWAYS")
+        val targetData = getTargetData(player, questID, innerID, index)?:
+        return player.asLangText("QUEST.ALWAYS")?: "always null"
         val time = targetData.timeDate
-        return TimeUtil.remainDate(time)
+        return TimeUtil.remainDate(player, time)
     }
 
     private fun remain(player: Player, questID: String, innerID: String, index: Int): String {
-        val always = TLocale.asString("QUEST.ALWAYS")
+        val always = player.asLangText("QUEST.ALWAYS")?: "always null"
         val targetData = getTargetData(player, questID, innerID, index)?: return always
         val endTime = targetData.endTimeDate?: return always
-        return TimeUtil.remainDate(endTime)
+        return TimeUtil.remainDate(player, endTime)
     }
 
     private fun getTargetData(player: Player, questID: String, innerID: String, index: Int): TargetData? {
@@ -76,7 +70,8 @@ class HookPlaceholderAPI: PlaceholderHook.Expansion {
 
     private fun getState(player: Player, questID: String, innerID: String): String {
         val uuid = player.uniqueId
-        val qData = QuestManager.getQuestData(uuid, questID)?: return TLocale.asString("QUEST.NOT_ACCEPT")
+        val qData = QuestManager.getQuestData(uuid, questID)?:
+        return player.asLangText("QUEST.NOT_ACCEPT")?: "state null"
         val state = QuestStateUtil.stateUnit(qData.state)
         if (innerID.isNotEmpty()) {
             val innerData = QuestManager.getInnerQuestData(player, qData.questUUID)?: return state

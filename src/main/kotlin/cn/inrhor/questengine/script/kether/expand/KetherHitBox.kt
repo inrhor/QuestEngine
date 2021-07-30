@@ -2,9 +2,9 @@ package cn.inrhor.questengine.script.kether.expand
 
 import cn.inrhor.questengine.utlis.location.FixedHoloHitBox
 import cn.inrhor.questengine.utlis.location.LocationTool
-import io.izzel.taboolib.kotlin.kether.ScriptParser
-import io.izzel.taboolib.kotlin.kether.common.api.QuestAction
-import io.izzel.taboolib.kotlin.kether.common.api.QuestContext
+import taboolib.library.kether.*
+import taboolib.module.kether.KetherParser
+import taboolib.module.kether.scriptParser
 import java.util.concurrent.CompletableFuture
 
 class KetherHitBox(
@@ -41,7 +41,8 @@ class KetherHitBox(
     }
 
     companion object {
-        fun parser() = ScriptParser.parser {
+        @KetherParser(["hitBox"], namespace = "QuestEngine")
+        fun parser() = scriptParser {
             val offset = LocationTool().getOffsetType(it)
             val multiply = it.nextDouble()
             val height = it.nextDouble()

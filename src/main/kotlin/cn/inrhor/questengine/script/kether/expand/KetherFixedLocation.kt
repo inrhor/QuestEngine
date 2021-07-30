@@ -2,9 +2,9 @@ package cn.inrhor.questengine.script.kether.expand
 
 import cn.inrhor.questengine.utlis.location.FixedLocation
 import cn.inrhor.questengine.utlis.location.LocationTool
-import io.izzel.taboolib.kotlin.kether.ScriptParser
-import io.izzel.taboolib.kotlin.kether.common.api.QuestAction
-import io.izzel.taboolib.kotlin.kether.common.api.QuestContext
+import taboolib.library.kether.*
+import taboolib.module.kether.KetherParser
+import taboolib.module.kether.scriptParser
 import java.util.concurrent.CompletableFuture
 
 class KetherFixedLocation(
@@ -26,7 +26,8 @@ class KetherFixedLocation(
     }
 
     companion object {
-        fun parser() = ScriptParser.parser {
+        @KetherParser(["addLoc", "initLoc"], namespace = "QuestEngine")
+        fun parser() = scriptParser {
             val offset = LocationTool().getOffsetType(it)
             val multiply = it.nextDouble()
             val height = it.nextDouble()

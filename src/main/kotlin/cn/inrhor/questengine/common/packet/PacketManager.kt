@@ -4,11 +4,12 @@ import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.common.nms.NMS
 import cn.inrhor.questengine.utlis.file.GetFile
 import cn.inrhor.questengine.utlis.public.UtilString
-import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
+import taboolib.common.platform.console
+import taboolib.module.lang.sendLang
 import java.io.File
 import java.util.*
 
@@ -95,7 +96,7 @@ object PacketManager {
     private fun checkRegPacket(file: File) {
         val yaml = YamlConfiguration.loadConfiguration(file)
         if (yaml.getKeys(false).isEmpty()) {
-            TLocale.sendToConsole("PACKET.EMPTY_CONTENT", UtilString.pluginTag, file.name)
+            console().sendLang("PACKET.EMPTY_CONTENT", UtilString.pluginTag, file.name)
             return
         }
         for (packetID in yaml.getKeys(false)) {

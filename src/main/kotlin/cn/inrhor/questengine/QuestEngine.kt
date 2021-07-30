@@ -1,14 +1,17 @@
 package cn.inrhor.questengine
 
-import cn.inrhor.questengine.loader.PluginLoader
-import io.izzel.taboolib.loader.Plugin
-import io.izzel.taboolib.module.config.TConfig
-import io.izzel.taboolib.module.inject.TInject
+import taboolib.common.platform.Plugin
+import taboolib.module.configuration.Config
+import taboolib.module.configuration.SecuredFile
+import taboolib.platform.BukkitIO
+import taboolib.platform.BukkitPlugin
 
 object QuestEngine : Plugin() {
-    @TInject(locale = "setting.lang", migrate = true)
-    lateinit var config : TConfig
+    @Config(migrate = true)
+    lateinit var config: SecuredFile
+        private set
 
-    @TInject(state = TInject.State.STARTING, init = "init", cancel = "cancel")
-    lateinit var loader : PluginLoader
+    val plugin = BukkitPlugin.getInstance()
+
+    val resource = BukkitIO()
 }

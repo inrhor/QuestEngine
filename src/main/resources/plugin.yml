@@ -1,9 +1,0 @@
-name: ${name}
-main: ${main}
-version: ${version}
-api-version: "1.13"
-authors: ${authors}
-
-lib-download: true
-lib-version: ${libVersion}
-loader-version: ${loaderVersion}

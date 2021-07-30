@@ -2,8 +2,8 @@ LOADER:
   INFO:
     - "&7&l[ &c&li &7&l]&r  ┝  &3正在加载插件  &f{0}"
     - "&7&l[ &c&li &7&l]&r  ┝  &3当前插件版本  &f{1}"
-    - "&7&l[ &c&li &7&l]&r  ┝  &3选择语言文本  &f{2}"
   TIME_COST: "{0}&r 所有配置载入完成，耗时 &8{1}ms"
+  FILE_FAIL_UPDATE: "{0}&c 文件更新失败： &r{1}"
 
 DIALOG:
   ERROR_FILE: "&7&l[ &c&li &7&l]&c 对话配置不存在或缺少键值： &r{0}"

@@ -29,9 +29,9 @@ class ItemCheck(private val matchers: MutableMap<String, String>) {
         matchers.forEach { (mark, data) ->
             when (mark.lowercase(Locale.getDefault())) {
                 "minecraft" -> if (data != itemStack.type.name) return false
-                "displayname" -> if (data != meta.displayName) return false
-                "lorecontain" -> if (!loreContain(meta, data)) return false
-                "custonModelData" -> if (meta.customModelData != data.toInt()) return false
+                "displayname" -> if (meta == null || data != meta.displayName) return false
+                "lorecontain" -> if (meta == null || !loreContain(meta, data)) return false
+                "custonmodeldata" -> if (meta == null || meta.customModelData != data.toInt()) return false
                 "amount" -> if (itemStack.amount < data.toInt()) return false else (if (take) amount = data.toInt())
             }
         }

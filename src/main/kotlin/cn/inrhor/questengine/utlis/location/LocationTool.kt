@@ -1,8 +1,8 @@
 package cn.inrhor.questengine.utlis.location
 
-import io.izzel.taboolib.kotlin.kether.KetherError
-import io.izzel.taboolib.kotlin.kether.common.loader.QuestReader
 import org.bukkit.Location
+import taboolib.library.kether.QuestReader
+import taboolib.module.kether.KetherError
 import java.util.*
 
 class LocationTool {

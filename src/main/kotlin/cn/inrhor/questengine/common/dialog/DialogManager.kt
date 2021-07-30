@@ -24,7 +24,7 @@ object DialogManager {
      */
     fun register(dialogID: String, dialogModule: DialogModule) {
         if (exist(dialogID)) {
-            TLocale.sendToConsole("DIALOG.EXIST_DIALOG_ID", UtilString.pluginTag, dialogID)
+            console().sendLang("DIALOG.EXIST_DIALOG_ID", UtilString.pluginTag, dialogID)
             return
         }
         val itemContents = mutableListOf<String>()

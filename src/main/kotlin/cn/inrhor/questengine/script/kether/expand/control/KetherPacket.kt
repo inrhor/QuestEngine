@@ -2,17 +2,12 @@ package cn.inrhor.questengine.script.kether.expand.control
 
 import cn.inrhor.questengine.common.nms.NMS
 import cn.inrhor.questengine.common.packet.PacketManager
-import io.izzel.taboolib.kotlin.kether.Kether.expects
-import io.izzel.taboolib.kotlin.kether.KetherParser
-import io.izzel.taboolib.kotlin.kether.ScriptParser
-import io.izzel.taboolib.kotlin.kether.common.api.ParsedAction
-import io.izzel.taboolib.kotlin.kether.common.api.QuestAction
-import io.izzel.taboolib.kotlin.kether.common.api.QuestContext
-import io.izzel.taboolib.kotlin.kether.common.loader.types.ArgTypes
-import io.izzel.taboolib.kotlin.kether.script
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import taboolib.library.kether.*
+import taboolib.module.kether.*
+import taboolib.module.kether.scriptParser
 import java.util.concurrent.CompletableFuture
 
 class KetherPacket {
@@ -69,7 +64,7 @@ class KetherPacket {
 
     companion object {
         @KetherParser(["packet"], namespace = "QuestEngine")
-        fun parser() = ScriptParser.parser {
+        fun parser() = scriptParser {
             when (it.expects("send", "remove")) {
                 "send" -> SendPacket(
                     it.nextToken(),

@@ -2,9 +2,9 @@ package cn.inrhor.questengine.utlis.file
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.utlis.public.UtilString
-import io.izzel.taboolib.module.locale.TLocale
-import io.izzel.taboolib.util.Files
 import org.bukkit.configuration.file.YamlConfiguration
+import taboolib.common.platform.console
+import taboolib.module.lang.sendLang
 import java.io.File
 
 object GetFile {
@@ -15,9 +15,9 @@ object GetFile {
         val file = File(QuestEngine.plugin.dataFolder, child)
         if (!file.exists() && mkdirs) { // 如果 <child> 文件夹不存在就给示例配置
             if (say.isNotEmpty()) {
-                TLocale.sendToConsole(say, UtilString.pluginTag)
+                console().sendLang(say, UtilString.pluginTag)
             }
-            Files.releaseResource(QuestEngine.plugin, child, true)
+            QuestEngine.resource.releaseResourceFile(child, true)
         }
         return file
     }
@@ -40,7 +40,7 @@ object GetFile {
         val str = "$path/$yaml.yml"
         val file = File(QuestEngine.plugin.dataFolder, str)
         if (!file.exists()) {
-            Files.releaseResource(QuestEngine.plugin, str, true)
+            QuestEngine.resource.releaseResourceFile(str, true)
         }
         return YamlConfiguration.loadConfiguration(file)
     }

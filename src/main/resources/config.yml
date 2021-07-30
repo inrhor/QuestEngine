@@ -1,7 +1,7 @@
-# 设置
-setting:
-  # 选择语言
-  lang: "zh_CN"
+update:
+  # 更新语言文件
+  lang:
+    - "zh_CN"
 
 # 数据存储
 data:
