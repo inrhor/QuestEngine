@@ -9,13 +9,12 @@ import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.common.quest.manager.RewardManager
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.script.kether.KetherHandler
-import ink.ptms.adyeshach.api.event.AdyeshachEntityInteractEvent
 import org.bukkit.entity.Player
 import java.util.*
 
-object TargetGiveAdyItem: TargetExtend<AdyeshachEntityInteractEvent>() {
+object TargetGiveAdyItem/*: TargetExtend<AdyeshachEntityInteractEvent>()*/ {
 
-    override val name = "give ady item"
+    /*override val name = "give ady item"
 
     override var event = AdyeshachEntityInteractEvent::class
 
@@ -60,6 +59,6 @@ object TargetGiveAdyItem: TargetExtend<AdyeshachEntityInteractEvent>() {
             return RewardManager.finishReward(player, questData, questInnerData, target)
         }
         return true
-    }
+    }*/
 
 }

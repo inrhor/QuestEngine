@@ -4,8 +4,8 @@ import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.utlis.file.GetFile
 import org.bukkit.entity.Player
 import taboolib.common.platform.adaptPlayer
-import taboolib.module.chat.HexColor
 import taboolib.module.chat.TellrawJson
+import taboolib.module.chat.colored
 
 object NoTeam {
 
@@ -22,28 +22,28 @@ object NoTeam {
 
         val head = UtilTeam.getStr(yaml, "noTeamHome.head")
         TellrawJson()
-            .append(HexColor.translate(head))
+            .append(head.colored())
             .sendTo(adaptPlayer(player))
 
         val create = UtilTeam.getStr(yaml, "noTeamHome.create.content")
         val createHover = UtilTeam.getStr(yaml, "noTeamHome.create.hover")
         TellrawJson()
-            .append(HexColor.translate(create))
-            .hoverText(HexColor.translate(createHover))
+            .append(create.colored())
+            .hoverText(createHover.colored())
             .suggestCommand("/questengine teamCreate")
             .sendTo(adaptPlayer(player))
 
         val join = UtilTeam.getStr(yaml, "noTeamHome.join.content")
         val joinHover = UtilTeam.getStr(yaml, "noTeamHome.join.hover")
         TellrawJson()
-            .append(HexColor.translate(join))
-            .hoverText(HexColor.translate(joinHover))
+            .append(join.colored())
+            .hoverText(joinHover.colored())
             .suggestCommand("/questengine teamJoin")
             .sendTo(adaptPlayer(player))
 
         val footer = UtilTeam.getStr(yaml, "noTeamHome.footer")
         TellrawJson()
-            .append(HexColor.translate(footer))
+            .append(footer.colored())
             .sendTo(adaptPlayer(player))
 
     }

@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.quest
 
-import io.izzel.taboolib.module.locale.TLocale
+import org.bukkit.entity.Player
+import taboolib.platform.util.asLangText
 import java.util.*
 
 enum class QuestState {
@@ -36,12 +37,12 @@ object QuestStateUtil {
     /**
      * 状态单位
      */
-    fun stateUnit(state: QuestState): String {
+    fun stateUnit(player: Player, state: QuestState): String {
         return when (state) {
-            QuestState.DOING -> TLocale.asString("QUEST.STATE_DOING")
-            QuestState.FAILURE -> TLocale.asString("QUEST.STATE_FAILURE")
-            QuestState.FINISH -> TLocale.asString("QUEST.STATE_FINISH")
-            else -> TLocale.asString("QUEST.STATE_IDLE")
+            QuestState.DOING -> player.asLangText("QUEST.STATE_DOING")?: return "null"
+            QuestState.FAILURE -> player.asLangText("QUEST.STATE_FAILURE")?: return "null"
+            QuestState.FINISH -> player.asLangText("QUEST.STATE_FINISH")?: return "null"
+            else -> player.asLangText("QUEST.STATE_IDLE")?: return "null"
         }
     }
 

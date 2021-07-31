@@ -14,11 +14,10 @@ import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.script.kether.KetherHandler
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
-import cn.inrhor.questengine.utlis.public.UtilString
 import cn.inrhor.questengine.utlis.time.TimeUtil
-import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import taboolib.platform.util.sendLang
 import java.util.*
 
 object QuestManager {
@@ -380,7 +379,7 @@ object QuestManager {
     fun quitQuest(player: Player, questID: String) {
         val uuid = player.uniqueId
         val questData = getQuestData(uuid, questID)?: return run {
-            TLocale.sendTo(player, "QUEST.NULL_QUEST_DATA", questID) }
+            player.sendLang("QUEST.NULL_QUEST_DATA", questID) }
         val questModule = getQuestModule(questID)?: return
         val questUUID = questData.questUUID
         val pData = DataStorage.getPlayerData(uuid)

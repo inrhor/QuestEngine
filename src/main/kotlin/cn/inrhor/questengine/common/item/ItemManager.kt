@@ -2,8 +2,9 @@ package cn.inrhor.questengine.common.item
 
 import cn.inrhor.questengine.utlis.file.GetFile
 import cn.inrhor.questengine.utlis.public.UtilString
-import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.configuration.file.YamlConfiguration
+import taboolib.common.platform.console
+import taboolib.module.lang.sendLang
 import java.io.File
 import java.util.HashMap
 import java.util.LinkedHashMap

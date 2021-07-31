@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.common.dialog.animation.item
 
-import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 /**

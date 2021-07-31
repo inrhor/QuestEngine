@@ -7,9 +7,10 @@ import cn.inrhor.questengine.common.dialog.optional.holo.core.HoloDialog
 import cn.inrhor.questengine.script.kether.KetherHandler
 import cn.inrhor.questengine.utlis.file.GetFile
 import cn.inrhor.questengine.utlis.public.UtilString
-import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import taboolib.common.platform.console
+import taboolib.module.lang.sendLang
 import java.util.*
 
 

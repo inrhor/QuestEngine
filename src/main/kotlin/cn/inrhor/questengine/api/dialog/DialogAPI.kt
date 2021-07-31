@@ -2,7 +2,8 @@ package cn.inrhor.questengine.api.dialog
 
 import cn.inrhor.questengine.common.dialog.DialogManager
 import cn.inrhor.questengine.utlis.public.UtilString
-import io.izzel.taboolib.module.locale.TLocale
+import taboolib.common.platform.console
+import taboolib.module.lang.sendLang
 
 object DialogAPI {
     /**

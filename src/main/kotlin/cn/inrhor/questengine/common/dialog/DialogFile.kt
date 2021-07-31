@@ -3,8 +3,9 @@ package cn.inrhor.questengine.common.dialog
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.api.dialog.ReplyModule
 import cn.inrhor.questengine.utlis.public.UtilString
-import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.configuration.file.YamlConfiguration
+import taboolib.common.platform.console
+import taboolib.module.lang.sendLang
 import java.io.File
 
 object DialogFile {

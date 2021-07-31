@@ -1,9 +1,9 @@
 package cn.inrhor.questengine.common.item
 
-import io.izzel.taboolib.util.item.ItemBuilder
-import org.bukkit.Material
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemStack
+import taboolib.library.xseries.XMaterial
+import taboolib.platform.util.buildItem
 
 class ItemFile {
 
@@ -11,19 +11,20 @@ class ItemFile {
     var item: ItemStack? = null
 
     fun init(config: ConfigurationSection) {
-        if (!config.contains("material")) {
-            return
-        }
         this.itemID = config.name
-        val material = Material.valueOf(config.getString("material")!!)
+        val type = config.getString("material")?: "stone"
+        val material = XMaterial.valueOf(type)
         val displayName = config.getString("displayName")
         val lore = config.getStringList("lore")
         val customModelData = config.getInt("customModelData")
-        val itemBuilder = ItemBuilder(material)
-        itemBuilder.name(displayName)
-        itemBuilder.lore(lore)
-        itemBuilder.customModelData(customModelData)
-        this.item = itemBuilder.build()
+        val itemBuilder = buildItem(material) {
+            name = displayName
+            this.lore.addAll(lore)
+            this.customModelData = customModelData
+            colored()
+            build()
+        }
+        this.item = itemBuilder
 
         ItemManager.register(this.itemID!!, this)
     }

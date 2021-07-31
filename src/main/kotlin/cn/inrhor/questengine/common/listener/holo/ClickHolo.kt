@@ -2,16 +2,13 @@ package cn.inrhor.questengine.common.listener.holo
 
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.script.kether.KetherHandler
-import io.izzel.taboolib.module.inject.TListener
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
+import taboolib.common.platform.SubscribeEvent
 
-@TListener
-class ClickHolo: Listener {
+class ClickHolo {
 
-    @EventHandler
+    @SubscribeEvent
     fun clickAction(ev: PlayerInteractEvent) {
         val p = ev.player
         if (ev.action != Action.LEFT_CLICK_AIR) return

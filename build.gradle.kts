@@ -24,7 +24,7 @@ taboolib {
         }
         prefix("QuestEngine")
     }
-    version = "6.0.0-pre11"
+    version = "6.0.0-pre12"
 }
 
 repositories {
@@ -37,7 +37,7 @@ dependencies {
     compileOnly("ink.ptms.core:v11604:11604:all")
     compileOnly("ink.ptms.core:v11600:11600:all")
     compileOnly("public:Citizens:1.0.0")
-    compileOnly("ink.ptms.adyeshach:Adyeshach:1.1.9")
+    compileOnly("ink.ptms:Adyeshach:1.2.1")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
 }

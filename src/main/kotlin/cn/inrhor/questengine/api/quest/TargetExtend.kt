@@ -2,7 +2,6 @@ package cn.inrhor.questengine.api.quest
 
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
-import org.bukkit.event.EventPriority
 import kotlin.reflect.KClass
 
 abstract class TargetExtend<E: Event> {
@@ -20,7 +19,7 @@ abstract class TargetExtend<E: Event> {
     /**
      * 事件优先级
      */
-    open val priority = EventPriority.HIGHEST
+    open var priority = 0
 
     /**
      * 事件忽略已取消

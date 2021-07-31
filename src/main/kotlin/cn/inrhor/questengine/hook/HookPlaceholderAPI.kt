@@ -72,10 +72,10 @@ class HookPlaceholderAPI: PlaceholderExpansion {
         val uuid = player.uniqueId
         val qData = QuestManager.getQuestData(uuid, questID)?:
         return player.asLangText("QUEST.NOT_ACCEPT")?: "state null"
-        val state = QuestStateUtil.stateUnit(qData.state)
+        val state = QuestStateUtil.stateUnit(player, qData.state)
         if (innerID.isNotEmpty()) {
             val innerData = QuestManager.getInnerQuestData(player, qData.questUUID)?: return state
-            return QuestStateUtil.stateUnit(innerData.state)
+            return QuestStateUtil.stateUnit(player, innerData.state)
         }
         return state
     }

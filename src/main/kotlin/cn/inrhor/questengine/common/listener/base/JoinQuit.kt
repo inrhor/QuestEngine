@@ -2,15 +2,12 @@ package cn.inrhor.questengine.common.listener.base
 
 import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.data.PlayerData
-import io.izzel.taboolib.module.inject.TListener
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
+import taboolib.common.platform.SubscribeEvent
 
-@TListener
-class JoinQuit: Listener {
+class JoinQuit {
 
-    @EventHandler
+    @SubscribeEvent
     fun onPlayerQuit(ev: PlayerQuitEvent) {
         val uuid = ev.player.uniqueId
         val pData = PlayerData(uuid)

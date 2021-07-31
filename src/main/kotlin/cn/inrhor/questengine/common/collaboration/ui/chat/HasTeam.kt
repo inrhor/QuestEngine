@@ -7,6 +7,7 @@ import org.bukkit.entity.Player
 import taboolib.common.platform.adaptPlayer
 import taboolib.module.chat.HexColor
 import taboolib.module.chat.TellrawJson
+import taboolib.module.chat.colored
 import taboolib.platform.util.sendLang
 import java.util.*
 
@@ -23,14 +24,14 @@ object HasTeam {
 
         val head = UtilTeam.getStr(yaml, "hasTeamInfo.head", tData, leaderName)
         TellrawJson()
-            .append(HexColor.translate(head))
+            .append(head.colored())
             .sendTo(adaptPlayer(player))
 
         val mem = UtilTeam.getStr(yaml, "hasTeamInfo.members.content", tData, leaderName)
         val memHover = UtilTeam.getStr(yaml, "hasTeamInfo.members.hover", tData, leaderName)
         TellrawJson()
-            .append(HexColor.translate(mem))
-            .hoverText(HexColor.translate(memHover))
+            .append(mem.colored())
+            .hoverText(memHover.colored())
             .runCommand("/QuestEngine teamMembers")
             .sendTo(adaptPlayer(player))
 
@@ -38,30 +39,30 @@ object HasTeam {
             val asks = UtilTeam.getStr(yaml, "hasTeamInfo.asks.content", tData, leaderName)
             val asksHover = UtilTeam.getStr(yaml, "hasTeamInfo.asks.hover", tData, leaderName)
             TellrawJson()
-                .append(HexColor.translate(asks))
-                .hoverText(HexColor.translate(asksHover))
+                .append(asks.colored())
+                .hoverText(asksHover.colored())
                 .runCommand("/QuestEngine teamAsks")
                 .sendTo(adaptPlayer(player))
             val del = UtilTeam.getStr(yaml, "hasTeamInfo.delete.content", tData, leaderName)
             val delHover = UtilTeam.getStr(yaml, "hasTeamInfo.delete.hover", tData, leaderName)
             TellrawJson()
-                .append(HexColor.translate(del))
-                .hoverText(HexColor.translate(delHover))
+                .append(del.colored())
+                .hoverText(delHover.colored())
                 .runCommand("/QuestEngine teamDelete")
                 .sendTo(adaptPlayer(player))
         }else {
             val left = UtilTeam.getStr(yaml, "hasTeamInfo.leave.content", tData, leaderName)
             val leftHover = UtilTeam.getStr(yaml, "hasTeamInfo.leave.hover", tData, leaderName)
             TellrawJson()
-                .append(HexColor.translate(left))
-                .hoverText(HexColor.translate(leftHover))
+                .append(left.colored())
+                .hoverText(leftHover.colored())
                 .runCommand("/QuestEngine teamLeave")
                 .sendTo(adaptPlayer(player))
         }
 
         val footer = UtilTeam.getStr(yaml, "hasTeamInfo.footer", tData, leaderName)
         TellrawJson()
-            .append(HexColor.translate(footer))
+            .append(footer.colored())
             .sendTo(adaptPlayer(player))
     }
 
@@ -76,7 +77,7 @@ object HasTeam {
 
         val head = UtilTeam.getStr(yaml, "members.head", tData, leaderName)
         TellrawJson()
-            .append(HexColor.translate(head))
+            .append(head.colored())
             .sendTo(adaptPlayer(player))
 
         val memberStr = UtilTeam.getStr(yaml, "members.member.content", tData, leaderName)
@@ -85,10 +86,10 @@ object HasTeam {
             val m = Bukkit.getPlayer(it)?: return@forEach
             val mName = m.name
             val member= TellrawJson()
-                .append(HexColor.translate(memberStr).replace("%memberName%", mName))
+                .append(memberStr.replace("%memberName%", mName).colored())
             if (TeamManager.isLeader(uuid, tData) && it != uuid) {
                 member
-                    .hoverText(HexColor.translate(kickHover))
+                    .hoverText(kickHover.colored())
                     .suggestCommand("/questengine teamKick $mName")
             }
             member.sendTo(adaptPlayer(player))
@@ -96,7 +97,7 @@ object HasTeam {
 
         val footer = UtilTeam.getStr(yaml, "members.footer", tData, leaderName)
         TellrawJson()
-            .append(HexColor.translate(footer))
+            .append(footer.colored())
             .sendTo(adaptPlayer(player))
 
     }
@@ -112,7 +113,7 @@ object HasTeam {
 
         val head = UtilTeam.getStr(yaml, "asks.head", tData, leaderName)
         TellrawJson()
-            .append(HexColor.translate(head))
+            .append(head.colored())
             .sendTo(adaptPlayer(player))
 
         val infoStr = UtilTeam.getStr(yaml, "asks.info.content")
@@ -125,16 +126,16 @@ object HasTeam {
             val m = Bukkit.getPlayer(it)?: return@forEach
             val mName = m.name
             TellrawJson()
-                .append(HexColor.translate(infoStr).replace("%memberName%", mName))
-                .hoverText(HexColor.translate(infoHover))
+                .append(infoStr.replace("%memberName%", mName).colored())
+                .hoverText(infoHover.colored())
                 .sendTo(adaptPlayer(player))
             TellrawJson()
-                .append(HexColor.translate(agree).replace("%memberName%", mName))
+                .append(agree.replace("%memberName%", mName).colored())
                 .hoverText(HexColor.translate(agreeHover))
                 .suggestCommand("/questengine teamAskAgree $mName")
                 .sendTo(adaptPlayer(player))
             TellrawJson()
-                .append(HexColor.translate(reject).replace("%memberName%", mName))
+                .append(reject.replace("%memberName%", mName).colored())
                 .hoverText(HexColor.translate(rejectHover))
                 .suggestCommand("/questengine teamAskReject $mName")
                 .sendTo(adaptPlayer(player))
@@ -142,7 +143,7 @@ object HasTeam {
 
         val footer = UtilTeam.getStr(yaml, "asks.footer", tData, leaderName)
         TellrawJson()
-            .append(HexColor.translate(footer))
+            .append(footer.colored())
             .sendTo(adaptPlayer(player))
 
     }

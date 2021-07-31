@@ -2,14 +2,13 @@ package cn.inrhor.questengine.common.listener.holo
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.common.dialog.DialogManager
-import io.izzel.taboolib.module.inject.TListener
 import net.citizensnpcs.api.event.NPCLeftClickEvent
 import net.citizensnpcs.api.event.NPCRightClickEvent
-import org.bukkit.event.EventHandler
+import taboolib.common.platform.SubscribeEvent
 
-@TListener(depend = ["Citizens"], condition = "isCitizensNPC")
 class ClickCitizens {
-    @EventHandler
+
+    @SubscribeEvent
     fun rightClickNPC(ev: NPCRightClickEvent) {
         val player = ev.clicker
         val npc = ev.npc.entity
@@ -18,7 +17,7 @@ class ClickCitizens {
         DialogManager.sendDialogHolo(mutableSetOf(player), npcIDName, npcLoc)
     }
 
-    @EventHandler
+    @SubscribeEvent
     fun leftClickNPC(ev: NPCLeftClickEvent) {
         val player = ev.clicker
         val npc = ev.npc.entity
