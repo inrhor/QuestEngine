@@ -4,6 +4,7 @@ import cn.inrhor.questengine.api.collaboration.TeamData
 import cn.inrhor.questengine.api.collaboration.TeamOpen
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
+import org.bukkit.entity.Player
 import java.util.*
 
 object TeamManager {
@@ -34,6 +35,10 @@ object TeamManager {
     fun getTeamData(pUUID: UUID): TeamOpen? {
         val pData = DataStorage.getPlayerData(pUUID)
         return pData.teamData
+    }
+
+    fun getTeamData(player: Player): TeamOpen? {
+        return getTeamData(player.uniqueId)
     }
 
     fun getMemberAmount(teamName: String): Int {

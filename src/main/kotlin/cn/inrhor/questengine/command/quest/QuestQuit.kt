@@ -1,21 +1,40 @@
 package cn.inrhor.questengine.command.quest
 
+import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.quest.manager.QuestManager
-import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.Bukkit
-import org.bukkit.command.CommandSender
+import taboolib.common.platform.CommandBody
+import taboolib.common.platform.ProxyCommandSender
+import taboolib.common.platform.subCommand
+import taboolib.module.lang.sendLang
 
-class QuestQuit {
+object QuestQuit {
 
-    fun onCommand(sender: CommandSender, args: Array<out String>) {
+    @CommandBody
+    val quit = subCommand {
+        literal("quest") {
+            literal("quit") {
+                dynamic {
+                    suggestion<ProxyCommandSender> { _, context ->
+                        Bukkit.getOnlinePlayers().map { it.name }
+                        Bukkit.getPlayer(context.args[1])?.let { p ->
+                            DataStorage.getPlayerData(p).questDataList.values.map { it.questID }
+                        }
+                    }
+                    execute<ProxyCommandSender> { sender, context, _ ->
+                        val args = context.args
 
-        val questID = args[1]
+                        val player = Bukkit.getPlayer(args[1])?: return@execute run {
+                            sender.sendLang("PLAYER_NOT_ONLINE") }
 
-        val player = Bukkit.getPlayer(args[2]) ?: return run { TLocale.sendTo(sender, "PLAYER_NOT_ONLINE") }
+                        val questID = args[2]
 
-        QuestManager.quitQuest(player, questID)
-
-        return
+                        QuestManager.quitQuest(player, questID)
+                    }
+                }
+            }
+        }
     }
+
 
 }

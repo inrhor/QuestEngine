@@ -1,15 +1,12 @@
 package cn.inrhor.questengine.common.quest
 
-import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.quest.TargetExtend
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import org.bukkit.event.Event
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
-import io.izzel.taboolib.TabooLibLoader
-import io.izzel.taboolib.compat.kotlin.CompatKotlin
-import io.izzel.taboolib.kotlin.SingleListener
-import io.izzel.taboolib.module.inject.TFunction
+import taboolib.common.io.getInstance
+import taboolib.common.io.runningClasses
 import taboolib.common.platform.registerListener
 import java.util.*
 
@@ -18,9 +15,9 @@ object QuestLoader {
     @Suppress("UNCHECKED_CAST")
     @Awake(LifeCycle.ACTIVE)
     private fun registerTarget() {
-        TabooLibLoader.getPluginClassSafely(QuestEngine.plugin).forEach {
+        runningClasses.forEach {
             if (TargetExtend::class.java.isAssignableFrom(it)) {
-                (CompatKotlin.getInstance(it) as? TargetExtend<Event>)?.register()
+                (it.getInstance() as? TargetExtend<Event>)?.register()
             }
         }
     }

@@ -6,7 +6,6 @@ plugins {
 
 taboolib {
     install("common",
-            "common-5",
             "module-chat",
             "module-configuration",
             "module-database",
@@ -24,7 +23,7 @@ taboolib {
         }
         prefix("QuestEngine")
     }
-    version = "6.0.0-pre12"
+    version = "6.0.0-pre15"
 }
 
 repositories {
