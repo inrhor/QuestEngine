@@ -13,7 +13,7 @@ object ReloadCommand {
         literal("reload") {
             dynamic {
                 execute<ProxyCommandSender> { sender, _, _ ->
-                    PluginLoader().doReload()
+                    PluginLoader.doReload()
                     sender.sendLang("COMMAND.SUCCESSFUL_RELOAD")
                 }
             }

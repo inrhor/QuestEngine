@@ -19,8 +19,8 @@ class KetherPacket {
         SEND, REMOVE
     }
 
-    /**
-     * packet send id where world loc...
+    /*
+     * packet send id where location [location]
      */
     class SendPacket(val packetID: String, val location: ParsedAction<*>): ScriptAction<Void>() {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {

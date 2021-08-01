@@ -7,6 +7,7 @@ import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.dialog.optional.holo.HoloHitBox
 import cn.inrhor.questengine.common.dialog.optional.holo.HoloReplyDisplay
 import cn.inrhor.questengine.script.kether.KetherHandler
+import cn.inrhor.questengine.utlis.location.FixedHoloHitBox
 import cn.inrhor.questengine.utlis.location.LocationTool
 import org.bukkit.Location
 import org.bukkit.entity.Player

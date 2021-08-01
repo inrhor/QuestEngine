@@ -70,7 +70,7 @@ abstract class Database {
         }
 
         @Awake(LifeCycle.DISABLE)
-        private fun cancel() {
+        fun cancel() {
             pushAll()
         }
 

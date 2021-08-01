@@ -6,7 +6,7 @@ import net.citizensnpcs.api.event.NPCLeftClickEvent
 import net.citizensnpcs.api.event.NPCRightClickEvent
 import taboolib.common.platform.SubscribeEvent
 
-class ClickCitizens {
+object ClickCitizens {
 
     @SubscribeEvent
     fun rightClickNPC(ev: NPCRightClickEvent) {

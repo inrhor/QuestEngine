@@ -5,7 +5,7 @@ import cn.inrhor.questengine.common.database.data.PlayerData
 import org.bukkit.event.player.PlayerQuitEvent
 import taboolib.common.platform.SubscribeEvent
 
-class JoinQuit {
+object JoinQuit {
 
     @SubscribeEvent
     fun onPlayerQuit(ev: PlayerQuitEvent) {

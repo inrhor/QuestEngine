@@ -3,6 +3,7 @@ package cn.inrhor.questengine.common.dialog.animation.text
 import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.common.dialog.animation.text.type.TextWrite
 import cn.inrhor.questengine.script.kether.KetherHandler
+import taboolib.common.platform.info
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -25,6 +26,7 @@ class TextAnimation(val dialogID: String, val line: Int, val script: String, val
             var frameTextIndex = 0 // 第x行的文字帧
             if (script.uppercase(Locale.getDefault()).startsWith("TEXTWRITE")) {
                 val textWrite = KetherHandler.evalTextWrite(script)
+                info("textWrite Kether "+textWrite.text)
                 val abDelay = textWrite.delay
                 val abSpeed = textWrite.speedWrite
                 val abText = textWrite.text
@@ -87,7 +89,7 @@ class TextAnimation(val dialogID: String, val line: Int, val script: String, val
         val t = mutableListOf<TextWrite>()
         while (tags.find()) {
             val script = tags.group(1)
-            val textWrite = KetherHandler.evalTextWrite(script)
+            var textWrite = KetherHandler.evalTextWrite(script)
             t.add(textWrite)
         }
         val nt = t.sortedBy { TextWrite -> TextWrite.delay }

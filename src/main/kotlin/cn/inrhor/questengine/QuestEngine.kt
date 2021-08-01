@@ -11,7 +11,12 @@ object QuestEngine : Plugin() {
     lateinit var config: SecuredFile
         private set
 
-    val plugin = BukkitPlugin.getInstance()
+    val plugin by lazy {
+        BukkitPlugin.getInstance()
+    }
 
-    val resource = BukkitIO()
+    val resource by lazy {
+        BukkitIO()
+    }
+
 }

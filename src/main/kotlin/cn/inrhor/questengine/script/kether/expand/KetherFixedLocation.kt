@@ -26,6 +26,9 @@ class KetherFixedLocation(
         return fixedLocation
     }
 
+    /*
+        addLoc/initLoc dir left add [multiply] [height]
+     */
     internal object Parser {
         @KetherParser(["addLoc", "initLoc"], namespace = "QuestEngine")
         fun parser() = scriptParser {

@@ -33,8 +33,8 @@ class KetherControl(val type: Type, var time: Int, val questID: String, val main
         SECOND, MINUTE
     }
 
-    /**
-     * wait type time to questID mainQuestID
+    /*
+     * wait type [time] to [questID] [mainQuestID]
      */
     internal object Parser {
 

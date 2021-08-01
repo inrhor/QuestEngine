@@ -6,6 +6,7 @@ plugins {
 
 taboolib {
     install("common",
+            "common-5",
             "module-chat",
             "module-configuration",
             "module-database",
@@ -17,7 +18,6 @@ taboolib {
             "platform-bukkit")
     description {
         dependencies {
-            name("QuestEngine").with("bukkit")
             name("Adyeshach").optional(true)
             name("Citizens").optional(true)
         }

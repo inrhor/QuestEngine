@@ -6,7 +6,7 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import taboolib.common.platform.SubscribeEvent
 
-class ClickHolo {
+object ClickHolo {
 
     @SubscribeEvent
     fun clickAction(ev: PlayerInteractEvent) {

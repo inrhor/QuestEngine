@@ -16,7 +16,7 @@ import java.util.*
 
 class NMSImpl : NMS() {
 
-    private val version = MinecraftVersion.majorLegacy
+    val version = MinecraftVersion.majorLegacy
 
     fun Player.sendPacket(packet: Any, vararg fields: Pair<String, Any?>) {
         sendPacket(setFields(packet, *fields))

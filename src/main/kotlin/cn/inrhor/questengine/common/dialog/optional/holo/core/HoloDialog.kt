@@ -43,10 +43,10 @@ class HoloDialog(
             val iUc = i.uppercase(Locale.getDefault())
             when {
                 iUc.startsWith("INITLOC") -> {
-                    holoLoc = LocationTool().getFixedLoc(npcLoc, KetherHandler.evalFixedLoc(i))
+                    holoLoc = LocationTool().getFixedLoc(npcLoc, KetherHandler.evalFixedLoc(i)!!)
                 }
                 iUc.startsWith("ADDLOC") -> {
-                    holoLoc = LocationTool().getFixedLoc(holoLoc, KetherHandler.evalFixedLoc(i))
+                    holoLoc = LocationTool().getFixedLoc(holoLoc, KetherHandler.evalFixedLoc(i)!!)
                 }
                 iUc.startsWith("NEXTY") -> {
                     val get = i.substring(i.indexOf(" ")+1)

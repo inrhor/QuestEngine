@@ -15,15 +15,15 @@ import taboolib.module.lang.sendLang
 import java.io.File
 import kotlin.system.measureTimeMillis
 
-class PluginLoader {
+object PluginLoader {
+
+    private var reloading = false
 
     @Awake(LifeCycle.ENABLE)
     fun init() {
         Info.logoSend()
         doLoad()
     }
-
-    private var reloading = false
 
     @Awake(LifeCycle.DISABLE)
     fun cancel() {
@@ -41,6 +41,10 @@ class PluginLoader {
                 DialogManager.loadDialog()
                 PacketManager.loadPacket()
                 QuestFile.loadDialog()
+                val teamChat = File(QuestEngine.plugin.dataFolder, "team/chat.yml")
+                if (!teamChat.exists()) {
+                    QuestEngine.resource.releaseResourceFile("team/chat.yml", true)
+                }
                 UpdateYaml.run("team/chat.yml")
             }
             console().sendLang("LOADER.TIME_COST", UtilString.pluginTag, timeCost)

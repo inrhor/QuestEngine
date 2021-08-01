@@ -6,7 +6,7 @@ packet_1:
   # all or self
   viewer: all
   mate:
-    - equip head item_1
+    - equip HEAD item_1
     - displayName " " false
     - visible false
 

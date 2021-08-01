@@ -16,9 +16,13 @@ import java.util.*
 class DatabaseLocal: Database() {
 
     fun getLocal(uuid: UUID): YamlConfiguration {
-        val file = File(QuestEngine.plugin.dataFolder, "data/$uuid")
+        val data = File(QuestEngine.plugin.dataFolder, "data")
+        if (!data.exists()) {
+            data.mkdirs()
+        }
+        val file = File(QuestEngine.plugin.dataFolder, "data/$uuid.yml")
         if (!file.exists()) {
-            file.mkdirs()
+            file.createNewFile()
         }
         return YamlConfiguration.loadConfiguration(file)
     }
@@ -127,8 +131,8 @@ class DatabaseLocal: Database() {
     override fun push(player: Player) {
         val uuid = player.uniqueId
         val pData = DataStorage.getPlayerData(uuid)
-        val file = File(QuestEngine.plugin.dataFolder, "data/$uuid")
-        if (!file.exists()) file.mkdirs()
+        val file = File(QuestEngine.plugin.dataFolder, "data/$uuid.yml")
+        if (!file.exists()) return
         val data = YamlConfiguration.loadConfiguration(file)
         pData.questDataList.forEach { (questUUID, questData) ->
             val state = QuestStateUtil.stateToStr(questData.state)

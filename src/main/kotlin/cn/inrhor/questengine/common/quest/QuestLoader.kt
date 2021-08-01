@@ -14,7 +14,7 @@ object QuestLoader {
 
     @Suppress("UNCHECKED_CAST")
     @Awake(LifeCycle.ACTIVE)
-    private fun registerTarget() {
+    fun registerTarget() {
         runningClasses.forEach {
             if (TargetExtend::class.java.isAssignableFrom(it)) {
                 (it.getInstance() as? TargetExtend<Event>)?.register()
