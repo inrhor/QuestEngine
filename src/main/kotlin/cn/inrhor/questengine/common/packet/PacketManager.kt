@@ -8,6 +8,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
+import org.bukkit.inventory.EquipmentSlot
 import taboolib.common.platform.console
 import taboolib.module.lang.sendLang
 import java.io.File
@@ -60,13 +61,10 @@ object PacketManager {
             val sp = it.split(" ")
             val sign = sp[0].lowercase(Locale.getDefault())
             if (sign == "equip") {
-                // 目前版本仅有 head
-                val slot = sp[1].lowercase(Locale.getDefault())
-                if (slot == "head") {
-                    val itemID = sp[2]
-                    val item = ItemManager.get(itemID)
-                    getPackets().updateEquipmentItem(viewers, entityID, item)
-                }
+                val slot = sp[1].uppercase(Locale.getDefault())
+                val itemID = sp[2]
+                val item = ItemManager.get(itemID)
+                getPackets().updateEquipmentItem(viewers, entityID, EquipmentSlot.valueOf(slot), item)
             }else if (sign == "displayName") { // false 为 不显示
                 val displayName = sp[1]
                 getPackets().updateDisplayName(viewers, entityID, displayName)

@@ -1,7 +1,8 @@
 package cn.inrhor.questengine.common.packet
 
-import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.configuration.ConfigurationSection
+import taboolib.common.platform.console
+import taboolib.module.lang.sendLang
 import java.util.*
 
 object PacketFile {

@@ -10,13 +10,20 @@ import taboolib.module.kether.*
 import taboolib.module.kether.scriptParser
 import java.util.concurrent.CompletableFuture
 
+/**
+ * type send id where world loc...
+ */
 class KetherPacket {
 
+    enum class Type {
+        SEND, REMOVE
+    }
+
     /**
-     * type send id where world loc...
+     * packet send id where world loc...
      */
-    class SendPacket(val packetID: String, val location: ParsedAction<*>): QuestAction<Void>() {
-        override fun process(frame: QuestContext.Frame): CompletableFuture<Void> {
+    class SendPacket(val packetID: String, val location: ParsedAction<*>): ScriptAction<Void>() {
+        override fun run(frame: ScriptFrame): CompletableFuture<Void> {
             return frame.newFrame(location).run<Location>().thenAccept {
                 val player = frame.script().sender as? Player ?: error("unknown player")
                 sendPacket(packetID, player, it)
@@ -38,8 +45,8 @@ class KetherPacket {
     /**
      * packet remove viewer[all/player] id
      */
-    class RemovePacket(val viewer: Boolean, val packetID: String): QuestAction<Void>() {
-        override fun process(frame: QuestContext.Frame): CompletableFuture<Void> {
+    class RemovePacket(val viewer: Boolean, val packetID: String): ScriptAction<Void>() {
+        override fun run(frame: ScriptFrame): CompletableFuture<Void> {
             if (viewer) {
                 val player = frame.script().sender as? Player ?: error("unknown player")
                 removePacket(mutableSetOf(player), packetID)
@@ -62,25 +69,37 @@ class KetherPacket {
         }
     }
 
-    companion object {
+    internal object Parser {
         @KetherParser(["packet"], namespace = "QuestEngine")
         fun parser() = scriptParser {
-            when (it.expects("send", "remove")) {
-                "send" -> SendPacket(
+            it.mark()
+            val action = try {
+                when (val type = it.nextToken()) {
+                    "send" -> Type.SEND
+                    "remove" -> Type.REMOVE
+                    else -> throw KetherError.CUSTOM.create("未知数据包动作类型: $type")
+                }
+            } catch (ignored: Exception) {
+                it.reset()
+                Type.REMOVE
+            }
+            when (action) {
+                Type.SEND -> SendPacket(
                     it.nextToken(),
                     it.run {
+                        it.mark()
                         it.expect("where")
                         it.next(ArgTypes.ACTION)
                     })
-                "remove" -> RemovePacket(
+                Type.REMOVE -> RemovePacket(
                     try {
+                        it.mark()
                         it.expect("player")
                         true
                     } catch (ex: Exception) {
                         false
                     },
                     it.nextToken())
-                else -> error("unknown type")
             }
         }
     }

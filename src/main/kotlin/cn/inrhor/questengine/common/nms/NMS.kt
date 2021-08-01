@@ -1,12 +1,10 @@
 package cn.inrhor.questengine.common.nms
 
-import io.izzel.taboolib.Version
-import io.izzel.taboolib.kotlin.Reflex
-import io.izzel.taboolib.module.inject.TInject
-import io.izzel.taboolib.module.packet.TPacketHandler
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
+import taboolib.module.nms.nmsProxy
 
 abstract class NMS {
 
@@ -55,7 +53,7 @@ abstract class NMS {
     /**
      * 更新实体头部物品
      */
-    abstract fun updateEquipmentItem(players: MutableSet<Player>, entityId: Int, itemStack: ItemStack)
+    abstract fun updateEquipmentItem(players: MutableSet<Player>, entityId: Int, slot: EquipmentSlot, zitemStack: ItemStack)
 
     /**
      * 更新实体元数据
@@ -111,25 +109,8 @@ abstract class NMS {
 
     companion object {
 
-        @TInject(asm = "cn.inrhor.questengine.common.nms.impl.NMSImpl")
-        lateinit var INSTANCE: NMS
-        internal val version = Version.getCurrentVersionInt()
-
-        fun sendPacket(players: MutableSet<Player>, packet: Any, vararg fields: Pair<String, Any>) {
-            players.forEach{
-                sendPacket(it, setFields(packet, *fields))
-            }
-        }
-
-        fun sendPacket(player: Player, packet: Any, vararg fields: Pair<String, Any>) {
-            TPacketHandler.sendPacket(player, setFields(packet, *fields))
-        }
-
-        fun setFields(any: Any, vararg fields: Pair<String, Any>): Any {
-            fields.forEach { (key, value) ->
-                Reflex.from(any.javaClass, any).set(key, value)
-            }
-            return any
+        val INSTANCE by lazy {
+            nmsProxy<NMS>()
         }
     }
 }

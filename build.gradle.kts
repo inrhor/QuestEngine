@@ -23,7 +23,8 @@ taboolib {
         }
         prefix("QuestEngine")
     }
-    version = "6.0.0-pre15"
+    classifier = null
+    version = "6.0.0-pre16"
 }
 
 repositories {

@@ -8,13 +8,12 @@ import taboolib.module.kether.*
 import taboolib.module.kether.scriptParser
 import java.util.concurrent.CompletableFuture
 
-class KetherControl {
+class KetherControl(val type: Type, var time: Int, val questID: String, val mainQuestID: String): ScriptAction<Void>() {
 
-    class WaitTime(val time: Int, val questID: String, val mainQuestID: String): QuestAction<Void>() {
-        override fun process(frame: QuestContext.Frame): CompletableFuture<Void> {
-            WaitRun.run(frame, time, questID, mainQuestID)
-            return CompletableFuture.completedFuture(null)
-        }
+    override fun run(frame: ScriptFrame): CompletableFuture<Void> {
+        time = if (type == Type.MINUTE) time*1200 else time*20
+        WaitRun.run(frame, time, questID, mainQuestID)
+        return CompletableFuture.completedFuture(null)
     }
 
     object WaitRun {
@@ -30,35 +29,33 @@ class KetherControl {
         }
     }
 
+    enum class Type {
+        SECOND, MINUTE
+    }
+
     /**
      * wait type time to questID mainQuestID
      */
-    companion object {
+    internal object Parser {
+
         @KetherParser(["wait"], namespace = "QuestEngine")
         fun parser() = scriptParser {
-            when (it.expects("s", "minute")) {
-                "s" -> {
-                    try {
-                        val time = it.nextInt()*20
-                        it.mark()
-                        it.expects("to")
-                        WaitTime(time, it.nextToken(), it.nextToken())
-                    } catch (ex: Exception) {
-                        error("error script wait")
-                    }
+            it.mark()
+            val timeUnit = try {
+                it.expects("unit", "timeunit")
+                when (val type = it.nextToken()) {
+                    "s", "second" -> Type.SECOND
+                    "minute" -> Type.MINUTE
+                    else -> throw KetherError.CUSTOM.create("未知时间类型: $type")
                 }
-                "minute" -> {
-                    try {
-                        val time = it.nextInt()*1200
-                        it.mark()
-                        it.expects("to")
-                        WaitTime(time, it.nextToken(), it.nextToken())
-                    } catch (ex: Exception) {
-                        error("error script wait")
-                    }
-                }
-                else -> error("unknown type")
+            } catch (ignored: Exception) {
+                it.reset()
+                Type.SECOND
             }
+            val time = it.nextInt()
+            it.mark()
+            it.expects("to")
+            KetherControl(timeUnit, time, it.nextToken(), it.nextToken())
         }
     }
 

@@ -2,20 +2,40 @@ package cn.inrhor.questengine.common.nms.impl
 
 import cn.inrhor.questengine.common.nms.EntityTypeUtil
 import cn.inrhor.questengine.common.nms.NMS
-import io.izzel.taboolib.Version
-import io.izzel.taboolib.module.lite.SimpleEquip
-import io.izzel.taboolib.module.locale.TLocale
 import net.minecraft.server.v1_16_R1.*
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
+import taboolib.common.reflect.Reflex.Companion.setProperty
+import taboolib.module.chat.colored
+import taboolib.module.nms.MinecraftVersion
+import taboolib.platform.compat.replacePlaceholder
 import java.util.*
 
 class NMSImpl : NMS() {
 
-    private val version = Version.getCurrentVersionInt()
+    private val version = MinecraftVersion.majorLegacy
+
+    fun Player.sendPacket(packet: Any, vararg fields: Pair<String, Any?>) {
+        sendPacket(setFields(packet, *fields))
+    }
+
+    fun sendPacket(players: MutableSet<Player>, packet: Any, vararg fields: Pair<String, Any>) {
+        players.forEach{
+            it.sendPacket(setFields(packet, *fields))
+        }
+    }
+
+    fun setFields(any: Any, vararg fields: Pair<String, Any?>): Any {
+        fields.forEach { (key, value) ->
+            if (value != null) {
+                any.setProperty(key, value)
+            }
+        }
+        return any
+    }
 
     override fun spawnEntity(players: MutableSet<Player>, entityId: Int, entityType: String, location: Location) {
         sendPacket(
@@ -67,7 +87,7 @@ class NMSImpl : NMS() {
     }
 
     override fun destroyEntity(player: Player, entityId: Int) {
-        sendPacket(player, PacketPlayOutEntityDestroy(entityId))
+        player.sendPacket(PacketPlayOutEntityDestroy(entityId))
     }
 
     override fun destroyEntity(players: MutableSet<Player>, entityId: Int) {
@@ -76,17 +96,21 @@ class NMSImpl : NMS() {
         }
     }
 
-    override fun updateEquipmentItem(players: MutableSet<Player>, entityId: Int, itemStack: ItemStack) {
+    override fun updateEquipmentItem(players: MutableSet<Player>, entityId: Int, slot: EquipmentSlot, itemStack: ItemStack) {
         if (version >= 11600) {
             sendPacket(
                 players,
                 PacketPlayOutEntityEquipment(
                     entityId,
-                    listOf(
-                        com.mojang.datafixers.util.Pair(
-                            EnumItemSlot.fromName(
-                                SimpleEquip.fromBukkit(EquipmentSlot.HEAD).nms),
-                            CraftItemStack.asNMSCopy(itemStack)))
+                    listOf(com.mojang.datafixers.util.Pair(when (slot) {
+                        EquipmentSlot.HAND -> EnumItemSlot.MAINHAND
+                        EquipmentSlot.OFF_HAND -> EnumItemSlot.OFFHAND
+                        EquipmentSlot.FEET -> EnumItemSlot.FEET
+                        EquipmentSlot.LEGS -> EnumItemSlot.LEGS
+                        EquipmentSlot.CHEST -> EnumItemSlot.CHEST
+                        EquipmentSlot.HEAD -> EnumItemSlot.HEAD
+                    },
+                    CraftItemStack.asNMSCopy(itemStack)))
                 )
             )
         }
@@ -109,8 +133,7 @@ class NMSImpl : NMS() {
     }
 
     override fun updateEntityMetadata(player: Player, entityId: Int, vararg objects: Any) {
-        sendPacket(
-            player,
+        player.sendPacket(
             PacketPlayOutEntityMetadata(),
             "a" to entityId,
             "b" to objects.map { it as DataWatcher.Item<*> }.toList())
@@ -155,10 +178,10 @@ class NMSImpl : NMS() {
     }
 
     override fun updateDisplayName(player: Player, entityId: Int, name: String) {
-        var colorName = TLocale.Translate.setColored(name)
+        var colorName = name.colored()
         if (colorName.isEmpty()) colorName = " "
         updateEntityMetadata(player, entityId, getMetaEntityCustomName(
-            TLocale.Translate.setPlaceholders(player, colorName)
+            colorName.replacePlaceholder(player)
         ))
     }
 

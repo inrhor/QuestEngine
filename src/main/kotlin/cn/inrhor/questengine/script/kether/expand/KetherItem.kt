@@ -8,8 +8,8 @@ import java.util.concurrent.CompletableFuture
 
 class KetherItem {
 
-    class CheckInv(val item: ParsedAction<*>): QuestAction<Boolean>() {
-        override fun process(frame: QuestContext.Frame): CompletableFuture<Boolean> {
+    class CheckInv(val item: ParsedAction<*>): ScriptAction<Boolean>() {
+        override fun run(frame: ScriptFrame): CompletableFuture<Boolean> {
             return frame.newFrame(item).run<Any>().thenApply {
                 val player = frame.script().sender as? Player ?: error("unknown player")
                 ItemCheck.eval(it.toString()).invHas(player, false)
@@ -17,8 +17,8 @@ class KetherItem {
         }
     }
 
-    class TakeInv(val item: ParsedAction<*>): QuestAction<Boolean>() {
-        override fun process(frame: QuestContext.Frame): CompletableFuture<Boolean> {
+    class TakeInv(val item: ParsedAction<*>): ScriptAction<Boolean>() {
+        override fun run(frame: ScriptFrame): CompletableFuture<Boolean> {
             return frame.newFrame(item).run<Any>().thenApply {
                 val player = frame.script().sender as? Player ?: error("unknown player")
                 ItemCheck.eval(it.toString()).invHas(player, true)
@@ -26,9 +26,10 @@ class KetherItem {
         }
     }
 
-    companion object {
+    internal object Parser {
         @KetherParser(["itemCheck"], namespace = "QuestEngine")
         fun parser() = scriptParser {
+            it.mark()
             when (it.expects("inv", "take")) {
                 "inv" -> CheckInv(it.next(ArgTypes.ACTION))
                 "take" -> TakeInv(it.next(ArgTypes.ACTION))
