@@ -1,22 +1,22 @@
-package cn.inrhor.questengine.command.quest
+package cn.inrhor.questengine.command.innerQuest
 
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.quest.manager.QuestManager
-import cn.inrhor.questengine.common.quest.ui.chat.QuestChat
 import org.bukkit.Bukkit
 import taboolib.common.platform.ProxyCommandSender
 import taboolib.common.platform.subCommand
 import taboolib.module.lang.sendLang
 
-object QuestInfo {
+object QuestInnerFinish {
 
-    val info = subCommand {
+    val finish = subCommand {
         dynamic {
             suggestion<ProxyCommandSender> { _, context ->
-                QuestManager.questMap.map { it.key }
+                Bukkit.getOnlinePlayers().map { it.name }
                 Bukkit.getPlayer(context.args[1])?.let { p ->
                     DataStorage.getPlayerData(p).questDataList.values.map { it.questID }
                 }
+                QuestManager.getQuestModule(context.args[2])?.innerQuestList?.map { it.innerQuestID }
             }
             execute<ProxyCommandSender> { sender, context, _ ->
                 val args = context.args
@@ -30,9 +30,11 @@ object QuestInfo {
                 val questData = QuestManager.getQuestData(uuid, questID)?: return@execute run {
                     sender.sendLang("QUEST.NULL_QUEST_DATA", questID) }
 
+                val innerQuestID = args[3]
 
-                QuestChat.chatNowQuestInfo(player, questData.questUUID)
+                QuestManager.finishInnerQuest(player, questData.questUUID, questID, innerQuestID)
             }
         }
     }
+
 }

@@ -3,33 +3,33 @@ package cn.inrhor.questengine.command
 import cn.inrhor.questengine.command.collaboration.*
 import taboolib.common.platform.CommandBody
 
-object TeamCommand {
+internal object TeamCommand {
 
     @CommandBody
-    val open = TeamOpen
+    val open = TeamOpen.open
 
     @CommandBody
-    val create = TeamCreate
+    val create = TeamCreate.create
 
     @CommandBody
-    val join = TeamJoin
+    val join = TeamJoin.join
 
     @CommandBody
-    val invite = TeamInvite
+    val invite = TeamInvite.invite
 
     @CommandBody
-    val members = TeamMembers
+    val members = TeamMembers.members
 
     @CommandBody
-    val asks = TeamAsks
+    val asks = TeamAsks.asks
 
     @CommandBody
-    val leave = TeamLeave
+    val leave = TeamLeave.leave
 
     @CommandBody
-    val delete = TeamDelete
+    val delete = TeamDelete.delete
 
     @CommandBody
-    val kick = TeamKick
+    val kick = TeamKick.kick
 
 }

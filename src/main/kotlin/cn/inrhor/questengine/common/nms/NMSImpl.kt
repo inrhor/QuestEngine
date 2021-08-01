@@ -1,31 +1,32 @@
-package cn.inrhor.questengine.common.nms.impl
+package cn.inrhor.questengine.common.nms
 
-import cn.inrhor.questengine.common.nms.EntityTypeUtil
-import cn.inrhor.questengine.common.nms.NMS
 import net.minecraft.server.v1_16_R1.*
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
+import taboolib.common.platform.info
 import taboolib.common.reflect.Reflex.Companion.setProperty
 import taboolib.module.chat.colored
 import taboolib.module.nms.MinecraftVersion
 import taboolib.platform.compat.replacePlaceholder
 import java.util.*
+import taboolib.module.nms.*
+
 
 class NMSImpl : NMS() {
 
     val version = MinecraftVersion.majorLegacy
 
-    fun Player.sendPacket(packet: Any, vararg fields: Pair<String, Any?>) {
-        sendPacket(setFields(packet, *fields))
-    }
-
-    fun sendPacket(players: MutableSet<Player>, packet: Any, vararg fields: Pair<String, Any>) {
+    fun packetSend(players: MutableSet<Player>, packet: Any, vararg fields: Pair<String, Any>) {
         players.forEach{
             it.sendPacket(setFields(packet, *fields))
         }
+    }
+
+    fun packetSend(player: Player, packet: Any, vararg fields: Pair<String, Any?>) {
+        player.sendPacket(setFields(packet, *fields))
     }
 
     fun setFields(any: Any, vararg fields: Pair<String, Any?>): Any {
@@ -38,7 +39,7 @@ class NMSImpl : NMS() {
     }
 
     override fun spawnEntity(players: MutableSet<Player>, entityId: Int, entityType: String, location: Location) {
-        sendPacket(
+        packetSend(
             players,
             PacketPlayOutSpawnEntity(),
             "a" to entityId,
@@ -51,16 +52,20 @@ class NMSImpl : NMS() {
     }
 
     override fun spawnAS(players: MutableSet<Player>, entityId: Int, location: Location) {
-        sendPacket(
-            players,
-            PacketPlayOutSpawnEntity(),
-            "a" to entityId,
-            "b" to UUID.randomUUID(),
-            "c" to location.x,
-            "d" to location.y,
-            "e" to location.z,
-            "k" to if (version >= 11400) EntityTypes.ARMOR_STAND else 78
-        )
+        try {
+            packetSend(
+                players,
+                PacketPlayOutSpawnEntity(),
+                "a" to entityId,
+                "b" to UUID.randomUUID(),
+                "c" to location.x,
+                "d" to location.y,
+                "e" to location.z,
+                "k" to if (version >= 11400) EntityTypes.ARMOR_STAND else 78
+            )
+        } catch (ex: Exception) {
+            info(ex)
+        }
     }
 
     override fun initAS(players: MutableSet<Player>, entityId: Int, showName: Boolean, isSmall: Boolean, marker: Boolean) {
@@ -73,7 +78,7 @@ class NMSImpl : NMS() {
     }
 
     override fun spawnItem(players: MutableSet<Player>, entityId: Int, location: Location, itemStack: ItemStack) {
-        sendPacket(
+        packetSend(
             players,
             PacketPlayOutSpawnEntity(),
             "a" to entityId,
@@ -98,7 +103,7 @@ class NMSImpl : NMS() {
 
     override fun updateEquipmentItem(players: MutableSet<Player>, entityId: Int, slot: EquipmentSlot, itemStack: ItemStack) {
         if (version >= 11600) {
-            sendPacket(
+            packetSend(
                 players,
                 PacketPlayOutEntityEquipment(
                     entityId,
@@ -117,7 +122,7 @@ class NMSImpl : NMS() {
     }
 
     override fun updatePassengers(players: MutableSet<Player>, entityId: Int, vararg passengers: Int) {
-        sendPacket(
+        packetSend(
             players,
             PacketPlayOutMount(),
             "a" to entityId,
@@ -125,7 +130,7 @@ class NMSImpl : NMS() {
     }
 
     override fun updateEntityMetadata(players: MutableSet<Player>, entityId: Int, vararg objects: Any) {
-        sendPacket(
+        packetSend(
             players,
             PacketPlayOutEntityMetadata(),
             "a" to entityId,
@@ -133,7 +138,8 @@ class NMSImpl : NMS() {
     }
 
     override fun updateEntityMetadata(player: Player, entityId: Int, vararg objects: Any) {
-        player.sendPacket(
+        packetSend(
+            player,
             PacketPlayOutEntityMetadata(),
             "a" to entityId,
             "b" to objects.map { it as DataWatcher.Item<*> }.toList())
@@ -186,7 +192,7 @@ class NMSImpl : NMS() {
     }
 
     override fun updateLocation(players: MutableSet<Player>, entityId: Int, location: Location) {
-        sendPacket(
+        packetSend(
             players,
             PacketPlayOutEntityTeleport(),
             "a" to entityId,

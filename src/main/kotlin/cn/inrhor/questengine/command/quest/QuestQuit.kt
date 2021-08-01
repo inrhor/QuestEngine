@@ -8,7 +8,7 @@ import taboolib.common.platform.ProxyCommandSender
 import taboolib.common.platform.subCommand
 import taboolib.module.lang.sendLang
 
-object QuestQuit {
+internal object QuestQuit {
 
     @CommandBody
     val quit = subCommand {

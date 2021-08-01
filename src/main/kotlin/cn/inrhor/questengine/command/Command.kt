@@ -3,16 +3,17 @@ package cn.inrhor.questengine.command
 import taboolib.common.platform.CommandBody
 import taboolib.common.platform.CommandHeader
 
-@CommandHeader("QuestEngine", ["que", "qen"])
-object Command {
+@CommandHeader("questengine", ["qen"])
+internal object Command {
 
     @CommandBody(permission = "QuestEngine.admin.quest")
-    val questAdmin = QuestAdminCommand
+    val quest = QuestCommand
 
-    val questUse = QuestUseCommand
+    @CommandBody(permission = "QuestEngine.admin.quest")
+    val innerQuest = QuestInnerCommand
 
     @CommandBody(permission = "QuestEngine.admin.reload")
-    val reload = ReloadCommand
+    val reload = ReloadCommand.reload
 
     @CommandBody(permission = "QuestEngine.use.team")
     val team = TeamCommand
