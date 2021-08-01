@@ -15,7 +15,7 @@ object QuestAccept {
                 Bukkit.getOnlinePlayers().map { it.name }
             }
             execute<ProxyCommandSender> { sender, context, _ ->
-                val args = context.args
+                val args = context.arguments()
 
                 val player = Bukkit.getPlayer(args[1]) ?: return@execute run {
                     sender.sendLang("PLAYER_NOT_ONLINE") }

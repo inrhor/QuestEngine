@@ -13,13 +13,13 @@ object QuestInnerFinish {
         dynamic {
             suggestion<ProxyCommandSender> { _, context ->
                 Bukkit.getOnlinePlayers().map { it.name }
-                Bukkit.getPlayer(context.args[1])?.let { p ->
+                Bukkit.getPlayer(context.argument(1))?.let { p ->
                     DataStorage.getPlayerData(p).questDataList.values.map { it.questID }
                 }
-                QuestManager.getQuestModule(context.args[2])?.innerQuestList?.map { it.innerQuestID }
+                QuestManager.getQuestModule(context.argument(2))?.innerQuestList?.map { it.innerQuestID }
             }
             execute<ProxyCommandSender> { sender, context, _ ->
-                val args = context.args
+                val args = context.arguments()
 
                 val player = Bukkit.getPlayer(args[1])?: return@execute run {
                     sender.sendLang("PLAYER_NOT_ONLINE") }

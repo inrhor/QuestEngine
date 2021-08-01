@@ -14,12 +14,12 @@ object QuestInfo {
         dynamic {
             suggestion<ProxyCommandSender> { _, context ->
                 QuestManager.questMap.map { it.key }
-                Bukkit.getPlayer(context.args[1])?.let { p ->
+                Bukkit.getPlayer(context.argument(1))?.let { p ->
                     DataStorage.getPlayerData(p).questDataList.values.map { it.questID }
                 }
             }
             execute<ProxyCommandSender> { sender, context, _ ->
-                val args = context.args
+                val args = context.arguments()
 
                 val player = Bukkit.getPlayer(args[1])?: return@execute run {
                     sender.sendLang("PLAYER_NOT_ONLINE") }

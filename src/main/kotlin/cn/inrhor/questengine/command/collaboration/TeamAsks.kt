@@ -4,7 +4,6 @@ import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.collaboration.ui.chat.HasTeam
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import taboolib.common.platform.ProxyPlayer
 import taboolib.common.platform.subCommand
 import taboolib.platform.util.sendLang
 
@@ -13,33 +12,30 @@ object TeamAsks {
     val asks = subCommand {
         literal("open") {
             dynamic {
-                execute<ProxyPlayer> { sender, _, _ ->
-                    val player = sender as Player
-                    val pUUID = player.uniqueId
+                execute<Player> { sender, _, _ ->
+                    val pUUID = sender.uniqueId
                     val tData = TeamManager.getTeamData(pUUID)?: return@execute run {
                         sender.sendLang("TEAM.NO_TEAM") }
                     if (!TeamManager.isLeader(pUUID, tData)) return@execute run {
                         sender.sendLang("TEAM.NOT_LEADER") }
-                    HasTeam.openAsks(player)
+                    HasTeam.openAsks(sender)
                 }
             }
         }
         literal("agree") {
             dynamic {
-                execute<ProxyPlayer> { sender, context, _ ->
-                    val args = context.args
-                    val player = sender as Player
-                    manager(player, args)
+                execute<Player> { sender, context, _ ->
+                    val args = context.arguments()
+                    manager(sender, args)
                     return@execute
                 }
             }
         }
         literal("reject") {
             dynamic {
-                execute<ProxyPlayer> { sender, context, _ ->
-                    val args = context.args
-                    val player = sender as Player
-                    manager(player, args, false)
+                execute<Player> { sender, context, _ ->
+                    val args = context.arguments()
+                    manager(sender, args, false)
                     return@execute
                 }
             }
