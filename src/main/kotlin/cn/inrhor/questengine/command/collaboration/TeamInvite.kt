@@ -13,8 +13,8 @@ object TeamInvite {
             suggestion<Player> { _, _ ->
                 Bukkit.getOnlinePlayers().map { it.name }
             }
-            execute<Player> { sender, context, _ ->
-                val args = context.arguments()
+            execute<Player> { sender, context, argument ->
+                val args = argument.split(" ")
                 val pUUID = sender.uniqueId
                 val teamData = TeamManager.getTeamData(pUUID)?: return@execute run {
                     sender.sendLang("TEAM.NO_TEAM") }

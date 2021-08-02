@@ -9,23 +9,30 @@ import taboolib.module.lang.sendLang
 object QuestAccept {
 
     val accept = subCommand {
+        // player
         dynamic {
             suggestion<ProxyCommandSender> { _, _ ->
-                QuestManager.questMap.map { it.key }
                 Bukkit.getOnlinePlayers().map { it.name }
             }
-            execute<ProxyCommandSender> { sender, context, _ ->
-                val args = context.arguments()
-
-                val player = Bukkit.getPlayer(args[1]) ?: return@execute run {
-                    sender.sendLang("PLAYER_NOT_ONLINE") }
-
-                val questID = args[2]
-                if (!QuestManager.questMap.containsKey(questID)) {
-                    return@execute
+            // questID
+            dynamic {
+                suggestion<ProxyCommandSender> { _, _ ->
+                    QuestManager.questMap.map { it.key }
                 }
+                execute<ProxyCommandSender> { sender, context, argument ->
+                    val args = argument.split(" ")
 
-                QuestManager.acceptQuest(player, questID)
+                    val player = Bukkit.getPlayer(context.argument(-1)!!) ?: return@execute run {
+                        sender.sendLang("PLAYER_NOT_ONLINE")
+                    }
+
+                    val questID = args[0]
+                    if (!QuestManager.questMap.containsKey(questID)) {
+                        return@execute
+                    }
+
+                    QuestManager.acceptQuest(player, questID)
+                }
             }
         }
     }

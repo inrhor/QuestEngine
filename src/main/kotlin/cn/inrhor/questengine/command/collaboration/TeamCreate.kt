@@ -9,11 +9,11 @@ object TeamCreate {
 
     val create = subCommand {
         dynamic {
-            execute<Player> { sender, context, _ ->
+            execute<Player> { sender, _, argument ->
                 val pUUID = sender.uniqueId
                 if (TeamManager.hasTeam(pUUID)) return@execute run {
                     sender.sendLang("TEAM.HAS_TEAM") }
-                val teamName = context.argument(1)
+                val teamName = argument.split(" ")[0]
                 TeamManager.createTeam(teamName, pUUID)
             }
         }

@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.script.kether.expand
 
 import cn.inrhor.questengine.common.dialog.animation.text.type.TextWrite
-import taboolib.common.platform.info
 import taboolib.module.kether.KetherParser
 import taboolib.module.kether.ScriptAction
 import taboolib.module.kether.ScriptFrame
@@ -29,7 +28,6 @@ class KetherTextWrite(val delay: Int, val speedWrite: Int, val text: String) : S
             val delay = it.nextInt()
             val speedWrite = it.nextInt()
             val text = it.nextToken()
-            info("Kether>>>>> $delay  $speedWrite  $text")
             KetherTextWrite(delay, speedWrite, text)
         }
     }

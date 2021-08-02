@@ -10,30 +10,40 @@ object QuestInnerAccept {
 
     val accept = subCommand {
         dynamic {
-            suggestion<ProxyCommandSender> { _, context ->
+            suggestion<ProxyCommandSender> { _, _ ->
                 Bukkit.getOnlinePlayers().map { it.name }
-                QuestManager.questMap.map { it.key }
-                QuestManager.getQuestModule(context.argument(1))?.innerQuestList?.map { it.innerQuestID }
             }
-            execute<ProxyCommandSender> { sender, context, _ ->
-                val args = context.arguments()
-
-                val player = Bukkit.getPlayer(args[1])?: return@execute run {
-                    sender.sendLang("PLAYER_NOT_ONLINE") }
-                val uuid = player.uniqueId
-
-                val questID = args[2]
-                if (!QuestManager.questMap.containsKey(questID)) {
-                    return@execute
+            dynamic {
+                suggestion<ProxyCommandSender> { _, _ ->
+                    QuestManager.questMap.map { it.key }
                 }
+                dynamic {
+                    suggestion<ProxyCommandSender> { _, context ->
+                        QuestManager.getQuestModule(context.argument(-2)!!)?.innerQuestList?.map { it.innerQuestID }
+                    }
+                    execute<ProxyCommandSender> { sender, context, argument ->
+                        val args = argument.split(" ")
 
-                val innerQuestID = args[3]
+                        val player = Bukkit.getPlayer(context.argument(-2)!!) ?: return@execute run {
+                            sender.sendLang("PLAYER_NOT_ONLINE")
+                        }
+                        val uuid = player.uniqueId
 
-                val questData = QuestManager.getQuestData(uuid, questID)?: return@execute run {
-                    sender.sendLang("QUEST.NULL_QUEST_DATA") }
+                        val questID = context.argument(-1)!!
+                        if (!QuestManager.questMap.containsKey(questID)) {
+                            return@execute
+                        }
 
-                QuestManager.acceptInnerQuest(player, questData, innerQuestID, true)
+                        val innerQuestID = args[0]
 
+                        val questData = QuestManager.getQuestData(uuid, questID) ?: return@execute run {
+                            sender.sendLang("QUEST.NULL_QUEST_DATA")
+                        }
+
+                        QuestManager.acceptInnerQuest(player, questData, innerQuestID, true)
+
+                    }
+                }
             }
         }
     }

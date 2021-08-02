@@ -12,25 +12,31 @@ object QuestFinish {
 
     val finish = subCommand {
         dynamic {
-            suggestion<ProxyCommandSender> { _, context->
+            suggestion<ProxyCommandSender> { _, context ->
                 Bukkit.getOnlinePlayers().map { it.name }
-                Bukkit.getPlayer(context.argument(1))?.let { p ->
-                    DataStorage.getPlayerData(p).questDataList.values.map { it.questID }
-                }
             }
-            execute<ProxyCommandSender> { sender, context, _ ->
-                val args = context.arguments()
+            dynamic {
+                suggestion<ProxyCommandSender> { _, context ->
+                    Bukkit.getPlayer(context.argument(-1)!!)?.let { p ->
+                        DataStorage.getPlayerData(p).questDataList.values.map { it.questID }
+                    }
+                }
+                execute<ProxyCommandSender> { sender, context, argument ->
+                    val args = argument.split(" ")
 
-                val player = Bukkit.getPlayer(args[1])?: return@execute run {
-                    sender.sendLang("PLAYER_NOT_ONLINE") }
-                val uuid = player.uniqueId
+                    val player = Bukkit.getPlayer(context.argument(-1)!!) ?: return@execute run {
+                        sender.sendLang("PLAYER_NOT_ONLINE")
+                    }
+                    val uuid = player.uniqueId
 
-                val questID = args[2]
+                    val questID = args[0]
 
-                val questData = QuestManager.getQuestData(uuid, questID)?: return@execute run {
-                    sender.sendLang("QUEST.NULL_QUEST_DATA", questID) }
+                    val questData = QuestManager.getQuestData(uuid, questID) ?: return@execute run {
+                        sender.sendLang("QUEST.NULL_QUEST_DATA", questID)
+                    }
 
-                QuestManager.endQuest(player, questData, QuestState.FINISH, false)
+                    QuestManager.endQuest(player, questData, QuestState.FINISH, false)
+                }
             }
         }
     }

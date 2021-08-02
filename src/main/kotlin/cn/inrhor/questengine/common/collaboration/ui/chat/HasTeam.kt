@@ -32,7 +32,7 @@ object HasTeam {
         TellrawJson()
             .append(mem.colored())
             .hoverText(memHover.colored())
-            .runCommand("/QuestEngine teamMembers")
+            .runCommand("/questengine team members")
             .sendTo(adaptPlayer(player))
 
         if (TeamManager.isLeader(uuid, tData)) {
@@ -41,14 +41,14 @@ object HasTeam {
             TellrawJson()
                 .append(asks.colored())
                 .hoverText(asksHover.colored())
-                .runCommand("/QuestEngine teamAsks")
+                .runCommand("/questengine team asks open")
                 .sendTo(adaptPlayer(player))
             val del = UtilTeam.getStr(yaml, "hasTeamInfo.delete.content", tData, leaderName)
             val delHover = UtilTeam.getStr(yaml, "hasTeamInfo.delete.hover", tData, leaderName)
             TellrawJson()
                 .append(del.colored())
                 .hoverText(delHover.colored())
-                .runCommand("/QuestEngine teamDelete")
+                .runCommand("/questengine team delete")
                 .sendTo(adaptPlayer(player))
         }else {
             val left = UtilTeam.getStr(yaml, "hasTeamInfo.leave.content", tData, leaderName)
@@ -56,7 +56,7 @@ object HasTeam {
             TellrawJson()
                 .append(left.colored())
                 .hoverText(leftHover.colored())
-                .runCommand("/QuestEngine teamLeave")
+                .runCommand("/questengine team leave")
                 .sendTo(adaptPlayer(player))
         }
 
@@ -90,7 +90,7 @@ object HasTeam {
             if (TeamManager.isLeader(uuid, tData) && it != uuid) {
                 member
                     .hoverText(kickHover.colored())
-                    .suggestCommand("/questengine teamKick $mName")
+                    .suggestCommand("/questengine team kick $mName")
             }
             member.sendTo(adaptPlayer(player))
         }
@@ -132,12 +132,12 @@ object HasTeam {
             TellrawJson()
                 .append(agree.replace("%memberName%", mName).colored())
                 .hoverText(HexColor.translate(agreeHover))
-                .suggestCommand("/questengine teamAskAgree $mName")
+                .suggestCommand("/questengine team asks agree $mName")
                 .sendTo(adaptPlayer(player))
             TellrawJson()
                 .append(reject.replace("%memberName%", mName).colored())
                 .hoverText(HexColor.translate(rejectHover))
-                .suggestCommand("/questengine teamAskReject $mName")
+                .suggestCommand("/questengine team asks reject $mName")
                 .sendTo(adaptPlayer(player))
         }
 

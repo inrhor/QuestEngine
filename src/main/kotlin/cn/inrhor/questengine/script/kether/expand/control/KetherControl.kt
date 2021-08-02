@@ -3,6 +3,7 @@ package cn.inrhor.questengine.script.kether.expand.control
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.database.data.DataStorage
 import org.bukkit.entity.Player
+import taboolib.common.platform.ProxyPlayer
 import taboolib.library.kether.*
 import taboolib.module.kether.*
 import taboolib.module.kether.scriptParser
@@ -11,14 +12,14 @@ import java.util.concurrent.CompletableFuture
 class KetherControl(val type: Type, var time: Int, val questID: String, val mainQuestID: String): ScriptAction<Void>() {
 
     override fun run(frame: ScriptFrame): CompletableFuture<Void> {
+        val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
         time = if (type == Type.MINUTE) time*1200 else time*20
-        WaitRun.run(frame, time, questID, mainQuestID)
+        WaitRun.run(player.cast(), time, questID, mainQuestID)
         return CompletableFuture.completedFuture(null)
     }
 
     object WaitRun {
-        fun run(frame: QuestContext.Frame, time: Int, questID: String, mainQuestID: String) {
-            val player = frame.script().sender as? Player ?: error("unknown player")
+        fun run(player: Player, time: Int, questID: String, mainQuestID: String) {
             val pData = DataStorage.getPlayerData(player)
             val cMap = pData.controlList
             val id = QuestManager.generateControlID(questID, mainQuestID)

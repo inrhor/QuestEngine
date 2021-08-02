@@ -12,8 +12,8 @@ object TeamJoin {
             suggestion<Player> { _, _ ->
                 TeamManager.teamsMap.map { it.key }
             }
-            execute<Player> { sender, context, _ ->
-                val args = context.arguments()
+            execute<Player> { sender, context, argument ->
+                val args = argument.split(" ")
                 val pUUID = sender.uniqueId
                 if (TeamManager.hasTeam(pUUID)) return@execute run {
                     sender.sendLang("TEAM.HAS_TEAM") }

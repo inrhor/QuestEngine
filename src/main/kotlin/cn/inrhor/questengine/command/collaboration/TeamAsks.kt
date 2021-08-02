@@ -11,38 +11,35 @@ object TeamAsks {
 
     val asks = subCommand {
         literal("open") {
-            dynamic {
-                execute<Player> { sender, _, _ ->
-                    val pUUID = sender.uniqueId
-                    val tData = TeamManager.getTeamData(pUUID)?: return@execute run {
-                        sender.sendLang("TEAM.NO_TEAM") }
-                    if (!TeamManager.isLeader(pUUID, tData)) return@execute run {
-                        sender.sendLang("TEAM.NOT_LEADER") }
-                    HasTeam.openAsks(sender)
-                }
+            execute<Player> { sender, _, _ ->
+                val pUUID = sender.uniqueId
+                val tData = TeamManager.getTeamData(pUUID)?: return@execute run {
+                    sender.sendLang("TEAM.NO_TEAM") }
+                if (!TeamManager.isLeader(pUUID, tData)) return@execute run {
+                    sender.sendLang("TEAM.NOT_LEADER") }
+                HasTeam.openAsks(sender)
             }
         }
         literal("agree") {
             dynamic {
-                execute<Player> { sender, context, _ ->
-                    val args = context.arguments()
-                    manager(sender, args)
+                execute<Player> { sender, _, argument ->
+                    manager(sender, argument)
                     return@execute
                 }
             }
         }
         literal("reject") {
             dynamic {
-                execute<Player> { sender, context, _ ->
-                    val args = context.arguments()
-                    manager(sender, args, false)
+                execute<Player> { sender, _, argument ->
+                    manager(sender, argument, false)
                     return@execute
                 }
             }
         }
     }
 
-    private fun manager(player: Player, args: Array<String>, agree: Boolean = true) {
+    private fun manager(player: Player, argument: String, agree: Boolean = true) {
+        val args = argument.split(" ")
         val pUUID = player.uniqueId
         val tData = TeamManager.getTeamData(pUUID)?: return run {
             player.sendLang("TEAM.NO_TEAM") }

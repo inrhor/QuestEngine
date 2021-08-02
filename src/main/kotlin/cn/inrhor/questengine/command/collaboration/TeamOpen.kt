@@ -11,13 +11,12 @@ object TeamOpen {
     val open = subCommand {
         execute<Player> { sender, _, _ ->
             val pUUID = sender.uniqueId
-            val player = sender as Player
-            player.sendMessage("command open")
+            sender.sendMessage("command open")
             if (TeamManager.hasTeam(pUUID)) {
-                HasTeam.openInfo(player)
+                HasTeam.openInfo(sender)
                 return@execute
             }
-            NoTeam.openHome(player)
+            NoTeam.openHome(sender)
         }
     }
 }

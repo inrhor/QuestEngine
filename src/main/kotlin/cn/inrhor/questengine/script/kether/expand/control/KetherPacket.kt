@@ -3,11 +3,14 @@ package cn.inrhor.questengine.script.kether.expand.control
 import cn.inrhor.questengine.common.nms.NMS
 import cn.inrhor.questengine.common.packet.PacketManager
 import org.bukkit.Bukkit
-import org.bukkit.Location
 import org.bukkit.entity.Player
+import taboolib.common.platform.ProxyPlayer
+import taboolib.common.platform.info
+import taboolib.common.util.Location
 import taboolib.library.kether.*
 import taboolib.module.kether.*
 import taboolib.module.kether.scriptParser
+import taboolib.platform.util.toBukkitLocation
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -25,8 +28,8 @@ class KetherPacket {
     class SendPacket(val packetID: String, val location: ParsedAction<*>): ScriptAction<Void>() {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {
             return frame.newFrame(location).run<Location>().thenAccept {
-                val player = frame.script().sender as? Player ?: error("unknown player")
-                sendPacket(packetID, player, it)
+                val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
+                sendPacket(packetID, player.cast(), it)
             }
         }
 
@@ -38,7 +41,7 @@ class KetherPacket {
          * 将根据packetID检索id
          */
         private fun sendPacket(packetID: String, sender: Player, location: Location) {
-            PacketManager.sendThisPacket(packetID, sender, location)
+            PacketManager.sendThisPacket(packetID, sender, location.toBukkitLocation())
         }
     }
 
@@ -48,8 +51,8 @@ class KetherPacket {
     class RemovePacket(val viewer: Boolean, val packetID: String): ScriptAction<Void>() {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {
             if (viewer) {
-                val player = frame.script().sender as? Player ?: error("unknown player")
-                removePacket(mutableSetOf(player), packetID)
+                val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
+                removePacket(mutableSetOf(player.cast()), packetID)
                 return CompletableFuture.completedFuture(null)
             }
             val viewers = mutableSetOf<Player>()

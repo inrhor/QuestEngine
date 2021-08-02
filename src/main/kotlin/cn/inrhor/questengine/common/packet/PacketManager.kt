@@ -34,7 +34,8 @@ object PacketManager {
     }
 
     fun sendThisPacket(packetID: String, sender: Player, location: Location) {
-        val packetModule = packetMap[packetID]?: return error("packetID???")
+        sender.teleport(location)
+        val packetModule = packetMap[packetID]?: return
         val viewers = mutableSetOf(sender)
         if (packetModule.viewer == "all") viewers.addAll(Bukkit.getOnlinePlayers())
         val hook = packetModule.hook.lowercase(Locale.getDefault())
