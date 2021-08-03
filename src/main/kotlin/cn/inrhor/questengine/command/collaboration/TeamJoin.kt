@@ -16,10 +16,10 @@ object TeamJoin {
                 val args = argument.split(" ")
                 val pUUID = sender.uniqueId
                 if (TeamManager.hasTeam(pUUID)) return@execute run {
-                    sender.sendLang("TEAM.HAS_TEAM") }
+                    sender.sendLang("TEAM-HAS_TEAM") }
                 val teamName = args[0]
                 val tData = TeamManager.getTeamData(teamName)?: return@execute run {
-                    sender.sendLang("TEAM.NO_EXIST_TEAM") }
+                    sender.sendLang("TEAM-NO_EXIST_TEAM") }
                 TeamManager.addAsk(pUUID, tData)
             }
         }

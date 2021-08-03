@@ -1,9 +1,10 @@
 package cn.inrhor.questengine.common.listener.holo
 
-import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.common.dialog.DialogManager
 import net.citizensnpcs.api.event.NPCLeftClickEvent
 import net.citizensnpcs.api.event.NPCRightClickEvent
+import net.citizensnpcs.api.npc.NPC
+import org.bukkit.entity.Player
 import taboolib.common.platform.SubscribeEvent
 
 object ClickCitizens {
@@ -11,20 +12,20 @@ object ClickCitizens {
     @SubscribeEvent
     fun rightClickNPC(ev: NPCRightClickEvent) {
         val player = ev.clicker
-        val npc = ev.npc.entity
-        val npcLoc = npc.location
-        val npcIDName = ev.npc.name
-        DialogManager.sendDialogHolo(mutableSetOf(player), npcIDName, npcLoc)
+        val npc = ev.npc
+        npc(player, npc)
     }
 
     @SubscribeEvent
     fun leftClickNPC(ev: NPCLeftClickEvent) {
         val player = ev.clicker
-        val npc = ev.npc.entity
-        val npcLoc = npc.location
-        val npcIDName = ev.npc.name
-        DialogManager.sendDialogHolo(mutableSetOf(player), npcIDName, npcLoc)
+        val npc = ev.npc
+        npc(player, npc)
     }
 
-    fun isCitizensNPC() = (QuestEngine.config.getString("dialog.npcPlugin") == "Citizens")
+    private fun npc(player: Player, npc: NPC) {
+        val npcLoc = npc.entity.location
+        val npcID= npc.id.toString()
+        DialogManager.sendDialogHolo(mutableSetOf(player), npcID, npcLoc)
+    }
 }

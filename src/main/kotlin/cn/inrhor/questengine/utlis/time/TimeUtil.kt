@@ -23,8 +23,8 @@ object TimeUtil {
      */
     fun timeUnitLang(targetData: TargetData): String {
         when (targetData.timeUnit.lowercase(Locale.getDefault())) {
-            "s" -> return console().asLangText("QUEST.TIME_S")
-            "minute" -> return console().asLangText("QUEST.TIME_MINUTE")
+            "s" -> return console().asLangText("QUEST-TIME_S")
+            "minute" -> return console().asLangText("QUEST-TIME_MINUTE")
         }
         return ""
     }
@@ -47,10 +47,10 @@ object TimeUtil {
         val hour = i / (60 * 60 * 1000) - day * 24
         val minute = i / (60 * 1000) - day * 24 * 60 - hour * 60
         val second = i / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - minute * 60
-        val d = player.asLangText("QUEST.TIME_DAY")
-        val h = player.asLangText("QUEST.TIME_HOUR")
-        val m = player.asLangText("QUEST.TIME_MINUTE")
-        val s = player.asLangText("QUEST.TIME_S")
+        val d = player.asLangText("QUEST-TIME_DAY")
+        val h = player.asLangText("QUEST-TIME_HOUR")
+        val m = player.asLangText("QUEST-TIME_MINUTE")
+        val s = player.asLangText("QUEST-TIME_S")
         return "$day$d$hour$h$minute$m$second$s"
     }
 

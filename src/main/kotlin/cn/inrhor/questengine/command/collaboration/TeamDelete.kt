@@ -11,7 +11,7 @@ object TeamDelete {
         execute<Player> { sender, context, _ ->
             val pUUID = sender.uniqueId
             val teamData = TeamManager.getTeamData(pUUID)?: return@execute run {
-                sender.sendLang("TEAM.NO_TEAM") }
+                sender.sendLang("TEAM-NO_TEAM") }
             teamData.delTeam()
         }
     }

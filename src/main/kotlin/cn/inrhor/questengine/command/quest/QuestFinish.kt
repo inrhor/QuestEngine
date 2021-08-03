@@ -32,7 +32,7 @@ object QuestFinish {
                     val questID = args[0]
 
                     val questData = QuestManager.getQuestData(uuid, questID) ?: return@execute run {
-                        sender.sendLang("QUEST.NULL_QUEST_DATA", questID)
+                        sender.sendLang("QUEST-NULL_QUEST_DATA", questID)
                     }
 
                     QuestManager.endQuest(player, questData, QuestState.FINISH, false)

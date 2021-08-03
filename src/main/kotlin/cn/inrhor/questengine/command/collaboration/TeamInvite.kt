@@ -17,9 +17,9 @@ object TeamInvite {
                 val args = argument.split(" ")
                 val pUUID = sender.uniqueId
                 val teamData = TeamManager.getTeamData(pUUID)?: return@execute run {
-                    sender.sendLang("TEAM.NO_TEAM") }
+                    sender.sendLang("TEAM-NO_TEAM") }
                 if (!TeamManager.isLeader(pUUID, teamData)) return@execute run {
-                    sender.sendLang("TEAM.NOT_LEADER") }
+                    sender.sendLang("TEAM-NOT_LEADER") }
                 val mName = args[0]
                 val m = Bukkit.getPlayer(mName)?: return@execute run {
                     sender.sendLang("PLAYER_NOT_ONLINE") }

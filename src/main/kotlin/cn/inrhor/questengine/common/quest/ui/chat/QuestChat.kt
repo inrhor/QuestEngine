@@ -18,13 +18,13 @@ object QuestChat {
      */
     fun chatNowQuestInfo(player: Player, questUUID: UUID) {
         val innerData = QuestManager.getInnerQuestData(player, questUUID)?: return run {
-            player.sendLang("QUEST.NULL_QUEST_DATA", "chatNowQuestInfo")
+            player.sendLang("QUEST-NULL_QUEST_DATA", "chatNowQuestInfo")
         }
         val questID = innerData.questID
         val innerID = innerData.innerQuestID
 
         val innerModule = QuestManager.getInnerQuestModule(questID, innerID)?: return run {
-            player.sendLang("QUEST.ERROR_FILE", questID)
+            player.sendLang("QUEST-ERROR_FILE", questID)
         }
 
         val ds = UtilString.getJsonStr(innerModule.description)

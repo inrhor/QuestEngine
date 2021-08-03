@@ -35,7 +35,7 @@ object QuestInnerFinish {
                         val questID = context.argument(-1)!!
 
                         val questData = QuestManager.getQuestData(uuid, questID) ?: return@execute run {
-                            sender.sendLang("QUEST.NULL_QUEST_DATA", questID)
+                            sender.sendLang("QUEST-NULL_QUEST_DATA", questID)
                         }
 
                         val innerQuestID = args[0]

@@ -1,6 +1,6 @@
 target:
   1:
-    name: give ady item
+    name: give npc-right item
     id:
       - test
     item: "minecraft:stone;amount:5"
@@ -22,7 +22,11 @@ target:
       - "    &r剩余时间 &8%time%"
       - ""
   3:
-    name: player die
+    name: self death
+    cause:
+      - DROWNING
+      - SUFFOCATION
+    number: 1
     time: minute 1
     reward: 2 true
     description:

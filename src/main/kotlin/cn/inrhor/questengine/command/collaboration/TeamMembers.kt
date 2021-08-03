@@ -12,7 +12,7 @@ object TeamMembers {
         execute<Player> { sender, _, _ ->
             val pUUID = sender.uniqueId
             if (!TeamManager.hasTeam(pUUID)) return@execute run {
-                sender.sendLang("TEAM.NO_TEAM") }
+                sender.sendLang("TEAM-NO_TEAM") }
             HasTeam.openMembers(sender)
         }
     }

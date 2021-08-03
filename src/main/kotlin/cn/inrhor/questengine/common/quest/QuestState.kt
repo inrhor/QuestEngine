@@ -39,10 +39,10 @@ object QuestStateUtil {
      */
     fun stateUnit(player: Player, state: QuestState): String {
         return when (state) {
-            QuestState.DOING -> player.asLangText("QUEST.STATE_DOING")?: return "null"
-            QuestState.FAILURE -> player.asLangText("QUEST.STATE_FAILURE")?: return "null"
-            QuestState.FINISH -> player.asLangText("QUEST.STATE_FINISH")?: return "null"
-            else -> player.asLangText("QUEST.STATE_IDLE")?: return "null"
+            QuestState.DOING -> player.asLangText("QUEST-STATE_DOING")?: return "null"
+            QuestState.FAILURE -> player.asLangText("QUEST-STATE_FAILURE")?: return "null"
+            QuestState.FINISH -> player.asLangText("QUEST-STATE_FINISH")?: return "null"
+            else -> player.asLangText("QUEST-STATE_IDLE")?: return "null"
         }
     }
 

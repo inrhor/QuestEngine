@@ -12,7 +12,7 @@ object TeamCreate {
             execute<Player> { sender, _, argument ->
                 val pUUID = sender.uniqueId
                 if (TeamManager.hasTeam(pUUID)) return@execute run {
-                    sender.sendLang("TEAM.HAS_TEAM") }
+                    sender.sendLang("TEAM-HAS_TEAM") }
                 val teamName = argument.split(" ")[0]
                 TeamManager.createTeam(teamName, pUUID)
             }

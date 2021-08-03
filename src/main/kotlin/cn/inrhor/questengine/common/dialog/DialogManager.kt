@@ -25,7 +25,7 @@ object DialogManager {
      */
     fun register(dialogID: String, dialogModule: DialogModule) {
         if (exist(dialogID)) {
-            console().sendLang("DIALOG.EXIST_DIALOG_ID", UtilString.pluginTag, dialogID)
+            console().sendLang("DIALOG-EXIST_DIALOG_ID", UtilString.pluginTag, dialogID)
             return
         }
         val itemContents = mutableListOf<String>()
@@ -56,7 +56,7 @@ object DialogManager {
      * 加载并注册对话
      */
     fun loadDialog() {
-        val dialogFolder = GetFile.getFile("space/dialog/example.yml", "DIALOG.NO_FILES", true)
+        val dialogFolder = GetFile.getFile("space/dialog/example.yml", "DIALOG-NO_FILES", true)
         GetFile.getFileList(dialogFolder).forEach{
             DialogFile.checkRegDialog(it)
         }

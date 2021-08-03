@@ -3,46 +3,43 @@ package cn.inrhor.questengine.common.quest.target
 import cn.inrhor.questengine.api.quest.ConditionType
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.api.quest.TargetExtend
-import cn.inrhor.questengine.common.database.data.quest.QuestData
-import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
-import cn.inrhor.questengine.common.quest.QuestTarget
-import cn.inrhor.questengine.common.quest.manager.RewardManager
 import cn.inrhor.questengine.common.quest.manager.TargetManager
-import cn.inrhor.questengine.script.kether.KetherHandler
-import org.bukkit.entity.Player
+import cn.inrhor.questengine.common.quest.target.util.ClickNPC
+import net.citizensnpcs.api.event.NPCLeftClickEvent
 import java.util.*
 
-object TargetGiveAdyItem/*: TargetExtend<AdyeshachEntityInteractEvent>()*/ {
+object TargetNpcLeftItem: TargetExtend<NPCLeftClickEvent>() {
 
-    /*override val name = "give ady item"
+    override val name = "give npc-left item"
 
-    override var event = AdyeshachEntityInteractEvent::class
+    override var event = NPCLeftClickEvent::class
 
     init {
         tasker{
+            val player = clicker
             val questData = QuestManager.getDoingQuest(player)?: return@tasker player
             if (!QuestManager.matchQuestMode(questData)) return@tasker player
             val innerData = questData.questInnerData
             val innerTarget = QuestManager.getDoingTarget(player, name)?: return@tasker player
             // 建议注意顺序判断
-            val id = object: ConditionType("mutableListOf(id") {
+            val id = object: ConditionType(mutableListOf("id")) {
                 override fun check(): Boolean {
-                    return (idTrigger(innerTarget, entity.id))
+                    return (ClickNPC.idTrigger(innerTarget, npc.id.toString()))
                 }
             }
             val item = object: ConditionType("item") {
                 override fun check(): Boolean {
-                    return (itemTrigger(player, questData, innerTarget, innerData))
+                    return (ClickNPC.itemTrigger(player, questData, innerTarget, innerData))
                 }
             }
             // 刷新
-            TargetManager.register(name, id)
-            TargetManager.register(name, item)
+            TargetManager.register(name, "id", id)
+            TargetManager.register(name, "item", item)
             player
         }
         // 注册
-        TargetManager.register(name, ConditionType(mutableListOf("id")))
-        TargetManager.register(name, ConditionType("item"))
-    }*/
+        TargetManager.register(name, "id", ConditionType(mutableListOf("id")))
+        TargetManager.register(name, "item", ConditionType("item"))
+    }
 
 }

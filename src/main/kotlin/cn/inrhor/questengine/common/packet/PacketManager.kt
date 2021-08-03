@@ -34,7 +34,6 @@ object PacketManager {
     }
 
     fun sendThisPacket(packetID: String, sender: Player, location: Location) {
-        sender.teleport(location)
         val packetModule = packetMap[packetID]?: return
         val viewers = mutableSetOf(sender)
         if (packetModule.viewer == "all") viewers.addAll(Bukkit.getOnlinePlayers())
@@ -83,7 +82,7 @@ object PacketManager {
      * 加载并注册数据包文件
      */
     fun loadPacket() {
-        val packetFolder = GetFile.getFile("space/packet/example.yml", "PACKET.NO_FILES", true)
+        val packetFolder = GetFile.getFile("space/packet/example.yml", "PACKET-NO_FILES", true)
         GetFile.getFileList(packetFolder).forEach{
             checkRegPacket(it)
         }
@@ -95,7 +94,7 @@ object PacketManager {
     private fun checkRegPacket(file: File) {
         val yaml = YamlConfiguration.loadConfiguration(file)
         if (yaml.getKeys(false).isEmpty()) {
-            console().sendLang("PACKET.EMPTY_CONTENT", UtilString.pluginTag, file.name)
+            console().sendLang("PACKET-EMPTY_CONTENT", UtilString.pluginTag, file.name)
             return
         }
         for (packetID in yaml.getKeys(false)) {

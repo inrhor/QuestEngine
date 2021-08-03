@@ -1,69 +1,43 @@
-LOADER:
-  INFO:
-    - "&7&l[ &c&li &7&l]&r  ┝  &3正在加载插件  &f{0}"
-    - "&7&l[ &c&li &7&l]&r  ┝  &3当前插件版本  &f{1}"
-  TIME_COST: "{0}&r 所有配置载入完成，耗时 &8{1}ms"
-  FILE_FAIL_UPDATE: "{0}&c 文件更新失败： &r{1}"
+LOADER-INFO:
+  - "&7&l[ &c&li &7&l]&r  ┝  &3正在加载插件  &f{0}"
+  - "&7&l[ &c&li &7&l]&r  ┝  &3当前插件版本  &f{1}"
+LOADER-TIME_COST: "{0}&r 所有配置载入完成，耗时 &8{1}ms"
 
-DIALOG:
-  ERROR_FILE: "&7&l[ &c&li &7&l]&c 对话配置不存在或缺少键值： &r{0}"
-  NO_FILES: "{0}&r &6dialog &8文件夹&c不存在，&8开始创建 &6dialog &8文件夹"
-  EMPTY_CONTENT: "{0}&r &6{1} &c没有内容或标准错误"
-  EXIST_DIALOG_ID: "{0}&r &6{1} &8已有相同已注册的对话ID"
-  NO_EXIST_DIALOG_ID: "{0}&r &6{1} &c不存在该对话ID"
 
-QUEST:
-  TIME_S: "秒"
-  TIME_MINUTE: "分"
-  TIME_HOUR: "时"
-  TIME_DAY: "天"
-  STATE_DOING: "正在进行"
-  STATE_IDLE: "闲置中"
-  STATE_FINISH: "已完成"
-  FAILURE: "失败"
-  NOT_ACCEPT: "未接受"
-  ALWAYS: "不限时"
-  ERROR_FILE: "&7&l[ &c&li &7&l]&c 任务配置不存在或缺少键值： &r{0}"
-  ALREADY_ACCEPT: "&7&l[ &c&li &7&l]&c 已接受过任务，请完成任务"
-  NULL_QUEST_DATA: "&7&l[ &c&li &7&l]&c 不存在任务数据 &r{0}"
+DIALOG-ERROR-FILE: "&7&l[ &c&li &7&l]&c 对话配置不存在或缺少键值： &r{0}"
+DIALOG-NO_FILES: "{0}&r &6dialog &8文件夹&c不存在，&8开始创建 &6dialog &8文件夹"
+DIALOG-EMPTY_CONTENT: "{0}&r &6{1} &c没有内容或标准错误"
+DIALOG-EXIST_DIALOG_ID: "{0}&r &6{1} &8已有相同已注册的对话ID"
+DIALOG-NO_EXIST_DIALOG_ID: "{0}&r &6{1} &c不存在该对话ID"
 
-PACKET:
-  NULL_PACKET_ID: "&7&l[ &c&li &7&l]&c 不存在数据包ID： &r{0}"
-  ERROR_FILE: "&7&l[ &c&li &7&l]&c 数据包配置不存在或缺少键值： &r{0}"
 
-DATA:
-  ERROR: "&7&l[ &c&li &7&l]&r &c数据操作发生错误"
-  NULL_DATA: "&7&l[ &c&li &7&l]&r &c你没有数据，现已为你创建或拉取数据"
+QUEST-TIME_S: "秒"
+QUEST-TIME_MINUTE: "分"
+QUEST-TIME_HOUR: "时"
+QUEST-TIME_DAY: "天"
+QUEST-STATE_DOING: "正在进行"
+QUEST-STATE_IDLE: "闲置中"
+QUEST-STATE_FINISH: "已完成"
+QUEST-FAILURE: "失败"
+QUEST-NOT_ACCEPT: "未接受"
+QUEST-ALWAYS: "不限时"
+QUEST-ERROR_FILE: "&7&l[ &c&li &7&l]&c 任务配置不存在或缺少键值： &r{0}"
+QUEST-ALREADY_ACCEPT: "&7&l[ &c&li &7&l]&c 已接受过任务，请完成任务"
+QUEST-NULL_QUEST_DATA: "&7&l[ &c&li &7&l]&c 不存在任务数据 &r{0}"
+
+PACKET-NULL_PACKET_ID: "&7&l[ &c&li &7&l]&c 不存在数据包ID： &r{0}"
+PACKET-ERROR_FILE: "&7&l[ &c&li &7&l]&c 数据包配置不存在或缺少键值： &r{0}"
+
+
+DATA-NULL_DATA: "&7&l[ &c&li &7&l]&r &c你没有数据，现已为你创建或拉取数据"
 
 PLAYER_NOT_ONLINE: "&7&l[ &c&li &7&l]&r &c当前玩家不在线"
 
-TEAM:
-  HAS_TEAM: "&7&l[ &c&li &7&l]&r &c你已经有了队伍"
-  NO_TEAM: "&7&l[ &c&li &7&l]&r &c你没有队伍"
-  OTHER_NO_TEAM: "&7&l[ &c&li &7&l]r &c该玩家没有队伍"
-  NO_EXIST_TEAM: "&7&l[ &c&li &7&l]&r &c该队伍不存在"
-  NOT_LEADER: "&7&l[ &c&li &7&l]&r &c你不是队长"
+TEAM-HAS_TEAM: "&7&l[ &c&li &7&l]&r &c你已经有了队伍"
+TEAM-NO_TEAM: "&7&l[ &c&li &7&l]&r &c你没有队伍"
+TEAM-OTHER_NO_TEAM: "&7&l[ &c&li &7&l]r &c该玩家没有队伍"
+TEAM-NO_EXIST_TEAM: "&7&l[ &c&li &7&l]&r &c该队伍不存在"
+TEAM-NOT_LEADER: "&7&l[ &c&li &7&l]&r &c你不是队长"
 
-COMMAND:
-  BASE:
-    PLAYER: "玩家"
-    ARGUMENT: "参数"
-  QUEST:
-    QUEST_ID: "任务ID"
-    INNER_QUEST_ID: "内部任务ID"
-    HANDLE: "任务相关命令"
-  TEAM:
-    NAME: "队伍名称"
-    OPEN: "打开队伍界面"
-    CREATE: "创建队伍"
-    JOIN: "申请加入队伍"
-    LEAVE: "离开队伍"
-    MEMBERS: "查看成员列表"
-    ASKS: "查看申请入队列表"
-    ASKS_AGREE: "批准对方入队"
-    ASKS_REJECT: "拒绝对方入队"
-    DELETE: "解散队伍"
-    INVITE: "邀请玩家加入队伍"
-    KICK: "移除成员"
-  RELOAD: "重载配置"
-  SUCCESSFUL_RELOAD: "&7&l[ &c&li &7&l]&a 已重载 &3&lQuestEngine &a配置文件"
+
+COMMAND-SUCCESSFUL_RELOAD: "&7&l[ &c&li &7&l]&a 已重载 &3&lQuestEngine &a配置文件"

@@ -30,13 +30,13 @@ class HookPlaceholderAPI: PlaceholderExpansion {
 
     private fun startTime(player: Player, questID: String, innerID: String, index: Int): String {
         val targetData = getTargetData(player, questID, innerID, index)?:
-        return player.asLangText("QUEST.ALWAYS")?: "always null"
+        return player.asLangText("QUEST-ALWAYS")?: "always null"
         val time = targetData.timeDate
         return TimeUtil.remainDate(player, time)
     }
 
     private fun remain(player: Player, questID: String, innerID: String, index: Int): String {
-        val always = player.asLangText("QUEST.ALWAYS")?: "always null"
+        val always = player.asLangText("QUEST-ALWAYS")?: "always null"
         val targetData = getTargetData(player, questID, innerID, index)?: return always
         val endTime = targetData.endTimeDate?: return always
         return TimeUtil.remainDate(player, endTime)
@@ -71,7 +71,7 @@ class HookPlaceholderAPI: PlaceholderExpansion {
     private fun getState(player: Player, questID: String, innerID: String): String {
         val uuid = player.uniqueId
         val qData = QuestManager.getQuestData(uuid, questID)?:
-        return player.asLangText("QUEST.NOT_ACCEPT")?: "state null"
+        return player.asLangText("QUEST-NOT_ACCEPT")?: "state null"
         val state = QuestStateUtil.stateUnit(player, qData.state)
         if (innerID.isNotEmpty()) {
             val innerData = QuestManager.getInnerQuestData(player, qData.questUUID)?: return state

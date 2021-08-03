@@ -2,6 +2,7 @@ package cn.inrhor.questengine.api.quest
 
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
+import taboolib.common.platform.EventPriority
 import kotlin.reflect.KClass
 
 abstract class TargetExtend<E: Event> {
@@ -19,7 +20,7 @@ abstract class TargetExtend<E: Event> {
     /**
      * 事件优先级
      */
-    open var priority = 0
+    open var priority = EventPriority.NORMAL
 
     /**
      * 事件忽略已取消

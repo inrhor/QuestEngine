@@ -379,7 +379,7 @@ object QuestManager {
     fun quitQuest(player: Player, questID: String) {
         val uuid = player.uniqueId
         val questData = getQuestData(uuid, questID)?: return run {
-            player.sendLang("QUEST.NULL_QUEST_DATA", questID) }
+            player.sendLang("QUEST-NULL_QUEST_DATA", questID) }
         val questModule = getQuestModule(questID)?: return
         val questUUID = questData.questUUID
         val pData = DataStorage.getPlayerData(uuid)

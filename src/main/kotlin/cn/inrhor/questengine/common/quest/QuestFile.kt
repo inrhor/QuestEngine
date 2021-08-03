@@ -30,7 +30,7 @@ object QuestFile {
         if (!settingFile.exists()) return
         val setting = yaml(settingFile)
         val questID = setting.getString("questID")?: return run {
-            console().sendLang("QUEST.ERROR_FILE")
+            console().sendLang("QUEST-ERROR_FILE")
         }
         val name = setting.getString("name")?: "test"
         val startID = setting.getString("startInnerQuestID")?: "test"
@@ -52,12 +52,12 @@ object QuestFile {
 
         val innerFolder = GetFile.getFile("space/quest/"+file.name+"/inner")
         val lists = innerFolder.listFiles()?: return run {
-            console().sendLang("QUEST.ERROR_FILE", questID)
+            console().sendLang("QUEST-ERROR_FILE", questID)
         }
         lists.forEach {
             val optionFile = file(it, "option.yml")
             if (!optionFile.exists()) return run {
-                console().sendLang("QUEST.ERROR_FILE", questID)
+                console().sendLang("QUEST-ERROR_FILE", questID)
             }
             innerQuestList.add(innerQuest(it, questID))
         }

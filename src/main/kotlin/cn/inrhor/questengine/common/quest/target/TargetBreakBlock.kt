@@ -8,6 +8,7 @@ import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
 import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.common.quest.manager.RewardManager
 import cn.inrhor.questengine.common.quest.manager.TargetManager
+import cn.inrhor.questengine.common.quest.target.util.Schedule
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
@@ -32,11 +33,11 @@ object TargetBreakBlock: TargetExtend<BlockBreakEvent>() {
                 }
             }
             // 刷新
-            TargetManager.register(name, block)
+            TargetManager.register(name, "block", block)
             player
         }
         // 注册
-        TargetManager.register(name, ConditionType("block"))
+        TargetManager.register(name, "block", ConditionType("block"))
     }
 
     fun targetTrigger(player: Player, questData: QuestData, breakBlock: Material, target: QuestTarget, questInnerData: QuestInnerData): Boolean {
@@ -46,9 +47,7 @@ object TargetBreakBlock: TargetExtend<BlockBreakEvent>() {
         val amount = sp[1].toInt()
         if (material == breakBlock.name) {
             val targetData = questInnerData.targetsData[name]?: return false
-            targetData.schedule = targetData.schedule + 1
-            val allSchedule = TargetManager.scheduleUtil(name, questData, targetData)
-            return RewardManager.finishReward(player, questData, questInnerData, target, amount, allSchedule)
+            return Schedule.run(player, questData, questInnerData, target, targetData, amount)
         }
         return true
     }

@@ -10,7 +10,7 @@ object PacketFile {
     fun init(config: ConfigurationSection) {
         val packetID = config.name
         val hook = config.getString("hook")?: return run {
-            console().sendLang("PACKET.ERROR_FILE", config.name)
+            console().sendLang("PACKET-ERROR_FILE", config.name)
         }
         val viewer = config.getString("viewer")?: "all"
         val packerModule = PacketModule(packetID, hook, viewer)

@@ -26,7 +26,7 @@ object Info {
         val pluginCon = QuestEngine.plugin.description
 
         console().sendLang(
-            "LOADER.INFO",
+            "LOADER-INFO",
             pluginCon.name,
             pluginCon.version
         )

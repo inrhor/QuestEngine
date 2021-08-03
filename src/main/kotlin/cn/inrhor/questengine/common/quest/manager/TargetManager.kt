@@ -16,8 +16,8 @@ object TargetManager {
     /**
      * 规范配置
      */
-    fun register(name: String, conditionType: ConditionType) {
-        targetMap[name] = conditionType
+    fun register(name: String, meta: String, conditionType: ConditionType) {
+        targetMap["$name-$meta"] = conditionType
     }
 
     fun getTargetList(yaml: FileConfiguration): MutableMap<String, QuestTarget> {
@@ -30,7 +30,8 @@ object TargetManager {
             val condition = mutableMapOf<String, String>()
             val conditionList = mutableMapOf<String, MutableList<String>>()
 
-            targetMap.forEach { (eventName, conditionType) ->
+            targetMap.forEach { (eventNameMeta, conditionType) ->
+                val eventName = eventNameMeta.split("-")[0]
                 if (eventName == name) {
                     for (node in yaml.getConfigurationSection("target.$i")!!.getKeys(true)) {
                         val u = "target.$i.$node"

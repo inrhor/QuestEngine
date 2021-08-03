@@ -14,9 +14,9 @@ object TeamAsks {
             execute<Player> { sender, _, _ ->
                 val pUUID = sender.uniqueId
                 val tData = TeamManager.getTeamData(pUUID)?: return@execute run {
-                    sender.sendLang("TEAM.NO_TEAM") }
+                    sender.sendLang("TEAM-NO_TEAM") }
                 if (!TeamManager.isLeader(pUUID, tData)) return@execute run {
-                    sender.sendLang("TEAM.NOT_LEADER") }
+                    sender.sendLang("TEAM-NOT_LEADER") }
                 HasTeam.openAsks(sender)
             }
         }
@@ -42,9 +42,9 @@ object TeamAsks {
         val args = argument.split(" ")
         val pUUID = player.uniqueId
         val tData = TeamManager.getTeamData(pUUID)?: return run {
-            player.sendLang("TEAM.NO_TEAM") }
+            player.sendLang("TEAM-NO_TEAM") }
         if (!TeamManager.isLeader(pUUID, tData)) return run {
-            player.sendLang("TEAM.NOT_LEADER") }
+            player.sendLang("TEAM-NOT_LEADER") }
         val mName = args[0]
         val m = Bukkit.getPlayer(mName)?: return run {
             player.sendLang("PLAYER_NOT_ONLINE") }

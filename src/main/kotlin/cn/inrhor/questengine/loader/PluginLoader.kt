@@ -47,7 +47,7 @@ object PluginLoader {
                 }
                 UpdateYaml.run("team/chat.yml")
             }
-            console().sendLang("LOADER.TIME_COST", UtilString.pluginTag, timeCost)
+            console().sendLang("LOADER-TIME_COST", UtilString.pluginTag, timeCost)
         })
         DatabaseManager.init()
     }
