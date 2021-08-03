@@ -22,7 +22,7 @@ target:
       - "    &r剩余时间 &8%time%"
       - ""
   3:
-    name: self death
+    name: player death
     cause:
       - DROWNING
       - SUFFOCATION

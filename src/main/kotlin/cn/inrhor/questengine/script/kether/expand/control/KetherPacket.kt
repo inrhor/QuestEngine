@@ -5,7 +5,6 @@ import cn.inrhor.questengine.common.packet.PacketManager
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyPlayer
-import taboolib.common.platform.info
 import taboolib.common.util.Location
 import taboolib.library.kether.*
 import taboolib.module.kether.*
