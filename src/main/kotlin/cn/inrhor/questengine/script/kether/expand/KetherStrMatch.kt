@@ -6,25 +6,13 @@ import taboolib.module.kether.*
 import taboolib.module.kether.scriptParser
 import java.util.concurrent.CompletableFuture
 
-class KetherPlayerChat(val type: Type, val message: ParsedAction<*>, val playerMsg: ParsedAction<*>): ScriptAction<Boolean>() {
+class KetherStrMatch(val type: Type, val target: ParsedAction<*>, val source: ParsedAction<*>): ScriptAction<Boolean>() {
 
     override fun run(frame: ScriptFrame): CompletableFuture<Boolean> {
-        /*return when (type) {
-            Type.ALL -> CompletableFuture.completedFuture((message.toString() == playerMsg.toString()))
-            Type.CONTAINS -> CompletableFuture.completedFuture((message.toString() == playerMsg.toString()))
-        }*/
-        /*return frame.newFrame(message).run<String>().thenAccept { e ->
-            frame.newFrame(playerMsg).run<String>().thenAccept {
-                when (type) {
-                    Type.ALL -> if (e != it) return@thenAccept
-                    Type.CONTAINS -> if (!it.contains(e)) return@thenAccept
-                }
-            }
-        }*/
         return CompletableFuture<Boolean>().also {
-            frame.newFrame(message).run<String>().thenAccept { tg ->
-                frame.newFrame(playerMsg).run<String>().thenAccept { pm ->
-                    it.complete(check(tg, pm))
+            frame.newFrame(target).run<String>().thenAccept { tg ->
+                frame.newFrame(source).run<String>().thenAccept { so ->
+                    it.complete(check(tg, so))
                 }
             }
         }
@@ -42,10 +30,10 @@ class KetherPlayerChat(val type: Type, val message: ParsedAction<*>, val playerM
     }
 
     /*
-     * msgMatch type all/contains is *... *...
+     * strMatch type all/contains is *... *...
      */
     internal object Parser {
-        @KetherParser(["msgMatch"], namespace = "QuestEngine")
+        @KetherParser(["strMatch"], namespace = "QuestEngine")
         fun parser() = scriptParser {
             it.mark()
             it.expect("type")
@@ -61,7 +49,7 @@ class KetherPlayerChat(val type: Type, val message: ParsedAction<*>, val playerM
             }
             it.mark()
             it.expect("is")
-            KetherPlayerChat(unit, it.next(ArgTypes.ACTION), it.next(ArgTypes.ACTION))
+            KetherStrMatch(unit, it.next(ArgTypes.ACTION), it.next(ArgTypes.ACTION))
         }
     }
 

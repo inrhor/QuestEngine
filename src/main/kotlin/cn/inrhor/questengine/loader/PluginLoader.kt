@@ -6,7 +6,7 @@ import cn.inrhor.questengine.common.dialog.DialogManager
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.common.packet.PacketManager
 import cn.inrhor.questengine.common.quest.QuestFile
-import cn.inrhor.questengine.utlis.public.UtilString
+import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.Bukkit
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake

@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.utlis.public
+package cn.inrhor.questengine.utlis
 
 import cn.inrhor.questengine.QuestEngine
 import java.util.*
@@ -19,5 +19,12 @@ object UtilString {
             content = "$content&r\n$it"
         }
         return content
+    }
+
+    /**
+     * 截取特殊字符之后的字符串
+     */
+    fun subGetStr(str: String, meta: String): String {
+        return str.substring(str.indexOf(meta)+1)
     }
 }

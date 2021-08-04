@@ -35,17 +35,17 @@ object TargetPlayerChat: TargetExtend<AsyncPlayerChatEvent>() {
                     return (Schedule.isNumber(player, name, "number", questData, innerData, innerTarget))
                 }
             }
-            TargetManager.register(name, "message", message)
-            TargetManager.register(name, "number", number)
+            TargetManager.set(name, "message", message)
+            TargetManager.set(name, "number", number)
             player
         }
-        TargetManager.register(name, "message", ConditionType("message"))
-        TargetManager.register(name, "number", ConditionType("number"))
+        TargetManager.register(name, "message", "message")
+        TargetManager.register(name, "number", "number")
     }
 
     fun targetTrigger(player: Player, msg: String, target: QuestTarget): Boolean {
         val condition = target.condition["message"]?: return false
-        return KetherHandler.evalBoolean(player, "msgMatch type $condition *'$msg'")
+        return KetherHandler.evalBoolean(player, "strMatch type $condition *'$msg'")
     }
 
 }

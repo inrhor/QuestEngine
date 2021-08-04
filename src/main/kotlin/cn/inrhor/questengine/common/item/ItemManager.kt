@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.item
 
 import cn.inrhor.questengine.utlis.file.GetFile
-import cn.inrhor.questengine.utlis.public.UtilString
+import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.configuration.file.YamlConfiguration
 import taboolib.common.platform.console
 import taboolib.module.lang.sendLang

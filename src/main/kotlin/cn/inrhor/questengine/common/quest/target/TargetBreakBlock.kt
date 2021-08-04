@@ -22,11 +22,11 @@ object TargetBreakBlock: TargetExtend<BlockBreakEvent>() {
     init {
         tasker{
             // 刷新
-            TargetManager.register(name, "block", block(player, name, block.type))
+            TargetManager.set(name, "block", block(player, name, block.type))
             player
         }
         // 注册
-        TargetManager.register(name, "block", ConditionType("block"))
+        TargetManager.register(name, "block", "block")
     }
 
     fun block(player: Player, name: String, blockMaterial: Material): ConditionType {

@@ -37,13 +37,13 @@ object TargetPlayerDeath: TargetExtend<PlayerDeathEvent>() {
                 }
             }
             // 刷新
-            TargetManager.register(name, "cause", cause)
-            TargetManager.register(name, "number", number)
+            TargetManager.set(name, "cause", cause)
+            TargetManager.set(name, "number", number)
             player
         }
         // 注册
-        TargetManager.register(name, "cause", ConditionType(mutableListOf("cause")))
-        TargetManager.register(name, "number", ConditionType("number"))
+        TargetManager.register(name, "cause", mutableListOf("cause"))
+        TargetManager.register(name, "number", "number")
     }
 
     fun isCause(target: QuestTarget, death: EntityDamageEvent.DamageCause): Boolean {

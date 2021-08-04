@@ -36,13 +36,13 @@ object TargetGiveAdyItem/*: TargetExtend<AdyeshachEntityInteractEvent>()*/ {
                 }
             }
             // 刷新
-            TargetManager.register(name, id)
-            TargetManager.register(name, item)
+            TargetManager.set(name, id)
+            TargetManager.set(name, item)
             player
         }
         // 注册
-        TargetManager.register(name, ConditionType(mutableListOf("id")))
-        TargetManager.register(name, ConditionType("item"))
+        TargetManager.register(name, mutableListOf("id"))
+        TargetManager.register(name, "item")
     }*/
 
 }

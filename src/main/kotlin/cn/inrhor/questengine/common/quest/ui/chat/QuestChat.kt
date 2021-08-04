@@ -2,7 +2,7 @@ package cn.inrhor.questengine.common.quest.ui.chat
 
 import cn.inrhor.questengine.common.quest.QuestStateUtil
 import cn.inrhor.questengine.common.quest.manager.QuestManager
-import cn.inrhor.questengine.utlis.public.UtilString
+import cn.inrhor.questengine.utlis.UtilString
 import cn.inrhor.questengine.utlis.time.TimeUtil
 import org.bukkit.entity.Player
 import taboolib.common.platform.adaptPlayer

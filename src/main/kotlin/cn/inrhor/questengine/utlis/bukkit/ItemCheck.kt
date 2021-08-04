@@ -30,7 +30,7 @@ class ItemCheck(private val matchers: MutableMap<String, String>) {
             when (mark.lowercase(Locale.getDefault())) {
                 "minecraft" -> if (data != itemStack.type.name) return false
                 "displayname" -> if (meta == null || data != meta.displayName) return false
-                "lorecontain" -> if (meta == null || !loreContain(meta, data)) return false
+                "lorecontains" -> if (meta == null || !loreContains(meta, data)) return false
                 "custonmodeldata" -> if (meta == null || meta.customModelData != data.toInt()) return false
                 "amount" -> if (itemStack.amount < data.toInt()) return false else (if (take) amount = data.toInt())
             }
@@ -46,7 +46,7 @@ class ItemCheck(private val matchers: MutableMap<String, String>) {
         return true
     }
 
-    private fun loreContain(meta: ItemMeta, str: String): Boolean {
+    private fun loreContains(meta: ItemMeta, str: String): Boolean {
         val lore = meta.lore?: return false
         return lore.contains(str)
     }

@@ -14,10 +14,10 @@ object TargetPlaceBlock: TargetExtend<BlockPlaceEvent>() {
     init {
         tasker{
             val block = TargetBreakBlock.block(player, name, blockPlaced.type)
-            TargetManager.register(name, "block", block)
+            TargetManager.set(name, "block", block)
             player
         }
-        TargetManager.register(name, "block", ConditionType("block"))
+        TargetManager.register(name, "block", "block")
     }
 
 }

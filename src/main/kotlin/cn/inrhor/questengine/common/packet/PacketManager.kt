@@ -3,7 +3,7 @@ package cn.inrhor.questengine.common.packet
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.common.nms.NMS
 import cn.inrhor.questengine.utlis.file.GetFile
-import cn.inrhor.questengine.utlis.public.UtilString
+import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.configuration.file.YamlConfiguration

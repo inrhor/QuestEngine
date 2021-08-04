@@ -33,13 +33,13 @@ object TargetNpcRightItem: TargetExtend<NPCRightClickEvent>() {
                 }
             }
             // 刷新
-            TargetManager.register(name, "id", id)
-            TargetManager.register(name, "item", item)
+            TargetManager.set(name, "id", id)
+            TargetManager.set(name, "item", item)
             player
         }
         // 注册
-        TargetManager.register(name, "id", ConditionType(mutableListOf("id")))
-        TargetManager.register(name, "item", ConditionType("item"))
+        TargetManager.register(name, "id", mutableListOf("id"))
+        TargetManager.register(name, "item", "item")
     }
 
 }

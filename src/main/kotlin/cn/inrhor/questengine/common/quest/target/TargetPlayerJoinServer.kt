@@ -29,10 +29,10 @@ object TargetPlayerJoinServer: TargetExtend<PlayerJoinEvent>() {
                     return (Schedule.isNumber(player, name, "number", questData, innerData, innerTarget))
                 }
             }
-            TargetManager.register(name, "number", number)
+            TargetManager.set(name, "number", number)
             player
         }
-        TargetManager.register(name, "number", ConditionType("number"))
+        TargetManager.register(name, "number", "number")
     }
 
 }

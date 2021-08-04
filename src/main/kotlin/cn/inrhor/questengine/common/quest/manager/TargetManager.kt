@@ -16,7 +16,15 @@ object TargetManager {
     /**
      * 规范配置
      */
-    fun register(name: String, meta: String, conditionType: ConditionType) {
+    fun register(name: String, meta: String, string: String) {
+        set(name, meta, ConditionType(string))
+    }
+
+    fun register(name: String, meta: String, list: MutableList<String>) {
+        set(name, meta, ConditionType(list))
+    }
+
+    fun set(name: String, meta: String, conditionType: ConditionType) {
         targetMap["$name-$meta"] = conditionType
     }
 
