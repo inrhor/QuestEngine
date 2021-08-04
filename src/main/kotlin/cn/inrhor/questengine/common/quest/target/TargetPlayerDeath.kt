@@ -17,9 +17,9 @@ object TargetPlayerDeath: TargetExtend<PlayerDeathEvent>() {
 
     override val name = "player death"
 
-    override var event = PlayerDeathEvent::class
 
     init {
+        event = PlayerDeathEvent::class
         tasker{
             val player = entity
             val questData = QuestManager.getDoingQuest(player)?: return@tasker player

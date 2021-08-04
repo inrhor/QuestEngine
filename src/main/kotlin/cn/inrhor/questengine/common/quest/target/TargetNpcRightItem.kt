@@ -12,8 +12,6 @@ object TargetNpcRightItem: TargetExtend<NPCRightClickEvent>() {
 
     override val name = "give npc-right item"
 
-    override var event = NPCRightClickEvent::class
-
     init {
         tasker{
             val player = clicker

@@ -17,9 +17,8 @@ object TargetBreakBlock: TargetExtend<BlockBreakEvent>() {
 
     override val name = "break block"
 
-    override var event = BlockBreakEvent::class
-
     init {
+        event = BlockBreakEvent::class
         tasker{
             // 刷新
             TargetManager.set(name, "block", block(player, name, block.type))

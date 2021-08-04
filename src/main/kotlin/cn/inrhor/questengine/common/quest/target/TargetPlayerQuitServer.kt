@@ -18,11 +18,10 @@ object TargetPlayerQuitServer: TargetExtend<PlayerQuitEvent>() {
 
     override val name = "player quit server"
 
-    override var event = PlayerQuitEvent::class
-
     override var priority = EventPriority.HIGHEST
 
     init {
+        event = PlayerQuitEvent::class
         tasker{
             val questData = QuestManager.getDoingQuest(player)?: return@tasker player
             if (!QuestManager.matchQuestMode(questData)) return@tasker player

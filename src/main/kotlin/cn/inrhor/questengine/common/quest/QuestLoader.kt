@@ -26,7 +26,8 @@ object QuestLoader {
     }
 
     fun <T : Event> TargetExtend<T>.register() {
-        registerListener(event.java, priority, ignoreCancelled) { e ->
+        val ev = event?: return
+        registerListener(ev.java, priority, ignoreCancelled) { e ->
             val event = name
             tasker(e)?.run {
                 TargetManager.targetMap.forEach { (eventMeta, condition) ->

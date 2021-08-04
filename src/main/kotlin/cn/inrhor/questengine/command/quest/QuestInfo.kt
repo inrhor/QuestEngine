@@ -2,6 +2,7 @@ package cn.inrhor.questengine.command.quest
 
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.quest.manager.QuestManager
+import cn.inrhor.questengine.common.quest.ui.book.BookQuestInfo
 import cn.inrhor.questengine.common.quest.ui.chat.QuestChat
 import org.bukkit.Bukkit
 import taboolib.common.platform.ProxyCommandSender
@@ -36,7 +37,8 @@ object QuestInfo {
                     }
 
 
-                    QuestChat.chatNowQuestInfo(player, questData.questUUID)
+//                    QuestChat.chatNowQuestInfo(player, questData.questUUID)
+                    BookQuestInfo.open(player, questData.questUUID)
                 }
             }
         }

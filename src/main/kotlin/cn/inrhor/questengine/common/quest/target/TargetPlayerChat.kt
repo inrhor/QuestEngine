@@ -15,11 +15,10 @@ object TargetPlayerChat: TargetExtend<AsyncPlayerChatEvent>() {
 
     override val name = "player chat"
 
-    override var event = AsyncPlayerChatEvent::class
-
     override val isAsync = true
 
     init {
+        event = AsyncPlayerChatEvent::class
         tasker{
             val questData = QuestManager.getDoingQuest(player)?: return@tasker player
             if (!QuestManager.matchQuestMode(questData)) return@tasker player

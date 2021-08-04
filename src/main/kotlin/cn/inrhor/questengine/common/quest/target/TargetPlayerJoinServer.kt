@@ -16,9 +16,8 @@ object TargetPlayerJoinServer: TargetExtend<PlayerJoinEvent>() {
 
     override val name = "player join server"
 
-    override var event = PlayerJoinEvent::class
-
     init {
+        event = PlayerJoinEvent::class
         tasker{
             val questData = QuestManager.getDoingQuest(player)?: return@tasker player
             if (!QuestManager.matchQuestMode(questData)) return@tasker player

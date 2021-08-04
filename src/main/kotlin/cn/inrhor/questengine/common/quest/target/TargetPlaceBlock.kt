@@ -9,9 +9,8 @@ object TargetPlaceBlock: TargetExtend<BlockPlaceEvent>() {
 
     override val name = "place block"
 
-    override var event = BlockPlaceEvent::class
-
     init {
+        event = BlockPlaceEvent::class
         tasker{
             val block = TargetBreakBlock.block(player, name, blockPlaced.type)
             TargetManager.set(name, "block", block)

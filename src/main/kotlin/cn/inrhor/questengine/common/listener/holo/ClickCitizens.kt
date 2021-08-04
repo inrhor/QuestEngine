@@ -5,19 +5,22 @@ import net.citizensnpcs.api.event.NPCLeftClickEvent
 import net.citizensnpcs.api.event.NPCRightClickEvent
 import net.citizensnpcs.api.npc.NPC
 import org.bukkit.entity.Player
+import taboolib.common.platform.OptionalEvent
 import taboolib.common.platform.SubscribeEvent
 
 object ClickCitizens {
 
-    @SubscribeEvent
-    fun rightClickNPC(ev: NPCRightClickEvent) {
+    @SubscribeEvent(bind = "net.citizensnpcs.api.event.NPCRightClickEvent")
+    fun rightClickNPC(op: OptionalEvent) {
+        val ev = op.cast(NPCRightClickEvent::class.java)
         val player = ev.clicker
         val npc = ev.npc
         npc(player, npc)
     }
 
-    @SubscribeEvent
-    fun leftClickNPC(ev: NPCLeftClickEvent) {
+    @SubscribeEvent(bind = "net.citizensnpcs.api.event.NPCLeftClickEvent")
+    fun leftClickNPC(op: OptionalEvent) {
+        val ev = op.cast(NPCLeftClickEvent::class.java)
         val player = ev.clicker
         val npc = ev.npc
         npc(player, npc)

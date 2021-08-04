@@ -15,7 +15,7 @@ abstract class TargetExtend<E: Event> {
     /**
      * 事件
      */
-    abstract val event: KClass<E>
+    open var event: KClass<E>? = null
 
     /**
      * 事件优先级
