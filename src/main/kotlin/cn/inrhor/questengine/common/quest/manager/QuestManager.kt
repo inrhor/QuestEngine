@@ -212,11 +212,33 @@ object QuestManager {
      * 检索是否已有处于 DOING 状态的内部任务
      */
     fun hasDoingInnerQuest(pData: PlayerData): Boolean {
+        return hasStateInnerQuest(pData, QuestState.DOING)
+    }
+
+    /**
+     * 检索是否已有处于某状态的内部任务
+     */
+    fun hasStateInnerQuest(pData: PlayerData, state: QuestState): Boolean {
         val questData = pData.questDataList
-        questData.forEach { (_, u)->
-            if (u.questInnerData.state == QuestState.DOING) return true
+        questData.values.forEach {
+            if (it.questInnerData.state == state) return true
         }
         return false
+    }
+
+    /**
+     * 检索是否已有处于某状态的内部任务
+     */
+    fun hasStateInnerQuest(player: Player, state: QuestState): Boolean {
+        return hasStateInnerQuest(DataStorage.getPlayerData(player), state)
+    }
+
+    /**
+     * 查看内部任务的状态是否为所求
+     */
+    fun isStateInnerQuest(player: Player, questUUID: UUID, state: QuestState): Boolean {
+        val qData = getQuestData(player, questUUID)?: return false
+        return (qData.questInnerData.state == state)
     }
 
     /**
@@ -228,8 +250,10 @@ object QuestManager {
      */
     fun endQuest(player: Player, questData: QuestData, state: QuestState, runFailReward: Boolean) {
         questData.state = state
+        val innerData = questData.questInnerData
+        innerData.state = state
         if (state == QuestState.FAILURE && runFailReward) {
-            val innerQuestID = questData.questInnerData.innerQuestID
+            val innerQuestID = innerData.innerQuestID
             val failReward = getReward(questData.questID, innerQuestID, "", state) ?: return
             failReward.forEach {
                 KetherHandler.eval(player, it)
@@ -256,6 +280,8 @@ object QuestManager {
      */
     fun finishInnerQuest(player: Player, questUUID: UUID, questID: String, innerQuestID: String) {
         val questData = getQuestData(player, questUUID) ?: return
+        val innerData = questData.questInnerData
+        innerData.state = QuestState.FINISH
         val questInnerModule = getInnerQuestModule(questID, innerQuestID) ?: return
         val nextInnerID = questInnerModule.nextInnerQuestID
         if (nextInnerID == "") {

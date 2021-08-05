@@ -6,6 +6,7 @@ import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
+import taboolib.common.platform.info
 import java.util.*
 
 /**
@@ -24,6 +25,9 @@ class TargetData(val name: String, var timeUnit: String,
                 }
                 val now = Date()
                 val between = endTimeDate!!.time - now.time
+                if (QuestManager.isStateInnerQuest(player, questUUID, QuestState.FAILURE)) {
+                    cancel(); return
+                }
                 if (between <= 0) {
                     QuestManager.endQuest(player, questUUID, QuestState.FAILURE, true)
                     cancel(); return

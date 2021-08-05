@@ -41,7 +41,7 @@ object PublicJson {
             var time = "null"
             val endDate = tData.endTimeDate
             if (endDate != null) {
-                time = TimeUtil.remainDate(player, endDate)
+                time = TimeUtil.remainDate(player, innerData.state, endDate)
             }
             val tds = UtilString.getJsonStr(target.description)
                 .replace("%schedule%", tData.schedule.toString(), true)

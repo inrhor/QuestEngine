@@ -6,6 +6,7 @@ import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.quest.QuestStateUtil
+import cn.inrhor.questengine.utlis.time.TimeUtil
 import com.google.gson.Gson
 import org.bukkit.entity.Player
 import taboolib.module.database.ColumnTypeSQL
@@ -126,9 +127,9 @@ class DatabaseSQL: Database() {
         val uuid = player.uniqueId
         tableInnerQuest.workspace(source) {
             select {
-                where { "uuid" eq uuid.toString()
-                    where { "questUUID" eq questUUID.toString()
-                        where { "innerQuestID" eq innerQuestID }
+                and { "uuid" eq uuid.toString()
+                    and { "questUUID" eq questUUID.toString()
+                        and { "innerQuestID" eq innerQuestID }
                     }
                 }
                 rows("state", "rewards")
@@ -154,9 +155,9 @@ class DatabaseSQL: Database() {
         val uuid = player.uniqueId
         tableTargets.workspace(source) {
             select {
-                where { "uuid" eq uuid.toString()
-                    where { "questUUID" eq questUUID.toString()
-                        where { "innerQuestID" eq innerQuestID }
+                and { "uuid" eq uuid.toString()
+                    and { "questUUID" eq questUUID.toString()
+                        and { "innerQuestID" eq innerQuestID }
                     }
                 }
                 rows("name", "schedule", "timeDate", "endDate")
@@ -167,10 +168,9 @@ class DatabaseSQL: Database() {
             val name = it.first.first.first
             val targetData = targetDataMap[name]?: return@forEach
             targetData.schedule = it.first.first.second
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-            val timeDate = dateFormat.parse(it.first.second)
+            val timeDate = TimeUtil.strToDate(it.first.second)
             targetData.timeDate = timeDate
-            val endTimeDate = dateFormat.parse(it.second)
+            val endTimeDate = TimeUtil.strToDate(it.second)
             targetData.endTimeDate = endTimeDate
             targetDataMap[name] = targetData
             targetData.runTime(player, questUUID)
@@ -190,10 +190,10 @@ class DatabaseSQL: Database() {
             val fmqJson = Gson().toJson(fmq)
             tableQuest.workspace(source) {
                 update {
-                    where { "uuid" eq uuid.toString()
-                        where { "questUUID" eq questUUID.toString()
-                            where { "questID" eq questID
-                                where { "innerQuestID" eq innerQuestID }
+                    and { "uuid" eq uuid.toString()
+                        and { "questUUID" eq questUUID.toString()
+                            and { "questID" eq questID
+                                and { "innerQuestID" eq innerQuestID }
                             }
                         }
                     }
@@ -210,9 +210,9 @@ class DatabaseSQL: Database() {
         val rewards = Gson().toJson(questInnerData.rewardState)
         tableInnerQuest.workspace(source) {
             update {
-                where { "uuid" eq uuid.toString()
-                    where { "questUUID" eq questUUID.toString()
-                        where { "innerQuestID" eq innerQuestID }
+                and { "uuid" eq uuid.toString()
+                    and { "questUUID" eq questUUID.toString()
+                        and { "innerQuestID" eq innerQuestID }
                     }
                 }
                 set("state", state)
@@ -270,10 +270,10 @@ class DatabaseSQL: Database() {
             val schedule = targetData.schedule
             tableTargets.workspace(source) {
                 update {
-                    where { "uuid" eq uuid.toString()
-                        where { "questUUID" eq questUUID.toString()
-                            where { "name" eq name
-                                where { "innerQuestID" eq innerID }
+                    and { "uuid" eq uuid.toString()
+                        and { "questUUID" eq questUUID.toString()
+                            and { "name" eq name
+                                and { "innerQuestID" eq innerID }
                             }
                         }
                     }
@@ -288,11 +288,11 @@ class DatabaseSQL: Database() {
         val questUUID = questData.questUUID
         tableQuest.workspace(source) {
             delete {
-                where { "uuid" eq uuid
-                    where { "questUUID" eq questUUID.toString() }
+                and { "uuid" eq uuid
+                    and { "questUUID" eq questUUID.toString() }
                 }
             }
-        }
+        }.run()
         delete(uuid, questUUID)
     }
 
@@ -305,18 +305,18 @@ class DatabaseSQL: Database() {
     private fun delete(uuid: String, questUUID: UUID) {
         tableInnerQuest.workspace(source) {
             delete {
-                where { "uuid" eq uuid
-                    where { "questUUID" eq questUUID.toString() }
+                and { "uuid" eq uuid
+                    and { "questUUID" eq questUUID.toString() }
                 }
             }
-        }
+        }.run()
         tableTargets.workspace(source) {
             delete {
-                where { "uuid" eq uuid
-                    where { "questUUID" eq questUUID.toString() }
+                and { "uuid" eq uuid
+                    and { "questUUID" eq questUUID.toString() }
                 }
             }
-        }
+        }.run()
     }
 
 }
