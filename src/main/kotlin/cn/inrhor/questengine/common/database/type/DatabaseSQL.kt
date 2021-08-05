@@ -72,14 +72,17 @@ class DatabaseSQL: Database() {
         add("name") {
             type(ColumnTypeSQL.TEXT)
         }
+        add("innerQuestID") {
+            type(ColumnTypeSQL.TEXT)
+        }
         add("schedule") {
             type(ColumnTypeSQL.INT)
         }
         add("timeDate") {
-            type(ColumnTypeSQL.DATE)
+            type(ColumnTypeSQL.TEXT)
         }
         add("endDate") {
-            type(ColumnTypeSQL.DATE)
+            type(ColumnTypeSQL.TEXT)
         }
     }
 
@@ -88,9 +91,9 @@ class DatabaseSQL: Database() {
     }
 
     init {
-        tableQuest.workspace(source) { createTable() }
-        tableTargets.workspace(source) { createTable() }
-        tableInnerQuest.workspace(source) { createTable() }
+        tableQuest.workspace(source) { createTable() }.run()
+        tableTargets.workspace(source) { createTable() }.run()
+        tableInnerQuest.workspace(source) { createTable() }.run()
     }
 
     override fun pull(player: Player) {
@@ -156,7 +159,7 @@ class DatabaseSQL: Database() {
                         where { "innerQuestID" eq innerQuestID }
                     }
                 }
-                rows("state", "rewards")
+                rows("name", "schedule", "timeDate", "endDate")
             }
         }.map {
             getString("name") to getInt("schedule") to getString("timeDate") to getString("endDate")
@@ -167,7 +170,7 @@ class DatabaseSQL: Database() {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             val timeDate = dateFormat.parse(it.first.second)
             targetData.timeDate = timeDate
-            val endTimeDate = dateFormat.parse(it.first.second)
+            val endTimeDate = dateFormat.parse(it.second)
             targetData.endTimeDate = endTimeDate
             targetDataMap[name] = targetData
             targetData.runTime(player, questUUID)
@@ -197,7 +200,7 @@ class DatabaseSQL: Database() {
                     set("state", state)
                     set("finishedQuest", fmqJson)
                 }
-            }
+            }.run()
             updateInner(uuid, questUUID, innerData, questID, innerQuestID)
         }
     }
@@ -213,9 +216,9 @@ class DatabaseSQL: Database() {
                     }
                 }
                 set("state", state)
-                set("finishedQuest", rewards)
+                set("rewards", rewards)
             }
-        }
+        }.run()
         updateTarget(uuid, questUUID, questInnerData)
     }
 
@@ -231,7 +234,7 @@ class DatabaseSQL: Database() {
             insert("uuid", "questUUID", "questID", "innerQuestID", "state", "finishedQuest") {
                 value(uuid.toString(), questUUID.toString(), questID, innerQuestID, state, fmqJson)
             }
-        }
+        }.run()
         createInner(uuid, questUUID, innerData, questID, innerQuestID)
     }
 
@@ -242,7 +245,7 @@ class DatabaseSQL: Database() {
             insert("uuid", "questUUID", "innerQuestID", "state", "rewards") {
                 value(uuid.toString(), questUUID.toString(), innerID, state, rewards)
             }
-        }
+        }.run()
         createTarget(uuid, questUUID, questInnerData)
     }
 
@@ -257,7 +260,7 @@ class DatabaseSQL: Database() {
                 insert("uuid", "questUUID", "name", "innerQuestID", "schedule", "timeDate", "endDate") {
                     value(uuid.toString(), questUUID.toString(), name, innerID, schedule, dateStr, endDateStr)
                 }
-            }
+            }.run()
         }
     }
 
@@ -276,7 +279,7 @@ class DatabaseSQL: Database() {
                     }
                     set("schedule", schedule)
                 }
-            }
+            }.run()
         }
     }
 
