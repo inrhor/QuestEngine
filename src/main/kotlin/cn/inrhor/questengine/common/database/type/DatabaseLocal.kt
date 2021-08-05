@@ -49,15 +49,15 @@ class DatabaseLocal: Database() {
                 state: DOING
                 finishedQuest: []
                 innerQuest:
-                    innerQuestID:
-                        state: DOING
-                        targets:
-                            "name":
-                            time: -1
-                            schedule: 0
-                        rewards:
-                            rewardID:
-                            has: false
+                    innerQuestID: ""
+                    state: DOING
+                    targets:
+                        name: ""
+                        time: -1
+                        schedule: 0
+                    rewards:
+                        rewardID: ""
+                        has: false
 
      */
     override fun pull(player: Player) {
@@ -72,7 +72,7 @@ class DatabaseLocal: Database() {
 
                 val nodeInner = node+"innerQuest."
 
-                val innerQuestID = data.getString(node+"innerQuestID")?: return@forEach
+                val innerQuestID = data.getString(nodeInner+"innerQuestID")?: return@forEach
                 val questInnerData = getInnerQuestData(data, nodeInner, player, questUUid, questID, innerQuestID)?: return@forEach
 
                 val finished = data.getStringList(node+"finishedQuest")
@@ -104,6 +104,7 @@ class DatabaseLocal: Database() {
     }
 
     private fun returnTargets(player: Player, questUUID: UUID, data: YamlConfiguration, node: String, targetDataMap: MutableMap<String, TargetData>): MutableMap<String, TargetData> {
+        if (!data.contains(node+"targets")) return targetDataMap
         for (name in data.getConfigurationSection(node+"targets")!!.getKeys(false)) {
             val nodeTarget = node+"targets.$name."
             val targetData = targetDataMap[name]?: continue
@@ -121,6 +122,7 @@ class DatabaseLocal: Database() {
 
     private fun returnRewardData(data: YamlConfiguration, node: String): MutableMap<String, Boolean> {
         val rewardMap = mutableMapOf<String, Boolean>()
+        if (!data.contains(node+"rewards")) return rewardMap
         for (rewardID in data.getConfigurationSection(node+"rewards")!!.getKeys(false)) {
             val nodeReward = node+"rewards.$rewardID."
             rewardMap[rewardID] = data.getBoolean(nodeReward+"has")
@@ -137,13 +139,15 @@ class DatabaseLocal: Database() {
         pData.questDataList.forEach { (questUUID, questData) ->
             val state = QuestStateUtil.stateToStr(questData.state)
             val node = "quest.$questUUID."
+            val innerData = questData.questInnerData
+            val innerID = innerData.innerQuestID
             data.set(node+"questID", questData.questID)
             data.set(node+"state", state)
             val finishedMain = questData.finishedList
             data.set(node+"finishedMainQuest", finishedMain)
-            val innerData = questData.questInnerData
-            val innerID = innerData.innerQuestID
-            pushData(data, node+"innerQuest.$innerID.", innerData)
+            val innerNode = node+"innerQuest."
+            data.set(innerNode+"innerQuestID", innerID)
+            pushData(data, innerNode, innerData)
         }
         data.save(file)
     }
@@ -167,7 +171,7 @@ class DatabaseLocal: Database() {
         if (!data.contains(timeNode)) {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             val dateStr = dateFormat.format(date)
-            data.set("$timeNode.timeDate", dateStr)
+            data.set(timeNode, dateStr)
         }
     }
 }

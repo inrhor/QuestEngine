@@ -21,7 +21,7 @@ object PluginLoader {
 
     @Awake(LifeCycle.ENABLE)
     fun init() {
-        Info.logoSend()
+        ConsoleMsg.logoSend()
         doLoad()
     }
 
