@@ -4,15 +4,15 @@ import cn.inrhor.questengine.common.dialog.optional.holo.HoloHitBox
 import cn.inrhor.questengine.common.dialog.optional.holo.core.HoloDialog
 import cn.inrhor.questengine.common.dialog.optional.holo.core.HoloReply
 
-class DialogData(var holoDialogList: MutableList<HoloDialog>,
-                 var holoReplyList: MutableList<HoloReply>,
-                 var holoBoxList: MutableList<HoloHitBox>,) {
+class DialogData(var holoDialogMap: MutableMap<String, MutableList<HoloDialog>>,
+                 var holoReplyMap: MutableMap<String, MutableList<HoloReply>>,
+                 var holoBoxMap: MutableMap<String, MutableList<HoloHitBox>>) {
 
     /**
      * 交互全息触发终止全息对话
      */
-    fun endHoloDialog(holoBox: HoloHitBox) {
-        val iterator = holoDialogList.iterator()
+    fun endHoloDialog(holoID: String, holoBox: HoloHitBox) {
+        val iterator = holoDialogMap.iterator()
         while (iterator.hasNext()){
             val holoDialog = iterator.next()
             val dialogModule = holoDialog.dialogModule
@@ -22,14 +22,14 @@ class DialogData(var holoDialogList: MutableList<HoloDialog>,
                 break
             }
         }
-        for (holoReply in holoReplyList) {
+        for (holoReply in holoReplyMap) {
             holoReply.end()
         }
-        holoReplyList.clear()
-        for (holoHitBox in holoBoxList) {
+        holoReplyMap.clear()
+        for (holoHitBox in holoBoxMap) {
             holoHitBox.end()
         }
-        holoBoxList.clear()
+        holoBoxMap.clear()
     }
 
 }

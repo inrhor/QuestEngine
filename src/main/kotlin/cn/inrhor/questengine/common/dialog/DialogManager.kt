@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.dialog
 
 import cn.inrhor.questengine.api.dialog.DialogModule
+import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.dialog.animation.parser.ItemParser
 import cn.inrhor.questengine.common.dialog.animation.parser.TextParser
 import cn.inrhor.questengine.common.dialog.optional.holo.core.HoloDialog
@@ -83,18 +84,35 @@ object DialogManager {
     fun clearMap() = dialogMap.clear()
 
     /**
+     * 获取玩家是否进行相同对话ID的对话
+     */
+    fun hasDialog(players: MutableSet<Player>, dialogModule: DialogModule): Boolean {
+        players.forEach {
+            if (hasDialog(it, dialogModule)) return true
+        }
+        return false
+    }
+
+    fun hasDialog(player: Player, dialogModule: DialogModule): Boolean {
+        DataStorage.getPlayerData(player).dialogData.holoDialogMap.forEach {
+            if (it.dialogModule == dialogModule) return true
+        }
+        return false
+    }
+
+    /**
      * 根据NPCID并判断玩家集合是否满足条件，返回dialogModule
      */
-    fun returnDialogHolo(players: MutableSet<Player>, npcID: String): DialogModule? {
-        for ((_, dialogModule) in dialogMap) {
-            if (dialogModule.npcIDs.equals(npcID)) continue
-            if (KetherHandler.evalBooleanSet(players, dialogModule.condition)) return dialogModule
+    fun returnCanDialogHolo(players: MutableSet<Player>, npcID: String): DialogModule? {
+        dialogMap.values.forEach {
+            if (it.npcIDs.contains(npcID)) return@forEach
+            if (KetherHandler.evalBooleanSet(players, it.condition) && !hasDialog(players, it)) return it
         }
         return null
     }
 
     fun sendDialogHolo(players: MutableSet<Player>, npcID: String, npcLoc: Location) {
-        val dialogModule = returnDialogHolo(players, npcID)?: return
+        val dialogModule = returnCanDialogHolo(players, npcID)?: return
         val holoDialog = HoloDialog(dialogModule, npcLoc, players)
         holoDialog.run()
     }

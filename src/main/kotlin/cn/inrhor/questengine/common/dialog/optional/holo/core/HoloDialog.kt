@@ -37,7 +37,7 @@ class HoloDialog(
         var itemIndex = 0
         for (viewer in viewers) {
             val pData = DataStorage.getPlayerData(viewer)
-            pData.dialogData.holoDialogList.add(this)
+            pData.dialogData.holoDialogMap.add(this)
         }
         for (i in dialogModule.dialog) {
             val iUc = i.uppercase(Locale.getDefault())

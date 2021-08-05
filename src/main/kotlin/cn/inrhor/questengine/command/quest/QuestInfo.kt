@@ -13,7 +13,7 @@ object QuestInfo {
 
     val info = subCommand {
         dynamic {
-            suggestion<ProxyCommandSender> { _, context ->
+            suggestion<ProxyCommandSender> { _, _ ->
                 Bukkit.getOnlinePlayers().map { it.name }
             }
             dynamic {
@@ -22,23 +22,29 @@ object QuestInfo {
                         DataStorage.getPlayerData(p).questDataList.values.map { it.questID }
                     }
                 }
-                execute<ProxyCommandSender> { sender, context, argument ->
-                    val args = argument.split(" ")
-
-                    val player = Bukkit.getPlayer(context.argument(-1)!!) ?: return@execute run {
-                        sender.sendLang("PLAYER_NOT_ONLINE")
+                dynamic {
+                    suggestion<ProxyCommandSender> { _, _ ->
+                        listOf("book", "chat")
                     }
-                    val uuid = player.uniqueId
+                    execute<ProxyCommandSender> { sender, context, argument ->
+                        val args = argument.split(" ")
 
-                    val questID = args[0]
+                        val player = Bukkit.getPlayer(context.argument(-2)!!) ?: return@execute run {
+                            sender.sendLang("PLAYER_NOT_ONLINE")
+                        }
+                        val uuid = player.uniqueId
 
-                    val questData = QuestManager.getQuestData(uuid, questID) ?: return@execute run {
-                        sender.sendLang("QUEST-NULL_QUEST_DATA", questID)
+                        val questID = context.argument(-1)!!
+
+                        val questData = QuestManager.getQuestData(uuid, questID) ?: return@execute run {
+                            sender.sendLang("QUEST-NULL_QUEST_DATA", questID)
+                        }
+
+                        when (args[0]) {
+                            "book" -> BookQuestInfo.open(player, questData.questUUID)
+                            "chat" -> QuestChat.chatNowQuestInfo(player, questData.questUUID)
+                        }
                     }
-
-
-//                    QuestChat.chatNowQuestInfo(player, questData.questUUID)
-                    BookQuestInfo.open(player, questData.questUUID)
                 }
             }
         }

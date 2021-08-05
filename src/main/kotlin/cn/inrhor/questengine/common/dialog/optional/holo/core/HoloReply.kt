@@ -7,7 +7,6 @@ import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.dialog.optional.holo.HoloHitBox
 import cn.inrhor.questengine.common.dialog.optional.holo.HoloReplyDisplay
 import cn.inrhor.questengine.script.kether.KetherHandler
-import cn.inrhor.questengine.utlis.location.FixedHoloHitBox
 import cn.inrhor.questengine.utlis.location.LocationTool
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -48,7 +47,7 @@ class HoloReply(
         var itemIndex = 0
         for (viewer in viewers) {
             val pData = DataStorage.getPlayerData(viewer)
-            pData.dialogData.holoReplyList.add(this)
+            pData.dialogData.holoReplyMap.add(this)
         }
         for (i in replyModule.content) {
             val iUc = i.uppercase(Locale.getDefault())
@@ -60,7 +59,7 @@ class HoloReply(
                     holoHitBox.viewBox()
                     for (viewer in viewers) {
                         val pData = DataStorage.getPlayerData(viewer)
-                        val holoBoxList = pData.dialogData.holoBoxList
+                        val holoBoxList = pData.dialogData.holoBoxMap
                         if (!holoBoxList.equals(holoHitBox)) {
                             holoBoxList.add(holoHitBox)
                         }
