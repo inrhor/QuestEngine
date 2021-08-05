@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.script.kether.expand.control
 
+import cn.inrhor.questengine.common.database.data.ControlData
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.database.data.DataStorage
 import org.bukkit.entity.Player
@@ -20,12 +21,23 @@ class KetherControl(val type: Type, var time: Int, val questID: String, val main
     object WaitRun {
         fun run(player: Player, time: Int, questID: String, mainQuestID: String) {
             val pData = DataStorage.getPlayerData(player)
-            val cMap = pData.controlList
-            val id = QuestManager.generateControlID(questID, mainQuestID)
-            if (cMap.containsKey(id)) {
-                val cData = cMap[id]?: return
-                cData.waitTime = time
+            val controlID = QuestManager.generateControlID(questID, mainQuestID)
+            val cData = pData.controlData
+            if (cData.highestControls.containsKey(controlID)) {
+                highest(controlID, cData, time)
+            }else {
+                normal(controlID, cData, time)
             }
+        }
+
+        fun highest(controlID: String, controlData: ControlData, time: Int) {
+            val hControl = controlData.highestControls[controlID]?: return
+            hControl.waitTime = time
+        }
+
+        fun normal(controlID: String, controlData: ControlData, time: Int) {
+            val nControl = controlData.controls[controlID]?: return
+            nControl.waitTime = time
         }
     }
 

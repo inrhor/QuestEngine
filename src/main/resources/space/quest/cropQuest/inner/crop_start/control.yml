@@ -1,3 +1,6 @@
+# 最高级控制： highest
+# 普通控制： normal
+Priority: normal
 kether:
   - player gamemode to *3
   - packet send packet_1 where location *world *100 *10 *12

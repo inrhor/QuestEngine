@@ -6,14 +6,12 @@ import org.bukkit.configuration.file.YamlConfiguration
 import taboolib.common.platform.console
 import taboolib.module.lang.sendLang
 import java.io.File
-import java.util.HashMap
-import java.util.LinkedHashMap
 
 object ItemManager {
     /**
      * 成功注册的物品
      */
-    private var itemFileMap: HashMap<String, ItemFile> = LinkedHashMap()
+    private var itemFileMap = mutableMapOf<String, ItemFile>()
 
     /**
      * 注册物品

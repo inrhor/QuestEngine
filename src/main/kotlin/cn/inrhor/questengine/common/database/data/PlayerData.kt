@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.common.database.data
 
 import cn.inrhor.questengine.api.collaboration.TeamOpen
-import cn.inrhor.questengine.common.database.data.quest.QuestControlData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import java.util.*
 
@@ -9,20 +8,20 @@ import java.util.*
  * @param uuid 玩家UUID
  * @param dialogData 对话数据
  * @param questDataList 任务数据集合
- * @param controlList 控制脚本集合
+ * @param controlData 控制脚本集合
  */
 class PlayerData(
     val uuid: UUID,
     var teamData: TeamOpen?,
     val dialogData: DialogData,
-    var questDataList: MutableMap<UUID, QuestData>, /* UUID 对应 QuestData */
-    var controlList: MutableMap<String, QuestControlData>/* [questID]-[innerQuestID] QuestManager有快捷获取 */
-) {
+    var questDataList: MutableMap<UUID, QuestData>, /* QuestUUID 对应 QuestData */
+    var controlData: ControlData) {
 
     constructor(uuid: UUID):
             this(uuid, null,
                 DialogData(mutableMapOf(), mutableMapOf(), mutableMapOf()),
                 mutableMapOf(),
-                mutableMapOf())
+                ControlData(linkedMapOf(), mutableMapOf())
+            )
 
 }

@@ -13,13 +13,14 @@ import org.bukkit.entity.Player
 import taboolib.common.platform.console
 import taboolib.module.lang.sendLang
 import java.util.*
+import kotlin.collections.HashMap
 
 
 object DialogManager {
     /**
      * 成功注册的对话
      */
-    private var dialogMap: HashMap<String, DialogModule> = LinkedHashMap()
+    private var dialogMap = mutableMapOf<String, DialogModule>()
 
     /**
      * 注册对话

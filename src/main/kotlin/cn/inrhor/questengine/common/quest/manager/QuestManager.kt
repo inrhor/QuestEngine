@@ -10,6 +10,7 @@ import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.database.type.DatabaseManager
 import cn.inrhor.questengine.common.database.type.DatabaseSQL
 import cn.inrhor.questengine.common.database.type.DatabaseType
+import cn.inrhor.questengine.common.quest.ControlPriority
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.script.kether.KetherHandler
 import cn.inrhor.questengine.common.quest.QuestState
@@ -25,7 +26,7 @@ object QuestManager {
     /**
      * 注册的任务模块内容
      */
-    var questMap: HashMap<String, QuestModule> = LinkedHashMap()
+    var questMap = mutableMapOf<String, QuestModule>()
 
     /**
      * 注册任务模块内容
@@ -173,7 +174,6 @@ object QuestManager {
         val questData = QuestData(questUUID, questID, innerQuestData, state, pData.teamData, mutableListOf())
         pData.questDataList[questUUID] = questData
         saveControl(player, pData, innerQuestData)
-        runControl(pData, questID, innerQuestID)
         if (isNewQuest) {
             if (DatabaseManager.type == DatabaseType.MYSQL) {
                 DatabaseSQL().create(player, questUUID, questData)
@@ -190,31 +190,22 @@ object QuestManager {
         val innerQuestID = questInnerData.innerQuestID
         val scriptList: MutableList<String>
         val controlID: String
-        val mModule = getInnerQuestModule(questID, innerQuestID) ?: return
+        val mModule = getInnerQuestModule(questID, innerQuestID)?: return
         val cModule = mModule.questControl
         controlID = cModule.controlID
+        val cPriority = cModule.priority
         scriptList = cModule.scriptList
         if (controlID == "") return
-        val controlData = QuestControlData(player, questInnerData, scriptList, 0, 0)
-        pData.controlList[controlID] = controlData
+        val cData = pData.controlData
+        val qControlData = QuestControlData(player, cData, controlID, cPriority, scriptList)
+        when (cPriority) {
+            ControlPriority.HIGHEST -> cData.addHighest(controlID, qControlData)
+            ControlPriority.NORMAL -> cData.addCommon(controlID, qControlData)
+        }
     }
 
     fun generateControlID(questID: String, innerQuestID: String): String {
         return "[$questID]-[$innerQuestID]"
-    }
-
-    /**
-     * 运行控制模块
-     */
-    fun runControl(player: Player, questID: String, innerQuestID: String) {
-        val pData = DataStorage.getPlayerData(player)
-        runControl(pData, questID, innerQuestID)
-    }
-
-    fun runControl(pData: PlayerData, questID: String, innerQuestID: String) {
-        val id = generateControlID(questID, innerQuestID)
-        val control = pData.controlList[id]?: return
-        control.runScript()
     }
 
     /**
