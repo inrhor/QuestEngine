@@ -86,16 +86,17 @@ object DialogManager {
     /**
      * 获取玩家是否进行相同对话ID的对话
      */
-    fun hasDialog(players: MutableSet<Player>, dialogModule: DialogModule): Boolean {
+    fun hasDialog(players: MutableSet<Player>, dialogID: String): Boolean {
         players.forEach {
-            if (hasDialog(it, dialogModule)) return true
+            if (hasDialog(it, dialogID)) return true
         }
         return false
     }
 
-    fun hasDialog(player: Player, dialogModule: DialogModule): Boolean {
-        DataStorage.getPlayerData(player).dialogData.holoDialogMap.forEach {
-            if (it.dialogModule == dialogModule) return true
+    fun hasDialog(player: Player, dialogID: String): Boolean {
+        val holoDialog = DataStorage.getPlayerData(player).dialogData.holoDialogMap[dialogID]?: return false
+        holoDialog.forEach {
+            if (it.dialogModule.dialogID == dialogID) return true
         }
         return false
     }
@@ -105,8 +106,11 @@ object DialogManager {
      */
     fun returnCanDialogHolo(players: MutableSet<Player>, npcID: String): DialogModule? {
         dialogMap.values.forEach {
-            if (it.npcIDs.contains(npcID)) return@forEach
-            if (KetherHandler.evalBooleanSet(players, it.condition) && !hasDialog(players, it)) return it
+            if (!it.npcIDs.contains(npcID)) return@forEach
+            if (KetherHandler.evalBooleanSet(players, it.condition)) {
+                val dialogID = it.dialogID
+                if (!hasDialog(players, dialogID)) return it
+            }
         }
         return null
     }

@@ -21,7 +21,7 @@ class PlayerData(
 
     constructor(uuid: UUID):
             this(uuid, null,
-                DialogData(mutableListOf(), mutableListOf(), mutableListOf()),
+                DialogData(mutableMapOf(), mutableMapOf(), mutableMapOf()),
                 mutableMapOf(),
                 mutableMapOf())
 

@@ -35,18 +35,18 @@ class HoloDialog(
         var nextY = 0.0
         var textIndex = 0
         var itemIndex = 0
-        for (viewer in viewers) {
-            val pData = DataStorage.getPlayerData(viewer)
-            pData.dialogData.holoDialogMap.add(this)
+        val dialogID = dialogModule.dialogID
+        viewers.forEach {
+            DataStorage.getPlayerData(it).dialogData.addHoloDialog(dialogID, this)
         }
         for (i in dialogModule.dialog) {
             val iUc = i.uppercase(Locale.getDefault())
             when {
                 iUc.startsWith("INITLOC") -> {
-                    holoLoc = LocationTool().getFixedLoc(npcLoc, KetherHandler.evalFixedLoc(i)!!)
+                    holoLoc = LocationTool().getFixedLoc(npcLoc, KetherHandler.evalFixedLoc(i))
                 }
                 iUc.startsWith("ADDLOC") -> {
-                    holoLoc = LocationTool().getFixedLoc(holoLoc, KetherHandler.evalFixedLoc(i)!!)
+                    holoLoc = LocationTool().getFixedLoc(holoLoc, KetherHandler.evalFixedLoc(i))
                 }
                 iUc.startsWith("NEXTY") -> {
                     val get = i.substring(i.indexOf(" ")+1)

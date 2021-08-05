@@ -14,17 +14,19 @@ object ClickHolo {
         if (ev.action != Action.LEFT_CLICK_AIR) return
         val pData = DataStorage.getPlayerData(p)
         val dialogData = pData.dialogData
-        for (holoBox in dialogData.holoBoxMap) {
-            if (holoBox.isBox()) {
-                val replyModule = holoBox.replyModule
-                for (script in replyModule.script) {
-                    KetherHandler.eval(p, script)
+        dialogData.holoBoxMap.values.forEach {
+            it.forEach{ holoBox ->
+                if (holoBox.isBox()) {
+                    val replyModule = holoBox.replyModule
+                    for (script in replyModule.script) {
+                        KetherHandler.eval(p, script)
+                    }
+                    for (viewer in holoBox.viewers) {
+                        val data = DataStorage.getPlayerData(viewer)
+                        data.dialogData.endHoloDialog(holoBox.replyModule.dialogID)
+                    }
+                    return
                 }
-                for (viewer in holoBox.viewers) {
-                    val data = DataStorage.getPlayerData(viewer)
-                    data.dialogData.endHoloDialog(holoBox)
-                }
-                return
             }
         }
     }

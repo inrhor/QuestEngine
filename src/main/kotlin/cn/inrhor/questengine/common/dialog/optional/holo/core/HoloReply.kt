@@ -45,9 +45,9 @@ class HoloReply(
         var nextY = 0.0
         var textIndex = 0
         var itemIndex = 0
-        for (viewer in viewers) {
-            val pData = DataStorage.getPlayerData(viewer)
-            pData.dialogData.holoReplyMap.add(this)
+        val dialogID = replyModule.dialogID
+        viewers.forEach {
+            DataStorage.getPlayerData(it).dialogData.addHoloReply(dialogID, this)
         }
         for (i in replyModule.content) {
             val iUc = i.uppercase(Locale.getDefault())
@@ -58,11 +58,7 @@ class HoloReply(
                     val holoHitBox = HoloHitBox(replyModule, boxLoc, fixedHoloHitBox, viewers)
                     holoHitBox.viewBox()
                     for (viewer in viewers) {
-                        val pData = DataStorage.getPlayerData(viewer)
-                        val holoBoxList = pData.dialogData.holoBoxMap
-                        if (!holoBoxList.equals(holoHitBox)) {
-                            holoBoxList.add(holoHitBox)
-                        }
+                        DataStorage.getPlayerData(viewer).dialogData.addHoloBox(dialogID, holoHitBox)
                     }
                 }
                 iUc.startsWith("INITLOC") -> {
