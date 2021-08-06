@@ -49,7 +49,8 @@ object PacketManager {
     }
 
     private fun sendPacket(entityID: Int, packetModule: PacketModule, viewers: MutableSet<Player>, location: Location) {
-        getPackets().spawnEntity(viewers, entityID, packetModule.entityType, location)
+//        getPackets().spawnEntity(viewers, entityID, packetModule.entityType, location)
+        getPackets().spawnAS(viewers, entityID, location)
         /*val itemEntityMap = packetModule.itemEntityID
         if (itemEntityMap.isNotEmpty()) {
             itemEntityMap.forEach { (itemID, entityID) ->

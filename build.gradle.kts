@@ -17,6 +17,9 @@ taboolib {
             "module-nms-util",
             "platform-bukkit")
     description {
+        contributors {
+            name("inrhor")
+        }
         dependencies {
             name("Adyeshach").optional(true)
             name("Citizens").optional(true)
@@ -24,7 +27,7 @@ taboolib {
         prefix("QuestEngine")
     }
     classifier = null
-    version = "6.0.0-pre23"
+    version = "6.0.0-pre27"
 }
 
 repositories {
@@ -36,6 +39,13 @@ dependencies {
     compileOnly("ink.ptms.core:v11701:11701:universal")
     compileOnly("ink.ptms.core:v11604:11604:all")
     compileOnly("ink.ptms.core:v11600:11600:all")
+    compileOnly("ink.ptms.core:v11500:11500:all")
+    compileOnly("ink.ptms.core:v11400:11400:all")
+    compileOnly("ink.ptms.core:v11300:11300:all")
+    compileOnly("ink.ptms.core:v11200:11200:all")
+    compileOnly("ink.ptms.core:v11100:11100:all")
+    compileOnly("ink.ptms.core:v11000:11000:all")
+    compileOnly("ink.ptms.core:v10900:10900:all")
     compileOnly("public:Citizens:1.0.0")
     compileOnly("ink.ptms:Adyeshach:1.2.1")
     compileOnly(kotlin("stdlib"))

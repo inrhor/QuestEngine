@@ -91,6 +91,11 @@ abstract class NMS {
     abstract fun getMetaEntityCustomName(name: String): Any
 
     /**
+     * 实体属性
+     */
+//    abstract fun getMetaEntityValue(index: Int, value: Boolean): Any
+
+    /**
      * 已设置好的盔甲架基本值
      */
     abstract fun getMetaASProperties(isSmall: Boolean, marker: Boolean): Any
