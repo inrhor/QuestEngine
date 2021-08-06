@@ -247,8 +247,39 @@ class NMSImpl : NMS() {
         }
     }
 
+    private fun getItemEntityIndex(): Int {
+        return when (version) {
+            5, 6, 7, 8 -> 7
+            else -> 8
+        }
+    }
+
     override fun getMetaEntityItemStack(itemStack: ItemStack): Any {
-        return DataWatcher.Item(DataWatcherObject(7, DataWatcherRegistry.g), CraftItemStack.asNMSCopy(itemStack))
+        return when {
+            version >= 5 -> DataWatcher.Item(DataWatcherObject(getItemEntityIndex(),
+                DataWatcherRegistry.g),
+                CraftItemStack.asNMSCopy(itemStack))
+            version >= 4 -> net.minecraft.server.v1_12_R1.DataWatcher.Item(
+                net.minecraft.server.v1_12_R1.DataWatcherObject(6,
+                    net.minecraft.server.v1_12_R1.DataWatcherRegistry.f
+                ), org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(itemStack)
+            )
+            else -> return net.minecraft.server.v1_9_R2.DataWatcher.Item(
+                net.minecraft.server.v1_9_R2.DataWatcherObject(5,
+                    net.minecraft.server.v1_9_R2.DataWatcherRegistry.f
+                ), com.google.common.base.Optional.fromNullable(org.bukkit.craftbukkit.v1_9_R2.inventory.CraftItemStack.asNMSCopy(itemStack))
+            )
+        }
+    }
+
+    private fun getPropertiesIndex(): Int {
+        return when (version) {
+            1 -> 10
+            2, 3, 4, 5 -> 11
+            6 -> 13
+            7, 8 -> 14
+            else -> 15
+        }
     }
 
     override fun getMetaASProperties(isSmall: Boolean, marker: Boolean): Any {
@@ -256,7 +287,7 @@ class NMSImpl : NMS() {
         bytes += if (isSmall) 0x01 else 0
         bytes += 0x08
         bytes += if (marker) 0x10 else 0
-        return DataWatcher.Item(DataWatcherObject(14, DataWatcherRegistry.a), bytes.toByte())
+        return DataWatcher.Item(DataWatcherObject(getPropertiesIndex(), DataWatcherRegistry.a), bytes.toByte())
     }
 
     override fun getIsInvisible(): Any {
