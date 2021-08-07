@@ -6,7 +6,7 @@ import cn.inrhor.questengine.api.quest.TargetExtend
 import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.common.quest.target.util.Schedule
-import cn.inrhor.questengine.script.kether.KetherHandler
+import cn.inrhor.questengine.script.kether.evalBoolean
 import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.entity.Entity
 import org.bukkit.entity.EntityType
@@ -71,10 +71,10 @@ object TargetKillEntity: TargetExtend<EntityDeathEvent>() {
             val s = it.lowercase(Locale.getDefault())
             if (s.startsWith("entity name")) {
                 val get = UtilString.subGetStr(it, "@")
-                if (!KetherHandler.evalBoolean(player, "strMatch type $get *'${entity.name}'")) return false
+                if (!evalBoolean(player, "strMatch type $get *'${entity.name}'")) return false
             }else if (s.startsWith("eval ")) {
                 val get = UtilString.subGetStr(it, "@").replace("dropExp", dropExp.toString(), true)
-                if (!KetherHandler.evalBoolean(player, get)) return false
+                if (!evalBoolean(player, get)) return false
             }
             i++
         }

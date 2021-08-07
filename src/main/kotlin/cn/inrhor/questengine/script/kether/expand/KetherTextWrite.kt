@@ -10,15 +10,15 @@ import java.util.concurrent.CompletableFuture
 class KetherTextWrite(val delay: Int, val speedWrite: Int, val text: String) : ScriptAction<TextWrite>() {
 
     override fun run(frame: ScriptFrame): CompletableFuture<TextWrite> {
-        val fixedLocation = CompletableFuture<TextWrite>()
-        fixedLocation.complete(
+        val referLocation = CompletableFuture<TextWrite>()
+        referLocation.complete(
             TextWrite(
                 delay,
                 speedWrite,
                 text
             )
         )
-        return fixedLocation
+        return referLocation
     }
 
     internal object Parser {

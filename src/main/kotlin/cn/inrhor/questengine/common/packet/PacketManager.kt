@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.packet
 
+import cn.inrhor.questengine.api.*
 import cn.inrhor.questengine.common.item.ItemManager
-import cn.inrhor.questengine.common.nms.NMS
 import cn.inrhor.questengine.utlis.file.GetFile
 import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.Bukkit
@@ -50,7 +50,7 @@ object PacketManager {
 
     private fun sendPacket(entityID: Int, packetModule: PacketModule, viewers: MutableSet<Player>, location: Location) {
 //        getPackets().spawnEntity(viewers, entityID, packetModule.entityType, location)
-        getPackets().spawnAS(viewers, entityID, location)
+//        getPackets().spawnAS(viewers, entityID, location)
         /*val itemEntityMap = packetModule.itemEntityID
         if (itemEntityMap.isNotEmpty()) {
             itemEntityMap.forEach { (itemID, entityID) ->
@@ -58,6 +58,7 @@ object PacketManager {
                 getPackets().spawnItem(viewers, entityID, location, item)
             }
         }*/
+        spawnEntity(viewers, entityID, packetModule.entityType, location)
         packetModule.mate.forEach {
             val sp = it.split(" ")
             val sign = sp[0].lowercase(Locale.getDefault())
@@ -65,15 +66,15 @@ object PacketManager {
                 val slot = sp[1].uppercase(Locale.getDefault())
                 val itemID = sp[2]
                 val item = ItemManager.get(itemID)
-                getPackets().updateEquipmentItem(viewers, entityID, EquipmentSlot.valueOf(slot), item)
+                updateEquipmentItem(viewers, entityID, EquipmentSlot.valueOf(slot), item)
             }else if (sign == "displayName") { // false 为 不显示
                 val displayName = sp[1]
-                getPackets().updateDisplayName(viewers, entityID, displayName)
+                updateDisplayName(viewers, entityID, displayName)
                 val display = sp[2].toBoolean()
-                getPackets().updateEntityMetadata(viewers, entityID, getPackets().getMetaEntityCustomNameVisible(display))
+                setEntityCustomNameVisible(viewers, entityID, display)
             }else if (sign == "visible") {
                 if (!sp[1].toBoolean()) {
-                    getPackets().updateEntityMetadata(viewers, entityID, getPackets().getIsInvisible())
+                    isInvisible(viewers, entityID)
                 }
             }
         }
@@ -116,10 +117,6 @@ object PacketManager {
         }
 
         return itemEntityID
-    }
-
-    private fun getPackets(): NMS {
-        return NMS.INSTANCE
     }
 
 }

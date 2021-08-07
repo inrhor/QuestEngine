@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.script.kether.expand
 
-import cn.inrhor.questengine.utlis.location.FixedLocation
+import cn.inrhor.questengine.utlis.location.ReferLocation
 import cn.inrhor.questengine.utlis.location.LocationTool
 import taboolib.module.kether.KetherParser
 import taboolib.module.kether.ScriptAction
@@ -8,22 +8,22 @@ import taboolib.module.kether.ScriptFrame
 import taboolib.module.kether.scriptParser
 import java.util.concurrent.CompletableFuture
 
-class KetherFixedLocation(
+class KetherReferLocation(
     val offset: Float,
     val multiply: Double,
     val height: Double
-) : ScriptAction<FixedLocation>() {
+) : ScriptAction<ReferLocation>() {
 
-    override fun run(frame: ScriptFrame): CompletableFuture<FixedLocation> {
-        val fixedLocation = CompletableFuture<FixedLocation>()
-        fixedLocation.complete(
-            FixedLocation(
+    override fun run(frame: ScriptFrame): CompletableFuture<ReferLocation> {
+        val referLocation = CompletableFuture<ReferLocation>()
+        referLocation.complete(
+            ReferLocation(
                 offset,
                 multiply,
                 height
             )
         )
-        return fixedLocation
+        return referLocation
     }
 
     /*
@@ -39,7 +39,7 @@ class KetherFixedLocation(
             it.expect("add")
             val multiply = it.nextDouble()
             val height = it.nextDouble()
-            KetherFixedLocation(offset, multiply, height)
+            KetherReferLocation(offset, multiply, height)
         }
     }
 }

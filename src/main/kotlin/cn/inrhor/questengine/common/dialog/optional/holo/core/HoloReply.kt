@@ -1,16 +1,16 @@
 package cn.inrhor.questengine.common.dialog.optional.holo.core
 
-import cn.inrhor.questengine.QuestEngine
+import cn.inrhor.questengine.api.destroyEntity
 import cn.inrhor.questengine.api.dialog.ReplyModule
-import cn.inrhor.questengine.api.hologram.HoloDisplay
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.dialog.optional.holo.HoloHitBox
 import cn.inrhor.questengine.common.dialog.optional.holo.HoloReplyDisplay
-import cn.inrhor.questengine.script.kether.KetherHandler
+import cn.inrhor.questengine.script.kether.evalHoloHitBox
+import cn.inrhor.questengine.script.kether.evalReferLoc
 import cn.inrhor.questengine.utlis.location.LocationTool
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import org.bukkit.scheduler.BukkitRunnable
+import taboolib.common.platform.submit
 import java.util.*
 
 /**
@@ -25,19 +25,17 @@ class HoloReply(
     private val packetIDs = mutableListOf<Int>()
 
     fun end() {
-        for (id in packetIDs) {
-            HoloDisplay.delEntity(id, viewers)
+        packetIDs.forEach {
+            destroyEntity(viewers, it)
         }
     }
 
     fun run() {
-        object : BukkitRunnable() {
-            override fun run() {
-                for (replyModule in replyList) {
-                    runContent(replyModule)
-                }
+        submit(async = true, delay = this.delay) {
+            for (replyModule in replyList) {
+                runContent(replyModule)
             }
-        }.runTaskLaterAsynchronously(QuestEngine.plugin, delay)
+        }
     }
 
     private fun runContent(replyModule: ReplyModule) {
@@ -53,19 +51,19 @@ class HoloReply(
             val iUc = i.uppercase(Locale.getDefault())
             when {
                 iUc.startsWith("HITBOX") -> {
-                    val fixedHoloHitBox = KetherHandler.evalHoloHitBox(i)
-                    val boxLoc = LocationTool.getFixedHoloBoxLoc(npcLoc, fixedHoloHitBox)
-                    val holoHitBox = HoloHitBox(replyModule, boxLoc, fixedHoloHitBox, viewers)
+                    val referHoloHitBox = evalHoloHitBox(i)
+                    val boxLoc = LocationTool.getReferHoloBoxLoc(npcLoc, referHoloHitBox)
+                    val holoHitBox = HoloHitBox(replyModule, boxLoc, referHoloHitBox, viewers)
                     holoHitBox.viewBox()
                     for (viewer in viewers) {
                         DataStorage.getPlayerData(viewer).dialogData.addHoloBox(dialogID, holoHitBox)
                     }
                 }
                 iUc.startsWith("INITLOC") -> {
-                    holoLoc = LocationTool.getFixedLoc(npcLoc, KetherHandler.evalFixedLoc(i))
+                    holoLoc = LocationTool.getReferLoc(npcLoc, evalReferLoc(i))
                 }
                 iUc.startsWith("ADDLOC") -> {
-                    holoLoc = LocationTool.getFixedLoc(holoLoc, KetherHandler.evalFixedLoc(i))
+                    holoLoc = LocationTool.getReferLoc(holoLoc, evalReferLoc(i))
                 }
                 iUc.startsWith("NEXTY") -> {
                     val get = i.substring(i.indexOf(" ")+1)

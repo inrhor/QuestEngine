@@ -5,7 +5,7 @@ import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestReward
 import cn.inrhor.questengine.common.quest.QuestTarget
-import cn.inrhor.questengine.script.kether.KetherHandler
+import cn.inrhor.questengine.script.kether.eval
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
@@ -60,13 +60,13 @@ object RewardManager {
         if (rewardID == "all") {
             questReward.finishReward.values.forEach { list ->
                 list.forEach {
-                    KetherHandler.eval(player, it)
+                    eval(player, it)
                 }
             }
         }else {
             val reward = questReward.finishReward[rewardID] ?: return
             reward.forEach {
-                KetherHandler.eval(player, it)
+                eval(player, it)
             }
         }
     }

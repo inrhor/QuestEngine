@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.script.kether.expand.control
 
-import cn.inrhor.questengine.common.nms.NMS
+import cn.inrhor.questengine.api.destroyEntity
 import cn.inrhor.questengine.common.packet.PacketManager
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -63,11 +63,7 @@ class KetherPacket {
         private fun removePacket(viewers: MutableSet<Player>, packetID: String) {
             val m = PacketManager.packetMap[packetID]?: return
             val id = m.entityID
-            getPackets().destroyEntity(viewers, id)
-        }
-
-        private fun getPackets(): NMS {
-            return NMS.INSTANCE
+            destroyEntity(viewers, id)
         }
     }
 

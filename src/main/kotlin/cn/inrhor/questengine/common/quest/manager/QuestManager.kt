@@ -12,9 +12,9 @@ import cn.inrhor.questengine.common.database.type.DatabaseSQL
 import cn.inrhor.questengine.common.database.type.DatabaseType
 import cn.inrhor.questengine.common.quest.ControlPriority
 import cn.inrhor.questengine.common.quest.ModeType
-import cn.inrhor.questengine.script.kether.KetherHandler
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
+import cn.inrhor.questengine.script.kether.eval
 import cn.inrhor.questengine.utlis.time.TimeUtil
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -256,7 +256,7 @@ object QuestManager {
             val innerQuestID = innerData.innerQuestID
             val failReward = getReward(questData.questID, innerQuestID, "", state) ?: return
             failReward.forEach {
-                KetherHandler.eval(player, it)
+                eval(player, it)
             }
         }
     }

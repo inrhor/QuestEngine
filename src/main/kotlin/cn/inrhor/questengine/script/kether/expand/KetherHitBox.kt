@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.script.kether.expand
 
-import cn.inrhor.questengine.utlis.location.FixedHoloHitBox
+import cn.inrhor.questengine.utlis.location.ReferHoloHitBox
 import cn.inrhor.questengine.utlis.location.LocationTool
 import taboolib.module.kether.KetherParser
 import taboolib.module.kether.ScriptAction
@@ -21,12 +21,12 @@ class KetherHitBox(
     val long: Int,
     val itemID: String,
     val boxY: Double
-) : ScriptAction<FixedHoloHitBox>() {
+) : ScriptAction<ReferHoloHitBox>() {
 
-    override fun run(frame: ScriptFrame): CompletableFuture<FixedHoloHitBox> {
-        val fixedHoloHitBox = CompletableFuture<FixedHoloHitBox>()
-        fixedHoloHitBox.complete(
-            FixedHoloHitBox(
+    override fun run(frame: ScriptFrame): CompletableFuture<ReferHoloHitBox> {
+        val referHoloHitBox = CompletableFuture<ReferHoloHitBox>()
+        referHoloHitBox.complete(
+            ReferHoloHitBox(
                 offset,
                 multiply,
                 height,
@@ -38,7 +38,7 @@ class KetherHitBox(
                 boxY
             )
         )
-        return fixedHoloHitBox
+        return referHoloHitBox
     }
 
 

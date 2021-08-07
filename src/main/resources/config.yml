@@ -3,6 +3,11 @@ update:
   lang:
     - "zh_CN"
 
+# 挂钩
+hook:
+  # 数据包方法可选: default, protocolLib
+  packet: "default"
+
 # 数据存储
 data:
   # 存储类型 YAML MYSQL

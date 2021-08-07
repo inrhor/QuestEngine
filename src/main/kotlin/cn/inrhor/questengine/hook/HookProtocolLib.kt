@@ -67,6 +67,7 @@ object HookProtocolLib {
 
     fun destroyEntity(player: Player, entityId: Int) {
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_DESTROY)
+        packet.modifier.writeDefaults()
         packet.integers.write(1, entityId)
         sendPacket(player, packet)
     }
@@ -79,6 +80,7 @@ object HookProtocolLib {
 
     fun updateEquipmentItem(players: MutableSet<Player>, entityId: Int, slot: EquipmentSlot, itemStack: ItemStack) {
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_EQUIPMENT)
+        packet.modifier.writeDefaults()
         packet.integers.write(0, entityId)
         packet.slotStackPairLists.write(
             0,
@@ -96,6 +98,7 @@ object HookProtocolLib {
 
     fun updatePassengers(players: MutableSet<Player>, entityId: Int, vararg passengers: Int) {
         val packet = PacketContainer(PacketType.Play.Server.MOUNT)
+        packet.modifier.writeDefaults()
         packet.integers.write(0, entityId)
         packet.integerArrays.write(0, passengers)
         sendPacket(players, packet)
@@ -140,9 +143,27 @@ object HookProtocolLib {
         setMetaBoolean(metadata, 3, visible)
     }
 
+    fun setEntityCustomNameVisible(players: MutableSet<Player>, entityId: Int, visible: Boolean) {
+        val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
+        packet.integers.write(0, entityId)
+        val metadata = WrappedDataWatcher()
+        setEntityCustomNameVisible(metadata, visible)
+        packet.watchableCollectionModifier.write(0, metadata.watchableObjects)
+        sendPacket(players, packet)
+    }
+
+    fun isInvisible(players: MutableSet<Player>, entityId: Int) {
+        val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
+        packet.integers.write(0, entityId)
+        val metadata = WrappedDataWatcher()
+        setIsInvisible(metadata)
+        packet.watchableCollectionModifier.write(0, metadata.watchableObjects)
+        sendPacket(players, packet)
+    }
+
     private fun setMetaBoolean(metadata: WrappedDataWatcher, index: Int, open: Boolean) {
         metadata.setObject(
-            WrappedDataWatcher.WrappedDataWatcherObject(
+            WrappedDataWatcherObject(
                 index,
                 WrappedDataWatcher.Registry.get(Boolean::class.javaObjectType)
             ),
@@ -152,7 +173,7 @@ object HookProtocolLib {
 
     private fun setMetaBytes(metadata: WrappedDataWatcher, index: Int, byte: Byte) {
         metadata.setObject(
-            WrappedDataWatcher.WrappedDataWatcherObject(index,
+            WrappedDataWatcherObject(index,
                 WrappedDataWatcher.Registry.get(Byte::class.javaObjectType)),
             byte)
     }
@@ -167,9 +188,15 @@ object HookProtocolLib {
             WrappedChatComponent.fromChatMessage(name)[0].handle
         )
         metadata.setObject(
-            WrappedDataWatcher.WrappedDataWatcherObject(
+            WrappedDataWatcherObject(
                 5, // 对应 https://wiki.vg/Entity_metadata#Entity_Metadata_Format 的 Index
                 WrappedDataWatcher.Registry.getChatComponentSerializer(true)), opt)
+    }
+
+    fun updateDisplayName(players: MutableSet<Player>, entityId: Int, name: String) {
+        players.forEach {
+            updateDisplayName(it, entityId, name)
+        }
     }
 
     fun updateDisplayName(player: Player, entityId: Int, name: String) {
@@ -180,6 +207,17 @@ object HookProtocolLib {
         setEntityCustomName(metadata, name)
         packet.watchableCollectionModifier.write(0, metadata.watchableObjects)
         sendPacket(player, packet)
+    }
+
+    fun updateLocation(players: MutableSet<Player>, entityId: Int, location: Location) {
+        val packet = PacketContainer(PacketType.Play.Server.ENTITY_TELEPORT)
+        packet.modifier.writeDefaults()
+        packet.integers.write(0, entityId)
+        packet.doubles
+            .write(0, location.x)
+            .write(1, location.y)
+            .write(2, location.z)
+        sendPacket(players, packet)
     }
 
 

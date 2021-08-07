@@ -3,7 +3,7 @@ package cn.inrhor.questengine.common.dialog.animation.parser
 import cn.inrhor.questengine.common.dialog.animation.item.ItemDialogPlay
 import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.common.item.ItemManager
-import cn.inrhor.questengine.script.kether.KetherHandler
+import cn.inrhor.questengine.script.kether.eval
 import java.util.*
 
 /**
@@ -28,7 +28,7 @@ class ItemParser(private val itemContents: MutableList<String>) {
             HoloIDManager.addEntityID(holoID)
             HoloIDManager.addEntityID(itemID)
             if (script.uppercase(Locale.getDefault()).startsWith("ITEMNORMAL")) {
-                val dialogItem = KetherHandler.eval(script) as ItemDialogPlay
+                val dialogItem = eval(script) as ItemDialogPlay
                 dialogItem.holoID = holoID
                 dialogItem.itemID = itemID
                 dialogItemList.add(dialogItem)

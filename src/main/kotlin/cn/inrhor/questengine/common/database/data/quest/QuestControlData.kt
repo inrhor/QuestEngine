@@ -1,13 +1,12 @@
 package cn.inrhor.questengine.common.database.data.quest
 
-import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.common.database.data.ControlData
 import cn.inrhor.questengine.common.quest.ControlPriority
-import cn.inrhor.questengine.script.kether.KetherHandler
+import cn.inrhor.questengine.script.kether.eval
 import cn.inrhor.questengine.script.kether.expand.control.ControlTaskType
 import cn.inrhor.questengine.script.kether.expand.control.ControlType
 import org.bukkit.entity.Player
-import org.bukkit.scheduler.BukkitRunnable
+import taboolib.common.platform.submit
 
 class QuestControlData(
     val player: Player,
@@ -40,30 +39,25 @@ class QuestControlData(
     }
 
     private fun synRunScript(content: String) {
-        object : BukkitRunnable() {
-            override fun run() {
-                if (!player.isOnline) {
-                    cancel(); return
-                }
-                eval(content)
+        submit(delay = waitTime.toLong()) {
+            if (!player.isOnline) {
+                cancel(); return@submit
             }
-        }.runTaskLater(QuestEngine.plugin, waitTime.toLong())
+            evalShell(content)
+        }
     }
 
     private fun asyRunScript(content: String) {
-        object : BukkitRunnable() {
-            override fun run() {
-                if (!player.isOnline) {
-                    cancel()
-                    return
-                }
-                eval(content)
+        submit(async = true, delay = waitTime.toLong()) {
+            if (!player.isOnline) {
+                cancel(); return@submit
             }
-        }.runTaskLaterAsynchronously(QuestEngine.plugin, waitTime.toLong())
+            evalShell(content)
+        }
     }
 
-    private fun eval(content: String) {
-        KetherHandler.eval(player, content)
+    private fun evalShell(content: String) {
+        eval(player, content)
         runScript()
         waitTime = 0
     }

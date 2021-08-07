@@ -1,12 +1,11 @@
 package cn.inrhor.questengine.common.dialog.optional.holo
 
-import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.hologram.HoloDisplay
 import cn.inrhor.questengine.common.dialog.animation.item.ItemDialogPlay
 import cn.inrhor.questengine.common.dialog.optional.holo.core.HoloDialog
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import org.bukkit.scheduler.BukkitRunnable
+import taboolib.common.platform.submit
 
 class HoloAnimationItem(val holoDialog: HoloDialog,
                         var viewers: MutableSet<Player>,
@@ -14,12 +13,15 @@ class HoloAnimationItem(val holoDialog: HoloDialog,
                         val holoLoc: Location) {
 
     fun run() {
-        object : BukkitRunnable() {
-            override fun run() {
-                if (holoDialog.endDialog || viewers.isEmpty()) { cancel(); return }
-                HoloDisplay.updateItem(itemDialogPlay.holoID, itemDialogPlay.itemID, viewers, holoLoc, itemDialogPlay.item)
-            }
-        }.runTaskLaterAsynchronously(QuestEngine.plugin, itemDialogPlay.delay.toLong())
+        submit(delay = itemDialogPlay.delay.toLong(), async = true) {
+            if (holoDialog.endDialog || viewers.isEmpty()) { cancel(); return@submit }
+            HoloDisplay.updateItem(
+                itemDialogPlay.holoID,
+                itemDialogPlay.itemID,
+                viewers,
+                holoLoc,
+                itemDialogPlay.item)
+        }
     }
 
 }

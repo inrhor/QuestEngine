@@ -5,7 +5,7 @@ import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.dialog.animation.parser.ItemParser
 import cn.inrhor.questengine.common.dialog.animation.parser.TextParser
 import cn.inrhor.questengine.common.dialog.optional.holo.core.HoloDialog
-import cn.inrhor.questengine.script.kether.KetherHandler
+import cn.inrhor.questengine.script.kether.evalBooleanSet
 import cn.inrhor.questengine.utlis.file.GetFile
 import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.Location
@@ -108,7 +108,7 @@ object DialogManager {
     fun returnCanDialogHolo(players: MutableSet<Player>, npcID: String): DialogModule? {
         dialogMap.values.forEach {
             if (!it.npcIDs.contains(npcID)) return@forEach
-            if (KetherHandler.evalBooleanSet(players, it.condition)) {
+            if (evalBooleanSet(players, it.condition)) {
                 val dialogID = it.dialogID
                 if (!hasDialog(players, dialogID)) return it
             }

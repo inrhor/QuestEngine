@@ -1,11 +1,13 @@
 package cn.inrhor.questengine.common.dialog.optional.holo.core
 
+import cn.inrhor.questengine.api.destroyEntity
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.api.hologram.HoloDisplay
+import cn.inrhor.questengine.api.spawnAS
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.dialog.optional.holo.HoloAnimationItem
 import cn.inrhor.questengine.common.dialog.optional.holo.HoloAnimationText
-import cn.inrhor.questengine.script.kether.KetherHandler
+import cn.inrhor.questengine.script.kether.evalReferLoc
 import cn.inrhor.questengine.utlis.location.LocationTool
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -26,7 +28,7 @@ class HoloDialog(
     fun end() {
         endDialog = true
         for (id in packetIDs) {
-            HoloDisplay.delEntity(id, viewers)
+            destroyEntity(viewers, id)
         }
     }
 
@@ -43,10 +45,10 @@ class HoloDialog(
             val iUc = i.uppercase(Locale.getDefault())
             when {
                 iUc.startsWith("INITLOC") -> {
-                    holoLoc = LocationTool.getFixedLoc(npcLoc, KetherHandler.evalFixedLoc(i))
+                    holoLoc = LocationTool.getReferLoc(npcLoc, evalReferLoc(i))
                 }
                 iUc.startsWith("ADDLOC") -> {
-                    holoLoc = LocationTool.getFixedLoc(holoLoc, KetherHandler.evalFixedLoc(i))
+                    holoLoc = LocationTool.getReferLoc(holoLoc, evalReferLoc(i))
                 }
                 iUc.startsWith("NEXTY") -> {
                     val get = i.substring(i.indexOf(" ")+1)
@@ -69,7 +71,7 @@ class HoloDialog(
                     *  为何不放入HoloAnimationItem
                     *  别问了，holoLoc有毛病
                     */
-                    HoloDisplay.spawnAS(holoID, viewers, holoLoc)
+                    spawnAS(viewers, holoID, holoLoc)
                     HoloDisplay.initItemAS(holoID, viewers)
 
                     HoloAnimationItem(this, viewers, playItem, holoLoc).run()

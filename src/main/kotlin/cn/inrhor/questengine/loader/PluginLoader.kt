@@ -11,6 +11,7 @@ import org.bukkit.Bukkit
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import taboolib.common.platform.console
+import taboolib.common.platform.submit
 import taboolib.module.lang.sendLang
 import java.io.File
 import kotlin.system.measureTimeMillis
@@ -35,7 +36,7 @@ object PluginLoader {
         UtilString.updateLang().forEach {
             UpdateYaml.run("lang/$it.yml")
         }
-        Bukkit.getScheduler().runTaskAsynchronously(QuestEngine.plugin, Runnable {
+        submit(now = true, async = true) {
             val timeCost = measureTimeMillis {
                 ItemManager.loadItem()
                 DialogManager.loadDialog()
@@ -48,7 +49,7 @@ object PluginLoader {
                 UpdateYaml.run("team/chat.yml")
             }
             console().sendLang("LOADER-TIME_COST", UtilString.pluginTag, timeCost)
-        })
+        }
         DatabaseManager.init()
     }
 
