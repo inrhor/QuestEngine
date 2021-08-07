@@ -23,15 +23,17 @@ taboolib {
         dependencies {
             name("Adyeshach").optional(true)
             name("Citizens").optional(true)
+            name("ProtocolLib").optional(true)
         }
         prefix("QuestEngine")
     }
     classifier = null
-    version = "6.0.0-pre27"
+    version = "6.0.0-pre28"
 }
 
 repositories {
     mavenCentral()
+    maven("https://repo.dmulloy2.net/repository/public/")
 }
 
 dependencies {
@@ -48,6 +50,7 @@ dependencies {
     compileOnly("ink.ptms.core:v10900:10900:all")
     compileOnly("public:Citizens:1.0.0")
     compileOnly("ink.ptms:Adyeshach:1.2.1")
+    compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
 }

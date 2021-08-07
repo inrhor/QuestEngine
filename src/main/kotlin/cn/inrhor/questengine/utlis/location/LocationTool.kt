@@ -5,7 +5,7 @@ import taboolib.library.kether.QuestReader
 import taboolib.module.kether.KetherError
 import java.util.*
 
-class LocationTool {
+object LocationTool {
     /**
      * 固定跟踪
      *

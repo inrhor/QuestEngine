@@ -54,7 +54,7 @@ class HoloReply(
             when {
                 iUc.startsWith("HITBOX") -> {
                     val fixedHoloHitBox = KetherHandler.evalHoloHitBox(i)
-                    val boxLoc = LocationTool().getFixedHoloBoxLoc(npcLoc, fixedHoloHitBox)
+                    val boxLoc = LocationTool.getFixedHoloBoxLoc(npcLoc, fixedHoloHitBox)
                     val holoHitBox = HoloHitBox(replyModule, boxLoc, fixedHoloHitBox, viewers)
                     holoHitBox.viewBox()
                     for (viewer in viewers) {
@@ -62,10 +62,10 @@ class HoloReply(
                     }
                 }
                 iUc.startsWith("INITLOC") -> {
-                    holoLoc = LocationTool().getFixedLoc(npcLoc, KetherHandler.evalFixedLoc(i))
+                    holoLoc = LocationTool.getFixedLoc(npcLoc, KetherHandler.evalFixedLoc(i))
                 }
                 iUc.startsWith("ADDLOC") -> {
-                    holoLoc = LocationTool().getFixedLoc(holoLoc, KetherHandler.evalFixedLoc(i))
+                    holoLoc = LocationTool.getFixedLoc(holoLoc, KetherHandler.evalFixedLoc(i))
                 }
                 iUc.startsWith("NEXTY") -> {
                     val get = i.substring(i.indexOf(" ")+1)
