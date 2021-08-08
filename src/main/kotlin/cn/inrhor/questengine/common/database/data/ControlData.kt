@@ -3,13 +3,22 @@ package cn.inrhor.questengine.common.database.data
 import cn.inrhor.questengine.common.database.data.quest.QuestControlData
 
 /**
- * ControlID: [questID]-[innerQuestID]
+ * ControlID: [questID]-[innerQuestID]-[priority]
  *
  * @param highestControls 最高级控制，排队运行
  * @param controls 普通控制，共存运行
  */
 class ControlData(var highestControls: LinkedHashMap<String, QuestControlData>,
                   var controls: MutableMap<String, QuestControlData>) {
+
+    /**
+     * 添加最高级控制模块并进入队列等待运行
+     * 添加普通控制模块并直接运行
+     */
+    fun addControl(highestID: String, normalID: String, highestControlData: QuestControlData, normalControlData: QuestControlData) {
+        addHighest(highestID, highestControlData)
+        addCommon(normalID, normalControlData)
+    }
 
     /**
      * 添加最高级控制模块并进入队列等待运行

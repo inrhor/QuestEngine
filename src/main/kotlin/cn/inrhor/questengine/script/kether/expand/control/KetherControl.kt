@@ -9,19 +9,19 @@ import taboolib.module.kether.*
 import taboolib.module.kether.scriptParser
 import java.util.concurrent.CompletableFuture
 
-class KetherControl(val type: Type, var time: Int, val questID: String, val mainQuestID: String): ScriptAction<Void>() {
+class KetherControl(val type: Type, var time: Int, val questID: String, val mainQuestID: String, val priority: String): ScriptAction<Void>() {
 
     override fun run(frame: ScriptFrame): CompletableFuture<Void> {
         val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
         time = if (type == Type.MINUTE) time*1200 else time*20
-        WaitRun.run(player.cast(), time, questID, mainQuestID)
+        WaitRun.run(player.cast(), time, questID, mainQuestID, priority)
         return CompletableFuture.completedFuture(null)
     }
 
     object WaitRun {
-        fun run(player: Player, time: Int, questID: String, mainQuestID: String) {
+        fun run(player: Player, time: Int, questID: String, mainQuestID: String, priority: String) {
             val pData = DataStorage.getPlayerData(player)
-            val controlID = QuestManager.generateControlID(questID, mainQuestID)
+            val controlID = QuestManager.generateControlID(questID, mainQuestID, priority)
             val cData = pData.controlData
             if (cData.highestControls.containsKey(controlID)) {
                 highest(controlID, cData, time)
@@ -46,7 +46,7 @@ class KetherControl(val type: Type, var time: Int, val questID: String, val main
     }
 
     /*
-     * wait type [time] to [questID] [mainQuestID]
+     * wait type [time] to [questID] [mainQuestID] the [priority]
      */
     internal object Parser {
 
@@ -66,8 +66,12 @@ class KetherControl(val type: Type, var time: Int, val questID: String, val main
             }
             val time = it.nextInt()
             it.mark()
-            it.expects("to")
-            KetherControl(timeUnit, time, it.nextToken(), it.nextToken())
+            it.expect("to")
+            val questID = it.nextToken()
+            val innerID = it.nextToken()
+            it.mark()
+            it.expect("the")
+            KetherControl(timeUnit, time, questID, innerID, it.nextToken())
         }
     }
 

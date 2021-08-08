@@ -2,10 +2,10 @@ package cn.inrhor.questengine.common.quest.target
 
 import cn.inrhor.questengine.api.quest.ConditionType
 import cn.inrhor.questengine.common.quest.manager.QuestManager
-import cn.inrhor.questengine.api.quest.TargetExtend
+import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.common.quest.manager.TargetManager
-import cn.inrhor.questengine.common.quest.target.util.Schedule
+import cn.inrhor.questengine.api.target.util.Schedule
 import cn.inrhor.questengine.script.kether.evalBoolean
 import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.entity.Entity

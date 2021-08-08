@@ -188,24 +188,23 @@ object QuestManager {
         if (questInnerData.state != QuestState.DOING) return
         val questID = questInnerData.questID
         val innerQuestID = questInnerData.innerQuestID
-        val scriptList: MutableList<String>
-        val controlID: String
         val mModule = getInnerQuestModule(questID, innerQuestID)?: return
         val cModule = mModule.questControl
-        controlID = cModule.controlID
-        val cPriority = cModule.priority
-        scriptList = cModule.scriptList
-        if (controlID == "") return
+        val highestID = cModule.highestID
+        val normalID = cModule.normalID
+        if (highestID == "" || normalID == "") return
+
+        val hControl = cModule.highestControl
+        val nControl = cModule.normalControl
+
         val cData = pData.controlData
-        val qControlData = QuestControlData(player, cData, controlID, cPriority, scriptList)
-        when (cPriority) {
-            ControlPriority.HIGHEST -> cData.addHighest(controlID, qControlData)
-            ControlPriority.NORMAL -> cData.addCommon(controlID, qControlData)
-        }
+        val hControlData = QuestControlData(player, cData, highestID, ControlPriority.HIGHEST, hControl)
+        val nControlData = QuestControlData(player, cData, normalID, ControlPriority.NORMAL, nControl)
+        cData.addControl(highestID, normalID, hControlData, nControlData)
     }
 
-    fun generateControlID(questID: String, innerQuestID: String): String {
-        return "[$questID]-[$innerQuestID]"
+    fun generateControlID(questID: String, innerQuestID: String, priority: String): String {
+        return "[$questID]-[$innerQuestID]-[$priority]"
     }
 
     /**

@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.quest.target.util
+package cn.inrhor.questengine.api.target.util
 
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.QuestInnerData

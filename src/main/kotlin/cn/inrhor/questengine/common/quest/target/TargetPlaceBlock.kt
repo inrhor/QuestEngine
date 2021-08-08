@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.common.quest.target
 
-import cn.inrhor.questengine.api.quest.ConditionType
-import cn.inrhor.questengine.api.quest.TargetExtend
+import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import org.bukkit.event.block.BlockPlaceEvent
 

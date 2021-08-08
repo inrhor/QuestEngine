@@ -116,10 +116,11 @@ object QuestFile {
 
     private fun control(file: File, questID: String, innerQuestID: String): QuestControl {
         val control = yaml(file)
-        val cPriority = control.getString("priority")?: "normal"
-        val controlKether = control.getStringList("kether")
-        val id = QuestManager.generateControlID(questID, innerQuestID)
-        return QuestControl(id, cPriority.toControlPriority(), controlKether)
+        val highestControl = control.getStringList("highest.kether")
+        val normalControl = control.getStringList("normal.kether")
+        val highestID = QuestManager.generateControlID(questID, innerQuestID, "highest")
+        val normalID = QuestManager.generateControlID(questID, innerQuestID, "normal")
+        return QuestControl(highestID, normalID, highestControl, normalControl)
     }
 
 

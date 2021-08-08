@@ -5,27 +5,25 @@ import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.api.target.util.ClickNPC
-import net.citizensnpcs.api.event.NPCLeftClickEvent
+import ink.ptms.adyeshach.api.event.AdyeshachEntityInteractEvent
 import org.bukkit.Bukkit
 import java.util.*
 
-object TargetNpcLeftItem: TargetExtend<NPCLeftClickEvent>() {
+object TargetRightAdyItem: TargetExtend<AdyeshachEntityInteractEvent>() {
 
-    override val name = "give npc-left item"
+    override val name = "give ady-right item"
 
     init {
-        if (Bukkit.getPluginManager().getPlugin("Citizens") != null) {
-            event = NPCLeftClickEvent::class
+        if (Bukkit.getPluginManager().getPlugin("Adyeshach") != null) {
+            event = AdyeshachEntityInteractEvent::class
             tasker {
-                val player = clicker
                 val questData = QuestManager.getDoingQuest(player) ?: return@tasker player
                 if (!QuestManager.matchQuestMode(questData)) return@tasker player
                 val innerData = questData.questInnerData
-                val innerTarget = QuestManager.getDoingTarget(player, name) ?: return@tasker player
-                // 建议注意顺序判断
+                val innerTarget = QuestManager.getDoingTarget(player, TargetNpcRightItem.name) ?: return@tasker player
                 val id = object : ConditionType(mutableListOf("id")) {
                     override fun check(): Boolean {
-                        return (ClickNPC.idTrigger(innerTarget, npc.id.toString()))
+                        return (ClickNPC.idTrigger(innerTarget, entity.id))
                     }
                 }
                 val item = object : ConditionType("item") {
@@ -33,14 +31,12 @@ object TargetNpcLeftItem: TargetExtend<NPCLeftClickEvent>() {
                         return (ClickNPC.itemTrigger(player, questData, innerTarget, innerData))
                     }
                 }
-                // 刷新
-                TargetManager.set(name, "id", id)
-                TargetManager.set(name, "item", item)
+                TargetManager.set(TargetNpcRightItem.name, "id", id)
+                TargetManager.set(TargetNpcRightItem.name, "item", item)
                 player
             }
-            // 注册
-            TargetManager.register(name, "id", mutableListOf("id"))
-            TargetManager.register(name, "item", "item")
+            TargetManager.register(TargetNpcRightItem.name, "id", mutableListOf("id"))
+            TargetManager.register(TargetNpcRightItem.name, "item", "item")
         }
     }
 

@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.quest
 
-import cn.inrhor.questengine.api.quest.TargetExtend
+import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import org.bukkit.event.Event
 import taboolib.common.LifeCycle

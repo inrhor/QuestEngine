@@ -1,11 +1,10 @@
-package cn.inrhor.questengine.api.quest
+package cn.inrhor.questengine.api.target
 
 import org.bukkit.entity.Player
-import org.bukkit.event.Event
 import taboolib.common.platform.EventPriority
 import kotlin.reflect.KClass
 
-abstract class TargetExtend<E: Event> {
+abstract class TargetExtend<E: Any> {
 
     /**
      * 事件名称

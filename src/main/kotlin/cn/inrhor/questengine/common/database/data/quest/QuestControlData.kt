@@ -13,17 +13,17 @@ class QuestControlData(
     val controlData: ControlData,
     val controlID: String,
     val controlPriority: ControlPriority,
-    val script: MutableList<String>,
+    var controlList: MutableList<String>,
     var line: Int,
     var waitTime: Int) {
 
-    constructor(player: Player, controlData: ControlData, controlID: String, controlPriority: ControlPriority, script: MutableList<String>):
-            this(player, controlData, controlID, controlPriority, script, 0, 0)
+    constructor(player: Player, controlData: ControlData, controlID: String, controlPriority: ControlPriority, controlList: MutableList<String>):
+            this(player, controlData, controlID, controlPriority, controlList, 0, 0)
 
     var time = 0
 
     fun runScript() {
-        if (script.isEmpty() || line >= script.size) {
+        if (controlList.isEmpty() || line >= controlList.size) {
             if (controlPriority == ControlPriority.HIGHEST) {
                 controlData.highestQueue(controlID)
             }else {
@@ -31,7 +31,7 @@ class QuestControlData(
             }
             return
         }
-        val content = script[line]
+        val content = controlList[line]
         if (ControlTaskType.returnType(content) == ControlType.ASY) {
             asyRunScript(content)
         }else synRunScript(content)

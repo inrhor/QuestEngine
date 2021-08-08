@@ -1,11 +1,14 @@
-# 最高级控制： highest
-# 普通控制： normal
-Priority: normal
-kether:
-  - player gamemode to *3
-  - packet send packet_1 where location *world *100 *10 *12
-  - tell xx
-  - wait s 10 to quest_1 main_quest_1
-  - tell xxx
-  - wait minute 1 to quest_1 main_quest_1
-  - player tp ...
+# 最高级控制
+highest:
+  kether:
+    - player gamemode to *3
+    - packet send packet_1 where location *world *100 *10 *12
+    - tell xx
+    - wait s 10 to quest_1 main_quest_1 the highest
+    - tell xxx
+    - wait minute 1 to quest_1 main_quest_1 the highest
+    - player tp ...
+# 普通控制
+normal:
+  kether:
+    - player gamemode to *1
