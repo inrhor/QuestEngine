@@ -5,17 +5,17 @@ import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.api.target.util.ClickNPC
-import ink.ptms.adyeshach.api.event.AdyeshachEntityDamageEvent
+import ink.ptms.adyeshach.api.event.AdyeshachEntityInteractEvent
 import org.bukkit.Bukkit
 import java.util.*
 
-object TargetLeftAdyItem: TargetExtend<AdyeshachEntityDamageEvent>() {
+object TargetAdyRightItem/*: TargetExtend<AdyeshachEntityInteractEvent>()*/ {
 
-    override val name = "give ady-left item"
+//    override val name = "give ady-right item"
 
-    init {
+    /*init {
         if (Bukkit.getPluginManager().getPlugin("Adyeshach") != null) {
-            event = AdyeshachEntityDamageEvent::class
+            event = AdyeshachEntityInteractEvent::class
             tasker {
                 val questData = QuestManager.getDoingQuest(player) ?: return@tasker player
                 if (!QuestManager.matchQuestMode(questData)) return@tasker player
@@ -38,6 +38,6 @@ object TargetLeftAdyItem: TargetExtend<AdyeshachEntityDamageEvent>() {
             TargetManager.register(TargetNpcRightItem.name, "id", mutableListOf("id"))
             TargetManager.register(TargetNpcRightItem.name, "item", "item")
         }
-    }
+    }*/
 
 }

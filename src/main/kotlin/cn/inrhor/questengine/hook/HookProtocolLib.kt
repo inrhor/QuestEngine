@@ -31,20 +31,22 @@ object HookProtocolLib {
 
     private val version = MinecraftVersion.major
 
+    private val minor = MinecraftVersion.minor
+
     fun spawnEntity(players: MutableSet<Player>, entityId: Int, entityType: String, location: Location) {
         val packet = PacketContainer(PacketType.Play.Server.SPAWN_ENTITY)
         packet.modifier.writeDefaults()
-        packet.integers.write(0, entityId)
-        packet.uuiDs.write(0, UUID.randomUUID())
+        packet.integers.writeSafely(0, entityId)
+        packet.uuiDs.writeSafely(0, UUID.randomUUID())
         if (version >= 5) {
-            packet.entityTypeModifier.write(0, EntityType.valueOf(entityType.uppercase()))
+            packet.entityTypeModifier.writeSafely(0, EntityType.valueOf(entityType.uppercase()))
         }else {
-            packet.integers.write(6, entityType.toInt())
+            packet.integers.writeSafely(6, entityType.toInt())
         }
         packet.doubles
-            .write(0, location.x)
-            .write(1, location.y)
-            .write(2, location.z)
+            .writeSafely(0, location.x)
+            .writeSafely(1, location.y)
+            .writeSafely(2, location.z)
 
         sendPacket(players, packet)
     }
@@ -59,17 +61,25 @@ object HookProtocolLib {
         spawnEntity(players, entityId, entityType, location)
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
         packet.modifier.writeDefaults()
-        packet.integers.write(0, entityId)
+        packet.integers.writeSafely(0, entityId)
         val metadata = WrappedDataWatcher()
         setEntityItemStack(metadata, itemStack)
         setEntityGravity(metadata, true)
-        packet.watchableCollectionModifier.write(0, metadata.watchableObjects)
+        packet.watchableCollectionModifier.writeSafely(0, metadata.watchableObjects)
         sendPacket(players, packet)
     }
 
     fun destroyEntity(player: Player, entityId: Int) {
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_DESTROY)
-        packet.integerArrays.write(0, intArrayOf(entityId))
+        if (version >= 9 && minor == 0) {
+            if (minor == 0) {
+                packet.integers.writeSafely(0, entityId)
+            }else {
+                packet.intLists.writeSafely(0, listOf(entityId))
+            }
+        }else {
+            packet.integerArrays.writeSafely(0, intArrayOf(entityId))
+        }
         sendPacket(player, packet)
     }
 
@@ -82,8 +92,8 @@ object HookProtocolLib {
     fun updateEquipmentItem(players: MutableSet<Player>, entityId: Int, slot: EquipmentSlot, itemStack: ItemStack) {
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_EQUIPMENT)
         packet.modifier.writeDefaults()
-        packet.integers.write(0, entityId)
-        packet.slotStackPairLists.write(
+        packet.integers.writeSafely(0, entityId)
+        packet.slotStackPairLists.writeSafely(
             0,
             Collections.singletonList(
                 com.comphenix.protocol.wrappers.Pair(when (slot) {
@@ -100,27 +110,27 @@ object HookProtocolLib {
     fun updatePassengers(players: MutableSet<Player>, entityId: Int, vararg passengers: Int) {
         val packet = PacketContainer(PacketType.Play.Server.MOUNT)
         packet.modifier.writeDefaults()
-        packet.integers.write(0, entityId)
-        packet.integerArrays.write(0, passengers)
+        packet.integers.writeSafely(0, entityId)
+        packet.integerArrays.writeSafely(0, passengers)
         sendPacket(players, packet)
     }
 
     fun initAS(players: MutableSet<Player>, entityId: Int, showName: Boolean, isSmall: Boolean, marker: Boolean) {
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
         packet.modifier.writeDefaults()
-        packet.integers.write(0, entityId)
+        packet.integers.writeSafely(0, entityId)
         val metadata = WrappedDataWatcher()
         setEntityCustomNameVisible(metadata, showName)
         setEntitySilent(metadata)
         setEntityGravity(metadata, false)
         setMetaASProperties(metadata, isSmall, marker)
         setIsInvisible(metadata)
-        packet.watchableCollectionModifier.write(0, metadata.watchableObjects)
+        packet.watchableCollectionModifier.writeSafely(0, metadata.watchableObjects)
         sendPacket(players, packet)
     }
 
     private fun setEntityItemStack(metadata: WrappedDataWatcher, itemStack: ItemStack) {
-        val index = if (version >= 5) 7 else 6
+        val index = if (version >= 9) 8 else if (version >= 5) 7 else 6
         metadata.setObject(
             WrappedDataWatcherObject(
                 index,
@@ -147,19 +157,19 @@ object HookProtocolLib {
 
     fun setEntityCustomNameVisible(players: MutableSet<Player>, entityId: Int, visible: Boolean) {
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
-        packet.integers.write(0, entityId)
+        packet.integers.writeSafely(0, entityId)
         val metadata = WrappedDataWatcher()
         setEntityCustomNameVisible(metadata, visible)
-        packet.watchableCollectionModifier.write(0, metadata.watchableObjects)
+        packet.watchableCollectionModifier.writeSafely(0, metadata.watchableObjects)
         sendPacket(players, packet)
     }
 
     fun isInvisible(players: MutableSet<Player>, entityId: Int) {
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
-        packet.integers.write(0, entityId)
+        packet.integers.writeSafely(0, entityId)
         val metadata = WrappedDataWatcher()
         setIsInvisible(metadata)
-        packet.watchableCollectionModifier.write(0, metadata.watchableObjects)
+        packet.watchableCollectionModifier.writeSafely(0, metadata.watchableObjects)
         sendPacket(players, packet)
     }
 
@@ -213,21 +223,21 @@ object HookProtocolLib {
     fun updateDisplayName(player: Player, entityId: Int, name: String) {
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
         packet.modifier.writeDefaults()
-        packet.integers.write(0, entityId)
+        packet.integers.writeSafely(0, entityId)
         val metadata = WrappedDataWatcher()
         setEntityCustomName(metadata, name.colored())
-        packet.watchableCollectionModifier.write(0, metadata.watchableObjects)
+        packet.watchableCollectionModifier.writeSafely(0, metadata.watchableObjects)
         sendPacket(player, packet)
     }
 
     fun updateLocation(players: MutableSet<Player>, entityId: Int, location: Location) {
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_TELEPORT)
         packet.modifier.writeDefaults()
-        packet.integers.write(0, entityId)
+        packet.integers.writeSafely(0, entityId)
         packet.doubles
-            .write(0, location.x)
-            .write(1, location.y)
-            .write(2, location.z)
+            .writeSafely(0, location.x)
+            .writeSafely(1, location.y)
+            .writeSafely(2, location.z)
         sendPacket(players, packet)
     }
 

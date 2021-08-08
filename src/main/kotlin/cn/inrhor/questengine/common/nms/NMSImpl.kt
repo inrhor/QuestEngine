@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.common.nms
 
-import it.unimi.dsi.fastutil.ints.IntLists
 import net.minecraft.server.v1_16_R1.*
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack
@@ -20,19 +19,21 @@ class NMSImpl : NMS() {
 
     private val version = MinecraftVersion.major
 
+    private val minor = MinecraftVersion.minor
+
     private val isUniversal = MinecraftVersion.isUniversal
 
-    fun packetSend(players: MutableSet<Player>, packet: Any, vararg fields: Pair<String, Any>) {
+    private fun packetSend(players: MutableSet<Player>, packet: Any, vararg fields: Pair<String, Any>) {
         players.forEach{
             it.sendPacket(setFields(packet, *fields))
         }
     }
 
-    fun packetSend(player: Player, packet: Any, vararg fields: Pair<String, Any?>) {
+    private fun packetSend(player: Player, packet: Any, vararg fields: Pair<String, Any?>) {
         player.sendPacket(setFields(packet, *fields))
     }
 
-    fun setFields(any: Any, vararg fields: Pair<String, Any?>): Any {
+    private fun setFields(any: Any, vararg fields: Pair<String, Any?>): Any {
         fields.forEach { (key, value) ->
             if (value != null) {
                 any.setProperty(key, value)
@@ -132,26 +133,26 @@ class NMSImpl : NMS() {
                 "e" to location.z,
                 "k" to if (version >= 5) EntityTypes.ITEM else 2
             )
-            updateEntityMetadata(players, entityId,
-                getMetaEntityGravity(false),
-                getMetaEntityItemStack(itemStack))
         }
+        updateEntityMetadata(players, entityId,
+            getMetaEntityGravity(false),
+            getMetaEntityItemStack(itemStack))
     }
 
     override fun destroyEntity(player: Player, entityId: Int) {
-        if (isUniversal) {
+        if (version >= 9 && minor == 0) {
             packetSend(
                 player,
                 PacketPlayOutEntityDestroy::class.java.unsafeInstance(),
-                "entityIds" to IntLists.singleton(entityId)
+                "a" to entityId
             )
-        } else {
+        }else {
             packetSend(player, PacketPlayOutEntityDestroy(entityId))
         }
     }
 
     override fun destroyEntity(players: MutableSet<Player>, entityId: Int) {
-        players.forEach{
+        players.forEach {
             destroyEntity(it, entityId)
         }
     }
