@@ -77,14 +77,14 @@ fun destroyEntity(players: MutableSet<Player>, entityId: Int) {
 fun updateEquipmentItem(players: MutableSet<Player>, entityId: Int, slot: EquipmentSlot, itemStack: ItemStack) {
     when (PacketUtil.hookPacket) {
         HookPacket.DEFAULT -> getPackets().updateEquipmentItem(players, entityId, slot, itemStack)
-        HookPacket.PROTOCOLLIB -> HookProtocolLib.updateEquipmentItem(players, entityId, slot, itemStack)
+//        HookPacket.PROTOCOLLIB -> HookProtocolLib.updateEquipmentItem(players, entityId, slot, itemStack)
     }
 }
 
 fun updatePassengers(players: MutableSet<Player>, entityId: Int, passengers: Int) {
     when (PacketUtil.hookPacket) {
         HookPacket.DEFAULT -> getPackets().updatePassengers(players, entityId, passengers)
-        HookPacket.PROTOCOLLIB -> HookProtocolLib.updatePassengers(players, entityId, passengers)
+//        HookPacket.PROTOCOLLIB -> HookProtocolLib.updatePassengers(players, entityId, passengers)
     }
 }
 

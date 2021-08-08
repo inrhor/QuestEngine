@@ -12,6 +12,7 @@ import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
+import taboolib.module.chat.colored
 import taboolib.module.nms.MinecraftVersion
 import java.util.*
 
@@ -35,7 +36,7 @@ object HookProtocolLib {
         packet.integers.write(0, entityId)
         packet.uuiDs.write(0, UUID.randomUUID())
         if (version >= 5) {
-            packet.entityTypeModifier.write(0, EntityType.valueOf(entityType.lowercase(Locale.getDefault())))
+            packet.entityTypeModifier.write(0, EntityType.valueOf(entityType.uppercase(Locale.getDefault())))
         }else {
             packet.integers.write(6, entityType.toInt())
         }
@@ -48,19 +49,19 @@ object HookProtocolLib {
     }
 
     fun spawnAS(players: MutableSet<Player>, entityId: Int, location: Location) {
-        val entityType = if (version >= 5) "armor_stand" else "78"
+        val entityType = if (version >= 5) "ARMOR_STAND" else "78"
         spawnEntity(players, entityId, entityType, location)
     }
 
     fun spawnItem(players: MutableSet<Player>, entityId: Int, location: Location, itemStack: ItemStack) {
-        val entityType = if (version >= 5) "item" else "2"
+        val entityType = if (version >= 5) "ITEM" else "2"
         spawnEntity(players, entityId, entityType, location)
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
         packet.modifier.writeDefaults()
         packet.integers.write(0, entityId)
         val metadata = WrappedDataWatcher()
-        setEntityGravity(metadata, true)
         setEntityItemStack(metadata, itemStack)
+        setEntityGravity(metadata, true)
         packet.watchableCollectionModifier.write(0, metadata.watchableObjects)
         sendPacket(players, packet)
     }
@@ -179,18 +180,26 @@ object HookProtocolLib {
     }
 
     fun setMetaASProperties(metadata: WrappedDataWatcher, isSmall: Boolean, marker: Boolean) {
-        if (isSmall) setMetaBytes(metadata, 14, (0x08 or 0x01).toByte()) // no BasePlate & small
-        if (marker) setMetaBytes(metadata, 14, 0x10.toByte())
+        if (isSmall) setMetaBytes(metadata, 11, 0x01.toByte())
+        if (marker) setMetaBytes(metadata, 11, 0x10.toByte())
+        setMetaBytes(metadata, 11, 0x08.toByte())
     }
 
     fun setEntityCustomName(metadata: WrappedDataWatcher, name: String) {
-        val opt: Optional<*> = Optional.of(
-            WrappedChatComponent.fromChatMessage(name)[0].handle
-        )
+        if (version >= 5) {
+            val opt = Optional.of(
+                WrappedChatComponent.fromChatMessage(name)[0].handle)
+            metadata.setObject(
+                WrappedDataWatcherObject(2,
+                    WrappedDataWatcher.Registry.getChatComponentSerializer(true)),
+                opt)
+            return
+        }
         metadata.setObject(
-            WrappedDataWatcherObject(
-                5, // 对应 https://wiki.vg/Entity_metadata#Entity_Metadata_Format 的 Index
-                WrappedDataWatcher.Registry.getChatComponentSerializer(true)), opt)
+            WrappedDataWatcherObject(2,
+                WrappedDataWatcher.Registry.get(String::class.javaObjectType)),
+            name.colored())
+
     }
 
     fun updateDisplayName(players: MutableSet<Player>, entityId: Int, name: String) {
