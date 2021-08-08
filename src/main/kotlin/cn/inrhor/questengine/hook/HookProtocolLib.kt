@@ -7,6 +7,7 @@ import com.comphenix.protocol.wrappers.EnumWrappers.ItemSlot
 import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.comphenix.protocol.wrappers.WrappedDataWatcher
 import com.comphenix.protocol.wrappers.WrappedDataWatcher.WrappedDataWatcherObject
+import net.md_5.bungee.chat.ComponentSerializer
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
@@ -18,17 +19,17 @@ import java.util.*
 
 object HookProtocolLib {
 
-    fun sendPacket(player: Player, packet: PacketContainer) {
+    private fun sendPacket(player: Player, packet: PacketContainer) {
         ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet)
     }
 
-    fun sendPacket(players: MutableSet<Player>, packet: PacketContainer) {
+    private fun sendPacket(players: MutableSet<Player>, packet: PacketContainer) {
         players.forEach {
             sendPacket(it, packet)
         }
     }
 
-    val version = MinecraftVersion.major
+    private val version = MinecraftVersion.major
 
     fun spawnEntity(players: MutableSet<Player>, entityId: Int, entityType: String, location: Location) {
         val packet = PacketContainer(PacketType.Play.Server.SPAWN_ENTITY)
@@ -36,7 +37,7 @@ object HookProtocolLib {
         packet.integers.write(0, entityId)
         packet.uuiDs.write(0, UUID.randomUUID())
         if (version >= 5) {
-            packet.entityTypeModifier.write(0, EntityType.valueOf(entityType.uppercase(Locale.getDefault())))
+            packet.entityTypeModifier.write(0, EntityType.valueOf(entityType.uppercase()))
         }else {
             packet.integers.write(6, entityType.toInt())
         }
@@ -54,7 +55,7 @@ object HookProtocolLib {
     }
 
     fun spawnItem(players: MutableSet<Player>, entityId: Int, location: Location, itemStack: ItemStack) {
-        val entityType = if (version >= 5) "ITEM" else "2"
+        val entityType = if (version >= 5) "DROPPED_ITEM" else "2"
         spawnEntity(players, entityId, entityType, location)
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
         packet.modifier.writeDefaults()
@@ -110,7 +111,7 @@ object HookProtocolLib {
         packet.integers.write(0, entityId)
         val metadata = WrappedDataWatcher()
         setEntityCustomNameVisible(metadata, showName)
-        setEntitySilent(metadata, true)
+        setEntitySilent(metadata)
         setEntityGravity(metadata, false)
         setMetaASProperties(metadata, isSmall, marker)
         setIsInvisible(metadata)
@@ -118,8 +119,8 @@ object HookProtocolLib {
         sendPacket(players, packet)
     }
 
-    fun setEntityItemStack(metadata: WrappedDataWatcher, itemStack: ItemStack) {
-        val index = if (version >= 5) 8 else 6
+    private fun setEntityItemStack(metadata: WrappedDataWatcher, itemStack: ItemStack) {
+        val index = if (version >= 5) 7 else 6
         metadata.setObject(
             WrappedDataWatcherObject(
                 index,
@@ -128,19 +129,19 @@ object HookProtocolLib {
         )
     }
 
-    fun setIsInvisible(metadata: WrappedDataWatcher) {
+    private fun setIsInvisible(metadata: WrappedDataWatcher) {
         setMetaBytes(metadata, 0, 0x20.toByte())
     }
 
-    fun setEntityGravity(metadata: WrappedDataWatcher, noGravity: Boolean) {
+    private fun setEntityGravity(metadata: WrappedDataWatcher, noGravity: Boolean) {
         setMetaBoolean(metadata, 5, noGravity)
     }
 
-    fun setEntitySilent(metadata: WrappedDataWatcher, silent: Boolean) {
-        setMetaBoolean(metadata, 4, silent)
+    private fun setEntitySilent(metadata: WrappedDataWatcher) {
+        setMetaBoolean(metadata, 4, true)
     }
 
-    fun setEntityCustomNameVisible(metadata: WrappedDataWatcher, visible: Boolean) {
+    private fun setEntityCustomNameVisible(metadata: WrappedDataWatcher, visible: Boolean) {
         setMetaBoolean(metadata, 3, visible)
     }
 
@@ -179,27 +180,27 @@ object HookProtocolLib {
             byte)
     }
 
-    fun setMetaASProperties(metadata: WrappedDataWatcher, isSmall: Boolean, marker: Boolean) {
-        val index = if (version >= 5) 15 else 11
-        if (isSmall) setMetaBytes(metadata, index, 0x01.toByte())
-        if (marker) setMetaBytes(metadata, index, 0x10.toByte())
-        setMetaBytes(metadata, index, 0x08.toByte())
+    private fun setMetaASProperties(metadata: WrappedDataWatcher, isSmall: Boolean, marker: Boolean) {
+        val index = if (version >= 9) 15 else if (version >= 5) 14 else 11
+        var bytes = 0
+        bytes += if (isSmall) 0x01 else 0
+        bytes += 0x08
+        bytes += if (marker) 0x10 else 0
+        setMetaBytes(metadata, index, bytes.toByte())
     }
 
-    fun setEntityCustomName(metadata: WrappedDataWatcher, name: String) {
+    private fun setEntityCustomName(metadata: WrappedDataWatcher, name: String) {
         if (version >= 5) {
-            val opt = Optional.of(
-                WrappedChatComponent.fromChatMessage(name)[0].handle)
             metadata.setObject(
                 WrappedDataWatcherObject(2,
                     WrappedDataWatcher.Registry.getChatComponentSerializer(true)),
-                opt)
+                Optional.of(WrappedChatComponent.fromJson(ComponentSerializer.toString(name)).handle))
             return
         }
         metadata.setObject(
             WrappedDataWatcherObject(2,
                 WrappedDataWatcher.Registry.get(String::class.javaObjectType)),
-            name.colored())
+            name)
 
     }
 
@@ -214,7 +215,7 @@ object HookProtocolLib {
         packet.modifier.writeDefaults()
         packet.integers.write(0, entityId)
         val metadata = WrappedDataWatcher()
-        setEntityCustomName(metadata, name)
+        setEntityCustomName(metadata, name.colored())
         packet.watchableCollectionModifier.write(0, metadata.watchableObjects)
         sendPacket(player, packet)
     }

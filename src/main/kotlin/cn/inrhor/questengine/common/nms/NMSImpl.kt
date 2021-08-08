@@ -18,9 +18,9 @@ import taboolib.module.nms.*
 
 class NMSImpl : NMS() {
 
-    val version = MinecraftVersion.major
+    private val version = MinecraftVersion.major
 
-    val isUniversal = MinecraftVersion.isUniversal
+    private val isUniversal = MinecraftVersion.isUniversal
 
     fun packetSend(players: MutableSet<Player>, packet: Any, vararg fields: Pair<String, Any>) {
         players.forEach{
@@ -156,7 +156,7 @@ class NMSImpl : NMS() {
         }
     }
 
-    override fun updateEquipmentItem(players: MutableSet<Player>, entityId: Int, slot: EquipmentSlot, itemStack: ItemStack) {
+    override fun updateEquipmentItem(players: MutableSet<Player>, entityId: Int, slot: EquipmentSlot, zitemStack: ItemStack) {
         if (version >= 8) {
             packetSend(
                 players,
@@ -170,7 +170,7 @@ class NMSImpl : NMS() {
                         EquipmentSlot.CHEST -> EnumItemSlot.CHEST
                         EquipmentSlot.HEAD -> EnumItemSlot.HEAD
                     },
-                    CraftItemStack.asNMSCopy(itemStack)))
+                    CraftItemStack.asNMSCopy(zitemStack)))
                 )
             )
         }else if (version >= 1) {
@@ -186,7 +186,7 @@ class NMSImpl : NMS() {
                         EquipmentSlot.CHEST -> net.minecraft.server.v1_13_R2.EnumItemSlot.CHEST
                         EquipmentSlot.HEAD -> net.minecraft.server.v1_13_R2.EnumItemSlot.HEAD
                     },
-                    org.bukkit.craftbukkit.v1_13_R2.inventory.CraftItemStack.asNMSCopy(itemStack)
+                    org.bukkit.craftbukkit.v1_13_R2.inventory.CraftItemStack.asNMSCopy(zitemStack)
                 )
             )
         }

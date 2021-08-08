@@ -6,7 +6,7 @@ import java.util.*
 object EntityTypeUtil {
 
     fun returnTypeNMS(type: String): EntityTypes<*> {
-        when (type.uppercase(Locale.getDefault())) {
+        when (type.uppercase()) {
             "ITEM" -> EntityTypes.ITEM
         }
         return EntityTypes.ARMOR_STAND
