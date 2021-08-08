@@ -28,7 +28,7 @@ taboolib {
         prefix("QuestEngine")
     }
     classifier = null
-    version = "6.0.0-pre29"
+    version = "6.0.0-pre32"
 }
 
 repositories {
@@ -49,7 +49,7 @@ dependencies {
     compileOnly("ink.ptms.core:v11000:11000:all")
     compileOnly("ink.ptms.core:v10900:10900:all")
     compileOnly("public:Citizens:1.0.0")
-    compileOnly("ink.ptms:Adyeshach:1.2.1")
+    compileOnly("ink.ptms:Adyeshach:1.3.1@jar")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))

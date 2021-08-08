@@ -2,7 +2,7 @@ package cn.inrhor.questengine.common.quest.ui.book
 
 import cn.inrhor.questengine.common.quest.ui.PublicJson
 import org.bukkit.entity.Player
-import taboolib.platform.util.BookBuilder
+import taboolib.platform.util.sendBook
 import java.util.*
 
 object BookQuestInfo {
@@ -12,13 +12,13 @@ object BookQuestInfo {
      */
     fun open(player: Player, questUUID: UUID) {
 
-        val bookBuilder = BookBuilder()
+        player.sendBook {
+            PublicJson.questInfo(player, questUUID).forEach {
+                write(it)
+            }
 
-        PublicJson.questInfo(player, questUUID).forEach {
-            bookBuilder.writeRaw(it.toRawMessage())
         }
 
-        player.openBook(bookBuilder.build())
     }
 
 }

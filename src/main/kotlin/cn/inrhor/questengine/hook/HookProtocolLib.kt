@@ -68,8 +68,7 @@ object HookProtocolLib {
 
     fun destroyEntity(player: Player, entityId: Int) {
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_DESTROY)
-        packet.modifier.writeDefaults()
-        packet.integers.write(1, entityId)
+        packet.integerArrays.write(0, intArrayOf(entityId))
         sendPacket(player, packet)
     }
 
@@ -120,9 +119,10 @@ object HookProtocolLib {
     }
 
     fun setEntityItemStack(metadata: WrappedDataWatcher, itemStack: ItemStack) {
+        val index = if (version >= 5) 8 else 6
         metadata.setObject(
             WrappedDataWatcherObject(
-                0,
+                index,
                 WrappedDataWatcher.Registry.getItemStackSerializer(false)
             ), itemStack
         )
@@ -180,9 +180,10 @@ object HookProtocolLib {
     }
 
     fun setMetaASProperties(metadata: WrappedDataWatcher, isSmall: Boolean, marker: Boolean) {
-        if (isSmall) setMetaBytes(metadata, 11, 0x01.toByte())
-        if (marker) setMetaBytes(metadata, 11, 0x10.toByte())
-        setMetaBytes(metadata, 11, 0x08.toByte())
+        val index = if (version >= 5) 15 else 11
+        if (isSmall) setMetaBytes(metadata, index, 0x01.toByte())
+        if (marker) setMetaBytes(metadata, index, 0x10.toByte())
+        setMetaBytes(metadata, index, 0x08.toByte())
     }
 
     fun setEntityCustomName(metadata: WrappedDataWatcher, name: String) {

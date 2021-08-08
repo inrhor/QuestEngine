@@ -1,8 +1,8 @@
 package cn.inrhor.questengine.utlis.location
 
 import org.bukkit.Location
-import taboolib.library.kether.QuestReader
-import taboolib.module.kether.KetherError
+import openapi.kether.*
+import taboolib.module.kether.*
 import taboolib.platform.util.toBukkitLocation
 import taboolib.platform.util.toProxyLocation
 import java.util.*

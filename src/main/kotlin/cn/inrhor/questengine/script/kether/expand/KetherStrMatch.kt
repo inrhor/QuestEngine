@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.script.kether.expand
 
-import taboolib.library.kether.ArgTypes
-import taboolib.library.kether.ParsedAction
+import openapi.kether.*
 import taboolib.module.kether.*
 import taboolib.module.kether.scriptParser
 import java.util.concurrent.CompletableFuture

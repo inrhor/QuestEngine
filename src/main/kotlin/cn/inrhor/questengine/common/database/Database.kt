@@ -75,7 +75,7 @@ abstract class Database {
         }
 
         fun updateDatabase() {
-            submit(now = true, async = true, delay = 100) {
+            submit(async = true, delay = 100) {
                 pushAll()
             }
         }

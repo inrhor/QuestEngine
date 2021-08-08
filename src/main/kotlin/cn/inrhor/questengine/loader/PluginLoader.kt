@@ -36,7 +36,7 @@ object PluginLoader {
         UtilString.updateLang().forEach {
             UpdateYaml.run("lang/$it.yml")
         }
-        submit(now = true, async = true) {
+        submit(async = true) {
             val timeCost = measureTimeMillis {
                 ItemManager.loadItem()
                 DialogManager.loadDialog()

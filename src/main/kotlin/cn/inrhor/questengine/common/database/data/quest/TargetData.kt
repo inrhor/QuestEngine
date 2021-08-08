@@ -15,7 +15,7 @@ class TargetData(val name: String, var timeUnit: String,
 
     fun runTime(player: Player, questUUID: UUID) {
         if (timeUnit == "" || endTimeDate == null) return
-        submit(now = true, async = true, period = 20L) {
+        submit(async = true, period = 20L) {
             if (!player.isOnline) {
                 cancel(); return@submit
             }

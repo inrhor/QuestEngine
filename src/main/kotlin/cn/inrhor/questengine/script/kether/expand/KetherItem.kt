@@ -1,9 +1,9 @@
 package cn.inrhor.questengine.script.kether.expand
 
 import cn.inrhor.questengine.utlis.bukkit.ItemCheck
-import org.bukkit.entity.Player
+import openapi.kether.*
+import openapi.kether.ParsedAction
 import taboolib.common.platform.ProxyPlayer
-import taboolib.library.kether.*
 import taboolib.module.kether.*
 import java.util.concurrent.CompletableFuture
 

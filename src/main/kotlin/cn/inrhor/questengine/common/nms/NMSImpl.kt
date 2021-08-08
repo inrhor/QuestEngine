@@ -133,7 +133,7 @@ class NMSImpl : NMS() {
                 "k" to if (version >= 5) EntityTypes.ITEM else 2
             )
             updateEntityMetadata(players, entityId,
-                getMetaEntityGravity(true),
+                getMetaEntityGravity(false),
                 getMetaEntityItemStack(itemStack))
         }
     }
