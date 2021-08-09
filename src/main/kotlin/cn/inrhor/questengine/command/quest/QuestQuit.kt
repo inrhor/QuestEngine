@@ -13,7 +13,7 @@ internal object QuestQuit {
     @CommandBody
     val quit = subCommand {
         dynamic {
-            suggestion<ProxyCommandSender> { _, context ->
+            suggestion<ProxyCommandSender> { _, _ ->
                 Bukkit.getOnlinePlayers().map { it.name }
             }
             dynamic {

@@ -20,7 +20,7 @@ object DialogManager {
     /**
      * 成功注册的对话
      */
-    private var dialogMap = mutableMapOf<String, DialogModule>()
+    var dialogMap = mutableMapOf<String, DialogModule>()
 
     /**
      * 注册对话
@@ -120,5 +120,13 @@ object DialogManager {
         val dialogModule = returnCanDialogHolo(players, npcID)?: return
         val holoDialog = HoloDialog(dialogModule, npcLoc, players)
         holoDialog.run()
+    }
+
+    fun sendDialogHolo(player: Player, dialogID: String) {
+        if (hasDialog(player, dialogID)) return
+        if (exist(dialogID)) {
+            val holoDialog = HoloDialog(get(dialogID)!!, player.location, mutableSetOf(player))
+            holoDialog.run()
+        }
     }
 }

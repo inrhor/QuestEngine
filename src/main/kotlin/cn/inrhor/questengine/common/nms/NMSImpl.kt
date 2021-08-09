@@ -64,7 +64,7 @@ class NMSImpl : NMS() {
                 "c" to location.x,
                 "d" to location.y,
                 "e" to location.z,
-                "k" to if (version >= 5) EntityTypeUtil.returnTypeNMS(entityType) else EntityTypeUtil.returnInt(
+                "k" to if (version >= 6) EntityTypeUtil.returnTypeNMS(entityType) else EntityTypeUtil.returnInt(
                     entityType
                 )
             )
@@ -93,7 +93,7 @@ class NMSImpl : NMS() {
                 "c" to location.x,
                 "d" to location.y,
                 "e" to location.z,
-                "k" to if (version >= 5) EntityTypes.ARMOR_STAND else 78
+                "k" to if (version >= 6) EntityTypes.ARMOR_STAND else 78
             )
         }
     }
@@ -131,7 +131,7 @@ class NMSImpl : NMS() {
                 "c" to location.x,
                 "d" to location.y,
                 "e" to location.z,
-                "k" to if (version >= 5) EntityTypes.ITEM else 2
+                "k" to if (version >= 6) EntityTypes.ITEM else 2
             )
         }
         updateEntityMetadata(players, entityId,
@@ -250,38 +250,22 @@ class NMSImpl : NMS() {
         }
     }
 
-    private fun getItemEntityIndex(): Int {
-        return when (version) {
-            5, 6, 7, 8 -> 7
-            else -> 8
-        }
-    }
-
     override fun getMetaEntityItemStack(itemStack: ItemStack): Any {
+        val index = if (version >= 9) 8 else if (version >= 6) 7 else if (version >= 4) 6 else 5
         return when {
-            version >= 5 -> DataWatcher.Item(DataWatcherObject(getItemEntityIndex(),
+            version >= 5 -> DataWatcher.Item(DataWatcherObject(index,
                 DataWatcherRegistry.g),
                 CraftItemStack.asNMSCopy(itemStack))
             version >= 4 -> net.minecraft.server.v1_12_R1.DataWatcher.Item(
-                net.minecraft.server.v1_12_R1.DataWatcherObject(6,
+                net.minecraft.server.v1_12_R1.DataWatcherObject(index,
                     net.minecraft.server.v1_12_R1.DataWatcherRegistry.f
                 ), org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(itemStack)
             )
             else -> return net.minecraft.server.v1_9_R2.DataWatcher.Item(
-                net.minecraft.server.v1_9_R2.DataWatcherObject(5,
+                net.minecraft.server.v1_9_R2.DataWatcherObject(index,
                     net.minecraft.server.v1_9_R2.DataWatcherRegistry.f
                 ), com.google.common.base.Optional.fromNullable(org.bukkit.craftbukkit.v1_9_R2.inventory.CraftItemStack.asNMSCopy(itemStack))
             )
-        }
-    }
-
-    private fun getPropertiesIndex(): Int {
-        return when (version) {
-            1 -> 10
-            2, 3, 4, 5 -> 11
-            6 -> 13
-            7, 8 -> 14
-            else -> 15
         }
     }
 

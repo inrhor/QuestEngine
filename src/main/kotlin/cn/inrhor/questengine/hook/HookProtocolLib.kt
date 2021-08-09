@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.hook
 
+import cn.inrhor.questengine.common.nms.getPropertiesIndex
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.events.PacketContainer
@@ -38,10 +39,13 @@ object HookProtocolLib {
         packet.modifier.writeDefaults()
         packet.integers.writeSafely(0, entityId)
         packet.uuiDs.writeSafely(0, UUID.randomUUID())
-        if (version >= 5) {
-            packet.entityTypeModifier.writeSafely(0, EntityType.valueOf(entityType.uppercase()))
-        }else {
-            packet.integers.writeSafely(6, entityType.toInt())
+        when {
+            version >= 6 -> {
+                packet.entityTypeModifier.writeSafely(0, EntityType.valueOf(entityType.uppercase()))
+            }
+            else -> {
+                packet.integers.writeSafely(6, entityType.toInt())
+            }
         }
         packet.doubles
             .writeSafely(0, location.x)
@@ -52,12 +56,12 @@ object HookProtocolLib {
     }
 
     fun spawnAS(players: MutableSet<Player>, entityId: Int, location: Location) {
-        val entityType = if (version >= 5) "ARMOR_STAND" else "78"
+        val entityType = if (version >= 6) "ARMOR_STAND" else "78"
         spawnEntity(players, entityId, entityType, location)
     }
 
     fun spawnItem(players: MutableSet<Player>, entityId: Int, location: Location, itemStack: ItemStack) {
-        val entityType = if (version >= 5) "DROPPED_ITEM" else "2"
+        val entityType = if (version >= 6) "DROPPED_ITEM" else "2"
         spawnEntity(players, entityId, entityType, location)
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
         packet.modifier.writeDefaults()
@@ -130,7 +134,7 @@ object HookProtocolLib {
     }
 
     private fun setEntityItemStack(metadata: WrappedDataWatcher, itemStack: ItemStack) {
-        val index = if (version >= 9) 8 else if (version >= 5) 7 else 6
+        val index = if (version >= 9) 8 else if (version >= 6) 7 else if (version >= 4) 6 else 5
         metadata.setObject(
             WrappedDataWatcherObject(
                 index,
@@ -191,7 +195,7 @@ object HookProtocolLib {
     }
 
     private fun setMetaASProperties(metadata: WrappedDataWatcher, isSmall: Boolean, marker: Boolean) {
-        val index = if (version >= 9) 15 else if (version >= 5) 14 else 11
+        val index = getPropertiesIndex()
         var bytes = 0
         bytes += if (isSmall) 0x01 else 0
         bytes += 0x08
@@ -200,17 +204,33 @@ object HookProtocolLib {
     }
 
     private fun setEntityCustomName(metadata: WrappedDataWatcher, name: String) {
-        if (version >= 5) {
-            metadata.setObject(
-                WrappedDataWatcherObject(2,
+        when {
+            version >= 8 -> {
+                metadata.setObject(
+                    WrappedDataWatcherObject(2,
+                        WrappedDataWatcher.Registry.getChatComponentSerializer(true)),
+                    Optional.of(WrappedChatComponent.fromJson(ComponentSerializer.toString(name)).handle)
+                )
+            }
+            version >= 6 -> {
+                metadata.setObject(WrappedDataWatcherObject(2,
                     WrappedDataWatcher.Registry.getChatComponentSerializer(true)),
-                Optional.of(WrappedChatComponent.fromJson(ComponentSerializer.toString(name)).handle))
-            return
+                    Optional.of(WrappedChatComponent.fromChatMessage(name)[0].handle)
+                )
+            }
+            version >= 5 -> {
+                metadata.setObject(WrappedDataWatcherObject(2,
+                        WrappedDataWatcher.Registry.getChatComponentSerializer(true)),
+                    Optional.of(WrappedChatComponent.fromText(name).handle)
+                )
+            }
+            else -> {
+                metadata.setObject(
+                    WrappedDataWatcherObject(2,
+                        WrappedDataWatcher.Registry.get(String::class.javaObjectType)),
+                    name)
+            }
         }
-        metadata.setObject(
-            WrappedDataWatcherObject(2,
-                WrappedDataWatcher.Registry.get(String::class.javaObjectType)),
-            name)
 
     }
 
