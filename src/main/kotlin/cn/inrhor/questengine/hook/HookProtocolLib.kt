@@ -134,7 +134,7 @@ object HookProtocolLib {
     }
 
     private fun setEntityItemStack(metadata: WrappedDataWatcher, itemStack: ItemStack) {
-        val index = if (version >= 9) 8 else if (version >= 6) 7 else if (version >= 4) 6 else 5
+        val index = if (version >= 9) 8 else if (version >= 6) 7 else 6
         metadata.setObject(
             WrappedDataWatcherObject(
                 index,

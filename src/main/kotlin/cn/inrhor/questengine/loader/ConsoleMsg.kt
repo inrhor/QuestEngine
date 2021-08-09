@@ -8,7 +8,7 @@ import taboolib.module.lang.sendLang
 
 object ConsoleMsg {
 
-    fun logoSend() {
+    fun logoSend(version: Int) {
         val logo = listOf(
             "&b   ____                  _   ______             _            ",
             "&b  / __ \\                | | |  ____|           (_)           ",
@@ -25,10 +25,13 @@ object ConsoleMsg {
 
         val pluginCon = QuestEngine.plugin.description
 
+        val state = if (version > 3) "&a√" else "&c×"
+
         console().sendLang(
             "LOADER-INFO",
             pluginCon.name,
-            pluginCon.version
+            pluginCon.version,
+            "&8[ $state &8]"
         )
     }
 

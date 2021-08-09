@@ -251,20 +251,15 @@ class NMSImpl : NMS() {
     }
 
     override fun getMetaEntityItemStack(itemStack: ItemStack): Any {
-        val index = if (version >= 9) 8 else if (version >= 6) 7 else if (version >= 4) 6 else 5
+        val index = if (version >= 9) 8 else if (version >= 6) 7 else 6
         return when {
             version >= 5 -> DataWatcher.Item(DataWatcherObject(index,
                 DataWatcherRegistry.g),
                 CraftItemStack.asNMSCopy(itemStack))
-            version >= 4 -> net.minecraft.server.v1_12_R1.DataWatcher.Item(
+            else -> net.minecraft.server.v1_12_R1.DataWatcher.Item(
                 net.minecraft.server.v1_12_R1.DataWatcherObject(index,
                     net.minecraft.server.v1_12_R1.DataWatcherRegistry.f
                 ), org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(itemStack)
-            )
-            else -> return net.minecraft.server.v1_9_R2.DataWatcher.Item(
-                net.minecraft.server.v1_9_R2.DataWatcherObject(index,
-                    net.minecraft.server.v1_9_R2.DataWatcherRegistry.f
-                ), com.google.common.base.Optional.fromNullable(org.bukkit.craftbukkit.v1_9_R2.inventory.CraftItemStack.asNMSCopy(itemStack))
             )
         }
     }

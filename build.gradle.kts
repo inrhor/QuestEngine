@@ -19,6 +19,7 @@ taboolib {
     description {
         contributors {
             name("inrhor")
+            desc("Minecraft Quest Engine System")
         }
         dependencies {
             name("Adyeshach").optional(true)

@@ -11,8 +11,10 @@ import org.bukkit.Bukkit
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import taboolib.common.platform.console
+import taboolib.common.platform.disablePlugin
 import taboolib.common.platform.submit
 import taboolib.module.lang.sendLang
+import taboolib.module.nms.MinecraftVersion
 import java.io.File
 import kotlin.system.measureTimeMillis
 
@@ -22,7 +24,12 @@ object PluginLoader {
 
     @Awake(LifeCycle.ENABLE)
     fun init() {
-        ConsoleMsg.logoSend()
+        val version = MinecraftVersion.major
+        ConsoleMsg.logoSend(version)
+        if (version <= 3) {
+            disablePlugin()
+            return
+        }
         doLoad()
     }
 

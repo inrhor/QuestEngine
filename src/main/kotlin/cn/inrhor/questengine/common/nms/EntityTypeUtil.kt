@@ -21,8 +21,7 @@ object EntityTypeUtil {
 
 fun getPropertiesIndex(): Int {
     return when (MinecraftVersion.major) {
-        1 -> 10
-        2, 3, 4, 5 -> 11
+        4, 5 -> 11
         6 -> 13
         7, 8 -> 14
         else -> 15
