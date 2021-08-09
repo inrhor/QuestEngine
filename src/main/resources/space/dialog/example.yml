@@ -7,6 +7,14 @@ dialog_1:
   condition:
     - permission *dialog.prm.1
     - check player name is *inrhor
+  # 对话空间设置
+  space:
+    # 是否启用
+    enable: true
+    # 检查条件，一旦不符合将终止对话
+    condition:
+      - range 30 30 30
+      - permission *dialog.prm.1
   # 可选对话类型
   type: holo
   # 关于对话 如下是全息对话示例

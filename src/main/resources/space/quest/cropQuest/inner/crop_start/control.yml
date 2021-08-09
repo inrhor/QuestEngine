@@ -1,14 +1,37 @@
 # 最高级控制
 highest:
+  # 记录控制运行索引，以防意外可选择调用
+  log:
+    # 是否启用
+    enable: true
+    # restart[重启]
+    # memory[记忆]
+    # index int[索引]
+    type: index 10
   kether:
-    - player gamemode to *3
     - packet send packet_1 where location *world *100 *10 *12
-    - tell xx
-    - wait s 10 to quest_1 main_quest_1 the highest
-    - tell xxx
-    - wait minute 1 to quest_1 main_quest_1 the highest
-    - player tp ...
+    - enterPacket to packet_1
+    - wait s 5 to this the highest
+    - subtitle *"&f这是田园农庄场"
+    - wait s 3 to this the highest
+    - title *"&6农民" subtitle *"&f现在赋予你一个职位"
+    - wait s 3 to this the highest
+    - subtitle *"&f请你采集这一片农作物"
+    - wait s 3 to this the highest
+    - subtitle *"&a完成后我将会给予你丰厚奖励"
+    - tpto loaction *world *100 *3 *12
+    - player gamemode to *survival
 # 普通控制
 normal:
+  log:
+    # 是否启用
+    enable: true
+    type: memory
+    # 重新时的调用
+    reKether:
+      - control this index 1
   kether:
-    - player gamemode to *1
+    - title *"&a已接受新任务" subtitle *"&f采集农作物任务"
+    - packet send packet_3 number 30 where worldGuard 2 addY 1
+    - wait minute 5 to this the normal
+    - subtitle *"&c任务即将结束，请注意"
