@@ -8,7 +8,7 @@ import java.util.*
  * @param uuid 玩家UUID
  * @param dialogData 对话数据
  * @param questDataList 任务数据集合
- * @param controlData 控制脚本集合
+ * @param controlData 控制模块集合
  */
 class PlayerData(
     val uuid: UUID,

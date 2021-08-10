@@ -1,13 +1,16 @@
 package cn.inrhor.questengine.common.database.data.quest
 
+import cn.inrhor.questengine.api.quest.ControlPriority
 import cn.inrhor.questengine.common.database.data.ControlData
-import cn.inrhor.questengine.common.quest.ControlPriority
 import cn.inrhor.questengine.script.kether.eval
 import cn.inrhor.questengine.script.kether.expand.control.ControlTaskType
 import cn.inrhor.questengine.script.kether.expand.control.ControlType
 import org.bukkit.entity.Player
 import taboolib.common.platform.submit
 
+/**
+ * 控制模块数据
+ */
 class QuestControlData(
     val player: Player,
     val controlData: ControlData,
@@ -17,10 +20,9 @@ class QuestControlData(
     var line: Int,
     var waitTime: Int) {
 
-    constructor(player: Player, controlData: ControlData, controlID: String, controlPriority: ControlPriority, controlList: MutableList<String>):
+    constructor(player: Player, controlData: ControlData,
+                controlID: String, controlPriority: ControlPriority, controlList: MutableList<String>):
             this(player, controlData, controlID, controlPriority, controlList, 0, 0)
-
-    var time = 0
 
     fun runScript() {
         if (controlList.isEmpty() || line >= controlList.size) {
@@ -57,7 +59,10 @@ class QuestControlData(
     }
 
     private fun evalShell(content: String) {
-        eval(player, content)
+        val sp = controlID.split("-")
+        val qID = sp[0]
+        val nID = sp[1]
+        eval(player, content.replace("@quest", "$qID $nID"))
         runScript()
         waitTime = 0
     }

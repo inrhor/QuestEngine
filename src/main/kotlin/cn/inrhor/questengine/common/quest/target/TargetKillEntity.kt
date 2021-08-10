@@ -8,6 +8,7 @@ import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.api.target.util.Schedule
 import cn.inrhor.questengine.script.kether.evalBoolean
 import cn.inrhor.questengine.utlis.UtilString
+import cn.inrhor.questengine.utlis.subAfter
 import org.bukkit.entity.Entity
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
@@ -70,10 +71,10 @@ object TargetKillEntity: TargetExtend<EntityDeathEvent>() {
             if (!checkNumber(checkNumber, i)) return true
             val s = it.lowercase(Locale.getDefault())
             if (s.startsWith("entity name")) {
-                val get = UtilString.subGetStr(it, "@")
+                val get = it.subAfter("@")
                 if (!evalBoolean(player, "strMatch type $get *'${entity.name}'")) return false
             }else if (s.startsWith("eval ")) {
-                val get = UtilString.subGetStr(it, "@").replace("dropExp", dropExp.toString(), true)
+                val get = it.subAfter("@").replace("dropExp", dropExp.toString(), true)
                 if (!evalBoolean(player, get)) return false
             }
             i++

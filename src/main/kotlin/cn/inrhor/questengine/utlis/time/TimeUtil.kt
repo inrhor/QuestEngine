@@ -53,17 +53,17 @@ object TimeUtil {
     }
 
     fun remainDate(player: Player, state: QuestState, future: Date): String {
-        if (state == QuestState.FAILURE) return player.asLangText("QUEST-STATE_FAILURE")?: "failure"
+        if (state == QuestState.FAILURE) return player.asLangText("QUEST-STATE_FAILURE")
         val nowDate = Date()
         val i = future.time - nowDate.time
         val day = i / (24 * 60 * 60 * 1000)
-        if (day < 0) return player.asLangText("QUEST-TIMEOUT")?: "timeout"
+        if (day < 0) return player.asLangText("QUEST-TIMEOUT")
         val hour = i / (60 * 60 * 1000) - day * 24
-        if (hour < 0) return player.asLangText("QUEST-TIMEOUT")?: "timeout"
+        if (hour < 0) return player.asLangText("QUEST-TIMEOUT")
         val minute = i / (60 * 1000) - day * 24 * 60 - hour * 60
-        if (minute < 0) return player.asLangText("QUEST-TIMEOUT")?: "timeout"
+        if (minute < 0) return player.asLangText("QUEST-TIMEOUT")
         val second = i / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - minute * 60
-        if (second < 0) return player.asLangText("QUEST-TIMEOUT")?: "timeout"
+        if (second < 0) return player.asLangText("QUEST-TIMEOUT")
         val d = player.asLangText("QUEST-TIME_DAY")
         val h = player.asLangText("QUEST-TIME_HOUR")
         val m = player.asLangText("QUEST-TIME_MINUTE")

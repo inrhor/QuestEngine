@@ -1,12 +1,16 @@
 package cn.inrhor.questengine.common.database.type
 
 import cn.inrhor.questengine.QuestEngine
+import cn.inrhor.questengine.api.quest.toStr
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.*
-import cn.inrhor.questengine.common.quest.QuestStateUtil
+import cn.inrhor.questengine.common.quest.manager.ControlManager
+import cn.inrhor.questengine.common.quest.toState
+import cn.inrhor.questengine.common.quest.toStr
 import cn.inrhor.questengine.utlis.time.TimeUtil
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
@@ -59,6 +63,11 @@ class DatabaseLocal: Database() {
                     rewards:
                         rewardID: ""
                         has: false
+        control:
+            controlID:
+                priority: highest
+                line: 0
+                waitTime: 0
 
      */
     override fun pull(player: Player) {
@@ -78,10 +87,19 @@ class DatabaseLocal: Database() {
 
                 val finished = data.getStringList(node+"finishedQuest")
 
-                val state = QuestStateUtil.strToState(data.getString(node+"state")?: "IDLE")
+                val state = (data.getString(node+"state")?: "IDLE").toState()
 
                 val questData = QuestData(UUID.fromString(it), questID, questInnerData, state, TeamManager.getTeamData(uuid), finished)
                 questDataMap[UUID.fromString(it)] = questData
+            }
+        }
+        if (data.contains("control")) {
+            data.getConfigurationSection("control")!!.getKeys(false).forEach {
+                val node = "control.$it."
+                val priority = data.getString("priority")?: "normal"
+                val line = data.getInt(node+"line")
+                val waitTime = data.getInt(node+"waitTime")
+                ControlManager.pullControl(player, it, priority, line, waitTime)
             }
         }
         DataStorage.getPlayerData(uuid).questDataList = questDataMap
@@ -96,7 +114,7 @@ class DatabaseLocal: Database() {
 
     private fun getInnerQuestData(data: YamlConfiguration, node: String, player: Player, questUUID: UUID, questID: String, innerQuestID: String): QuestInnerData? {
         val rewardInner = returnRewardData(data, node)
-        val innerState = QuestStateUtil.strToState(data.getString(node+"state")?: "IDLE")
+        val innerState = (data.getString(node+"state")?: "IDLE").toState()
         val innerModule = QuestManager.getInnerQuestModule(questID, innerQuestID)?: return null
         val innerTargetDataMap = returnTargets(
             player, questUUID,
@@ -138,7 +156,7 @@ class DatabaseLocal: Database() {
         if (!file.exists()) return
         val data = YamlConfiguration.loadConfiguration(file)
         pData.questDataList.forEach { (questUUID, questData) ->
-            val state = QuestStateUtil.stateToStr(questData.state)
+            val state = questData.state.toStr()
             val node = "quest.$questUUID."
             val innerData = questData.questInnerData
             val innerID = innerData.innerQuestID
@@ -150,11 +168,22 @@ class DatabaseLocal: Database() {
             data.set(innerNode+"innerQuestID", innerID)
             pushData(data, innerNode, innerData)
         }
+        pData.controlData.highestControls.forEach { (cID, cData) ->
+            pushControl(data, cID, cData)
+        }
         data.save(file)
     }
 
+    private fun pushControl(data: YamlConfiguration, controlID: String, cData: QuestControlData) {
+        if (!ControlManager.needPush(controlID, cData.controlPriority)) return
+        val node = "control.$controlID."
+        data.set(node+"priority", cData.controlPriority.toStr())
+        data.set(node+"line", cData.line)
+        data.set(node+"waitTime", cData.waitTime)
+    }
+
     private fun pushData(data: YamlConfiguration, node: String, questInnerData: QuestInnerData) {
-        val state = QuestStateUtil.stateToStr(questInnerData.state)
+        val state = questInnerData.state.toStr()
         data.set(node+"state", state)
         questInnerData.rewardState.forEach { (rewardID, has) ->
             data.set(node+"rewards.$rewardID.has", has)

@@ -1,8 +1,8 @@
 package cn.inrhor.questengine.script.kether.expand.control
 
 import cn.inrhor.questengine.common.database.data.ControlData
-import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.quest.manager.ControlManager
 import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyPlayer
 import taboolib.module.kether.*
@@ -21,7 +21,7 @@ class KetherControl(val type: Type, var time: Int, val questID: String, val main
     object WaitRun {
         fun run(player: Player, time: Int, questID: String, mainQuestID: String, priority: String) {
             val pData = DataStorage.getPlayerData(player)
-            val controlID = QuestManager.generateControlID(questID, mainQuestID, priority)
+            val controlID = ControlManager.generateControlID(questID, mainQuestID, priority)
             val cData = pData.controlData
             if (cData.highestControls.containsKey(controlID)) {
                 highest(controlID, cData, time)

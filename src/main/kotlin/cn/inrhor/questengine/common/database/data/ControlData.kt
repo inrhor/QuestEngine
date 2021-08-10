@@ -1,9 +1,16 @@
 package cn.inrhor.questengine.common.database.data
 
 import cn.inrhor.questengine.common.database.data.quest.QuestControlData
+import cn.inrhor.questengine.common.database.type.DatabaseManager
+import cn.inrhor.questengine.common.database.type.DatabaseSQL
+import cn.inrhor.questengine.common.database.type.DatabaseType
+import java.util.*
+import kotlin.collections.LinkedHashMap
 
 /**
- * ControlID: [questID]-[innerQuestID]-[priority]
+ * 控制模块数据列表
+ *
+ * ControlID: questID-innerQuestID-priority
  *
  * @param highestControls 最高级控制，排队运行
  * @param controls 普通控制，共存运行
@@ -15,26 +22,35 @@ class ControlData(var highestControls: LinkedHashMap<String, QuestControlData>,
      * 添加最高级控制模块并进入队列等待运行
      * 添加普通控制模块并直接运行
      */
-    fun addControl(highestID: String, normalID: String, highestControlData: QuestControlData, normalControlData: QuestControlData) {
-        addHighest(highestID, highestControlData)
-        addCommon(normalID, normalControlData)
+    fun addControl(uuid: UUID, highestID: String, normalID: String,
+                   highestControlData: QuestControlData, normalControlData: QuestControlData) {
+        addHighest(uuid, highestID, highestControlData)
+        addCommon(uuid, normalID, normalControlData)
     }
 
     /**
      * 添加最高级控制模块并进入队列等待运行
      */
-    fun addHighest(controlID: String, questControlData: QuestControlData) {
+    fun addHighest(uuid: UUID, controlID: String, questControlData: QuestControlData) {
         highestControls[controlID] = questControlData
         if (highestControls.size < 2) {
+            createSQL(uuid, controlID, questControlData)
             questControlData.runScript()
+        }
+    }
+
+    private fun createSQL(uuid: UUID, controlID: String, questControlData: QuestControlData) {
+        if (DatabaseManager.type == DatabaseType.MYSQL) {
+            DatabaseSQL().createControl(uuid, controlID, questControlData)
         }
     }
 
     /**
      * 添加普通控制模块并直接运行
      */
-    fun addCommon(controlID: String, questControlData: QuestControlData) {
+    fun addCommon(uuid: UUID, controlID: String, questControlData: QuestControlData) {
         controls[controlID] = questControlData
+        createSQL(uuid, controlID, questControlData)
         questControlData.runScript()
     }
 

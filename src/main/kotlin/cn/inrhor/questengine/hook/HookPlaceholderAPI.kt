@@ -1,8 +1,8 @@
 package cn.inrhor.questengine.hook
 
 import cn.inrhor.questengine.common.database.data.quest.TargetData
-import cn.inrhor.questengine.common.quest.QuestStateUtil
 import cn.inrhor.questengine.common.quest.manager.QuestManager
+import cn.inrhor.questengine.common.quest.toUnit
 import cn.inrhor.questengine.utlis.time.TimeUtil
 import org.bukkit.entity.Player
 import taboolib.platform.compat.PlaceholderExpansion
@@ -31,14 +31,14 @@ object HookPlaceholderAPI: PlaceholderExpansion {
 
     private fun endTime(player: Player, questID: String, innerID: String, index: Int): String {
         val targetData = getTargetData(player, questID, innerID, index)?:
-        return player.asLangText("QUEST-ALWAYS")?: "always null"
-        val time = targetData.endTimeDate?: return player.asLangText("QUEST-ALWAYS")?: "always null"
+        return player.asLangText("QUEST-ALWAYS")
+        val time = targetData.endTimeDate?: return player.asLangText("QUEST-ALWAYS")
         return TimeUtil.dateToStr(time)
     }
 
     private fun startTime(player: Player, questID: String, innerID: String, index: Int): String {
         val targetData = getTargetData(player, questID, innerID, index)?:
-        return player.asLangText("QUEST-ALWAYS")?: "always null"
+        return player.asLangText("QUEST-ALWAYS")
         val time = targetData.timeDate
         return TimeUtil.dateToStr(time)
     }
@@ -47,7 +47,7 @@ object HookPlaceholderAPI: PlaceholderExpansion {
      * 剩余时间
      */
     private fun remain(player: Player, questID: String, innerID: String, index: Int): String {
-        val always = player.asLangText("QUEST-ALWAYS")?: "always null"
+        val always = player.asLangText("QUEST-ALWAYS")
         val uuid = player.uniqueId
         val qData = QuestManager.getQuestData(uuid, questID)?: return always
         val innerData = QuestManager.getInnerQuestData(player, qData.questUUID, innerID)?: return always
@@ -85,11 +85,11 @@ object HookPlaceholderAPI: PlaceholderExpansion {
     private fun getState(player: Player, questID: String, innerID: String): String {
         val uuid = player.uniqueId
         val qData = QuestManager.getQuestData(uuid, questID)?:
-        return player.asLangText("QUEST-STATE_NOT_ACCEPT")?: "state null"
-        val state = QuestStateUtil.stateUnit(player, qData.state)
+        return player.asLangText("QUEST-STATE_NOT_ACCEPT")
+        val state = qData.state.toUnit(player)
         if (innerID.isNotEmpty()) {
             val innerData = QuestManager.getInnerQuestData(player, qData.questUUID)?: return state
-            return QuestStateUtil.stateUnit(player, innerData.state)
+            return innerData.state.toUnit(player)
         }
         return state
     }

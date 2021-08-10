@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.listener.base
 
 import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.data.PlayerData
+import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import taboolib.common.platform.SubscribeEvent
 

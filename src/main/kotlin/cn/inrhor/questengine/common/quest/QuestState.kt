@@ -12,38 +12,34 @@ enum class QuestState {
     FAILURE
 }
 
-object QuestStateUtil {
-
-    fun strToState(str: String): QuestState {
-        return when (str.uppercase(Locale.getDefault())) {
-            "NOT_ACCEPT" -> QuestState.NOT_ACCEPT
-            "DOING" -> QuestState.DOING
-            "IDLE" -> QuestState.IDLE
-            "FINISH" -> QuestState.FINISH
-            else -> QuestState.FAILURE
-        }
+fun String.toState(): QuestState {
+    return when (this.uppercase(Locale.getDefault())) {
+        "NOT_ACCEPT" -> QuestState.NOT_ACCEPT
+        "DOING" -> QuestState.DOING
+        "IDLE" -> QuestState.IDLE
+        "FINISH" -> QuestState.FINISH
+        else -> QuestState.FAILURE
     }
+}
 
-    fun stateToStr(state: QuestState): String {
-        return when (state) {
-            QuestState.NOT_ACCEPT -> "NOT_ACCEPT"
-            QuestState.DOING -> "DOING"
-            QuestState.IDLE -> "IDLE"
-            QuestState.FINISH -> "FINISH"
-            else -> "FAILURE"
-        }
+fun QuestState.toStr(): String {
+    return when (this) {
+        QuestState.NOT_ACCEPT -> "NOT_ACCEPT"
+        QuestState.DOING -> "DOING"
+        QuestState.IDLE -> "IDLE"
+        QuestState.FINISH -> "FINISH"
+        else -> "FAILURE"
     }
+}
 
-    /**
-     * 状态单位
-     */
-    fun stateUnit(player: Player, state: QuestState): String {
-        return when (state) {
-            QuestState.DOING -> player.asLangText("QUEST-STATE_DOING")?: return "null"
-            QuestState.FAILURE -> player.asLangText("QUEST-STATE_FAILURE")?: return "null"
-            QuestState.FINISH -> player.asLangText("QUEST-STATE_FINISH")?: return "null"
-            else -> player.asLangText("QUEST-STATE_IDLE")?: return "null"
-        }
+/**
+ * 状态单位
+ */
+fun QuestState.toUnit(player: Player): String {
+    return when (this) {
+        QuestState.DOING -> player.asLangText("QUEST-STATE_DOING")
+        QuestState.FAILURE -> player.asLangText("QUEST-STATE_FAILURE")
+        QuestState.FINISH -> player.asLangText("QUEST-STATE_FINISH")
+        else -> player.asLangText("QUEST-STATE_IDLE")
     }
-
 }

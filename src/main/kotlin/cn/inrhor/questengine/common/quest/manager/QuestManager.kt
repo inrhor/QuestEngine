@@ -10,7 +10,6 @@ import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.database.type.DatabaseManager
 import cn.inrhor.questengine.common.database.type.DatabaseSQL
 import cn.inrhor.questengine.common.database.type.DatabaseType
-import cn.inrhor.questengine.common.quest.ControlPriority
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
@@ -173,38 +172,12 @@ object QuestManager {
         val innerQuestData = QuestInnerData(questID, innerQuestID, targetDataMap, state)
         val questData = QuestData(questUUID, questID, innerQuestData, state, pData.teamData, mutableListOf())
         pData.questDataList[questUUID] = questData
-        saveControl(player, pData, innerQuestData)
+        ControlManager.saveControl(player, pData, innerQuestData)
         if (isNewQuest) {
             if (DatabaseManager.type == DatabaseType.MYSQL) {
-                DatabaseSQL().create(player, questUUID, questData)
+                DatabaseSQL().createQuest(player, questUUID, questData)
             }
         }
-    }
-
-    /**
-     * 存储控制模块
-     */
-    fun saveControl(player: Player, pData: PlayerData, questInnerData: QuestInnerData) {
-        if (questInnerData.state != QuestState.DOING) return
-        val questID = questInnerData.questID
-        val innerQuestID = questInnerData.innerQuestID
-        val mModule = getInnerQuestModule(questID, innerQuestID)?: return
-        val cModule = mModule.questControl
-        val highestID = cModule.highestID
-        val normalID = cModule.normalID
-        if (highestID == "" || normalID == "") return
-
-        val hControl = cModule.highestControl
-        val nControl = cModule.normalControl
-
-        val cData = pData.controlData
-        val hControlData = QuestControlData(player, cData, highestID, ControlPriority.HIGHEST, hControl)
-        val nControlData = QuestControlData(player, cData, normalID, ControlPriority.NORMAL, nControl)
-        cData.addControl(highestID, normalID, hControlData, nControlData)
-    }
-
-    fun generateControlID(questID: String, innerQuestID: String, priority: String): String {
-        return "[$questID]-[$innerQuestID]-[$priority]"
     }
 
     /**

@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.quest.ui
 
-import cn.inrhor.questengine.common.quest.QuestStateUtil
 import cn.inrhor.questengine.common.quest.manager.QuestManager
+import cn.inrhor.questengine.common.quest.toUnit
 import cn.inrhor.questengine.utlis.UtilString
 import cn.inrhor.questengine.utlis.time.TimeUtil
 import org.bukkit.entity.Player
@@ -31,7 +31,7 @@ object PublicJson {
         }
 
         val ds = UtilString.getJsonStr(innerModule.description)
-            .replace("%state%", QuestStateUtil.stateUnit(player, innerData.state), true)
+            .replace("%state%", innerData.state.toUnit(player), true)
         val dsJs = TellrawJson()
             .append(ds.colored())
         jsList.add(dsJs)
