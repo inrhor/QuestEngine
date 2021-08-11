@@ -138,6 +138,7 @@ object DialogManager {
         val space = dialogModule.spaceModule
         if (!space.enable) return
         submit(async = true, period = 5L) {
+            if (holoDialog.viewers.isEmpty()) return@submit
             if (!evalBooleanSet(players, space.condition)) {
                 holoDialog.end()
                 return@submit

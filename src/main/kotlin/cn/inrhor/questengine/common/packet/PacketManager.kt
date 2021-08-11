@@ -11,6 +11,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
 import taboolib.common.platform.console
 import taboolib.module.lang.sendLang
+import taboolib.platform.util.toBukkitLocation
 import java.io.File
 import java.util.*
 
@@ -78,6 +79,15 @@ object PacketManager {
                 }
             }
         }
+    }
+
+    /**
+     * 需要在 packet 文件夹中构造数据包模块
+     * packetID格式 packet-id-type[entity/item]
+     * 将根据packetID检索id
+     */
+    fun sendPacket(packetID: String, sender: Player, location: taboolib.common.util.Location) {
+        sendThisPacket(packetID, sender, location.toBukkitLocation())
     }
 
     /**
