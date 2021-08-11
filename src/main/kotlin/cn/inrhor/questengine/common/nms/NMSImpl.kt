@@ -347,4 +347,21 @@ class NMSImpl : NMS() {
             )
         }
     }
+
+    override fun camera(player: Player, entityId: Int) {
+        if (isUniversal) {
+            packetSend(
+                player,
+                PacketPlayOutCamera::class.java.unsafeInstance(),
+                "a" to entityId
+            )
+        }else {
+            packetSend(
+                player,
+                PacketPlayOutCamera(),
+                "a" to entityId
+            )
+        }
+    }
+
 }

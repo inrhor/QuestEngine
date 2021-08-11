@@ -23,7 +23,7 @@ class ReplyModule(val dialogID: String,
         var textLine = 0
         var itemLine = 0
         for (i in content) {
-            val iUc = i.uppercase(Locale.getDefault())
+            val iUc = i.uppercase()
             when {
                 iUc.startsWith("TEXT") -> {
                     val holoID = HoloIDManager.generate(dialogID, replyID, textLine, "text")

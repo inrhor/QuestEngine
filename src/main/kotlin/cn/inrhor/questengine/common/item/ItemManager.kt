@@ -2,8 +2,8 @@ package cn.inrhor.questengine.common.item
 
 import cn.inrhor.questengine.utlis.file.GetFile
 import cn.inrhor.questengine.utlis.UtilString
-import org.bukkit.configuration.file.YamlConfiguration
 import taboolib.common.platform.console
+import taboolib.library.configuration.YamlConfiguration
 import taboolib.module.lang.sendLang
 import java.io.File
 
@@ -43,8 +43,8 @@ object ItemManager {
             console().sendLang("ITEM.EMPTY_CONTENT", UtilString.pluginTag, file.name)
             return
         }
-        for (itemID in yaml.getKeys(false)) {
-            ItemFile().init(yaml.getConfigurationSection(itemID)!!)
+        yaml.getKeys(false).forEach {
+            ItemFile(it).init(yaml.getConfigurationSection(it))
         }
     }
 
@@ -56,7 +56,7 @@ object ItemManager {
     /**
      * 获取物品
      */
-    fun get(itemID: String) = itemFileMap[itemID]!!.item!!
+    fun get(itemID: String) = (itemFileMap[itemID]?: error("unknown item")).item
 
     fun clearMap() = itemFileMap.clear()
 }

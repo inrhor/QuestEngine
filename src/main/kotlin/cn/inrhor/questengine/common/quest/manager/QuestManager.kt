@@ -15,6 +15,8 @@ import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.script.kether.eval
 import cn.inrhor.questengine.utlis.time.TimeUtil
+import cn.inrhor.questengine.utlis.time.add
+import cn.inrhor.questengine.utlis.time.toTimeUnit
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import taboolib.platform.util.sendLang
@@ -151,7 +153,7 @@ object QuestManager {
         val innerModule = getInnerQuestModule(questID, innerQuestID) ?: return
         val targetDataMap = mutableMapOf<String, TargetData>()
         innerModule.questTargetList.forEach { (name, target) ->
-            val timeStr = target.time.lowercase(Locale.getDefault())
+            val timeStr = target.time.lowercase()
             val nowDate = Date()
             var endTime: Date? = null
             var timeUnit = "s"
@@ -160,8 +162,8 @@ object QuestManager {
                 timeUnit = timeSpit[0]
                 val time = timeSpit[1].toInt()
                 when (timeUnit) {
-                    "minute" -> endTime = TimeUtil.addDate(nowDate, Calendar.MINUTE, time)
-                    "s" -> endTime = TimeUtil.addDate(nowDate, Calendar.SECOND, time)
+                    "minute" -> endTime = nowDate.add(Calendar.MINUTE, time)
+                    "s" -> endTime = nowDate.add(Calendar.SECOND, time)
                 }
             }
 
@@ -342,7 +344,7 @@ object QuestManager {
         val targetDataMap = mutableMapOf<String, TargetData>()
         val date = Date()
         innerModule.questTargetList.forEach { (name, questTarget) ->
-            val targetData = TargetData(name, TimeUtil.timeUnit(questTarget), 0, questTarget, date, null)
+            val targetData = TargetData(name, questTarget.time.toTimeUnit(), 0, questTarget, date, null)
             targetDataMap[name] = targetData
         }
         return targetDataMap

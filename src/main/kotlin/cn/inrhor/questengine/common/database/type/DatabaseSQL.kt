@@ -10,6 +10,7 @@ import cn.inrhor.questengine.common.quest.manager.ControlManager
 import cn.inrhor.questengine.common.quest.toState
 import cn.inrhor.questengine.common.quest.toStr
 import cn.inrhor.questengine.utlis.time.TimeUtil
+import cn.inrhor.questengine.utlis.time.toDate
 import com.google.gson.Gson
 import org.bukkit.entity.Player
 import taboolib.module.database.ColumnTypeSQL
@@ -205,9 +206,9 @@ class DatabaseSQL: Database() {
             val name = it.first.first.first
             val targetData = targetDataMap[name]?: return@forEach
             targetData.schedule = it.first.first.second
-            val timeDate = TimeUtil.strToDate(it.first.second)
+            val timeDate = it.first.second.toDate()
             targetData.timeDate = timeDate
-            val endTimeDate = TimeUtil.strToDate(it.second)
+            val endTimeDate = it.second.toDate()
             targetData.endTimeDate = endTimeDate
             targetDataMap[name] = targetData
             targetData.runTime(player, questUUID)

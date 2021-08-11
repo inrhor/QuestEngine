@@ -261,5 +261,10 @@ object HookProtocolLib {
         sendPacket(players, packet)
     }
 
+    fun camera(player: Player, entityId: Int) {
+        val packet = PacketContainer(PacketType.Play.Server.CAMERA)
+        packet.integers.writeSafely(0, entityId)
+        sendPacket(player, packet)
+    }
 
 }

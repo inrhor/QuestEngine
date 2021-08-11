@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.dialog
 
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.api.dialog.ReplyModule
+import cn.inrhor.questengine.api.dialog.SpaceModule
 import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.configuration.file.YamlConfiguration
 import taboolib.common.platform.console
@@ -37,8 +38,14 @@ object DialogFile {
             val type = cfs.getString("type")?: "holo"
             val dialog = cfs.getStringList("dialog")
 
+            val enableSpace = cfs.getBoolean("space.enable")
+            val listSpace = cfs.getStringList("space.condition")
+            val space = SpaceModule(enableSpace, listSpace)
+
             val dialogModule = DialogModule(
-                dialogID, npcID, condition, type, dialog, mutableListOf(), mutableListOf())
+                dialogID, npcID, condition, type, dialog,
+                mutableListOf(), mutableListOf(),
+                space)
 
             if (cfs.contains("reply")) {
                 val replySfc = cfs.getConfigurationSection("reply")!!

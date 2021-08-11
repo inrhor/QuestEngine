@@ -23,7 +23,7 @@ class TextAnimation(val dialogID: String, val line: Int, val script: String, val
             var frame = 0
             val script = indTag.group(1)
             var frameTextIndex = 0 // 第x行的文字帧
-            if (script.uppercase(Locale.getDefault()).startsWith("TEXTWRITE")) {
+            if (script.uppercase().startsWith("TEXTWRITE")) {
                 val textWrite = evalTextWrite(script)
                 val abDelay = textWrite.delay
                 val abSpeed = textWrite.speedWrite

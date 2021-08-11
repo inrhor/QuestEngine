@@ -13,7 +13,7 @@ enum class QuestState {
 }
 
 fun String.toState(): QuestState {
-    return when (this.uppercase(Locale.getDefault())) {
+    return when (this.uppercase()) {
         "NOT_ACCEPT" -> QuestState.NOT_ACCEPT
         "DOING" -> QuestState.DOING
         "IDLE" -> QuestState.IDLE

@@ -12,7 +12,7 @@ object DatabaseManager {
     var type = DatabaseType.LOCAL
 
     fun init() {
-        if (QuestEngine.config.getString("data.type")!!.uppercase(Locale.getDefault()) == "MYSQL") {
+        if (QuestEngine.config.getString("data.type")!!.uppercase() == "MYSQL") {
             type = DatabaseType.MYSQL
         }
     }

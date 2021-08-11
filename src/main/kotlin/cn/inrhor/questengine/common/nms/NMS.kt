@@ -107,6 +107,8 @@ abstract class NMS {
      */
     abstract fun getIsInvisible(): Any
 
+    abstract fun camera(player: Player, entityId: Int)
+
     companion object {
 
         val INSTANCE by lazy {

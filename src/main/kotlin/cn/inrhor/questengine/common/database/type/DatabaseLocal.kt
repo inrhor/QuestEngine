@@ -12,6 +12,7 @@ import cn.inrhor.questengine.common.quest.manager.ControlManager
 import cn.inrhor.questengine.common.quest.toState
 import cn.inrhor.questengine.common.quest.toStr
 import cn.inrhor.questengine.utlis.time.TimeUtil
+import cn.inrhor.questengine.utlis.time.toStr
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import java.io.File
@@ -199,7 +200,7 @@ class DatabaseLocal: Database() {
 
     private fun setTimeDate(data: YamlConfiguration, timeNode: String, date: Date) {
         if (!data.contains(timeNode)) {
-            val dateStr = TimeUtil.dateToStr(date)
+            val dateStr = date.toStr()
             data.set(timeNode, dateStr)
         }
     }

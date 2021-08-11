@@ -27,7 +27,7 @@ class ItemCheck(private val matchers: MutableMap<String, String>) {
         val meta = itemStack.itemMeta
         var amount = 0
         matchers.forEach { (mark, data) ->
-            when (mark.lowercase(Locale.getDefault())) {
+            when (mark.lowercase()) {
                 "minecraft" -> if (data != itemStack.type.name) return false
                 "displayname" -> if (meta == null || data != meta.displayName) return false
                 "lorecontains" -> if (meta == null || !loreContains(meta, data)) return false

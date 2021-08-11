@@ -48,7 +48,7 @@ class HoloReply(
             DataStorage.getPlayerData(it).dialogData.addHoloReply(dialogID, this)
         }
         for (i in replyModule.content) {
-            val iUc = i.uppercase(Locale.getDefault())
+            val iUc = i.uppercase()
             when {
                 iUc.startsWith("HITBOX") -> {
                     val referHoloHitBox = evalHoloHitBox(i)

@@ -56,7 +56,7 @@ object TargetKillEntity: TargetExtend<EntityDeathEvent>() {
 
     fun checkEntity(target: QuestTarget, type: EntityType): Boolean {
         val condition = target.condition["entity"]?: return false
-        return when (condition.uppercase(Locale.getDefault())) {
+        return when (condition.uppercase()) {
             "PLAYER" -> (type == EntityType.PLAYER)
             else -> (type != EntityType.PLAYER)
         }
@@ -69,7 +69,7 @@ object TargetKillEntity: TargetExtend<EntityDeathEvent>() {
         var i = 1
         condition.forEach {
             if (!checkNumber(checkNumber, i)) return true
-            val s = it.lowercase(Locale.getDefault())
+            val s = it.lowercase()
             if (s.startsWith("entity name")) {
                 val get = it.subAfter("@")
                 if (!evalBoolean(player, "strMatch type $get *'${entity.name}'")) return false

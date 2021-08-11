@@ -15,6 +15,7 @@ taboolib {
             "module-metrics",
             "module-nms",
             "module-nms-util",
+            "module-effect",
             "platform-bukkit")
     description {
         contributors {
@@ -34,7 +35,7 @@ taboolib {
 
 repositories {
     mavenCentral()
-    maven("https://repo.dmulloy2.net/repository/public/")
+    maven("https://repo.dmulloy2.net/repository/public/") // ProtocolLib
 }
 
 dependencies {

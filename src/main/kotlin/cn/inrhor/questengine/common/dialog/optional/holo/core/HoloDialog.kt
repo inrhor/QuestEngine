@@ -42,7 +42,7 @@ class HoloDialog(
             DataStorage.getPlayerData(it).dialogData.addHoloDialog(dialogID, this)
         }
         for (i in dialogModule.dialog) {
-            val iUc = i.uppercase(Locale.getDefault())
+            val iUc = i.uppercase()
             when {
                 iUc.startsWith("INITLOC") -> {
                     holoLoc = LocationTool.getReferLoc(npcLoc, evalReferLoc(i))

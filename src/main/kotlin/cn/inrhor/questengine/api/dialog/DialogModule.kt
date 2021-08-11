@@ -13,7 +13,17 @@ class DialogModule(val dialogID: String,
                    var type: String,
                    var dialog: MutableList<String>,
                    var playText: MutableList<TextDialogPlay>,
-                   var playItem: MutableList<ItemDialogPlay>) {
+                   var playItem: MutableList<ItemDialogPlay>,
+                   var spaceModule: SpaceModule) {
 
     var replyModuleList: MutableList<ReplyModule> = mutableListOf()
+}
+
+/**
+ * 对话空间属性模块
+ *
+ */
+class SpaceModule(
+    var enable: Boolean,
+    var condition: MutableList<String>) {
 }

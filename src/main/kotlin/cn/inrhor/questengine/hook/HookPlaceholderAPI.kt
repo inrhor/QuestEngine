@@ -4,6 +4,7 @@ import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.quest.toUnit
 import cn.inrhor.questengine.utlis.time.TimeUtil
+import cn.inrhor.questengine.utlis.time.toStr
 import org.bukkit.entity.Player
 import taboolib.platform.compat.PlaceholderExpansion
 import taboolib.platform.util.asLangText
@@ -18,7 +19,7 @@ object HookPlaceholderAPI: PlaceholderExpansion {
         val questID = args[1]
         val innerID = if (args.size > 1) args[2] else ""
         val index = if (args.size > 2) args[3].toInt() else 1
-        return when (args[0].lowercase(Locale.getDefault())) {
+        return when (args[0].lowercase()) {
             "state" -> getState(player, questID, "")
             "stateinner" -> getState(player, questID, innerID)
             "schedule" -> getSchedule(player, questID, innerID, index)
@@ -33,14 +34,14 @@ object HookPlaceholderAPI: PlaceholderExpansion {
         val targetData = getTargetData(player, questID, innerID, index)?:
         return player.asLangText("QUEST-ALWAYS")
         val time = targetData.endTimeDate?: return player.asLangText("QUEST-ALWAYS")
-        return TimeUtil.dateToStr(time)
+        return time.toStr()
     }
 
     private fun startTime(player: Player, questID: String, innerID: String, index: Int): String {
         val targetData = getTargetData(player, questID, innerID, index)?:
         return player.asLangText("QUEST-ALWAYS")
         val time = targetData.timeDate
-        return TimeUtil.dateToStr(time)
+        return time.toStr()
     }
 
     /**

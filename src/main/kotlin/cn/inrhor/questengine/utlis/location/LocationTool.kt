@@ -22,7 +22,7 @@ object LocationTool {
     }
 
     fun getOffsetType(q: QuestReader): Float {
-        return when (q.nextToken().lowercase(Locale.getDefault())) {
+        return when (q.nextToken().lowercase()) {
             "left" -> -90F
             "right" -> 90F
             "behind" -> 180F

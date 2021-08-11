@@ -47,24 +47,6 @@ class DialogData(var holoDialogMap: MutableMap<String, MutableList<HoloDialog>>,
         holoDialogMap.remove(dialogID)
         holoReplyMap.remove(dialogID)
         holoBoxMap.remove(dialogID)
-        /*val iterator = holo.iterator()
-        while (iterator.hasNext()){
-            val holoDialog = iterator.next()
-            val dialogModule = holoDialog.dialogModule
-            if (dialogModule.dialogID == holoBox.replyModule.dialogID) {
-                holoDialog.end()
-                iterator.remove()
-                break
-            }
-        }
-        for (holoReply in holoReplyMap) {
-            holoReply.end()
-        }
-        holoReplyMap.clear()
-        for (holoHitBox in holoBoxMap) {
-            holoHitBox.end()
-        }
-        holoBoxMap.clear()*/
     }
 
 }

@@ -16,7 +16,7 @@ object PacketFile {
         val packerModule = PacketModule(packetID, hook, viewer)
         val entityID = PacketManager.generate(packetID, "entity")
         packerModule.entityID = entityID
-        if (!hook.lowercase(Locale.getDefault()).startsWith("normal ")) {
+        if (!hook.lowercase().startsWith("normal ")) {
             packerModule.entityType = config.getString("entityType")?: "ARMOR_STAND"
             val mate = config.getStringList("mate")
             packerModule.mate = mate

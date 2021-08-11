@@ -1,8 +1,6 @@
 package cn.inrhor.questengine.utlis.time
 
-import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.quest.QuestState
-import cn.inrhor.questengine.common.quest.QuestTarget
 import org.bukkit.entity.Player
 import taboolib.common.platform.console
 import taboolib.module.lang.asLangText
@@ -11,46 +9,52 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Calendar
 
-object TimeUtil {
+fun Date.toStr(): String {
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+    return dateFormat.format(this)
+}
 
-    fun dateToStr(timeDate: Date): String {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        return dateFormat.format(timeDate)
+fun String.toDate(): Date {
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+    return dateFormat.parse(this)
+}
+
+/**
+ * 增加日期时间
+ */
+fun Date.add(timeUnit: Int, add: Int): Date {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+    calendar.add(timeUnit, add)
+    return calendar.time
+}
+
+/**
+ * 时间单位
+ *
+ * targetData.timeUnit -> timeUnit
+ */
+fun String.toTimeUnitLang(): String {
+    when (this.lowercase()) {
+        "s" -> return console().asLangText("QUEST-TIME_S")
+        "minute" -> return console().asLangText("QUEST-TIME_MINUTE")
     }
+    return ""
+}
 
-    fun strToDate(str: String): Date {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        return dateFormat.parse(str)
-    }
-
-    fun addDate(date: Date, timeUnit: Int, add: Int): Date {
-        val calendar = Calendar.getInstance()
-        calendar.time = date
-        calendar.add(timeUnit, add)
-        return calendar.time
-    }
-
-    /**
-     * 时间单位
-     */
-    fun timeUnitLang(targetData: TargetData): String {
-        when (targetData.timeUnit.lowercase(Locale.getDefault())) {
-            "s" -> return console().asLangText("QUEST-TIME_S")
-            "minute" -> return console().asLangText("QUEST-TIME_MINUTE")
-        }
+/**
+ * 获得时间标识符
+ */
+fun String.toTimeUnit(): String {
+    val str = this.lowercase()
+    if (str == "always") {
         return ""
     }
+    return str.split(" ")[0]
+}
 
-    /**
-     * 获得时间标识符
-     */
-    fun timeUnit(target: QuestTarget): String {
-        val str = target.time.lowercase(Locale.getDefault())
-        if (str == "always") {
-            return ""
-        }
-        return str.split(" ")[0]
-    }
+
+object TimeUtil {
 
     fun remainDate(player: Player, state: QuestState, future: Date): String {
         if (state == QuestState.FAILURE) return player.asLangText("QUEST-STATE_FAILURE")

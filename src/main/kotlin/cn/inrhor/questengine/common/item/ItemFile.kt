@@ -1,32 +1,18 @@
 package cn.inrhor.questengine.common.item
 
-import org.bukkit.configuration.ConfigurationSection
+import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
-import taboolib.library.xseries.XMaterial
-import taboolib.platform.util.buildItem
+import taboolib.library.configuration.ConfigurationSection
+import taboolib.library.xseries.setItemStack
 
-class ItemFile {
+class ItemFile(val itemID: String) {
 
-    var itemID: String? = null
-    var item: ItemStack? = null
+    var item = ItemStack(Material.STONE)
 
     fun init(config: ConfigurationSection) {
-        this.itemID = config.name
-        val type = config.getString("material")?: "stone"
-        val material = XMaterial.valueOf(type)
-        val displayName = config.getString("displayName")
-        val lore = config.getStringList("lore")
-        val customModelData = config.getInt("customModelData")
-        val itemBuilder = buildItem(material) {
-            name = displayName
-            this.lore.addAll(lore)
-            this.customModelData = customModelData
-            colored()
-            build()
-        }
-        this.item = itemBuilder
+        config.setItemStack(itemID, item)
 
-        ItemManager.register(this.itemID!!, this)
+        ItemManager.register(itemID, this)
     }
 
 }

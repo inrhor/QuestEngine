@@ -27,7 +27,7 @@ class ItemParser(private val itemContents: MutableList<String>) {
 //                if (HoloIDManager.existEntityID(holoID))
             HoloIDManager.addEntityID(holoID)
             HoloIDManager.addEntityID(itemID)
-            if (script.uppercase(Locale.getDefault()).startsWith("ITEMNORMAL")) {
+            if (script.uppercase().startsWith("ITEMNORMAL")) {
                 val dialogItem = eval(script) as ItemDialogPlay
                 dialogItem.holoID = holoID
                 dialogItem.itemID = itemID

@@ -37,7 +37,7 @@ object PacketManager {
         val packetModule = packetMap[packetID]?: return
         val viewers = mutableSetOf(sender)
         if (packetModule.viewer == "all") viewers.addAll(Bukkit.getOnlinePlayers())
-        val hook = packetModule.hook.lowercase(Locale.getDefault())
+        val hook = packetModule.hook.lowercase()
         val entityID = packetModule.entityID
         if (hook == "this ") {
             val id = hook[1].toString()
@@ -61,9 +61,9 @@ object PacketManager {
         spawnEntity(viewers, entityID, packetModule.entityType, location)
         packetModule.mate.forEach {
             val sp = it.split(" ")
-            val sign = sp[0].lowercase(Locale.getDefault())
+            val sign = sp[0].lowercase()
             if (sign == "equip") {
-                val slot = sp[1].uppercase(Locale.getDefault())
+                val slot = sp[1].uppercase()
                 val itemID = sp[2]
                 val item = ItemManager.get(itemID)
                 updateEquipmentItem(viewers, entityID, EquipmentSlot.valueOf(slot), item)
@@ -108,7 +108,7 @@ object PacketManager {
         val itemEntityID = mutableMapOf<String, Int>()
 
         mate.forEach {
-            if (it.lowercase(Locale.getDefault()).startsWith("equip ")) {
+            if (it.lowercase().startsWith("equip ")) {
                 val sp = it.split(" ")
                 val itemID = sp[2]
                 val entityID = generate(packetID, itemID)

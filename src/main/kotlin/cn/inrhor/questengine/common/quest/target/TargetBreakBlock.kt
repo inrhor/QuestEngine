@@ -43,7 +43,7 @@ object TargetBreakBlock: TargetExtend<BlockBreakEvent>() {
     fun targetTrigger(player: Player, name: String, questData: QuestData, blockMaterial: Material, target: QuestTarget, questInnerData: QuestInnerData): Boolean {
         val blockCondition = target.condition["block"]?: return false
         val sp = blockCondition.split(" ")
-        val material = sp[0].uppercase(Locale.getDefault())
+        val material = sp[0].uppercase()
         val amount = sp[1].toInt()
         if (material == blockMaterial.name) {
             val targetData = questInnerData.targetsData[name]?: return false

@@ -21,7 +21,7 @@ object PacketUtil {
 
     @Awake(LifeCycle.ACTIVE)
     fun setHook() {
-        val hook = QuestEngine.config.getString("hook.packet").uppercase(Locale.getDefault())
+        val hook = QuestEngine.config.getString("hook.packet").uppercase()
         if (hook == "PROTOCOLLIB") {
             if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
                 console().sendLang("LOADER-NOT_INSTALLED-PLIB", UtilString.pluginTag)
@@ -121,6 +121,16 @@ fun isInvisible(players: MutableSet<Player>, entityId: Int) {
     when (PacketUtil.hookPacket) {
         HookPacket.DEFAULT -> getPackets().updateEntityMetadata(players, entityId, getPackets().getIsInvisible())
         HookPacket.PROTOCOLLIB -> HookProtocolLib.isInvisible(players, entityId)
+    }
+}
+
+/**
+ * 观察者实体视角
+ */
+fun camera(player: Player, entityId: Int) {
+    when (PacketUtil.hookPacket) {
+        HookPacket.DEFAULT -> getPackets().camera(player, entityId)
+        HookPacket.PROTOCOLLIB -> HookProtocolLib.camera(player, entityId)
     }
 }
 

@@ -11,6 +11,7 @@ import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import taboolib.common.platform.console
+import taboolib.common.platform.submit
 import taboolib.module.lang.sendLang
 import java.util.*
 import kotlin.collections.HashMap
@@ -33,7 +34,7 @@ object DialogManager {
         val itemContents = mutableListOf<String>()
         val textContents = mutableListOf<String>()
         for (script in dialogModule.dialog) {
-            val iUc = script.uppercase(Locale.getDefault())
+            val iUc = script.uppercase()
             when {
                 iUc.startsWith("TEXT") -> {
                     textContents.add(script)
@@ -120,13 +121,27 @@ object DialogManager {
         val dialogModule = returnCanDialogHolo(players, npcID)?: return
         val holoDialog = HoloDialog(dialogModule, npcLoc, players)
         holoDialog.run()
+        spaceDialogHolo(players, dialogModule, holoDialog)
     }
 
     fun sendDialogHolo(player: Player, dialogID: String) {
         if (hasDialog(player, dialogID)) return
         if (exist(dialogID)) {
-            val holoDialog = HoloDialog(get(dialogID)!!, player.location, mutableSetOf(player))
+            val dialogModule = get(dialogID)?: return
+            val holoDialog = HoloDialog(dialogModule, player.location, mutableSetOf(player))
             holoDialog.run()
+            spaceDialogHolo(mutableSetOf(player), dialogModule, holoDialog)
+        }
+    }
+
+    fun spaceDialogHolo(players: MutableSet<Player>, dialogModule: DialogModule, holoDialog: HoloDialog) {
+        val space = dialogModule.spaceModule
+        if (!space.enable) return
+        submit(async = true, period = 5L) {
+            if (!evalBooleanSet(players, space.condition)) {
+                holoDialog.end()
+                return@submit
+            }
         }
     }
 }
