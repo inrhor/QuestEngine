@@ -49,24 +49,37 @@ object ControlManager {
         val uuid = player.uniqueId
         val pDate = DataStorage.getPlayerData(uuid)
         val cData = pDate.controlData
+
         val controlModule = getControlModule(controlID)?: return
         val log = controlModule.logModule
+
+        val sp = controlID.split("-")
+        val questID = sp[0]
+        val innerID = sp[1]
+
         if (priority == "highest") {
             val controlData = QuestControlData(player, cData,
                 controlID, ControlPriority.HIGHEST, controlModule.highestControl, line, waitTime)
             cData.addHighest(uuid, controlID, controlData)
             if (log.highestLogEnable) {
-                eval(player, log.highestReKether)
+                eval(player, log.returnHighestReKether(questID, innerID, priority))
             }
         }else {
             val controlData = QuestControlData(player, cData,
                 controlID, ControlPriority.NORMAL, controlModule.normalControl, line, waitTime)
             cData.addCommon(uuid, controlID, controlData)
             if (log.normalLogEnable) {
-                eval(player, log.normalReKether)
+                eval(player, log.returnNormalReKether(questID, innerID, priority))
             }
         }
     }
+
+    /*fun logTypeRun(logType: String, player: Player, controlEval: MutableList<String>) {
+        when (logType) {
+            "restart" ->
+            "momery" ->
+        }
+    }*/
 
     fun getControlModule(controlID: String): QuestControlModule? {
         val sp = controlID.split("-")
@@ -80,7 +93,7 @@ object ControlManager {
         return "$questID-$innerQuestID-$priority"
     }
 
-    fun needPush(controlID: String, priority: ControlPriority): Boolean {
+    fun isEnable(controlID: String, priority: ControlPriority): Boolean {
         val module = getControlModule(controlID)?: return false
         val log = module.logModule
         if (priority == ControlPriority.HIGHEST) {

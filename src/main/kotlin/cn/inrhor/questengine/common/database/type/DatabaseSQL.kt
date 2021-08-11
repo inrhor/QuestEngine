@@ -9,7 +9,6 @@ import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.quest.manager.ControlManager
 import cn.inrhor.questengine.common.quest.toState
 import cn.inrhor.questengine.common.quest.toStr
-import cn.inrhor.questengine.utlis.time.TimeUtil
 import cn.inrhor.questengine.utlis.time.toDate
 import com.google.gson.Gson
 import org.bukkit.entity.Player
@@ -247,7 +246,7 @@ class DatabaseSQL: Database() {
     }
 
     private fun pushControl(uuid: UUID, controlID: String, cData: QuestControlData) {
-        if (!ControlManager.needPush(controlID, cData.controlPriority)) return
+        if (!ControlManager.isEnable(controlID, cData.controlPriority)) return
         tableControl.workspace(source) {
             update {
                 and { "uuid" eq uuid.toString()

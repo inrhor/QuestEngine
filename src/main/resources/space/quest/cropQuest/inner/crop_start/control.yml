@@ -4,9 +4,9 @@ highest:
   log:
     # 是否启用
     enable: true
-    # restart[重启]
-    # memory[记忆]
-    # index int[索引]
+    # restart [重启]
+    # memory [记忆]
+    # index int [索引]
     type: index 10
   kether:
     - packet send packet_1 where location *world *100 *10 *12
@@ -29,7 +29,7 @@ normal:
     type: memory
     # 重新时的调用
     reKether:
-      - control this index 1
+      - control @this index 1
   kether:
     - title *"&a已接受新任务" subtitle *"&f采集农作物任务"
     - packet sendMath packet_3 where location *world *100 *3 *12 type circle 5 1

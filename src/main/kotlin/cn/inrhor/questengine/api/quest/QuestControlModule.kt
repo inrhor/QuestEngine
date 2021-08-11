@@ -20,6 +20,13 @@ fun ControlPriority.toStr(): String {
     }
 }
 
+fun String.toControlPriority(): ControlPriority {
+    return when (this) {
+        "highest" -> ControlPriority.HIGHEST
+        else -> ControlPriority.NORMAL
+    }
+}
+
 enum class ControlRunType {
     NORMAL, LOG
 }

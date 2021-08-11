@@ -6,12 +6,10 @@ import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage
-import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.quest.manager.ControlManager
 import cn.inrhor.questengine.common.quest.toState
 import cn.inrhor.questengine.common.quest.toStr
-import cn.inrhor.questengine.utlis.time.TimeUtil
 import cn.inrhor.questengine.utlis.time.toStr
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
@@ -176,7 +174,7 @@ class DatabaseLocal: Database() {
     }
 
     private fun pushControl(data: YamlConfiguration, controlID: String, cData: QuestControlData) {
-        if (!ControlManager.needPush(controlID, cData.controlPriority)) return
+        if (!ControlManager.isEnable(controlID, cData.controlPriority)) return
         val node = "control.$controlID."
         data.set(node+"priority", cData.controlPriority.toStr())
         data.set(node+"line", cData.line)

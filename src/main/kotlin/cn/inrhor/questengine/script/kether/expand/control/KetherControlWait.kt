@@ -9,19 +9,19 @@ import taboolib.module.kether.*
 import taboolib.module.kether.scriptParser
 import java.util.concurrent.CompletableFuture
 
-class KetherControl(val type: Type, var time: Int, val questID: String, val mainQuestID: String, val priority: String): ScriptAction<Void>() {
+class KetherControlWait(val type: Type, var time: Int, val questID: String, val innerQuestID: String, val priority: String): ScriptAction<Void>() {
 
     override fun run(frame: ScriptFrame): CompletableFuture<Void> {
         val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
         time = if (type == Type.MINUTE) time*1200 else time*20
-        WaitRun.run(player.cast(), time, questID, mainQuestID, priority)
+        WaitRun.run(player.cast(), time, questID, innerQuestID, priority)
         return CompletableFuture.completedFuture(null)
     }
 
     object WaitRun {
-        fun run(player: Player, time: Int, questID: String, mainQuestID: String, priority: String) {
+        fun run(player: Player, time: Int, questID: String, innerQuestID: String, priority: String) {
             val pData = DataStorage.getPlayerData(player)
-            val controlID = ControlManager.generateControlID(questID, mainQuestID, priority)
+            val controlID = ControlManager.generateControlID(questID, innerQuestID, priority)
             val cData = pData.controlData
             if (cData.highestControls.containsKey(controlID)) {
                 highest(controlID, cData, time)
@@ -46,7 +46,7 @@ class KetherControl(val type: Type, var time: Int, val questID: String, val main
     }
 
     /*
-     * wait type [time] to [questID] [mainQuestID] the [priority]
+     * wait type [time] to [questID] [innerQuestID] the [priority]
      */
     internal object Parser {
 
@@ -71,7 +71,7 @@ class KetherControl(val type: Type, var time: Int, val questID: String, val main
             val innerID = it.nextToken()
             it.mark()
             it.expect("the")
-            KetherControl(timeUnit, time, questID, innerID, it.nextToken())
+            KetherControlWait(timeUnit, time, questID, innerID, it.nextToken())
         }
     }
 
