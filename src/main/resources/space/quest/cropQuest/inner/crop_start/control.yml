@@ -32,6 +32,6 @@ normal:
       - control @this index 1
   kether:
     - title *"&a已接受新任务" subtitle *"&f采集农作物任务"
-    - packet sendMath packet_3 where location *world *100 *3 *12 type circle 5 1
+    - packet send packet_3 number 30 where location *world *100 *3 *12 type circle 5 1
     - wait minute 5 to this the normal
     - subtitle *"&c任务即将结束，请注意"

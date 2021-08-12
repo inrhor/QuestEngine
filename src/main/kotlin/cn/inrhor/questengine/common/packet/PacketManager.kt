@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.packet
 
 import cn.inrhor.questengine.api.*
+import cn.inrhor.questengine.api.packet.PacketModule
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.utlis.file.GetFile
 import cn.inrhor.questengine.utlis.UtilString
@@ -13,7 +14,6 @@ import taboolib.common.platform.console
 import taboolib.module.lang.sendLang
 import taboolib.platform.util.toBukkitLocation
 import java.io.File
-import java.util.*
 
 object PacketManager {
 
@@ -34,31 +34,34 @@ object PacketManager {
         packetMap.remove(packetID)
     }
 
+    fun sendThisPacket(packetID: String, entityID: Int, sender: Player, location: Location) {
+        val packetModule = packetMap[packetID]?: return
+        val viewers = mutableSetOf(sender)
+        if (packetModule.viewer == "all") viewers.addAll(Bukkit.getOnlinePlayers())
+        val hook = packetModule.hook.lowercase()
+        sendThisPacket(hook, entityID, packetModule, viewers, location)
+    }
+
     fun sendThisPacket(packetID: String, sender: Player, location: Location) {
         val packetModule = packetMap[packetID]?: return
         val viewers = mutableSetOf(sender)
         if (packetModule.viewer == "all") viewers.addAll(Bukkit.getOnlinePlayers())
         val hook = packetModule.hook.lowercase()
         val entityID = packetModule.entityID
+        sendThisPacket(hook, entityID, packetModule, viewers, location)
+    }
+
+    private fun sendThisPacket(hook: String, entityID: Int, packetModule: PacketModule, viewers: MutableSet<Player>, location: Location) {
         if (hook == "this ") {
             val id = hook[1].toString()
-            val getPacketModule = packetMap[id]?: return
+            val getPacketModule = packetMap[id] ?: return
             sendPacket(entityID, getPacketModule, viewers, location)
-        }else if (hook == "normal") {
+        } else if (hook == "normal") {
             sendPacket(entityID, packetModule, viewers, location)
         }
     }
 
     private fun sendPacket(entityID: Int, packetModule: PacketModule, viewers: MutableSet<Player>, location: Location) {
-//        getPackets().spawnEntity(viewers, entityID, packetModule.entityType, location)
-//        getPackets().spawnAS(viewers, entityID, location)
-        /*val itemEntityMap = packetModule.itemEntityID
-        if (itemEntityMap.isNotEmpty()) {
-            itemEntityMap.forEach { (itemID, entityID) ->
-                val item = ItemManager.get(itemID)
-                getPackets().spawnItem(viewers, entityID, location, item)
-            }
-        }*/
         spawnEntity(viewers, entityID, packetModule.entityType, location)
         packetModule.mate.forEach {
             val sp = it.split(" ")
@@ -88,6 +91,10 @@ object PacketManager {
      */
     fun sendPacket(packetID: String, sender: Player, location: taboolib.common.util.Location) {
         sendThisPacket(packetID, sender, location.toBukkitLocation())
+    }
+
+    fun sendPacket(entityID: Int, packetModule: PacketModule, sender: Player, location: taboolib.common.util.Location) {
+        sendPacket(entityID, packetModule, mutableSetOf(sender), location.toBukkitLocation())
     }
 
     /**

@@ -1,6 +1,8 @@
 package cn.inrhor.questengine.script.kether.expand.control
 
 import cn.inrhor.questengine.api.destroyEntity
+import cn.inrhor.questengine.common.database.data.DataPacketID
+import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.packet.PacketManager
 import cn.inrhor.questengine.common.packet.PacketSpawner
 import org.bukkit.Bukkit
@@ -8,17 +10,14 @@ import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyPlayer
 import taboolib.common.util.Location
 import openapi.kether.*
-import taboolib.module.effect.Arc
 import taboolib.module.effect.Circle
-import taboolib.module.effect.ParticleSpawner
 import taboolib.module.effect.Polygon
 import taboolib.module.kether.*
 import taboolib.module.kether.scriptParser
-import taboolib.platform.util.toBukkitLocation
 import java.util.concurrent.CompletableFuture
 
 enum class Type {
-    SEND, REMOVE, SENDMATH
+    SEND, REMOVE
 }
 
 /**
@@ -39,15 +38,16 @@ class KetherPacket {
     }
 
     /*
-     * packet sendMath id where location [location] type [value] [step]
+     * packet send id number [int] where location [location] type [value] [step]
      */
-    class SendMathPacket(val packetID: String, val location: ParsedAction<*>,
+    class SendMathPacket(val packetID: String, val number: Int, val location: ParsedAction<*>,
                          val type: String, val value: Double, val step: Double): ScriptAction<Void>() {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {
             return frame.newFrame(location).run<Location>().thenAccept {
                 val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
+                val dataPacketID = DataPacketID(player.cast(), packetID, number)
+                val spawner = PacketSpawner(player.cast(), dataPacketID)
                 val t = type.lowercase()
-                val spawner = PacketSpawner(player.cast(), packetID)
                 if (t == "circle") {
                     Circle(it, value, step, spawner).spawner.spawn(it)
                 }else if (t == "polygon") {
@@ -75,8 +75,16 @@ class KetherPacket {
 
         private fun removePacket(viewers: MutableSet<Player>, packetID: String) {
             val m = PacketManager.packetMap[packetID]?: return
-            val id = m.entityID
-            destroyEntity(viewers, id)
+            viewers.forEach {
+                val pData = DataStorage.getPlayerData(it)
+                if (pData.packetEntitys.containsKey(packetID)) {
+                    pData.packetEntitys[packetID]!!.forEach { id ->
+                        destroyEntity(it, id)
+                    }
+                }else {
+                    destroyEntity(viewers, m.entityID)
+                }
+            }
         }
     }
 
@@ -94,21 +102,20 @@ class KetherPacket {
                 it.reset()
                 Type.REMOVE
             }
-            it.mark()
-            when (action) {
-                Type.SEND -> {
-                    it.expect("where")
-                    SendPacket(
-                        it.nextToken(),
+            if (action == Type.SEND) {
+                it.mark()
+                val packetID = it.nextToken()
+                when (it.expects("where", "number")) {
+                    "where" -> SendPacket(
+                        packetID,
                         it.run {
                             it.mark()
                             it.expect("where")
                             it.next(ArgTypes.ACTION)
                         })
-                }
-                Type.SENDMATH -> {
-                    SendMathPacket(
-                        it.nextToken(),
+                    "number" -> SendMathPacket(
+                        packetID,
+                        it.nextInt(),
                         it.run {
                             it.mark()
                             it.expect("where")
@@ -121,19 +128,37 @@ class KetherPacket {
                         },
                         it.nextDouble(), it.nextDouble()
                     )
+                    else -> throw KetherError.CUSTOM.create("未知数据包语句")
                 }
-                else -> {
-                    RemovePacket(
-                        try {
-                            it.mark()
-                            it.expect("player")
-                            true
-                        } catch (ex: Exception) {
-                            false
-                        },
-                        it.nextToken())
-                }
+            }else {
+                RemovePacket(
+                    try {
+                        it.mark()
+                        it.expect("player")
+                        true
+                    } catch (ex: Exception) {
+                        false
+                    },
+                    it.nextToken())
             }
+            /*when (action) {
+                Type.SEND -> SendPacket(
+                    it.nextToken(),
+                    it.run {
+                        it.mark()
+                        it.expect("where")
+                        it.next(ArgTypes.ACTION)
+                    })
+                Type.REMOVE -> RemovePacket(
+                    try {
+                        it.mark()
+                        it.expect("player")
+                        true
+                    } catch (ex: Exception) {
+                        false
+                    },
+                    it.nextToken())
+            }*/
         }
     }
 

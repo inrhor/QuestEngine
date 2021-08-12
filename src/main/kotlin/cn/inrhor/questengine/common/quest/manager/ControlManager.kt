@@ -62,14 +62,14 @@ object ControlManager {
                 controlID, ControlPriority.HIGHEST, controlModule.highestControl, line, waitTime)
             cData.addHighest(uuid, controlID, controlData)
             if (log.highestLogEnable) {
-                eval(player, log.returnHighestReKether(questID, innerID, priority))
+//                eval(player, log.returnHighestReKether(questID, innerID, priority))
             }
         }else {
             val controlData = QuestControlData(player, cData,
                 controlID, ControlPriority.NORMAL, controlModule.normalControl, line, waitTime)
             cData.addCommon(uuid, controlID, controlData)
             if (log.normalLogEnable) {
-                eval(player, log.returnNormalReKether(questID, innerID, priority))
+//                eval(player, log.returnNormalReKether(questID, innerID, priority))
             }
         }
     }

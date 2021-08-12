@@ -1,9 +1,9 @@
 package cn.inrhor.questengine.common.packet
 
+import cn.inrhor.questengine.api.packet.PacketModule
 import org.bukkit.configuration.ConfigurationSection
 import taboolib.common.platform.console
 import taboolib.module.lang.sendLang
-import java.util.*
 
 object PacketFile {
 

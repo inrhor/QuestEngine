@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.packet
+package cn.inrhor.questengine.api.packet
 
 class PacketModule(val packedID: String, var hook: String, var viewer: String) {
 
@@ -7,7 +7,5 @@ class PacketModule(val packedID: String, var hook: String, var viewer: String) {
     lateinit var entityType: String
 
     lateinit var mate: MutableList<String>
-
-//    lateinit var itemEntityID: MutableMap<String, Int>
 
 }

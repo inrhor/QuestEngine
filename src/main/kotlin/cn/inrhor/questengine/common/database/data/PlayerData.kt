@@ -15,13 +15,15 @@ class PlayerData(
     var teamData: TeamOpen?,
     val dialogData: DialogData,
     var questDataList: MutableMap<UUID, QuestData>, /* QuestUUID 对应 QuestData */
-    var controlData: ControlData) {
+    var controlData: ControlData,
+    var packetEntitys: MutableMap<String, MutableList<Int>>) {
 
     constructor(uuid: UUID):
             this(uuid, null,
                 DialogData(mutableMapOf(), mutableMapOf(), mutableMapOf()),
                 mutableMapOf(),
-                ControlData(linkedMapOf(), mutableMapOf())
+                ControlData(linkedMapOf(), mutableMapOf()),
+                mutableMapOf()
             )
 
 }
