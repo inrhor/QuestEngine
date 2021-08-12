@@ -14,12 +14,14 @@ import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.script.kether.eval
-import cn.inrhor.questengine.utlis.time.TimeUtil
+import cn.inrhor.questengine.script.kether.evalBoolean
+import cn.inrhor.questengine.script.kether.evalBooleanSet
 import cn.inrhor.questengine.utlis.time.add
 import cn.inrhor.questengine.utlis.time.toDate
 import cn.inrhor.questengine.utlis.time.toTimeUnit
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import taboolib.common.platform.submit
 import taboolib.platform.util.sendLang
 import java.util.*
 
@@ -95,19 +97,79 @@ object QuestManager {
         val questModule = getQuestModule(questID) ?: return
         if (questModule.modeType == ModeType.COLLABORATION) {
             val tData = pData.teamData ?: return
-            tData.members.forEach {
+            if (!acceptCondition(tData.playerMembers(), questID)) return
+                tData.members.forEach {
                 val m = Bukkit.getPlayer(it) ?: return@forEach
                 acceptQuest(m, questModule)
             }
             return
         }
+        if (!acceptCondition(mutableSetOf(player), questID)) return
         acceptQuest(player, questModule)
     }
 
     private fun acceptQuest(player: Player, questModule: QuestModule) {
         val startInnerQuest = questModule.getStartInnerQuest()?: return
         val questUUID = UUID.randomUUID()
+        checkFailTime(player, questUUID, questModule)
         acceptInnerQuest(player, questUUID, questModule.questID, startInnerQuest, true)
+    }
+
+    /**
+     * 接受任务检查是否通过条件
+     */
+    fun acceptCondition(players: MutableSet<Player>, questID: String): Boolean {
+        val questModule = getQuestModule(questID) ?: return false
+        val check = questModule.acceptCheck
+        val c = questModule.acceptCondition
+        if (check <= 0) {
+            return evalBooleanSet(players, c)
+        }
+        val list = mutableListOf<String>()
+        var i = 0
+        c.forEach {
+            list.add(it)
+            i++
+            if (i >= check) return@forEach
+        }
+        return evalBooleanSet(players, list)
+    }
+
+    /**
+     * 接受任务后开始使用调度器检查条件，一旦不符合将失败
+     */
+    private fun checkFailTime(player: Player, questUUID: UUID, questModule: QuestModule) {
+        val list = mutableListOf<String>()
+        val check = questModule.failCheck
+        val c = questModule.failCondition
+        var i = 0
+        c.forEach {
+            list.add(it)
+            i++
+            if (i >= check) return@forEach
+        }
+        submit(async = true, period = 10L) {
+            if (!evalBoolean(player, list)) {
+                val modeType = questModule.modeType
+                endQuest(player, modeType, questUUID, QuestState.FAILURE, false)
+                runFailTime(player, modeType, questUUID, questModule.failKether)
+                return@submit
+            }
+            val qData = getQuestData(player, questUUID)?: return@submit
+            if (qData.state == QuestState.FAILURE) return@submit
+        }
+    }
+
+    private fun runFailTime(player: Player, modeType: ModeType, questUUID: UUID, failKether: MutableList<String>) {
+        val pData = DataStorage.getPlayerData(player)
+        val tData = pData.teamData
+        if (modeType == ModeType.COLLABORATION && tData != null) {
+            tData.playerMembers().forEach {
+                eval(it, failKether)
+            }
+            return
+        }
+        eval(player, failKether)
     }
 
     /**
@@ -151,7 +213,8 @@ object QuestManager {
         var state = QuestState.DOING
         if (isNewQuest && hasDoingInnerQuest(pData)) state = QuestState.IDLE
         val innerQuestID = innerQuestModule.innerQuestID
-        val innerModule = getInnerQuestModule(questID, innerQuestID) ?: return
+        val innerModule = getInnerQuestModule(questID, innerQuestID)?: return
+        val questModule = getQuestModule(questID)?: return
         val targetDataMap = mutableMapOf<String, TargetData>()
         innerModule.questTargetList.forEach { (name, target) ->
             val timeStr = target.time.lowercase()
@@ -171,7 +234,7 @@ object QuestManager {
                     "date" -> endTime = timeSpit[1].toDate()
                 }
             }
-            val targetData = TargetData(name, timeUnit, 0, target, nowDate, endTime)
+            val targetData = TargetData(name, timeUnit, 0, target, nowDate, endTime, questModule.modeType)
             targetData.runTime(player, questUUID)
             targetDataMap[name] = targetData
         }
@@ -224,18 +287,16 @@ object QuestManager {
      * 成功脚本在目标完成时运行
      *
      * @param state 设定任务成功与否
-     * @param runFailReward 如果失败，是否执行当前内部任务失败脚本
+     * @param innerFailReward 如果失败，是否执行当前内部任务失败脚本
      */
-    fun endQuest(player: Player, questData: QuestData, state: QuestState, runFailReward: Boolean) {
+    private fun endQuest(player: Player, questData: QuestData, state: QuestState, innerFailReward: Boolean) {
         questData.state = state
         val innerData = questData.questInnerData
         innerData.state = state
-        if (state == QuestState.FAILURE && runFailReward) {
+        if (state == QuestState.FAILURE && innerFailReward) {
             val innerQuestID = innerData.innerQuestID
             val failReward = getReward(questData.questID, innerQuestID, "", state) ?: return
-            failReward.forEach {
-                eval(player, it)
-            }
+            eval(player, failReward)
         }
     }
 
@@ -244,11 +305,22 @@ object QuestManager {
      * 成功脚本在目标完成时运行
      *
      * @param state 设定任务成功与否
-     * @param runFailReward 如果失败，是否执行当前内部任务失败脚本
+     * @param innerFailReward 如果失败，是否执行当前内部任务失败脚本
      */
-    fun endQuest(player: Player, questUUID: UUID, state: QuestState, runFailReward: Boolean) {
-        val questData = getQuestData(player, questUUID)?: return
-        endQuest(player, questData, state, runFailReward)
+    fun endQuest(player: Player, modeType: ModeType, questUUID: UUID, state: QuestState, innerFailReward: Boolean) {
+        val pData = DataStorage.getPlayerData(player)
+        val tData = pData.teamData
+        if (modeType == ModeType.COLLABORATION && tData != null) {
+            tData.playerMembers().forEach {
+                val qData = getQuestData(player, questUUID)
+                if (qData != null) {
+                    endQuest(it, qData, state, innerFailReward)
+                }
+            }
+            return
+        }
+        val qData = getQuestData(player, questUUID)?: return
+        endQuest(player, qData, state, innerFailReward)
     }
 
     /**
@@ -344,11 +416,12 @@ object QuestManager {
      *
      * 此为初始值，可许更新
      */
-    fun getInnerModuleTargetMap(innerModule: QuestInnerModule): MutableMap<String, TargetData> {
+    fun getInnerModuleTargetMap(modeType: ModeType, innerModule: QuestInnerModule): MutableMap<String, TargetData> {
         val targetDataMap = mutableMapOf<String, TargetData>()
         val date = Date()
         innerModule.questTargetList.forEach { (name, questTarget) ->
-            val targetData = TargetData(name, questTarget.time.toTimeUnit(), 0, questTarget, date, null)
+            val targetData = TargetData(name, questTarget.time.toTimeUnit(), 0,
+                questTarget, date, null, modeType)
             targetDataMap[name] = targetData
         }
         return targetDataMap

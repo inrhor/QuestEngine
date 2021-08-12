@@ -114,10 +114,11 @@ class DatabaseLocal: Database() {
     private fun getInnerQuestData(data: YamlConfiguration, node: String, player: Player, questUUID: UUID, questID: String, innerQuestID: String): QuestInnerData? {
         val rewardInner = returnRewardData(data, node)
         val innerState = (data.getString(node+"state")?: "IDLE").toState()
+        val questModule = QuestManager.getQuestModule(questID)?: return null
         val innerModule = QuestManager.getInnerQuestModule(questID, innerQuestID)?: return null
         val innerTargetDataMap = returnTargets(
             player, questUUID,
-            data, node, QuestManager.getInnerModuleTargetMap(innerModule))
+            data, node, QuestManager.getInnerModuleTargetMap(questModule.modeType, innerModule))
         return QuestInnerData(questID, innerQuestID, innerTargetDataMap, innerState, rewardInner)
     }
 

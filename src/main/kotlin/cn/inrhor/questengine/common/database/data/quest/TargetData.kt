@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.database.data.quest
 
+import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.common.quest.manager.QuestManager
@@ -11,7 +12,8 @@ import java.util.*
  * 任务目标存储
  */
 class TargetData(val name: String, var timeUnit: String,
-                 var schedule: Int, val questTarget: QuestTarget, var timeDate: Date, var endTimeDate: Date?) {
+                 var schedule: Int, val questTarget: QuestTarget, var timeDate: Date, var endTimeDate: Date?,
+                 var modeType: ModeType) {
 
     fun runTime(player: Player, questUUID: UUID) {
         if (timeUnit == "" || endTimeDate == null) return
@@ -25,7 +27,7 @@ class TargetData(val name: String, var timeUnit: String,
                 cancel(); return@submit
             }
             if (between <= 0) {
-                QuestManager.endQuest(player, questUUID, QuestState.FAILURE, true)
+                QuestManager.endQuest(player, modeType, questUUID, QuestState.FAILURE, true)
                 cancel(); return@submit
             }
         }

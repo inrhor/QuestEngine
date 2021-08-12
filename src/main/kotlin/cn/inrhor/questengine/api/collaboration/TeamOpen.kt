@@ -2,6 +2,8 @@ package cn.inrhor.questengine.api.collaboration
 
 import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.data.DataStorage
+import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import java.util.*
 
 abstract class TeamOpen {
@@ -34,5 +36,16 @@ abstract class TeamOpen {
     }
 
     open fun getAmount(): Int = members.size
+
+    open fun playerMembers(): MutableSet<Player> {
+        val p = mutableSetOf<Player>()
+        members.forEach {
+            val m = Bukkit.getPlayer(it)
+            if (m != null) {
+                p.add(m)
+            }
+        }
+        return p
+    }
 
 }

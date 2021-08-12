@@ -47,10 +47,13 @@ object QuestFile {
             modeAmount = setting.getInt("mode.amount")
             modeShareData = setting.getBoolean("mode.shareData")
         }
+        val acceptWay = setting.getString("accept.way")?: ""
+        val maxQuantity = setting.getInt("accept.maxQuantity")
         val acceptCheck = setting.getInt("accept.check")
         val acceptCondition = setting.getStringList("accept.condition")
         val failCheck = setting.getInt("failure.check")
         val failCondition = setting.getStringList("failure.condition")
+        val failKether = setting.getStringList("failure.kether")
 
         val innerQuestList = mutableListOf<QuestInnerModule>()
 
@@ -68,8 +71,9 @@ object QuestFile {
 
         val questModule = QuestModule(questID, name, startID,
             modeType, modeAmount, modeShareData,
+            acceptWay, maxQuantity,
             acceptCheck, acceptCondition,
-            failCheck, failCondition,
+            failCheck, failCondition, failKether,
             innerQuestList)
 
         QuestManager.register(questID, questModule)

@@ -15,6 +15,11 @@ mode:
   shareData: true
 # 关于接受任务设置
 accept:
+  # 若想自动领取任务，则填写 auto
+  way: ""
+  # 接受任务上限
+  # 除非数据里不存在此任务数据
+  maxQuantity: 1
   # 需要满足条件数
   #   -1 为全部条件
   #   2 为两个条件
@@ -30,3 +35,6 @@ failure:
   check: 1
   condition:
     - check player balance < *100
+  # 脚本 Kether
+  kether:
+    - title *"&c任务失败" subtitle *"&f采集农作物任务"

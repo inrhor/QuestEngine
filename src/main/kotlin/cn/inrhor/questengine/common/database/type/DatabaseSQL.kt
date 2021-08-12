@@ -174,9 +174,10 @@ class DatabaseSQL: Database() {
         }.map {
             getString("state") to getString("rewards")
         }.forEach {
+            val questModule = QuestManager.getQuestModule(questID)?: return@forEach
             val innerModule = QuestManager.getInnerQuestModule(questID, innerQuestID)?: return@forEach
             val targets = returnTargets(player, questUUID, innerQuestID,
-                QuestManager.getInnerModuleTargetMap(innerModule)
+                QuestManager.getInnerModuleTargetMap(questModule.modeType, innerModule)
             )
             val stateStr = it.first
             val state = stateStr.toState()

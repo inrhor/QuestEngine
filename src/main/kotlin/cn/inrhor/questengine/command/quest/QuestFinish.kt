@@ -31,11 +31,15 @@ object QuestFinish {
 
                     val questID = args[0]
 
-                    val questData = QuestManager.getQuestData(uuid, questID) ?: return@execute run {
+                    val questModule = QuestManager.getQuestModule(questID)
+                    val questData = QuestManager.getQuestData(uuid, questID)
+
+                    if (questModule == null || questData == null) {
                         sender.sendLang("QUEST-NULL_QUEST_DATA", questID)
+                        return@execute
                     }
 
-                    QuestManager.endQuest(player, questData, QuestState.FINISH, false)
+                    QuestManager.endQuest(player, questModule.modeType, questData.questUUID, QuestState.FINISH, false)
                 }
             }
         }

@@ -8,8 +8,11 @@ class QuestModule(val questID: String,
                   var modeType: ModeType,
                   var modeAmount: Int,
                   var modeShareData: Boolean,
+                  var acceptWay: String,
+                  var maxQuantity: Int,
                   var acceptCheck: Int, var acceptCondition: MutableList<String>,
                   var failCheck: Int, var failCondition: MutableList<String>,
+                  var failKether: MutableList<String>,
                   var innerQuestList: MutableList<QuestInnerModule>) {
 
     fun getStartInnerQuest(): QuestInnerModule? {
