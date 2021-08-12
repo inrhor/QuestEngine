@@ -57,29 +57,35 @@ object ControlManager {
         val questID = sp[0]
         val innerID = sp[1]
 
+        var runLine = line
+        var runWaitTime = waitTime
+
         if (priority == "highest") {
+            if (log.highestLogType.startsWith("index ")) {
+                val spt = log.highestLogType.split(" ")
+                runLine = spt[1].toInt()
+                runWaitTime = 0
+            }
             val controlData = QuestControlData(player, cData,
-                controlID, ControlPriority.HIGHEST, controlModule.highestControl, line, waitTime)
+                controlID, ControlPriority.HIGHEST, controlModule.highestControl, runLine, runWaitTime)
             cData.addHighest(uuid, controlID, controlData)
             if (log.highestLogEnable) {
-//                eval(player, log.returnHighestReKether(questID, innerID, priority))
+                eval(player, log.returnHighestReKether(questID, innerID, priority))
             }
         }else {
+            if (log.normalLogType.startsWith("index ")) {
+                val spt = log.normalLogType.split(" ")
+                runLine = spt[1].toInt()
+                runWaitTime = 0
+            }
             val controlData = QuestControlData(player, cData,
-                controlID, ControlPriority.NORMAL, controlModule.normalControl, line, waitTime)
+                controlID, ControlPriority.NORMAL, controlModule.normalControl, runLine, runWaitTime)
             cData.addCommon(uuid, controlID, controlData)
             if (log.normalLogEnable) {
-//                eval(player, log.returnNormalReKether(questID, innerID, priority))
+                eval(player, log.returnNormalReKether(questID, innerID, priority))
             }
         }
     }
-
-    /*fun logTypeRun(logType: String, player: Player, controlEval: MutableList<String>) {
-        when (logType) {
-            "restart" ->
-            "momery" ->
-        }
-    }*/
 
     fun getControlModule(controlID: String): QuestControlModule? {
         val sp = controlID.split("-")
@@ -94,14 +100,14 @@ object ControlManager {
     }
 
     fun isEnable(controlID: String, priority: ControlPriority): Boolean {
-        val module = getControlModule(controlID)?: return false
+        val module = getControlModule(controlID) ?: return false
         val log = module.logModule
         if (priority == ControlPriority.HIGHEST) {
-            if (log.highestLogEnable) return true
-        }else {
-            if (log.normalLogEnable) return true
+            if (!log.highestLogEnable || log.highestLogType == "restart") return false
+        } else {
+            if (!log.normalLogEnable || log.normalLogType == "restart") return false
         }
-        return false
+        return true
     }
 
 }

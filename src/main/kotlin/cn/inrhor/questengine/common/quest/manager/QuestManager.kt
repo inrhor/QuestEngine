@@ -16,6 +16,7 @@ import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.script.kether.eval
 import cn.inrhor.questengine.utlis.time.TimeUtil
 import cn.inrhor.questengine.utlis.time.add
+import cn.inrhor.questengine.utlis.time.toDate
 import cn.inrhor.questengine.utlis.time.toTimeUnit
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -160,13 +161,16 @@ object QuestManager {
             if (timeStr != "always") {
                 val timeSpit = timeStr.split(" ")
                 timeUnit = timeSpit[0]
-                val time = timeSpit[1].toInt()
                 when (timeUnit) {
-                    "minute" -> endTime = nowDate.add(Calendar.MINUTE, time)
-                    "s" -> endTime = nowDate.add(Calendar.SECOND, time)
+                    "minute" -> {
+                        endTime = nowDate.add(Calendar.MINUTE, timeSpit[1].toInt())
+                    }
+                    "s" -> {
+                        endTime = nowDate.add(Calendar.SECOND, timeSpit[1].toInt())
+                    }
+                    "date" -> endTime = timeSpit[1].toDate()
                 }
             }
-
             val targetData = TargetData(name, timeUnit, 0, target, nowDate, endTime)
             targetData.runTime(player, questUUID)
             targetDataMap[name] = targetData
