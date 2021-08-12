@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.common.dialog.optional.holo
 
-import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.destroyEntity
 import cn.inrhor.questengine.api.dialog.ReplyModule
 import cn.inrhor.questengine.api.hologram.HoloDisplay
@@ -10,7 +9,8 @@ import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.utlis.location.ReferHoloHitBox
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import org.bukkit.scheduler.BukkitRunnable
+import taboolib.common.platform.PlatformExecutor
+import taboolib.common.platform.submit
 
 class HoloHitBox(val replyModule: ReplyModule,
                  val boxLoc: Location,
@@ -18,7 +18,7 @@ class HoloHitBox(val replyModule: ReplyModule,
                  var viewers: MutableSet<Player>) {
 
     private val packetIDs = mutableListOf<Int>()
-    private var task: BukkitRunnable? = null
+    private var task: PlatformExecutor.PlatformTask? = null
 
     fun end() {
         task?.cancel()
@@ -67,29 +67,26 @@ class HoloHitBox(val replyModule: ReplyModule,
         val item = ItemManager.get(referHoloHitBox.itemID)
         packetIDs.add(holoID)
         packetIDs.add(itemID)
-        task = object : BukkitRunnable() {
-            override fun run() {
-                if (viewers.isEmpty())  {
-                    cancel(); return
+        task = submit(async = true, period = 5L) {
+            if (viewers.isEmpty())  {
+                cancel(); return@submit
+            }
+            if (isBox()) {
+                if (!spawnHolo) {
+                    spawnAS(viewers, holoID, boxLoc)
+                    HoloDisplay.initItemAS(holoID, viewers)
+                    HoloDisplay.updateItem(holoID, itemID, viewers, boxLoc, item)
+                    spawnHolo = true
+                    displayItem = true
+                }else if (!displayItem) {
+                    HoloDisplay.updateItem(holoID, itemID, viewers, boxLoc, item)
+                    displayItem = true
                 }
-                if (isBox()) {
-                    if (!spawnHolo) {
-                        spawnAS(viewers, holoID, boxLoc)
-                        HoloDisplay.initItemAS(holoID, viewers)
-                        HoloDisplay.updateItem(holoID, itemID, viewers, boxLoc, item)
-                        spawnHolo = true
-                        displayItem = true
-                    }else if (!displayItem) {
-                        HoloDisplay.updateItem(holoID, itemID, viewers, boxLoc, item)
-                        displayItem = true
-                    }
-                }else {
-                    displayItem = false
-                    destroyEntity(viewers, itemID)
-                }
+            }else {
+                displayItem = false
+                destroyEntity(viewers, itemID)
             }
         }
-        (task as BukkitRunnable).runTaskTimer(QuestEngine.plugin, 0, 5L)
     }
 
 }
