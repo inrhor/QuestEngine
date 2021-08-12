@@ -12,7 +12,7 @@ object TeamKick {
         dynamic {
             suggestion<Player> { sender, _ ->
                 TeamManager.getTeamData(sender)?.members?.map {
-                    (Bukkit.getPlayer(it))?.name.toString() }
+                    Bukkit.getPlayer(it)?.name.toString() }
             }
             execute<Player> { sender, context, argument ->
                 val args = argument.split(" ")

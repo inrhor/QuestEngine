@@ -19,7 +19,7 @@ object TeamManager {
         return hasTeam(pData)
     }
 
-    fun hasTeam(pData: PlayerData): Boolean = (pData.teamData != null)
+    fun hasTeam(pData: PlayerData): Boolean = pData.teamData != null
 
     fun isLeader(pUUID: UUID, teamName: String): Boolean {
         val teamData = getTeamData(teamName)?: return false
@@ -27,7 +27,7 @@ object TeamManager {
     }
 
     fun isLeader(pUUID: UUID, teamData: TeamOpen): Boolean {
-        return (teamData.leader == pUUID)
+        return teamData.leader == pUUID
     }
 
     fun getTeamData(teamName: String): TeamOpen? = teamsMap[teamName]

@@ -32,7 +32,7 @@ class ItemCheck(private val matchers: MutableMap<String, String>) {
                 "displayname" -> if (meta == null || data != meta.displayName) return false
                 "lorecontains" -> if (meta == null || !loreContains(meta, data)) return false
                 "custonmodeldata" -> if (meta == null || meta.customModelData != data.toInt()) return false
-                "amount" -> if (itemStack.amount < data.toInt()) return false else (if (take) amount = data.toInt())
+                "amount" -> if (itemStack.amount < data.toInt()) return false else if (take) amount = data.toInt()
             }
         }
         itemStack.amount = itemStack.amount-amount

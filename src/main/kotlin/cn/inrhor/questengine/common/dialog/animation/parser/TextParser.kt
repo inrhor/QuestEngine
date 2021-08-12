@@ -37,10 +37,6 @@ class TextParser(private val textContents: MutableList<String>) {
                 val textAnimation = TextAnimation(dialogID, line, script, pContent, dialogTextList)
                 textAnimation.init()
 
-            }else {
-
-
-
             }
         }
     }

@@ -35,7 +35,7 @@ class TextAnimation(val dialogID: String, val line: Int, val script: String, val
 
                 var end = 2; var speed = 1
                 val ts = texts.size - 1
-                for (index in 0..(abTextLength+abTextLength*abSpeed)) {
+                for (index in 0..abTextLength+abTextLength*abSpeed) {
                     if (!UtilAnimation().isColor(abText.substring(0, end))) {
                         val getText = abText.substring(0, end)
 

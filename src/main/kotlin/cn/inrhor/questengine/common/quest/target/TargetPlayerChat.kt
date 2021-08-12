@@ -26,12 +26,12 @@ object TargetPlayerChat: TargetExtend<AsyncPlayerChatEvent>() {
             val innerTarget = QuestManager.getDoingTarget(player, name)?: return@tasker player
             val message = object : ConditionType("message") {
                 override fun check(): Boolean {
-                    return (targetTrigger(player, message, innerTarget))
+                    return targetTrigger(player, message, innerTarget)
                 }
             }
             val number = object: ConditionType("number") {
                 override fun check(): Boolean {
-                    return (Schedule.isNumber(player, name, "number", questData, innerData, innerTarget))
+                    return Schedule.isNumber(player, name, "number", questData, innerData, innerTarget)
                 }
             }
             TargetManager.set(name, "message", message)

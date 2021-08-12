@@ -24,12 +24,12 @@ object TargetNpcRightItem: TargetExtend<NPCRightClickEvent>() {
                 // 建议注意顺序判断
                 val id = object : ConditionType(mutableListOf("id")) {
                     override fun check(): Boolean {
-                        return (ClickNPC.idTrigger(innerTarget, npc.id.toString()))
+                        return ClickNPC.idTrigger(innerTarget, npc.id.toString())
                     }
                 }
                 val item = object : ConditionType("item") {
                     override fun check(): Boolean {
-                        return (ClickNPC.itemTrigger(player, questData, innerTarget, innerData))
+                        return ClickNPC.itemTrigger(player, questData, innerTarget, innerData)
                     }
                 }
                 // 刷新

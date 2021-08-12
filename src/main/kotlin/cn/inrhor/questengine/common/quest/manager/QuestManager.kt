@@ -287,7 +287,7 @@ object QuestManager {
      */
     fun isStateInnerQuest(player: Player, questUUID: UUID, state: QuestState): Boolean {
         val qData = getQuestData(player, questUUID)?: return false
-        return (qData.questInnerData.state == state)
+        return qData.questInnerData.state == state
     }
 
     /**

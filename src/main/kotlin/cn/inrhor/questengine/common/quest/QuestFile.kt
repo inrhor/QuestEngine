@@ -13,7 +13,6 @@ import taboolib.common.platform.console
 import taboolib.library.configuration.FileConfiguration
 import taboolib.module.lang.sendLang
 import java.io.File
-import javax.swing.text.html.parser.ContentModel
 
 object QuestFile {
 

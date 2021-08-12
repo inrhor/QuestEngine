@@ -13,7 +13,7 @@ class DataPacketID(
 
     private var hasAmount = 0
 
-    fun canGet(): Boolean = (number > hasAmount)
+    fun canGet(): Boolean = number > hasAmount
 
     init {
         for (n in 0..number) {

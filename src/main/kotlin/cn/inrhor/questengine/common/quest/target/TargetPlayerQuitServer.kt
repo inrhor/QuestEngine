@@ -24,7 +24,7 @@ object TargetPlayerQuitServer: TargetExtend<PlayerQuitEvent>() {
             val innerTarget = QuestManager.getDoingTarget(player, name)?: return@tasker player
             val number = object: ConditionType("number") {
                 override fun check(): Boolean {
-                    return (Schedule.isNumber(player, name, "number", questData, innerData, innerTarget))
+                    return Schedule.isNumber(player, name, "number", questData, innerData, innerTarget)
                 }
             }
             TargetManager.set(name, "number", number)

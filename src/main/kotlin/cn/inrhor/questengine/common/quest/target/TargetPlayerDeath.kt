@@ -25,12 +25,12 @@ object TargetPlayerDeath: TargetExtend<PlayerDeathEvent>() {
             val innerTarget = QuestManager.getDoingTarget(player, name)?: return@tasker player
             val cause = object: ConditionType(mutableListOf("cause")) {
                 override fun check(): Boolean {
-                    return (isCause(innerTarget, player.lastDamageCause!!.cause))
+                    return isCause(innerTarget, player.lastDamageCause!!.cause)
                 }
             }
             val number = object: ConditionType("number") {
                 override fun check(): Boolean {
-                    return (Schedule.isNumber(player, name, "number", questData, innerData, innerTarget))
+                    return Schedule.isNumber(player, name, "number", questData, innerData, innerTarget)
                 }
             }
             // 刷新

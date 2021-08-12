@@ -35,7 +35,7 @@ object TargetBreakBlock: TargetExtend<BlockBreakEvent>() {
                 if (!QuestManager.matchQuestMode(questData)) return false
                 val innerData = questData.questInnerData
                 val innerTarget = QuestManager.getDoingTarget(player, name) ?: return false
-                return (targetTrigger(player, name, questData, blockMaterial, innerTarget, innerData))
+                return targetTrigger(player, name, questData, blockMaterial, innerTarget, innerData)
             }
         }
     }

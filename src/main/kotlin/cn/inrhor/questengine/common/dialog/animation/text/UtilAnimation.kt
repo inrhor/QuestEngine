@@ -20,10 +20,7 @@ class UtilAnimation {
     fun checkColor(src: String): Boolean {
         val pattern = Pattern.compile("&\\d|§\\d|&[a-zA-Z]|§[a-zA-Z]")
         val matcher = pattern.matcher(src)
-        while (matcher.find()) {
-            return true
-        }
-        return false
+        return matcher.find()
     }
 
 }

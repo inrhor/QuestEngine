@@ -19,8 +19,8 @@ class KetherStrMatch(val type: Type, val target: ParsedAction<*>, val source: Pa
 
     fun check(target: Any?, pMsg: Any?): Boolean {
         return when (type) {
-            Type.ALL -> (target.toString() == pMsg.toString())
-            Type.CONTAINS -> (pMsg.toString().contains(target.toString()))
+            Type.ALL -> target.toString() == pMsg.toString()
+            Type.CONTAINS -> pMsg.toString().contains(target.toString())
         }
     }
 

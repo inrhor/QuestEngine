@@ -40,7 +40,7 @@ object TargetKillEntity: TargetExtend<EntityDeathEvent>() {
             }
             val number = object: ConditionType("number") {
                 override fun check(): Boolean {
-                    return (Schedule.isNumber(player, name, "number", questData, innerData, innerTarget))
+                    return Schedule.isNumber(player, name, "number", questData, innerData, innerTarget)
                 }
             }
             TargetManager.set(name, "entity", typeEntity)
@@ -57,8 +57,8 @@ object TargetKillEntity: TargetExtend<EntityDeathEvent>() {
     fun checkEntity(target: QuestTarget, type: EntityType): Boolean {
         val condition = target.condition["entity"]?: return false
         return when (condition.uppercase()) {
-            "PLAYER" -> (type == EntityType.PLAYER)
-            else -> (type != EntityType.PLAYER)
+            "PLAYER" -> type == EntityType.PLAYER
+            else -> type != EntityType.PLAYER
         }
     }
 

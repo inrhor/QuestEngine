@@ -23,12 +23,12 @@ object TargetAdyRightItem/*: TargetExtend<AdyeshachEntityInteractEvent>()*/ {
                 val innerTarget = QuestManager.getDoingTarget(player, TargetNpcRightItem.name) ?: return@tasker player
                 val id = object : ConditionType(mutableListOf("id")) {
                     override fun check(): Boolean {
-                        return (ClickNPC.idTrigger(innerTarget, entity.id))
+                        return ClickNPC.idTrigger(innerTarget, entity.id)
                     }
                 }
                 val item = object : ConditionType("item") {
                     override fun check(): Boolean {
-                        return (ClickNPC.itemTrigger(player, questData, innerTarget, innerData))
+                        return ClickNPC.itemTrigger(player, questData, innerTarget, innerData)
                     }
                 }
                 TargetManager.set(TargetNpcRightItem.name, "id", id)
