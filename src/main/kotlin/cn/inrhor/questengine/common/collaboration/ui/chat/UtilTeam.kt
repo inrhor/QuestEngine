@@ -3,8 +3,8 @@ package cn.inrhor.questengine.common.collaboration.ui.chat
 import cn.inrhor.questengine.api.collaboration.TeamOpen
 import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.Bukkit
-import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
+import taboolib.library.configuration.YamlConfiguration
 
 object UtilTeam {
 

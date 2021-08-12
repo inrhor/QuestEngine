@@ -11,8 +11,8 @@ import cn.inrhor.questengine.common.quest.manager.ControlManager
 import cn.inrhor.questengine.common.quest.toState
 import cn.inrhor.questengine.common.quest.toStr
 import cn.inrhor.questengine.utlis.time.toStr
-import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
+import taboolib.library.configuration.YamlConfiguration
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -74,7 +74,7 @@ class DatabaseLocal: Database() {
         val data = getLocal(uuid)
         val questDataMap = mutableMapOf<UUID, QuestData>()
         if (data.contains("quest")) {
-            data.getConfigurationSection("quest")!!.getKeys(false).forEach {
+            data.getConfigurationSection("quest").getKeys(false).forEach {
                 val node = "quest.$it."
                 val questUUid = UUID.fromString(it)
                 val questID = data.getString(node+"questID")?: return@forEach
@@ -93,7 +93,7 @@ class DatabaseLocal: Database() {
             }
         }
         if (data.contains("control")) {
-            data.getConfigurationSection("control")!!.getKeys(false).forEach {
+            data.getConfigurationSection("control").getKeys(false).forEach {
                 val node = "control.$it."
                 val priority = data.getString("priority")?: "normal"
                 val line = data.getInt(node+"line")
@@ -124,7 +124,7 @@ class DatabaseLocal: Database() {
 
     private fun returnTargets(player: Player, questUUID: UUID, data: YamlConfiguration, node: String, targetDataMap: MutableMap<String, TargetData>): MutableMap<String, TargetData> {
         if (!data.contains(node+"targets")) return targetDataMap
-        for (name in data.getConfigurationSection(node+"targets")!!.getKeys(false)) {
+        for (name in data.getConfigurationSection(node+"targets").getKeys(false)) {
             val nodeTarget = node+"targets.$name."
             val targetData = targetDataMap[name]?: continue
             targetData.schedule  = data.getInt(nodeTarget+"schedule")
@@ -142,7 +142,7 @@ class DatabaseLocal: Database() {
     private fun returnRewardData(data: YamlConfiguration, node: String): MutableMap<String, Boolean> {
         val rewardMap = mutableMapOf<String, Boolean>()
         if (!data.contains(node+"rewards")) return rewardMap
-        for (rewardID in data.getConfigurationSection(node+"rewards")!!.getKeys(false)) {
+        for (rewardID in data.getConfigurationSection(node+"rewards").getKeys(false)) {
             val nodeReward = node+"rewards.$rewardID."
             rewardMap[rewardID] = data.getBoolean(nodeReward+"has")
         }

@@ -8,9 +8,9 @@ import cn.inrhor.questengine.api.quest.QuestModule
 import cn.inrhor.questengine.common.quest.manager.ControlManager
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.utlis.file.GetFile
-import org.bukkit.configuration.file.FileConfiguration
-import org.bukkit.configuration.file.YamlConfiguration
+import taboolib.library.configuration.YamlConfiguration
 import taboolib.common.platform.console
+import taboolib.library.configuration.FileConfiguration
 import taboolib.module.lang.sendLang
 import java.io.File
 import javax.swing.text.html.parser.ContentModel
@@ -113,7 +113,7 @@ object QuestFile {
         var failReward = mutableListOf<String>()
         if (file.exists()) {
             val reward = yaml(file)
-            for (rewardID in reward.getConfigurationSection("finishReward")!!.getKeys(false)) {
+            for (rewardID in reward.getConfigurationSection("finishReward").getKeys(false)) {
                 finishReward[rewardID] = reward.getStringList("finishReward.$rewardID")
             }
             failReward = reward.getStringList("failReward")

@@ -2,7 +2,7 @@ package cn.inrhor.questengine.utlis.file
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.utlis.UtilString
-import org.bukkit.configuration.file.YamlConfiguration
+import taboolib.library.configuration.YamlConfiguration
 import taboolib.common.platform.console
 import taboolib.module.lang.sendLang
 import java.io.File

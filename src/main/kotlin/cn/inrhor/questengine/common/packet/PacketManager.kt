@@ -7,7 +7,7 @@ import cn.inrhor.questengine.utlis.file.GetFile
 import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import org.bukkit.configuration.file.YamlConfiguration
+import taboolib.library.configuration.YamlConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
 import taboolib.common.platform.console
@@ -117,7 +117,7 @@ object PacketManager {
             return
         }
         for (packetID in yaml.getKeys(false)) {
-            PacketFile.init(yaml.getConfigurationSection(packetID)!!)
+            PacketFile.init(yaml.getConfigurationSection(packetID))
         }
     }
 

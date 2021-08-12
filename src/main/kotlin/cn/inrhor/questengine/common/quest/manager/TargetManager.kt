@@ -6,8 +6,7 @@ import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestTarget
 import org.bukkit.Bukkit
-import org.bukkit.configuration.file.FileConfiguration
-import java.util.*
+import taboolib.library.configuration.FileConfiguration
 
 object TargetManager {
 
@@ -30,7 +29,7 @@ object TargetManager {
 
     fun getTargetList(yaml: FileConfiguration): MutableMap<String, QuestTarget> {
         val questTargetList = mutableMapOf<String, QuestTarget>()
-        for (i in yaml.getConfigurationSection("target")!!.getKeys(false)) {
+        for (i in yaml.getConfigurationSection("target").getKeys(false)) {
             val s = "target.$i."
             val name = yaml.getString(s + "name") ?: "null"
             val time = yaml.getString(s + "time") ?: "always"
@@ -41,7 +40,7 @@ object TargetManager {
             targetMap.forEach { (eventNameMeta, conditionType) ->
                 val eventName = eventNameMeta.split("-")[0]
                 if (eventName == name) {
-                    for (node in yaml.getConfigurationSection("target.$i")!!.getKeys(true)) {
+                    for (node in yaml.getConfigurationSection("target.$i").getKeys(true)) {
                         val u = "target.$i.$node"
                         if (conditionType.content != "") {
                             if (conditionType.content == node) {
