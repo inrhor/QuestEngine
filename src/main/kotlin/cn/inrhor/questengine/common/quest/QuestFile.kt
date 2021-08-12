@@ -77,7 +77,6 @@ object QuestFile {
             innerQuestList)
 
         QuestManager.register(questID, questModule)
-
     }
 
     private fun innerQuest(innerFile: File, questID: String): QuestInnerModule {

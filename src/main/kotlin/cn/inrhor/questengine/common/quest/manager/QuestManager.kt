@@ -33,10 +33,18 @@ object QuestManager {
     var questMap = mutableMapOf<String, QuestModule>()
 
     /**
+     * 自动接受的任务模块内容
+     */
+    var autoQuestMap = mutableMapOf<String, QuestModule>()
+
+    /**
      * 注册任务模块内容
      */
     fun register(questID: String, questModule: QuestModule) {
         questMap[questID] = questModule
+        if (questModule.acceptWay.lowercase() == "auto") {
+            autoQuestMap[questID] = questModule
+        }
     }
 
     /**
