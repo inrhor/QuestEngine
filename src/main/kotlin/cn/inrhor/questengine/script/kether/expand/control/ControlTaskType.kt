@@ -1,7 +1,5 @@
 package cn.inrhor.questengine.script.kether.expand.control
 
-import java.util.*
-
 object ControlTaskType {
     fun returnType(str: String): ControlType {
         val i = str.lowercase().split(" ")

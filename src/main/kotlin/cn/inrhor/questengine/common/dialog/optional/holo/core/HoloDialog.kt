@@ -1,9 +1,8 @@
 package cn.inrhor.questengine.common.dialog.optional.holo.core
 
-import cn.inrhor.questengine.api.destroyEntity
+import cn.inrhor.questengine.api.packet.*
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.api.hologram.HoloDisplay
-import cn.inrhor.questengine.api.spawnAS
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.dialog.optional.holo.HoloAnimationItem
 import cn.inrhor.questengine.common.dialog.optional.holo.HoloAnimationText

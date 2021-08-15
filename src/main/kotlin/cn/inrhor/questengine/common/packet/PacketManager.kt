@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.common.packet
 
-import cn.inrhor.questengine.api.*
-import cn.inrhor.questengine.api.packet.PacketModule
+import cn.inrhor.questengine.api.packet.*
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.utlis.file.GetFile
 import cn.inrhor.questengine.utlis.UtilString
@@ -10,7 +9,7 @@ import org.bukkit.Location
 import taboolib.library.configuration.YamlConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
-import taboolib.common.platform.console
+import taboolib.common.platform.function.*
 import taboolib.module.lang.sendLang
 import taboolib.platform.util.toBukkitLocation
 import java.io.File

@@ -6,7 +6,7 @@ import cn.inrhor.questengine.script.kether.eval
 import cn.inrhor.questengine.script.kether.expand.control.ControlTaskType
 import cn.inrhor.questengine.script.kether.expand.control.ControlType
 import org.bukkit.entity.Player
-import taboolib.common.platform.submit
+import taboolib.common.platform.function.*
 
 /**
  * 控制模块数据
@@ -62,7 +62,8 @@ class QuestControlData(
         val sp = controlID.split("-")
         val qID = sp[0]
         val nID = sp[1]
-        eval(player, content.replace("@quest", "$qID $nID"))
+        val script = content.replace("@quest", "$qID $nID")
+        eval(player, script)
         runScript()
         waitTime = 0
     }

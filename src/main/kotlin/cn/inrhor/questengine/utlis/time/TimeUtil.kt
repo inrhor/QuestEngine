@@ -2,7 +2,7 @@ package cn.inrhor.questengine.utlis.time
 
 import cn.inrhor.questengine.common.quest.QuestState
 import org.bukkit.entity.Player
-import taboolib.common.platform.console
+import taboolib.common.platform.function.*
 import taboolib.module.lang.asLangText
 import taboolib.platform.util.asLangText
 import java.text.SimpleDateFormat

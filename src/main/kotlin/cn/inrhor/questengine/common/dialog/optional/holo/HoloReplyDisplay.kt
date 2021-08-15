@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.dialog.optional.holo
 
 import cn.inrhor.questengine.api.hologram.HoloDisplay
-import cn.inrhor.questengine.api.spawnAS
+import cn.inrhor.questengine.api.packet.*
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack

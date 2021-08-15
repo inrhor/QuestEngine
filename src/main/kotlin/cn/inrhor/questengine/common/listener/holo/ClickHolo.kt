@@ -4,7 +4,7 @@ import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.script.kether.eval
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
-import taboolib.common.platform.SubscribeEvent
+import taboolib.common.platform.event.*
 
 object ClickHolo {
 

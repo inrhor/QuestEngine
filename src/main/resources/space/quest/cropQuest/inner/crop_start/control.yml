@@ -9,17 +9,17 @@ highest:
     # index int [索引]
     type: index 10
   kether:
-    - packet send packet_1 where location *world *100 *10 *12
+    - packet send packet_1 where location *world *96 *75 *-206
     - enterPacket to packet_1
-    - wait s 5 to @quest the highest
+    - waitTime s 5 to @quest the highest
     - subtitle *"&f这是田园农庄场"
-    - wait s 3 to @quest the highest
+    - waitTime s 3 to @quest the highest
     - title *"&6农民" subtitle *"&f现在赋予你一个职位"
-    - wait s 3 to @quest the highest
+    - waitTime s 3 to @quest the highest
     - subtitle *"&f请你采集这一片农作物"
-    - wait s 3 to @quest the highest
+    - waitTime s 3 to @quest the highest
     - subtitle *"&a完成后我将会给予你丰厚奖励"
-    - tpto loaction *world *100 *3 *12
+    - player loaction tp location *world *96 *73 *-206
     - player gamemode to *survival
 # 普通控制
 normal:
@@ -32,6 +32,6 @@ normal:
       - control @this index 1
   kether:
     - title *"&a已接受新任务" subtitle *"&f采集农作物任务"
-    - packet send packet_3 number 30 where location *world *100 *3 *12 type circle 5 1
-    - wait minute 5 to this the normal
+    - packet send packet_3 number 30 where location *world *96 *72 *-206 type circle 5 1
+    - waitTime minute 5 to @quest the normal
     - subtitle *"&c任务即将结束，请注意"

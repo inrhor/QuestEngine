@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.command
 
 import cn.inrhor.questengine.command.innerQuest.*
-import taboolib.common.platform.CommandBody
+import taboolib.common.platform.command.*
 
 internal object QuestInnerCommand {
 

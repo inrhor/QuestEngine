@@ -6,7 +6,7 @@ import cn.inrhor.questengine.common.quest.ui.book.BookQuestInfo
 import cn.inrhor.questengine.common.quest.ui.chat.QuestChat
 import org.bukkit.Bukkit
 import taboolib.common.platform.ProxyCommandSender
-import taboolib.common.platform.subCommand
+import taboolib.common.platform.command.*
 import taboolib.module.lang.sendLang
 
 object QuestInfo {

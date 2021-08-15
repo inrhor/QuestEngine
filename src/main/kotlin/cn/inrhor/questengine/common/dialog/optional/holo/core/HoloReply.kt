@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.dialog.optional.holo.core
 
-import cn.inrhor.questengine.api.destroyEntity
+import cn.inrhor.questengine.api.packet.*
 import cn.inrhor.questengine.api.dialog.ReplyModule
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.dialog.optional.holo.HoloHitBox
@@ -10,7 +10,7 @@ import cn.inrhor.questengine.script.kether.evalReferLoc
 import cn.inrhor.questengine.utlis.location.LocationTool
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import taboolib.common.platform.submit
+import taboolib.common.platform.function.*
 import java.util.*
 
 /**

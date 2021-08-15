@@ -3,7 +3,7 @@ package cn.inrhor.questengine.utlis.file
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.utlis.UtilString
 import taboolib.library.configuration.YamlConfiguration
-import taboolib.common.platform.console
+import taboolib.common.platform.function.*
 import taboolib.module.lang.sendLang
 import java.io.File
 

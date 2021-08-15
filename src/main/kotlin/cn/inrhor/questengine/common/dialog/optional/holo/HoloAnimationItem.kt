@@ -5,7 +5,7 @@ import cn.inrhor.questengine.common.dialog.animation.item.ItemDialogPlay
 import cn.inrhor.questengine.common.dialog.optional.holo.core.HoloDialog
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import taboolib.common.platform.submit
+import taboolib.common.platform.function.*
 
 class HoloAnimationItem(val holoDialog: HoloDialog,
                         var viewers: MutableSet<Player>,

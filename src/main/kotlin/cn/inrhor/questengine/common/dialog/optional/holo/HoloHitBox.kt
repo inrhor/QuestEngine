@@ -1,16 +1,15 @@
 package cn.inrhor.questengine.common.dialog.optional.holo
 
-import cn.inrhor.questengine.api.destroyEntity
+import cn.inrhor.questengine.api.packet.*
 import cn.inrhor.questengine.api.dialog.ReplyModule
 import cn.inrhor.questengine.api.hologram.HoloDisplay
 import cn.inrhor.questengine.api.hologram.HoloIDManager
-import cn.inrhor.questengine.api.spawnAS
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.utlis.location.ReferHoloHitBox
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import taboolib.common.platform.PlatformExecutor
-import taboolib.common.platform.submit
+import taboolib.common.platform.function.*
+import taboolib.common.platform.service.PlatformExecutor
 
 class HoloHitBox(val replyModule: ReplyModule,
                  val boxLoc: Location,

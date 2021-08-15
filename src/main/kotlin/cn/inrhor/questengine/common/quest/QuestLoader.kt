@@ -7,7 +7,7 @@ import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import taboolib.common.io.getInstance
 import taboolib.common.io.runningClasses
-import taboolib.common.platform.registerListener
+import taboolib.common.platform.function.*
 import taboolib.common.util.sync
 import java.util.*
 

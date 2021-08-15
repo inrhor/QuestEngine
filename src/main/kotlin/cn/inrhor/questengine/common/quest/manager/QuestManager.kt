@@ -21,7 +21,7 @@ import cn.inrhor.questengine.utlis.time.toDate
 import cn.inrhor.questengine.utlis.time.toTimeUnit
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import taboolib.common.platform.submit
+import taboolib.common.platform.function.*
 import taboolib.platform.util.sendLang
 import java.util.*
 
@@ -157,6 +157,7 @@ object QuestManager {
             if (i >= check) return@forEach
         }
         submit(async = true, period = 10L) {
+            if (!player.isOnline) return@submit
             if (!evalBoolean(player, list)) {
                 val modeType = questModule.modeType
                 endQuest(player, modeType, questUUID, QuestState.FAILURE, false)

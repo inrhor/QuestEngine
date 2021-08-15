@@ -10,9 +10,7 @@ import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.Bukkit
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
-import taboolib.common.platform.console
-import taboolib.common.platform.disablePlugin
-import taboolib.common.platform.submit
+import taboolib.common.platform.function.*
 import taboolib.module.lang.sendLang
 import taboolib.module.nms.MinecraftVersion
 import java.io.File

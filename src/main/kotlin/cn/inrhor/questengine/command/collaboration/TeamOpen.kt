@@ -4,7 +4,7 @@ import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.collaboration.ui.chat.HasTeam
 import cn.inrhor.questengine.common.collaboration.ui.chat.NoTeam
 import org.bukkit.entity.Player
-import taboolib.common.platform.subCommand
+import taboolib.common.platform.command.*
 
 object TeamOpen {
 

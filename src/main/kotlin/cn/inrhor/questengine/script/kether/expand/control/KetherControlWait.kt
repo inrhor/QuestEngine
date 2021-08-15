@@ -46,22 +46,19 @@ class KetherControlWait(val type: Type, var time: Int, val questID: String, val 
     }
 
     /*
-     * wait type [time] to [questID] [innerQuestID] the [priority]
+     * wait unit/timeunit [unit] [time] to [questID] [innerQuestID] the [priority]
      */
     internal object Parser {
 
-        @KetherParser(["wait"], namespace = "QuestEngine")
+        @KetherParser(["waitTime"], namespace = "QuestEngine")
         fun parser() = scriptParser {
-            it.mark()
             val timeUnit = try {
-                it.expects("unit", "timeunit")
                 when (val type = it.nextToken()) {
                     "s", "second" -> Type.SECOND
                     "minute" -> Type.MINUTE
                     else -> throw KetherError.CUSTOM.create("未知时间类型: $type")
                 }
             } catch (ignored: Exception) {
-                it.reset()
                 Type.SECOND
             }
             val time = it.nextInt()

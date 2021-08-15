@@ -4,7 +4,7 @@ import cn.inrhor.questengine.common.dialog.animation.text.type.TextWrite
 import cn.inrhor.questengine.utlis.location.ReferHoloHitBox
 import cn.inrhor.questengine.utlis.location.ReferLocation
 import org.bukkit.entity.Player
-import taboolib.common.platform.adaptPlayer
+import taboolib.common.platform.function.*
 import taboolib.module.kether.KetherShell
 import java.util.concurrent.TimeUnit
 

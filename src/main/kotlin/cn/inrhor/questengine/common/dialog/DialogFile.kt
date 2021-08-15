@@ -5,7 +5,7 @@ import cn.inrhor.questengine.api.dialog.ReplyModule
 import cn.inrhor.questengine.api.dialog.SpaceModule
 import cn.inrhor.questengine.utlis.UtilString
 import taboolib.library.configuration.YamlConfiguration
-import taboolib.common.platform.console
+import taboolib.common.platform.function.*
 import taboolib.module.lang.sendLang
 import java.io.File
 

@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.packet
 
 import cn.inrhor.questengine.api.packet.PacketModule
-import taboolib.common.platform.console
+import taboolib.common.platform.function.*
 import taboolib.library.configuration.ConfigurationSection
 import taboolib.module.lang.sendLang
 

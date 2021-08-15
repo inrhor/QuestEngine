@@ -6,8 +6,8 @@ import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
-import taboolib.common.platform.SubscribeEvent
-import taboolib.common.platform.submit
+import taboolib.common.platform.event.*
+import taboolib.common.platform.function.*
 
 object JoinQuit {
 
@@ -16,15 +16,15 @@ object JoinQuit {
         val p = ev.player
         val uuid = p.uniqueId
         submit(async = true, delay = 20L) {
-            QuestManager.autoQuestMap.forEach { (questID, questModule) ->
-                if (QuestManager.existQuestData(p, questID)) {
-                    val qData = QuestManager.getQuestData(uuid, questID)
+            QuestManager.autoQuestMap.keys.forEach {
+                if (QuestManager.existQuestData(p, it)) {
+                    val qData = QuestManager.getQuestData(uuid, it)
                     if (qData !=null && qData.state == QuestState.FAILURE) {
-                        QuestManager.acceptQuest(p, questID)
+                        QuestManager.acceptQuest(p, it)
                         return@submit
                     }
                 }
-                QuestManager.acceptQuest(p, questID)
+                QuestManager.acceptQuest(p, it)
             }
         }
     }

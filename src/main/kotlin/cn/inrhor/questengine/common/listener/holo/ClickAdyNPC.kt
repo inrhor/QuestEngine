@@ -3,8 +3,7 @@ package cn.inrhor.questengine.common.listener.holo
 import cn.inrhor.questengine.common.dialog.DialogManager
 import ink.ptms.adyeshach.api.event.AdyeshachEntityDamageEvent
 import ink.ptms.adyeshach.api.event.AdyeshachEntityInteractEvent
-import taboolib.common.platform.OptionalEvent
-import taboolib.common.platform.SubscribeEvent
+import taboolib.common.platform.event.*
 
 
 class ClickAdyNPC{

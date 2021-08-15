@@ -2,7 +2,7 @@ package cn.inrhor.questengine.api.dialog
 
 import cn.inrhor.questengine.common.dialog.DialogManager
 import cn.inrhor.questengine.utlis.UtilString
-import taboolib.common.platform.console
+import taboolib.common.platform.function.console
 import taboolib.module.lang.sendLang
 
 object DialogAPI {

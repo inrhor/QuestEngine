@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.script.kether.expand.control
 
-import cn.inrhor.questengine.api.destroyEntity
+import cn.inrhor.questengine.api.packet.*
 import cn.inrhor.questengine.common.database.data.DataPacketID
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.packet.PacketManager
@@ -9,11 +9,10 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyPlayer
 import taboolib.common.util.Location
-import openapi.kether.*
 import taboolib.module.effect.Circle
 import taboolib.module.effect.Polygon
 import taboolib.module.kether.*
-import taboolib.module.kether.scriptParser
+import taboolib.library.kether.*
 import java.util.concurrent.CompletableFuture
 
 enum class Type {
@@ -141,24 +140,6 @@ class KetherPacket {
                     },
                     it.nextToken())
             }
-            /*when (action) {
-                Type.SEND -> SendPacket(
-                    it.nextToken(),
-                    it.run {
-                        it.mark()
-                        it.expect("where")
-                        it.next(ArgTypes.ACTION)
-                    })
-                Type.REMOVE -> RemovePacket(
-                    try {
-                        it.mark()
-                        it.expect("player")
-                        true
-                    } catch (ex: Exception) {
-                        false
-                    },
-                    it.nextToken())
-            }*/
         }
     }
 

@@ -3,7 +3,7 @@ package cn.inrhor.questengine.command
 import cn.inrhor.questengine.common.dialog.DialogManager
 import org.bukkit.Bukkit
 import taboolib.common.platform.ProxyCommandSender
-import taboolib.common.platform.subCommand
+import taboolib.common.platform.command.*
 import taboolib.module.lang.sendLang
 
 internal object DialogCommand {

@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.api
+package cn.inrhor.questengine.api.packet
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.common.nms.NMS
@@ -11,9 +11,8 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
-import taboolib.common.platform.console
+import taboolib.common.platform.function.console
 import taboolib.module.lang.sendLang
-import java.util.*
 
 object PacketUtil {
 

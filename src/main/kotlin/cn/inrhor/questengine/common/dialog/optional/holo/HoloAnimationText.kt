@@ -1,12 +1,12 @@
 package cn.inrhor.questengine.common.dialog.optional.holo
 
 import cn.inrhor.questengine.api.hologram.HoloDisplay
-import cn.inrhor.questengine.api.spawnAS
+import cn.inrhor.questengine.api.packet.*
 import cn.inrhor.questengine.common.dialog.animation.text.TextDialogPlay
 import cn.inrhor.questengine.common.dialog.optional.holo.core.HoloDialog
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import taboolib.common.platform.submit
+import taboolib.common.platform.function.*
 
 /**
  * 一行一个动态调度器

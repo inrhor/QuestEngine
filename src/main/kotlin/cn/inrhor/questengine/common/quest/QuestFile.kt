@@ -9,7 +9,7 @@ import cn.inrhor.questengine.common.quest.manager.ControlManager
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.utlis.file.GetFile
 import taboolib.library.configuration.YamlConfiguration
-import taboolib.common.platform.console
+import taboolib.common.platform.function.*
 import taboolib.library.configuration.FileConfiguration
 import taboolib.module.lang.sendLang
 import java.io.File

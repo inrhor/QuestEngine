@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.script.kether.expand.control
 
-import cn.inrhor.questengine.api.camera
+import cn.inrhor.questengine.api.packet.*
 import cn.inrhor.questengine.common.packet.PacketManager
 import taboolib.common.platform.ProxyPlayer
 import taboolib.module.kether.*

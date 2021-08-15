@@ -4,7 +4,7 @@ import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.utlis.file.GetFile
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import taboolib.common.platform.adaptPlayer
+import taboolib.common.platform.function.*
 import taboolib.module.chat.HexColor
 import taboolib.module.chat.TellrawJson
 import taboolib.module.chat.colored

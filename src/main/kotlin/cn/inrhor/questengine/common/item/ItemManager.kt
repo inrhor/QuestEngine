@@ -2,7 +2,7 @@ package cn.inrhor.questengine.common.item
 
 import cn.inrhor.questengine.utlis.file.GetFile
 import cn.inrhor.questengine.utlis.UtilString
-import taboolib.common.platform.console
+import taboolib.common.platform.function.*
 import taboolib.library.configuration.YamlConfiguration
 import taboolib.module.lang.sendLang
 import java.io.File

@@ -1,8 +1,7 @@
 package cn.inrhor.questengine.loader
 
 import cn.inrhor.questengine.QuestEngine
-import taboolib.common.platform.console
-import taboolib.common.platform.info
+import taboolib.common.platform.function.*
 import taboolib.module.chat.colored
 import taboolib.module.lang.sendLang
 

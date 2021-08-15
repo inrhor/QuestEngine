@@ -3,7 +3,7 @@ package cn.inrhor.questengine.command.collaboration
 import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.collaboration.ui.chat.HasTeam
 import org.bukkit.entity.Player
-import taboolib.common.platform.subCommand
+import taboolib.common.platform.command.*
 import taboolib.platform.util.sendLang
 
 object TeamMembers {

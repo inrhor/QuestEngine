@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.command
 
-import taboolib.common.platform.CommandBody
-import taboolib.common.platform.CommandHeader
+import taboolib.common.platform.command.*
+
 
 @CommandHeader("questengine", ["qen"])
 internal object Command {

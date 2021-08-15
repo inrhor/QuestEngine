@@ -10,11 +10,10 @@ import cn.inrhor.questengine.utlis.file.GetFile
 import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import taboolib.common.platform.console
-import taboolib.common.platform.submit
+import taboolib.common.platform.function.console
+import taboolib.common.platform.function.submit
 import taboolib.module.lang.sendLang
 import java.util.*
-import kotlin.collections.HashMap
 
 
 object DialogManager {

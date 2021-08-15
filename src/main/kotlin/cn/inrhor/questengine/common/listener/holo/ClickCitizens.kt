@@ -5,8 +5,7 @@ import net.citizensnpcs.api.event.NPCLeftClickEvent
 import net.citizensnpcs.api.event.NPCRightClickEvent
 import net.citizensnpcs.api.npc.NPC
 import org.bukkit.entity.Player
-import taboolib.common.platform.OptionalEvent
-import taboolib.common.platform.SubscribeEvent
+import taboolib.common.platform.event.*
 
 object ClickCitizens {
 
