@@ -35,8 +35,8 @@ class ControlData(var highestControls: LinkedHashMap<String, QuestControlData>,
      */
     fun addHighest(uuid: UUID, controlID: String, questControlData: QuestControlData) {
         highestControls[controlID] = questControlData
+        createSQL(uuid, controlID, questControlData)
         if (highestControls.size < 2) {
-            createSQL(uuid, controlID, questControlData)
             questControlData.runScript()
         }
     }

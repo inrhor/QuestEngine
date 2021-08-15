@@ -67,7 +67,6 @@ class QuestControlData(
         val nID = sp[1]
         val script = content.replace("@quest", "$qID $nID")
         eval(player, script)
-        info("script $script   wait $waitTime")
         runScript()
     }
 

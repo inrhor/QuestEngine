@@ -37,7 +37,6 @@ class DatabaseLocal: Database() {
         val uuid = player.uniqueId
         val data = getLocal(uuid)
         val questUUID = questData.questUUID
-        info("delete $questUUID")
         data.set("quest.$questUUID", null)
         val file = File(QuestEngine.plugin.dataFolder, "data/$uuid.yml")
         data.save(file)
