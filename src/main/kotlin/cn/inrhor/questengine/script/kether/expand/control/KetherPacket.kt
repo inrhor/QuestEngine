@@ -37,7 +37,7 @@ class KetherPacket {
     }
 
     /*
-     * packet send id number [int] where location [location] type [value] [step]
+     * packet send id number [int] where location [location] [type] [value] [step]
      */
     class SendMathPacket(val packetID: String, val number: Int, val location: ParsedAction<*>,
                          val type: String, val value: Double, val step: Double): ScriptAction<Void>() {
@@ -48,9 +48,9 @@ class KetherPacket {
                 val spawner = PacketSpawner(player.cast(), dataPacketID)
                 val t = type.lowercase()
                 if (t == "circle") {
-                    Circle(it, value, step, spawner).spawner.spawn(it)
+                    Circle(it, value, step, spawner).show()
                 }else if (t == "polygon") {
-                    Polygon(value.toInt(), it, step, spawner).spawner.spawn(it)
+                    Polygon(value.toInt(), it, step, spawner).show()
                 }
             }
         }
@@ -91,6 +91,40 @@ class KetherPacket {
         @KetherParser(["packet"], namespace = "QuestEngine")
         fun parser() = scriptParser {
             it.mark()
+            when (it.expects("send", "remove")) {
+                "send" -> {
+                    val packetID = it.nextToken()
+                    it.mark()
+                    when (it.expects("where", "number")) {
+                        "where" -> SendPacket(packetID, it.next(ArgTypes.ACTION))
+                        "number" -> {
+                            val number = it.nextInt()
+                            it.mark()
+                            it.expect("where")
+                            val location = it.next(ArgTypes.ACTION)
+                            val type = it.nextToken()
+                            val value = it.nextDouble()
+                            val step = it.nextDouble()
+                            SendMathPacket(packetID, number, location, type, value, step)
+                        }
+                        else -> error("unknown -> packet send ...")
+                    }
+                }
+                "remove" -> {
+                    RemovePacket(
+                        try {
+                            it.mark()
+                            it.expect("player")
+                            true
+                        } catch (ex: Exception) {
+                            false
+                        },
+                        it.nextToken())
+                }
+                else -> error("worry send")
+            }
+        }
+        /*fun parser() = scriptParser {
             val action = try {
                 when (val type = it.nextToken()) {
                     "send" -> Type.SEND
@@ -102,8 +136,8 @@ class KetherPacket {
                 Type.REMOVE
             }
             if (action == Type.SEND) {
-                it.mark()
                 val packetID = it.nextToken()
+                it.mark()
                 when (it.expects("where", "number")) {
                     "where" -> SendPacket(
                         packetID,
@@ -140,7 +174,7 @@ class KetherPacket {
                     },
                     it.nextToken())
             }
-        }
+        }*/
     }
 
 }

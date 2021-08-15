@@ -13,6 +13,7 @@ import cn.inrhor.questengine.common.quest.toState
 import cn.inrhor.questengine.common.quest.toStr
 import cn.inrhor.questengine.utlis.time.toStr
 import org.bukkit.entity.Player
+import taboolib.common.platform.function.info
 import taboolib.library.configuration.YamlConfiguration
 import java.io.File
 import java.text.SimpleDateFormat
@@ -36,7 +37,10 @@ class DatabaseLocal: Database() {
         val uuid = player.uniqueId
         val data = getLocal(uuid)
         val questUUID = questData.questUUID
+        info("delete $questUUID")
         data.set("quest.$questUUID", null)
+        val file = File(QuestEngine.plugin.dataFolder, "data/$uuid.yml")
+        data.save(file)
     }
 
     override fun removeInnerQuest(player: Player, questUUID: UUID) {
@@ -47,6 +51,8 @@ class DatabaseLocal: Database() {
         val uuid = player.uniqueId
         val data = getLocal(uuid)
         data.set("control.$controlID", null)
+        val file = File(QuestEngine.plugin.dataFolder, "data/$uuid.yml")
+        data.save(file)
     }
 
     /*

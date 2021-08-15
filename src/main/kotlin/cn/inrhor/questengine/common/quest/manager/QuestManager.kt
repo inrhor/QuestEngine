@@ -506,28 +506,29 @@ object QuestManager {
                 val mControl = mData.controlData
                 val m = Bukkit.getPlayer(it)?: return@forEach
                 val mQuestData = getQuestData(uuid, questID)?: return@forEach
-                databaseRemove(m, mQuestList, questUUID, mQuestData, mControl)
+                databaseRemove(m, questUUID, mQuestData, mControl)
+                mQuestList.remove(questUUID)
             }
         }
-        databaseRemove(player, questList, questUUID, questData, pData.controlData)
+        databaseRemove(player, questUUID, questData, pData.controlData)
+        questList.remove(questUUID)
     }
 
     private fun databaseRemove(player: Player,
-                               questList: MutableMap<UUID, QuestData>,
                                questUUID: UUID,
                                questData: QuestData, controlData: ControlData) {
         databaseRemoveControl(player, questData.questID, controlData)
-        databaseRemoveInner(player, questList, questUUID)
+        databaseRemoveInner(player, questUUID)
         databaseRemoveQuest(player, questData)
     }
 
     private fun databaseRemoveQuest(player: Player, questData: QuestData) {
         Database.database.removeQuest(player, questData)
+
     }
 
-    private fun databaseRemoveInner(player: Player, questList: MutableMap<UUID, QuestData>, questUUID: UUID) {
+    private fun databaseRemoveInner(player: Player, questUUID: UUID) {
         Database.database.removeInnerQuest(player, questUUID)
-        questList.remove(questUUID)
     }
 
     private fun databaseRemoveControl(player: Player, questID: String, controlData: ControlData) {

@@ -1,9 +1,11 @@
 package cn.inrhor.questengine.common.database.data
 
+import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.quest.QuestControlData
 import cn.inrhor.questengine.common.database.type.DatabaseManager
 import cn.inrhor.questengine.common.database.type.DatabaseSQL
 import cn.inrhor.questengine.common.database.type.DatabaseType
+import org.bukkit.entity.Player
 import java.util.*
 import kotlin.collections.LinkedHashMap
 
@@ -58,20 +60,22 @@ class ControlData(var highestControls: LinkedHashMap<String, QuestControlData>,
      * 当前最高级控制模块运行完毕后删除
      * 并进行下一个最高级控制模块
      */
-    fun highestQueue(controlID: String) {
-        removeHighest(controlID)
+    fun highestQueue(player: Player, controlID: String) {
+        removeHighest(player, controlID)
         highestControls.values.forEach {
             it.runScript()
             return@forEach
         }
     }
 
-    fun removeHighest(controlID: String) {
+    fun removeHighest(player: Player, controlID: String) {
         highestControls.remove(controlID)
+        Database.database.removeControl(player, controlID)
     }
 
-    fun removeNormal(controlID: String) {
+    fun removeNormal(player: Player, controlID: String) {
         controls.remove(controlID)
+        Database.database.removeControl(player, controlID)
     }
 
 }

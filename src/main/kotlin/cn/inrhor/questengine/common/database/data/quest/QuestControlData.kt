@@ -26,12 +26,11 @@ class QuestControlData(
             this(player, controlData, controlID, controlPriority, controlList, 0, 0)
 
     fun runScript() {
-        info("boolean "+(controlList.isEmpty() || line >= controlList.size)+" line $line  size "+controlList.size)
         if (controlList.isEmpty() || line >= controlList.size) {
             if (controlPriority == ControlPriority.HIGHEST) {
-                controlData.highestQueue(controlID)
+                controlData.highestQueue(player, controlID)
             }else {
-                controlData.removeNormal(controlID)
+                controlData.removeNormal(player, controlID)
             }
             return
         }
