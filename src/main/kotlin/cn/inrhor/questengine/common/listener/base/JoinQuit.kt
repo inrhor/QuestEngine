@@ -17,13 +17,8 @@ object JoinQuit {
         val uuid = p.uniqueId
         submit(async = true, delay = 20L) {
             QuestManager.autoQuestMap.keys.forEach {
-                if (QuestManager.existQuestData(p, it)) {
-                    val qData = QuestManager.getQuestData(uuid, it)
-                    if (qData !=null && qData.state == QuestState.FAILURE) {
-                        QuestManager.acceptQuest(p, it)
-                        return@submit
-                    }
-                }
+                if (QuestManager.existQuestData(uuid, it, QuestState.DOING) ||
+                    QuestManager.existQuestData(uuid, it, QuestState.IDLE)) return@forEach
                 QuestManager.acceptQuest(p, it)
             }
         }

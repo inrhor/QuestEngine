@@ -9,12 +9,12 @@ import taboolib.module.kether.*
 import taboolib.module.kether.scriptParser
 import java.util.concurrent.CompletableFuture
 
-class KetherControlWait(val type: Type, var time: Int, val questID: String, val innerQuestID: String, val priority: String): ScriptAction<Void>() {
+class KetherControlWait(val type: Type, val time: Int, val questID: String, val innerQuestID: String, val priority: String): ScriptAction<Void>() {
 
     override fun run(frame: ScriptFrame): CompletableFuture<Void> {
         val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
-        time = if (type == Type.MINUTE) time*1200 else time*20
-        WaitRun.run(player.cast(), time, questID, innerQuestID, priority)
+        val wait = if (type == Type.MINUTE) time*1200 else time*20
+        WaitRun.run(player.cast(), wait, questID, innerQuestID, priority)
         return CompletableFuture.completedFuture(null)
     }
 

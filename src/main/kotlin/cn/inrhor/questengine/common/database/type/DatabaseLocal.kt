@@ -8,6 +8,7 @@ import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.quest.manager.ControlManager
+import cn.inrhor.questengine.common.quest.manager.RunLogType
 import cn.inrhor.questengine.common.quest.toState
 import cn.inrhor.questengine.common.quest.toStr
 import cn.inrhor.questengine.utlis.time.toStr
@@ -38,10 +39,14 @@ class DatabaseLocal: Database() {
         data.set("quest.$questUUID", null)
     }
 
-    override fun removeInnerQuest(player: Player, questUUID: UUID, questInnerData: QuestInnerData) {
+    override fun removeInnerQuest(player: Player, questUUID: UUID) {
+        //
+    }
+
+    override fun removeControl(player: Player, controlID: String) {
         val uuid = player.uniqueId
         val data = getLocal(uuid)
-        data.set("quest.$questUUID.innerQuest."+questInnerData.innerQuestID, null)
+        data.set("control.$controlID", null)
     }
 
     /*
@@ -95,7 +100,7 @@ class DatabaseLocal: Database() {
         if (data.contains("control")) {
             data.getConfigurationSection("control").getKeys(false).forEach {
                 val node = "control.$it."
-                val priority = data.getString("priority")?: "normal"
+                val priority = data.getString(node+"priority")?: "normal"
                 val line = data.getInt(node+"line")
                 val waitTime = data.getInt(node+"waitTime")
                 ControlManager.pullControl(player, it, priority, line, waitTime)
@@ -171,15 +176,27 @@ class DatabaseLocal: Database() {
         pData.controlData.highestControls.forEach { (cID, cData) ->
             pushControl(data, cID, cData)
         }
+        pData.controlData.controls.forEach { (cID, cData) ->
+            pushControl(data, cID, cData)
+        }
         data.save(file)
     }
 
     private fun pushControl(data: YamlConfiguration, controlID: String, cData: QuestControlData) {
-        if (!ControlManager.isEnable(controlID, cData.controlPriority)) return
+        val logType = ControlManager.runLogType(controlID, cData.controlPriority)
+        if (logType == RunLogType.DISABLE) return
         val node = "control.$controlID."
         data.set(node+"priority", cData.controlPriority.toStr())
-        data.set(node+"line", cData.line)
-        data.set(node+"waitTime", cData.waitTime)
+        when (logType) {
+            RunLogType.RESTART -> {
+                data.set(node+"line", 0)
+                data.set(node+"waitTime", 0)
+            }
+            else -> {
+                data.set(node+"line", cData.line)
+                data.set(node+"waitTime", cData.waitTime)
+            }
+        }
     }
 
     private fun pushData(data: YamlConfiguration, node: String, questInnerData: QuestInnerData) {

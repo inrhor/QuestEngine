@@ -1,9 +1,11 @@
 package cn.inrhor.questengine.common.quest.manager
 
+import cn.inrhor.questengine.api.quest.ControlPriority
 import cn.inrhor.questengine.api.quest.QuestInnerModule
 import cn.inrhor.questengine.api.quest.QuestModule
 import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.Database
+import cn.inrhor.questengine.common.database.data.ControlData
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.*
@@ -89,12 +91,35 @@ object QuestManager {
     /**
      * 任务数据中是否存在 QuestID
      */
-    fun existQuestData(player: Player, questID: String): Boolean {
-        val pData = DataStorage.getPlayerData(player)
+    fun existQuestData(uuid: UUID, questID: String): Boolean {
+        val pData = DataStorage.getPlayerData(uuid)
         pData.questDataList.values.forEach {
             if (it.questID == questID) return true
         }
         return false
+    }
+
+    /**
+     * 任务数据中是否存在 QuestID 及其状态
+     */
+    fun existQuestData(uuid: UUID, questID: String, state: QuestState): Boolean {
+        val pData = DataStorage.getPlayerData(uuid)
+        pData.questDataList.values.forEach {
+            if (it.questID == questID && it.state == state) return true
+        }
+        return false
+    }
+
+    /**
+     * 任务数据中 QuestID 存在数量
+     */
+    fun questDataAmount(uuid: UUID, questID: String): Int {
+        var amount = 0
+        val pData = DataStorage.getPlayerData(uuid)
+        pData.questDataList.values.forEach {
+            if (it.questID == questID) amount++
+        }
+        return amount
     }
 
     /**
@@ -123,11 +148,21 @@ object QuestManager {
         acceptInnerQuest(player, questUUID, questModule.questID, startInnerQuest, true)
     }
 
+    fun passMaxQuantity(players: MutableSet<Player>, questModule: QuestModule): Boolean {
+        val max = questModule.maxQuantity
+        if (max < 0) return true
+        players.forEach {
+            if (questDataAmount(it.uniqueId, questModule.questID) >= max) return false
+        }
+        return true
+    }
+
     /**
      * 接受任务检查是否通过条件
      */
     fun acceptCondition(players: MutableSet<Player>, questID: String): Boolean {
         val questModule = getQuestModule(questID) ?: return false
+        if (!passMaxQuantity(players, questModule)) return false
         val check = questModule.acceptCheck
         val c = questModule.acceptCondition
         if (check <= 0) {
@@ -468,13 +503,21 @@ object QuestManager {
                 val mData = DataStorage.getPlayerData(it)
                 val mQuestList = mData.questDataList
                 if (!mQuestList.containsKey(questUUID)) return@forEach
+                val mControl = mData.controlData
                 val m = Bukkit.getPlayer(it)?: return@forEach
                 val mQuestData = getQuestData(uuid, questID)?: return@forEach
-                databaseRemoveInner(m, mQuestList, questUUID, mQuestData.questInnerData)
-                databaseRemoveQuest(m, mQuestData)
+                databaseRemove(m, mQuestList, questUUID, mQuestData, mControl)
             }
         }
-        databaseRemoveInner(player, questList, questUUID, questData.questInnerData)
+        databaseRemove(player, questList, questUUID, questData, pData.controlData)
+    }
+
+    private fun databaseRemove(player: Player,
+                               questList: MutableMap<UUID, QuestData>,
+                               questUUID: UUID,
+                               questData: QuestData, controlData: ControlData) {
+        databaseRemoveControl(player, questData.questID, controlData)
+        databaseRemoveInner(player, questList, questUUID)
         databaseRemoveQuest(player, questData)
     }
 
@@ -482,9 +525,25 @@ object QuestManager {
         Database.database.removeQuest(player, questData)
     }
 
-    private fun databaseRemoveInner(player: Player, questList: MutableMap<UUID, QuestData>, questUUID: UUID, questInnerData: QuestInnerData) {
-        Database.database.removeInnerQuest(player, questUUID, questInnerData)
+    private fun databaseRemoveInner(player: Player, questList: MutableMap<UUID, QuestData>, questUUID: UUID) {
+        Database.database.removeInnerQuest(player, questUUID)
         questList.remove(questUUID)
+    }
+
+    private fun databaseRemoveControl(player: Player, questID: String, controlData: ControlData) {
+        val pData = DataStorage.getPlayerData(player)
+        pData.controlData.controls.values.forEach {
+            if (it.controlID.startsWith("$questID-")) {
+                Database.database.removeControl(player, it.controlID)
+                controlData.highestControls.remove(it.controlID)
+            }
+        }
+        pData.controlData.highestControls.values.forEach {
+            if (it.controlID.startsWith("$questID-")) {
+                Database.database.removeControl(player, it.controlID)
+                controlData.controls.remove(it.controlID)
+            }
+        }
     }
 
 }

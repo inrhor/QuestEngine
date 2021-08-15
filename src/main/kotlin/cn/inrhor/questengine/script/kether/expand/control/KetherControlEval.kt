@@ -3,6 +3,7 @@ package cn.inrhor.questengine.script.kether.expand.control
 import cn.inrhor.questengine.api.quest.ControlPriority
 import cn.inrhor.questengine.api.quest.toControlPriority
 import cn.inrhor.questengine.common.quest.manager.ControlManager
+import cn.inrhor.questengine.common.quest.manager.RunLogType
 import cn.inrhor.questengine.script.kether.eval
 import taboolib.common.platform.ProxyPlayer
 import taboolib.module.kether.*
@@ -17,7 +18,7 @@ class KetherControlEval(val questID: String, val innerID: String, val priority: 
         val cModule = ControlManager.getControlModule(controlID)
         if (cModule != null) {
             val pri = priority.toControlPriority()
-            if (ControlManager.isEnable(controlID, pri)) {
+            if (ControlManager.runLogType(controlID, pri) != RunLogType.DISABLE) {
                 when (pri) {
                     ControlPriority.HIGHEST -> {
                         shellEval(player, cModule.highestControl, index)

@@ -7,6 +7,7 @@ import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.quest.manager.ControlManager
+import cn.inrhor.questengine.common.quest.manager.RunLogType
 import cn.inrhor.questengine.common.quest.toState
 import cn.inrhor.questengine.common.quest.toStr
 import cn.inrhor.questengine.utlis.time.toDate
@@ -244,10 +245,13 @@ class DatabaseSQL: Database() {
         pData.controlData.highestControls.forEach { (cID, cData) ->
             pushControl(uuid, cID, cData)
         }
+        pData.controlData.controls.forEach { (cID, cData) ->
+            pushControl(uuid, cID, cData)
+        }
     }
 
     private fun pushControl(uuid: UUID, controlID: String, cData: QuestControlData) {
-        if (!ControlManager.isEnable(controlID, cData.controlPriority)) return
+        if (ControlManager.runLogType(controlID, cData.controlPriority) == RunLogType.DISABLE) return
         tableControl.workspace(source) {
             update {
                 and { "uuid" eq uuid.toString()
@@ -358,8 +362,18 @@ class DatabaseSQL: Database() {
         delete(uuid, questUUID)
     }
 
+    override fun removeControl(player: Player, controlID: String) {
+        val uuid = player.uniqueId.toString()
+        tableControl.workspace(source) {
+            delete {
+                and { "uuid" eq uuid
+                    and { "controlID" eq controlID }
+                }
+            }
+        }.run()
+    }
 
-    override fun removeInnerQuest(player: Player, questUUID: UUID, questInnerData: QuestInnerData) {
+    override fun removeInnerQuest(player: Player, questUUID: UUID) {
         val uuid = player.uniqueId.toString()
         delete(uuid, questUUID)
     }

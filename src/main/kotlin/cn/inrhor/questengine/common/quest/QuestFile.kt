@@ -127,7 +127,7 @@ object QuestFile {
         val hLogEnable = control.getBoolean(hNode+"enable")
         val hLogType = control.getString(hNode+"type")?: "null"
         val hLogShell = control.getStringList(hNode+"reKether")
-        val nNode = "highest.log."
+        val nNode = "normal.log."
         val nLogEnable = control.getBoolean(nNode+"enable")
         val nLogType = control.getString(nNode+"type")?: "null"
         val nLogShell = control.getStringList(nNode+"reKether")

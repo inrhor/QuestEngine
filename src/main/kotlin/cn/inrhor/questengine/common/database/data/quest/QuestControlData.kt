@@ -7,6 +7,7 @@ import cn.inrhor.questengine.script.kether.expand.control.ControlTaskType
 import cn.inrhor.questengine.script.kether.expand.control.ControlType
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.*
+import java.util.*
 
 /**
  * 控制模块数据
@@ -25,6 +26,7 @@ class QuestControlData(
             this(player, controlData, controlID, controlPriority, controlList, 0, 0)
 
     fun runScript() {
+        info("boolean "+(controlList.isEmpty() || line >= controlList.size)+" line $line  size "+controlList.size)
         if (controlList.isEmpty() || line >= controlList.size) {
             if (controlPriority == ControlPriority.HIGHEST) {
                 controlData.highestQueue(controlID)
@@ -45,6 +47,7 @@ class QuestControlData(
             if (!player.isOnline) {
                 cancel(); return@submit
             }
+            waitTime = 0
             evalShell(content)
         }
     }
@@ -54,6 +57,7 @@ class QuestControlData(
             if (!player.isOnline) {
                 cancel(); return@submit
             }
+            waitTime = 0
             evalShell(content)
         }
     }
@@ -64,8 +68,8 @@ class QuestControlData(
         val nID = sp[1]
         val script = content.replace("@quest", "$qID $nID")
         eval(player, script)
+        info("script $script   wait $waitTime")
         runScript()
-        waitTime = 0
     }
 
 }

@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.quest.manager
 
 import cn.inrhor.questengine.api.quest.ControlPriority
 import cn.inrhor.questengine.api.quest.QuestControlModule
+import cn.inrhor.questengine.api.quest.toStr
 import cn.inrhor.questengine.common.database.data.ControlData
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
@@ -9,6 +10,7 @@ import cn.inrhor.questengine.common.database.data.quest.QuestControlData
 import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
 import cn.inrhor.questengine.script.kether.eval
 import org.bukkit.entity.Player
+import java.util.*
 
 object ControlManager {
 
@@ -16,15 +18,15 @@ object ControlManager {
      * 存储控制模块
      */
     fun saveControl(player: Player, pData: PlayerData, questInnerData: QuestInnerData) {
-        val questID = questInnerData.questID
-        val innerQuestID = questInnerData.innerQuestID
-        saveControl(player, pData.controlData, questID, innerQuestID)
+        saveControl(player, pData.controlData, questInnerData)
     }
 
     /**
      * 存储控制模块
      */
-    fun saveControl(player: Player, controlData: ControlData, questID: String, innerQuestID: String) {
+    fun saveControl(player: Player, controlData: ControlData, questInnerData: QuestInnerData) {
+        val questID = questInnerData.questID
+        val innerQuestID = questInnerData.innerQuestID
         val mModule = QuestManager.getInnerQuestModule(questID, innerQuestID) ?: return
         val cModule = mModule.questControl
         val highestID = cModule.highestID
@@ -99,15 +101,31 @@ object ControlManager {
         return "$questID-$innerQuestID-$priority"
     }
 
-    fun isEnable(controlID: String, priority: ControlPriority): Boolean {
-        val module = getControlModule(controlID) ?: return false
-        val log = module.logModule
-        if (priority == ControlPriority.HIGHEST) {
-            if (!log.highestLogEnable || log.highestLogType == "restart") return false
-        } else {
-            if (!log.normalLogEnable || log.normalLogType == "restart") return false
-        }
-        return true
+    fun generateControlID(questID: String, innerQuestID: String, priority: ControlPriority): String {
+        return "$questID-$innerQuestID-${priority.toStr()}"
     }
 
+    fun runLogType(controlID: String, priority: ControlPriority): RunLogType {
+        val module = getControlModule(controlID) ?: return RunLogType.DISABLE
+        val log = module.logModule
+        if (priority == ControlPriority.HIGHEST) {
+            if (!log.highestLogEnable) return RunLogType.DISABLE
+            when (log.highestLogType) {
+                "restart", "index" ->  return RunLogType.RESTART
+                "memory" ->  return RunLogType.MEMORY
+            }
+        } else {
+            if (!log.normalLogEnable) return RunLogType.DISABLE
+            when (log.normalLogType) {
+                "restart", "index" ->  return RunLogType.RESTART
+                "memory" ->  return RunLogType.MEMORY
+            }
+        }
+        return RunLogType.DISABLE
+    }
+
+}
+
+enum class RunLogType() {
+    DISABLE, RESTART, MEMORY
 }

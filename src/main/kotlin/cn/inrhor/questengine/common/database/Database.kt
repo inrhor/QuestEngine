@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.database
 
+import cn.inrhor.questengine.api.quest.ControlPriority
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
@@ -43,7 +44,12 @@ abstract class Database {
     /**
      * 清除内部任务数据，并清除其目标数据
      */
-    abstract fun removeInnerQuest(player: Player, questUUID: UUID, questInnerData: QuestInnerData)
+    abstract fun removeInnerQuest(player: Player, questUUID: UUID)
+
+    /**
+     * 清除控制模块数据
+     */
+    abstract fun removeControl(player: Player, controlID: String)
 
     companion object {
 
