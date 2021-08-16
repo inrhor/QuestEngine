@@ -42,10 +42,6 @@ class DatabaseLocal: Database() {
         data.save(file)
     }
 
-    override fun removeInnerQuest(player: Player, questUUID: UUID) {
-        //
-    }
-
     override fun removeControl(player: Player, controlID: String) {
         val uuid = player.uniqueId
         val data = getLocal(uuid)

@@ -13,12 +13,10 @@ import cn.inrhor.questengine.common.quest.toStr
 import cn.inrhor.questengine.utlis.time.toDate
 import com.google.gson.Gson
 import org.bukkit.entity.Player
-import taboolib.common.platform.function.info
 import taboolib.module.database.ColumnTypeSQL
 import taboolib.module.database.HostSQL
 import taboolib.module.database.Table
 import java.util.*
-import javax.sql.DataSource
 import java.text.SimpleDateFormat
 
 
@@ -110,9 +108,7 @@ class DatabaseSQL: Database() {
         }
     }
 
-    val source: DataSource by lazy {
-        host.createDataSource()
-    }
+    val source = host.createDataSource()
 
     init {
         tableQuest.workspace(source) { createTable() }.run()
@@ -281,7 +277,7 @@ class DatabaseSQL: Database() {
         updateTarget(uuid, questUUID, questInnerData)
     }
 
-    fun createQuest(player: Player, questUUID: UUID, questData: QuestData) {
+    override fun createQuest(player: Player, questUUID: UUID, questData: QuestData) {
         val uuid = player.uniqueId
         val questID = questData.questID
         val innerData = questData.questInnerData
@@ -323,7 +319,7 @@ class DatabaseSQL: Database() {
         }
     }
 
-    fun createControl(uuid: UUID, controlID: String, controlData: QuestControlData) {
+    override fun createControl(uuid: UUID, controlID: String, controlData: QuestControlData) {
         tableControl.workspace(source) {
             insert("uuid", "controlID", "priority", "line", "waitTime") {
                 value(uuid.toString(), controlID, controlData.controlPriority.toStr(), 0, 0)

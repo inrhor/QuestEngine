@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.database
 
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
+import cn.inrhor.questengine.common.database.data.quest.QuestControlData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
 import cn.inrhor.questengine.common.database.type.DatabaseLocal
@@ -43,17 +44,24 @@ abstract class Database {
     /**
      * 清除内部任务数据，并清除其目标数据
      */
-    abstract fun removeInnerQuest(player: Player, questUUID: UUID)
+    open fun removeInnerQuest(player: Player, questUUID: UUID) {}
 
     /**
      * 清除控制模块数据
      */
     abstract fun removeControl(player: Player, controlID: String)
 
+    open fun createQuest(player: Player, questUUID: UUID, questData: QuestData) {}
+
+    open fun createControl(uuid: UUID, controlID: String, controlData: QuestControlData) {}
+
     companion object {
 
-        val database: Database by lazy {
-            when (DatabaseManager.type) {
+        lateinit var database: Database
+
+        @Awake(LifeCycle.ENABLE)
+        fun initDatabase() {
+            database = when (DatabaseManager.type) {
                 DatabaseType.MYSQL -> DatabaseSQL()
                 else -> DatabaseLocal()
             }
@@ -79,6 +87,7 @@ abstract class Database {
             pushAll()
         }
 
+        @Awake(LifeCycle.ACTIVE)
         fun updateDatabase() {
             submit(async = true, delay = 100) {
                 pushAll()

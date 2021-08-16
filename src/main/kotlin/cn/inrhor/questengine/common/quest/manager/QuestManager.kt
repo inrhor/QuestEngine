@@ -10,7 +10,6 @@ import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.database.type.DatabaseManager
-import cn.inrhor.questengine.common.database.type.DatabaseSQL
 import cn.inrhor.questengine.common.database.type.DatabaseType
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestState
@@ -287,9 +286,7 @@ object QuestManager {
         pData.questDataList[questUUID] = questData
         ControlManager.saveControl(player, pData, innerQuestData)
         if (isNewQuest) {
-            if (DatabaseManager.type == DatabaseType.MYSQL) {
-                DatabaseSQL().createQuest(player, questUUID, questData)
-            }
+            Database.database.createQuest(player, questUUID, questData)
         }
     }
 

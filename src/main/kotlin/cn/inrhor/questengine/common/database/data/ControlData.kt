@@ -42,9 +42,7 @@ class ControlData(var highestControls: LinkedHashMap<String, QuestControlData>,
     }
 
     private fun createSQL(uuid: UUID, controlID: String, questControlData: QuestControlData) {
-        if (DatabaseManager.type == DatabaseType.MYSQL) {
-            DatabaseSQL().createControl(uuid, controlID, questControlData)
-        }
+        Database.database.createControl(uuid, controlID, questControlData)
     }
 
     /**
