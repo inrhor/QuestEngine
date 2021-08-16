@@ -15,6 +15,7 @@ class DataPacketID(
 
     fun canGet(): Boolean = number > hasAmount
 
+    // 对于多释放数据包，只能使用一次，不可重复
     init {
         for (n in 0..number) {
             val entityID = "packet&$packetID&>$n".hashCode()

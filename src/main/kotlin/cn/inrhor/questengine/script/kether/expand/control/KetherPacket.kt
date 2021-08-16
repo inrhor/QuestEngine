@@ -44,6 +44,9 @@ class KetherPacket {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {
             return frame.newFrame(location).run<Location>().thenAccept {
                 val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
+                val pData = DataStorage.getPlayerData(player.uniqueId)
+                // 对于多释放数据包，只能使用一次，不可重复
+                if (pData.packetEntitys.containsKey(packetID)) return@thenAccept
                 val dataPacketID = DataPacketID(player.cast(), packetID, number)
                 val spawner = PacketSpawner(player.cast(), dataPacketID)
                 val t = type.lowercase()
