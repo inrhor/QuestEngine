@@ -12,6 +12,7 @@ import cn.inrhor.questengine.common.quest.toState
 import cn.inrhor.questengine.common.quest.toStr
 import cn.inrhor.questengine.utlis.time.toDate
 import com.google.gson.Gson
+import openapi.kether.Quest
 import org.bukkit.entity.Player
 import taboolib.module.database.ColumnTypeSQL
 import taboolib.module.database.HostSQL
@@ -140,6 +141,7 @@ class DatabaseSQL: Database() {
                 val fmq = Gson().fromJson(fmqJson, MutableList::class.java) as MutableList<String>
                 val questData = QuestData(questUUID, questID, innerData, state, null, fmq)
                 pData.questDataList[questUUID] = questData
+                QuestManager.checkFailTime(player, questUUID, questID)
             }
         }
         tableControl.workspace(source) {

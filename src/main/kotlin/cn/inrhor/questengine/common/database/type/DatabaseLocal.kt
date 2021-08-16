@@ -13,7 +13,6 @@ import cn.inrhor.questengine.common.quest.toState
 import cn.inrhor.questengine.common.quest.toStr
 import cn.inrhor.questengine.utlis.time.toStr
 import org.bukkit.entity.Player
-import taboolib.common.platform.function.info
 import taboolib.library.configuration.YamlConfiguration
 import java.io.File
 import java.text.SimpleDateFormat
@@ -82,13 +81,13 @@ class DatabaseLocal: Database() {
         if (data.contains("quest")) {
             data.getConfigurationSection("quest").getKeys(false).forEach {
                 val node = "quest.$it."
-                val questUUid = UUID.fromString(it)
+                val questUUID = UUID.fromString(it)
                 val questID = data.getString(node+"questID")?: return@forEach
 
                 val nodeInner = node+"innerQuest."
 
                 val innerQuestID = data.getString(nodeInner+"innerQuestID")?: return@forEach
-                val questInnerData = getInnerQuestData(data, nodeInner, player, questUUid, questID, innerQuestID)?: return@forEach
+                val questInnerData = getInnerQuestData(data, nodeInner, player, questUUID, questID, innerQuestID)?: return@forEach
 
                 val finished = data.getStringList(node+"finishedQuest")
 
@@ -96,6 +95,7 @@ class DatabaseLocal: Database() {
 
                 val questData = QuestData(UUID.fromString(it), questID, questInnerData, state, TeamManager.getTeamData(uuid), finished)
                 questDataMap[UUID.fromString(it)] = questData
+                QuestManager.checkFailTime(player, questUUID, questID)
             }
         }
         if (data.contains("control")) {

@@ -179,8 +179,20 @@ object QuestManager {
 
     /**
      * 接受任务后开始使用调度器检查条件，一旦不符合将失败
+     *
+     * 属于自动化模块
      */
-    private fun checkFailTime(player: Player, questUUID: UUID, questModule: QuestModule) {
+    fun checkFailTime(player: Player, questUUID: UUID, questID: String) {
+        val questModule = getQuestModule(questID)?: return
+        checkFailTime(player, questUUID, questModule)
+    }
+
+    /**
+     * 接受任务后开始使用调度器检查条件，一旦不符合将失败
+     *
+     * 属于自动化模块
+     */
+    fun checkFailTime(player: Player, questUUID: UUID, questModule: QuestModule) {
         val list = mutableListOf<String>()
         val check = questModule.failCheck
         val c = questModule.failCondition
@@ -195,7 +207,7 @@ object QuestManager {
             if (!evalBoolean(player, list)) {
                 val modeType = questModule.modeType
                 endQuest(player, modeType, questUUID, QuestState.FAILURE, false)
-                runFailTime(player, modeType, questUUID, questModule.failKether)
+                runFailTime(player, modeType, questModule.failKether)
                 return@submit
             }
             val qData = getQuestData(player, questUUID)?: return@submit
@@ -203,7 +215,7 @@ object QuestManager {
         }
     }
 
-    private fun runFailTime(player: Player, modeType: ModeType, questUUID: UUID, failKether: MutableList<String>) {
+    private fun runFailTime(player: Player, modeType: ModeType, failKether: MutableList<String>) {
         val pData = DataStorage.getPlayerData(player)
         val tData = pData.teamData
         if (modeType == ModeType.COLLABORATION && tData != null) {
