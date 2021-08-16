@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.common.quest
 
-import cn.inrhor.questengine.api.quest.ControlLogModule
-import cn.inrhor.questengine.api.quest.QuestControlModule
+import cn.inrhor.questengine.api.quest.control.*
 import cn.inrhor.questengine.api.quest.QuestInnerModule
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.api.quest.QuestModule
@@ -87,7 +86,7 @@ object QuestFile {
         val description = option.getStringList("description")
 
         val controlFile = file(innerFile, "control.yml")
-        val questControl = control(controlFile, questID, innerQuestID)
+        val questControls = control(controlFile, questID, innerQuestID)
 
         val rewardFile = file(innerFile, "reward.yml")
         val questReward = reward(rewardFile, questID, innerQuestID)
@@ -96,7 +95,7 @@ object QuestFile {
         val target = yaml(targetFile)
         val questTarget = TargetManager.getTargetList(target)
 
-        return QuestInnerModule(innerQuestID, nextInnerQuestID, questControl, questReward, questTarget, description)
+        return QuestInnerModule(innerQuestID, nextInnerQuestID, questControls, questReward, questTarget, description)
     }
 
     private fun file(file: File, path: String): File {
@@ -120,24 +119,30 @@ object QuestFile {
         return QuestReward(questID, innerQuestID, finishReward, failReward)
     }
 
-    private fun control(file: File, questID: String, innerQuestID: String): QuestControlModule {
+    private fun control(file: File, questID: String, innerQuestID: String): MutableList<QuestControlOpen> {
         val control = yaml(file)
 
         val hNode = "highest.log."
         val hLogEnable = control.getBoolean(hNode+"enable")
         val hLogType = control.getString(hNode+"type")?: "null"
         val hLogShell = control.getStringList(hNode+"reKether")
+
         val nNode = "normal.log."
         val nLogEnable = control.getBoolean(nNode+"enable")
         val nLogType = control.getString(nNode+"type")?: "null"
         val nLogShell = control.getStringList(nNode+"reKether")
-        val logModule = ControlLogModule(hLogEnable, nLogEnable, hLogType, nLogType, hLogShell, nLogShell)
 
         val hControl = control.getStringList("highest.kether")
         val nControl = control.getStringList("normal.kether")
         val highestID = ControlManager.generateControlID(questID, innerQuestID, "highest")
         val normalID = ControlManager.generateControlID(questID, innerQuestID, "normal")
-        return QuestControlModule(highestID, normalID, hControl, nControl, logModule)
+
+        val hLogModule = ControlLogType(hLogEnable, hLogType, hLogShell)
+        val highestModule = ControlHighestModule(highestID, hControl, hLogModule)
+        val nLogModule = ControlLogType(nLogEnable, nLogType, nLogShell)
+        val normalModule = ControlNormalModule(normalID, nControl, nLogModule)
+
+        return mutableListOf(highestModule, normalModule)
     }
 
 

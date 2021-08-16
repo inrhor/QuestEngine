@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.quest.manager
 
-import cn.inrhor.questengine.api.quest.ControlPriority
+import cn.inrhor.questengine.api.quest.control.ControlPriority
 import cn.inrhor.questengine.api.quest.QuestInnerModule
 import cn.inrhor.questengine.api.quest.QuestModule
 import cn.inrhor.questengine.common.collaboration.TeamManager

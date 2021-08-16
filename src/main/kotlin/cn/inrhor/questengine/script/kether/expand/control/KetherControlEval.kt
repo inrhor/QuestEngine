@@ -1,7 +1,5 @@
 package cn.inrhor.questengine.script.kether.expand.control
 
-import cn.inrhor.questengine.api.quest.ControlPriority
-import cn.inrhor.questengine.api.quest.toControlPriority
 import cn.inrhor.questengine.common.quest.manager.ControlManager
 import cn.inrhor.questengine.common.quest.manager.RunLogType
 import cn.inrhor.questengine.script.kether.eval
@@ -17,25 +15,14 @@ class KetherControlEval(val questID: String, val innerID: String, val priority: 
         val controlID = ControlManager.generateControlID(questID, innerID, priority)
         val cModule = ControlManager.getControlModule(controlID)
         if (cModule != null) {
-            val pri = priority.toControlPriority()
-            if (ControlManager.runLogType(controlID, pri) != RunLogType.DISABLE) {
-                when (pri) {
-                    ControlPriority.HIGHEST -> {
-                        shellEval(player, cModule.highestControl, index)
-                    }
-                    ControlPriority.NORMAL -> {
-                        shellEval(player, cModule.normalControl, index)
-                    }
+            if (ControlManager.runLogType(controlID) != RunLogType.DISABLE) {
+                val list = cModule.controls
+                if (list.size > index) {
+                    eval(player.cast(), list[index])
                 }
             }
         }
         return CompletableFuture.completedFuture(null)
-    }
-
-    private fun shellEval(player: ProxyPlayer, list: MutableList<String>, index: Int) {
-        if (list.size > index) {
-            eval(player.cast(), list[index])
-        }
     }
 
     /*

@@ -2,7 +2,6 @@ package cn.inrhor.questengine.common.database
 
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
-import cn.inrhor.questengine.common.database.data.quest.QuestControlData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
 import cn.inrhor.questengine.common.database.type.DatabaseLocal

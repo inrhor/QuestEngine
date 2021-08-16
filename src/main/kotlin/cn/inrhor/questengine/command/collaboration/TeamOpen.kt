@@ -11,7 +11,6 @@ object TeamOpen {
     val open = subCommand {
         execute<Player> { sender, _, _ ->
             val pUUID = sender.uniqueId
-            sender.sendMessage("command open")
             if (TeamManager.hasTeam(pUUID)) {
                 HasTeam.openInfo(sender)
                 return@execute

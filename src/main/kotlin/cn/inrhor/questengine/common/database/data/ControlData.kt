@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.database.data
 
+import cn.inrhor.questengine.api.quest.control.ControlPriority
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.quest.QuestControlData
 import org.bukkit.entity.Player
@@ -18,19 +19,22 @@ class ControlData(var highestControls: LinkedHashMap<String, QuestControlData>,
                   var controls: MutableMap<String, QuestControlData>) {
 
     /**
+     * /**
      * 添加最高级控制模块并进入队列等待运行
      * 添加普通控制模块并直接运行
+    */
      */
-    fun addControl(uuid: UUID, highestID: String, normalID: String,
-                   highestControlData: QuestControlData, normalControlData: QuestControlData) {
-        addHighest(uuid, highestID, highestControlData)
-        addCommon(uuid, normalID, normalControlData)
+    fun addControl(controlID: String, questControlData: QuestControlData) {
+        when (questControlData.controlPriority) {
+            ControlPriority.HIGHEST -> addHighest(controlID, questControlData)
+            ControlPriority.NORMAL -> addCommon(controlID, questControlData)
+        }
     }
 
     /**
      * 添加最高级控制模块并进入队列等待运行
      */
-    fun addHighest(uuid: UUID, controlID: String, questControlData: QuestControlData) {
+    fun addHighest(controlID: String, questControlData: QuestControlData) {
         highestControls[controlID] = questControlData
         if (highestControls.size < 2) {
             questControlData.runScript()
@@ -40,7 +44,7 @@ class ControlData(var highestControls: LinkedHashMap<String, QuestControlData>,
     /**
      * 添加普通控制模块并直接运行
      */
-    fun addCommon(uuid: UUID, controlID: String, questControlData: QuestControlData) {
+    fun addCommon(controlID: String, questControlData: QuestControlData) {
         controls[controlID] = questControlData
         questControlData.runScript()
     }

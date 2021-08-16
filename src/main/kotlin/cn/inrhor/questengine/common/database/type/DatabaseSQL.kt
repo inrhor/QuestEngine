@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.database.type
 
 import cn.inrhor.questengine.QuestEngine
-import cn.inrhor.questengine.api.quest.toStr
+import cn.inrhor.questengine.api.quest.control.toStr
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage
@@ -270,7 +270,7 @@ class DatabaseSQL: Database() {
     }
 
     private fun pushControl(uuid: UUID, controlID: String, cData: QuestControlData) {
-        if (ControlManager.runLogType(controlID, cData.controlPriority) == RunLogType.DISABLE) return
+        if (ControlManager.runLogType(controlID) == RunLogType.DISABLE) return
         val line = cData.line
         val waitTime = cData.waitTime
         if (hasControl(uuid, controlID)) {

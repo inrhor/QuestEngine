@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.database.data.quest
 
-import cn.inrhor.questengine.api.quest.ControlPriority
+import cn.inrhor.questengine.api.quest.control.ControlPriority
 import cn.inrhor.questengine.common.database.data.ControlData
 import cn.inrhor.questengine.script.kether.eval
 import cn.inrhor.questengine.script.kether.expand.control.ControlTaskType

@@ -2,7 +2,6 @@ package cn.inrhor.questengine.common.database.data
 
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import taboolib.common.platform.function.*
 import taboolib.platform.util.sendLang
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -26,7 +25,6 @@ object DataStorage {
         var pData = playerDataStorage[uuid]
         if (pData == null) {
             pData = PlayerData(uuid)
-            console().sendMessage("player " + Bukkit.getPlayer(uuid))
             Bukkit.getPlayer(uuid)?.sendLang("DATA-NULL_DATA")
         }
         return pData
