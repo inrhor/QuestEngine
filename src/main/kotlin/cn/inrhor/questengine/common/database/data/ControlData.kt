@@ -2,9 +2,6 @@ package cn.inrhor.questengine.common.database.data
 
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.quest.QuestControlData
-import cn.inrhor.questengine.common.database.type.DatabaseManager
-import cn.inrhor.questengine.common.database.type.DatabaseSQL
-import cn.inrhor.questengine.common.database.type.DatabaseType
 import org.bukkit.entity.Player
 import java.util.*
 import kotlin.collections.LinkedHashMap
@@ -35,14 +32,9 @@ class ControlData(var highestControls: LinkedHashMap<String, QuestControlData>,
      */
     fun addHighest(uuid: UUID, controlID: String, questControlData: QuestControlData) {
         highestControls[controlID] = questControlData
-        createSQL(uuid, controlID, questControlData)
         if (highestControls.size < 2) {
             questControlData.runScript()
         }
-    }
-
-    private fun createSQL(uuid: UUID, controlID: String, questControlData: QuestControlData) {
-        Database.database.createControl(uuid, controlID, questControlData)
     }
 
     /**
@@ -50,7 +42,6 @@ class ControlData(var highestControls: LinkedHashMap<String, QuestControlData>,
      */
     fun addCommon(uuid: UUID, controlID: String, questControlData: QuestControlData) {
         controls[controlID] = questControlData
-        createSQL(uuid, controlID, questControlData)
         questControlData.runScript()
     }
 

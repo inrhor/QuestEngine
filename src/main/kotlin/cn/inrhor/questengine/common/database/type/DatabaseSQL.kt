@@ -162,9 +162,11 @@ class DatabaseSQL: Database() {
         val uuid = player.uniqueId
         tableInnerQuest.workspace(source) {
             select {
-                and { "uuid" eq uuid.toString()
-                    and { "questUUID" eq questUUID.toString()
-                        and { "innerQuestID" eq innerQuestID }
+                where {
+                    and {
+                        "uuid" eq uuid.toString()
+                        "questUUID" eq questUUID.toString()
+                        "innerQuestID" eq innerQuestID
                     }
                 }
                 rows("state", "rewards")
@@ -191,9 +193,11 @@ class DatabaseSQL: Database() {
         val uuid = player.uniqueId
         tableTargets.workspace(source) {
             select {
-                and { "uuid" eq uuid.toString()
-                    and { "questUUID" eq questUUID.toString()
-                        and { "innerQuestID" eq innerQuestID }
+                where {
+                    and {
+                        "uuid" eq uuid.toString()
+                        "questUUID" eq questUUID.toString()
+                        "innerQuestID" eq innerQuestID
                     }
                 }
                 rows("name", "schedule", "timeDate", "endDate")
@@ -226,11 +230,12 @@ class DatabaseSQL: Database() {
             val fmqJson = Gson().toJson(fmq)
             tableQuest.workspace(source) {
                 update {
-                    and { "uuid" eq uuid.toString()
-                        and { "questUUID" eq questUUID.toString()
-                            and { "questID" eq questID
-                                and { "innerQuestID" eq innerQuestID }
-                            }
+                    where {
+                        and {
+                            "uuid" eq uuid.toString()
+                            "questUUID" eq questUUID.toString()
+                            "questID" eq questID
+                            "innerQuestID" eq innerQuestID
                         }
                     }
                     set("state", state)
@@ -239,25 +244,53 @@ class DatabaseSQL: Database() {
             }.run()
             updateInner(uuid, questUUID, innerData, innerQuestID)
         }
-        pData.controlData.highestControls.forEach { (cID, cData) ->
+        val cData = pData.controlData
+        cData.highestControls.forEach { (cID, cData) ->
             pushControl(uuid, cID, cData)
         }
-        pData.controlData.controls.forEach { (cID, cData) ->
+        cData.controls.forEach { (cID, cData) ->
             pushControl(uuid, cID, cData)
         }
+
+    }
+
+    private fun hasControl(uuid: UUID, controlID: String): Boolean {
+        return tableControl.workspace(source) {
+            select {
+                where {
+                    and {
+                        "uuid" eq uuid.toString()
+                        "controlID" eq  controlID
+                    }
+                }
+            }
+        }.find()
     }
 
     private fun pushControl(uuid: UUID, controlID: String, cData: QuestControlData) {
         if (ControlManager.runLogType(controlID, cData.controlPriority) == RunLogType.DISABLE) return
-        tableControl.workspace(source) {
-            update {
-                and { "uuid" eq uuid.toString()
-                    and { "controlID" eq  controlID }
+        val line = cData.line
+        val waitTime = cData.waitTime
+        if (hasControl(uuid, controlID)) {
+            tableControl.workspace(source) {
+                update {
+                    where {
+                        and {
+                            "uuid" eq uuid.toString()
+                            "controlID" eq  controlID
+                        }
+                    }
+                    set("line", line)
+                    set("waitTime", waitTime)
                 }
-                set("waitTime", cData.waitTime)
-                set("line", cData.line)
-            }
-        }.run()
+            }.run()
+        }else {
+            tableControl.workspace(source) {
+                insert("uuid", "controlID", "priority", "line", "waitTime") {
+                    value(uuid.toString(), controlID, cData.controlPriority.toStr(), line, waitTime)
+                }
+            }.run()
+        }
     }
 
     private fun updateInner(uuid: UUID, questUUID: UUID, questInnerData: QuestInnerData, innerQuestID: String) {
@@ -265,9 +298,11 @@ class DatabaseSQL: Database() {
         val rewards = Gson().toJson(questInnerData.rewardState)
         tableInnerQuest.workspace(source) {
             update {
-                and { "uuid" eq uuid.toString()
-                    and { "questUUID" eq questUUID.toString()
-                        and { "innerQuestID" eq innerQuestID }
+                where {
+                    and {
+                        "uuid" eq uuid.toString()
+                        "questUUID" eq questUUID.toString()
+                        "innerQuestID" eq innerQuestID
                     }
                 }
                 set("state", state)
@@ -319,25 +354,18 @@ class DatabaseSQL: Database() {
         }
     }
 
-    override fun createControl(uuid: UUID, controlID: String, controlData: QuestControlData) {
-        tableControl.workspace(source) {
-            insert("uuid", "controlID", "priority", "line", "waitTime") {
-                value(uuid.toString(), controlID, controlData.controlPriority.toStr(), 0, 0)
-            }
-        }.run()
-    }
-
     private fun updateTarget(uuid: UUID, questUUID: UUID, questInnerData: QuestInnerData) {
         questInnerData.targetsData.forEach { (name, targetData) ->
             val innerID = questInnerData.innerQuestID
             val schedule = targetData.schedule
             tableTargets.workspace(source) {
                 update {
-                    and { "uuid" eq uuid.toString()
-                        and { "questUUID" eq questUUID.toString()
-                            and { "name" eq name
-                                and { "innerQuestID" eq innerID }
-                            }
+                    where {
+                        and {
+                            "uuid" eq uuid.toString()
+                            "questUUID" eq questUUID.toString()
+                            "name" eq name
+                            "innerQuestID" eq innerID
                         }
                     }
                     set("schedule", schedule)
@@ -351,8 +379,11 @@ class DatabaseSQL: Database() {
         val questUUID = questData.questUUID
         tableQuest.workspace(source) {
             delete {
-                and { "uuid" eq uuid
-                    and { "questUUID" eq questUUID.toString() }
+                where {
+                    and {
+                        "uuid" eq uuid
+                        "questUUID" eq questUUID.toString()
+                    }
                 }
             }
         }.run()
@@ -363,8 +394,11 @@ class DatabaseSQL: Database() {
         val uuid = player.uniqueId.toString()
         tableControl.workspace(source) {
             delete {
-                and { "uuid" eq uuid
-                    and { "controlID" eq controlID }
+                where {
+                    and {
+                        "uuid" eq uuid
+                        "controlID" eq controlID
+                    }
                 }
             }
         }.run()
@@ -378,15 +412,21 @@ class DatabaseSQL: Database() {
     private fun delete(uuid: String, questUUID: UUID) {
         tableInnerQuest.workspace(source) {
             delete {
-                and { "uuid" eq uuid
-                    and { "questUUID" eq questUUID.toString() }
+                where {
+                    and {
+                        "uuid" eq uuid
+                        "questUUID" eq questUUID.toString()
+                    }
                 }
             }
         }.run()
         tableTargets.workspace(source) {
             delete {
-                and { "uuid" eq uuid
-                    and { "questUUID" eq questUUID.toString() }
+                where {
+                    and {
+                        "uuid" eq uuid
+                        "questUUID" eq questUUID.toString()
+                    }
                 }
             }
         }.run()

@@ -53,13 +53,10 @@ abstract class Database {
 
     open fun createQuest(player: Player, questUUID: UUID, questData: QuestData) {}
 
-    open fun createControl(uuid: UUID, controlID: String, controlData: QuestControlData) {}
-
     companion object {
 
         lateinit var database: Database
 
-        @Awake(LifeCycle.ENABLE)
         fun initDatabase() {
             database = when (DatabaseManager.type) {
                 DatabaseType.MYSQL -> DatabaseSQL()
@@ -89,7 +86,7 @@ abstract class Database {
 
         @Awake(LifeCycle.ACTIVE)
         fun updateDatabase() {
-            submit(async = true, delay = 100) {
+            submit(async = true, period = 100L) {
                 pushAll()
             }
         }

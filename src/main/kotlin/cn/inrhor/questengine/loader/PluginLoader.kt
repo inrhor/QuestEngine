@@ -29,6 +29,7 @@ object PluginLoader {
             return
         }
         doLoad()
+        DatabaseManager.init()
     }
 
     @Awake(LifeCycle.DISABLE)
@@ -55,7 +56,6 @@ object PluginLoader {
             }
             console().sendLang("LOADER-TIME_COST", UtilString.pluginTag, timeCost)
         }
-        DatabaseManager.init()
     }
 
     fun doReload() {
