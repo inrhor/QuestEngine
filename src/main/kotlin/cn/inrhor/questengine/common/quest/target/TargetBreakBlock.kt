@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.quest.target
 
-import cn.inrhor.questengine.api.quest.ConditionType
+import cn.inrhor.questengine.api.target.ConditionType
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.common.database.data.quest.QuestData
@@ -11,7 +11,6 @@ import cn.inrhor.questengine.api.target.util.Schedule
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
-import java.util.*
 
 object TargetBreakBlock: TargetExtend<BlockBreakEvent>() {
 

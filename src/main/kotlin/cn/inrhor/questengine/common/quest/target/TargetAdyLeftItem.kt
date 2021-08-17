@@ -1,14 +1,5 @@
 package cn.inrhor.questengine.common.quest.target
 
-import cn.inrhor.questengine.api.quest.ConditionType
-import cn.inrhor.questengine.common.quest.manager.QuestManager
-import cn.inrhor.questengine.api.target.TargetExtend
-import cn.inrhor.questengine.common.quest.manager.TargetManager
-import cn.inrhor.questengine.api.target.util.ClickNPC
-import ink.ptms.adyeshach.api.event.AdyeshachEntityDamageEvent
-import org.bukkit.Bukkit
-import java.util.*
-
 object TargetAdyLeftItem/*: TargetExtend<AdyeshachEntityDamageEvent>()*/ {
 
 //    override val name = "give ady-left item"

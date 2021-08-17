@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.api.quest
+package cn.inrhor.questengine.api.target
 
 /**
  * 任务目标条件检查

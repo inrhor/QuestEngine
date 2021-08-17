@@ -7,7 +7,7 @@ import cn.inrhor.questengine.common.quest.manager.RewardManager
 import cn.inrhor.questengine.script.kether.evalBoolean
 import org.bukkit.entity.Player
 
-object ClickNPC {
+object TriggerUtils {
 
     fun idTrigger(target: QuestTarget, id: String): Boolean {
         val idCondition = target.conditionList["id"]?: return false

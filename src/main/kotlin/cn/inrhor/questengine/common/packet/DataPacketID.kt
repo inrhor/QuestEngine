@@ -1,6 +1,8 @@
-package cn.inrhor.questengine.common.database.data
+package cn.inrhor.questengine.common.packet
 
+import cn.inrhor.questengine.common.database.data.DataStorage
 import org.bukkit.entity.Player
+import java.util.*
 
 class DataPacketID(
     val player: Player,
@@ -15,10 +17,9 @@ class DataPacketID(
 
     fun canGet(): Boolean = number > hasAmount
 
-    // 对于多释放数据包，只能使用一次，不可重复
     init {
         for (n in 0..number) {
-            val entityID = "packet&$packetID&>$n".hashCode()
+            val entityID = UUID.randomUUID().hashCode()
             entityIDs.add(entityID)
         }
         val pData = DataStorage.getPlayerData(player)

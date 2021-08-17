@@ -12,7 +12,6 @@ import cn.inrhor.questengine.common.quest.toState
 import cn.inrhor.questengine.common.quest.toStr
 import cn.inrhor.questengine.utlis.time.toDate
 import com.google.gson.Gson
-import openapi.kether.Quest
 import org.bukkit.entity.Player
 import taboolib.module.database.ColumnTypeSQL
 import taboolib.module.database.HostSQL
@@ -29,10 +28,10 @@ class DatabaseSQL: Database() {
 
     val tableQuest = Table(table+"_user_quest", host) {
         add("uuid") {
-            type(ColumnTypeSQL.TEXT)
+            type(ColumnTypeSQL.VARCHAR, 36)
         }
         add("questUUID") {
-            type(ColumnTypeSQL.TEXT)
+            type(ColumnTypeSQL.VARCHAR, 36)
         }
         add("questID") {
             type(ColumnTypeSQL.TEXT)
@@ -46,18 +45,19 @@ class DatabaseSQL: Database() {
         add("finishedQuest") {
             type(ColumnTypeSQL.TEXT)
         }
-
+        primaryKeyForLegacy.add("uuid")
+        primaryKeyForLegacy.add("questUUID")
     }
 
     val tableInnerQuest = Table(table+"_user_inner_quest", host) {
         add("uuid") {
-            type(ColumnTypeSQL.TEXT)
+            type(ColumnTypeSQL.VARCHAR, 36)
         }
         add("questUUID") {
-            type(ColumnTypeSQL.TEXT)
+            type(ColumnTypeSQL.VARCHAR, 36)
         }
         add("innerQuestID") {
-            type(ColumnTypeSQL.TEXT)
+            type(ColumnTypeSQL.VARCHAR, 36)
         }
         add("state") {
             type(ColumnTypeSQL.TEXT)
@@ -65,20 +65,26 @@ class DatabaseSQL: Database() {
         add("rewards") {
             type(ColumnTypeSQL.TEXT)
         }
+        primaryKeyForLegacy.add("uuid")
+        primaryKeyForLegacy.add("questUUID")
+        primaryKeyForLegacy.add("innerQuestID")
     }
 
     val tableTargets = Table(table+"_user_targets", host) {
         add("uuid") {
-            type(ColumnTypeSQL.TEXT)
+            type(ColumnTypeSQL.VARCHAR, 36)
         }
         add("questUUID") {
-            type(ColumnTypeSQL.TEXT)
-        }
-        add("name") {
-            type(ColumnTypeSQL.TEXT)
+            type(ColumnTypeSQL.VARCHAR, 36)
         }
         add("innerQuestID") {
-            type(ColumnTypeSQL.TEXT)
+            type(ColumnTypeSQL.VARCHAR, 36)
+        }
+        add("index") {
+            type(ColumnTypeSQL.INT)
+        }
+        add("name") {
+            type(ColumnTypeSQL.VARCHAR, 255)
         }
         add("schedule") {
             type(ColumnTypeSQL.INT)
@@ -89,14 +95,18 @@ class DatabaseSQL: Database() {
         add("endDate") {
             type(ColumnTypeSQL.TEXT)
         }
+        primaryKeyForLegacy.add("uuid")
+        primaryKeyForLegacy.add("questUUID")
+        primaryKeyForLegacy.add("innerQuestID")
+        primaryKeyForLegacy.add("index")
     }
 
     val tableControl = Table(table+"_user_control", host) {
         add("uuid") {
-            type(ColumnTypeSQL.TEXT)
+            type(ColumnTypeSQL.VARCHAR, 36)
         }
         add("controlID") {
-            type(ColumnTypeSQL.TEXT)
+            type(ColumnTypeSQL.VARCHAR, 255)
         }
         add("priority") {
             type(ColumnTypeSQL.TEXT)
@@ -107,6 +117,8 @@ class DatabaseSQL: Database() {
         add("waitTime") {
             type(ColumnTypeSQL.INT)
         }
+        primaryKeyForLegacy.add("uuid")
+        primaryKeyForLegacy.add("controlID")
     }
 
     val source = host.createDataSource()
@@ -342,6 +354,7 @@ class DatabaseSQL: Database() {
     }
 
     private fun createTarget(uuid: UUID, questUUID: UUID, questInnerData: QuestInnerData) {
+        var index = 0
         questInnerData.targetsData.forEach { (name, targetData) ->
             val innerID = questInnerData.innerQuestID
             val schedule = targetData.schedule
@@ -349,30 +362,33 @@ class DatabaseSQL: Database() {
             val dateStr = dateFormat.format(targetData.timeDate)
             val endDateStr = dateFormat.format(targetData.endTimeDate)
             tableTargets.workspace(source) {
-                insert("uuid", "questUUID", "name", "innerQuestID", "schedule", "timeDate", "endDate") {
-                    value(uuid.toString(), questUUID.toString(), name, innerID, schedule, dateStr, endDateStr)
+                insert("uuid", "questUUID", "innerQuestID", "index", "name", "schedule", "timeDate", "endDate") {
+                    value(uuid.toString(), questUUID.toString(), innerID, index, name, schedule, dateStr, endDateStr)
                 }
             }.run()
+            index++
         }
     }
 
     private fun updateTarget(uuid: UUID, questUUID: UUID, questInnerData: QuestInnerData) {
-        questInnerData.targetsData.forEach { (name, targetData) ->
+        var index = 0
+        questInnerData.targetsData.values.forEach {
             val innerID = questInnerData.innerQuestID
-            val schedule = targetData.schedule
+            val schedule = it.schedule
             tableTargets.workspace(source) {
                 update {
                     where {
                         and {
                             "uuid" eq uuid.toString()
                             "questUUID" eq questUUID.toString()
-                            "name" eq name
                             "innerQuestID" eq innerID
+                            "index" eq index
                         }
                     }
                     set("schedule", schedule)
                 }
             }.run()
+            index++
         }
     }
 

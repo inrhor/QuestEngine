@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.common.packet
 
-import cn.inrhor.questengine.common.database.data.DataPacketID
 import org.bukkit.entity.Player
 import taboolib.common.util.Location
 import taboolib.module.effect.ParticleSpawner

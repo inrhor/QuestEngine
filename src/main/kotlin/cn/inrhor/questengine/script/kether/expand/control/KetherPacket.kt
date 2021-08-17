@@ -1,13 +1,14 @@
 package cn.inrhor.questengine.script.kether.expand.control
 
 import cn.inrhor.questengine.api.packet.*
-import cn.inrhor.questengine.common.database.data.DataPacketID
+import cn.inrhor.questengine.common.packet.DataPacketID
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.packet.PacketManager
 import cn.inrhor.questengine.common.packet.PacketSpawner
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyPlayer
+import taboolib.common.platform.function.info
 import taboolib.common.util.Location
 import taboolib.module.effect.Circle
 import taboolib.module.effect.Polygon
@@ -45,7 +46,6 @@ class KetherPacket {
             return frame.newFrame(location).run<Location>().thenAccept {
                 val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
                 val pData = DataStorage.getPlayerData(player.uniqueId)
-                // 对于多释放数据包，只能使用一次，不可重复
                 if (pData.packetEntitys.containsKey(packetID)) return@thenAccept
                 val dataPacketID = DataPacketID(player.cast(), packetID, number)
                 val spawner = PacketSpawner(player.cast(), dataPacketID)
@@ -60,11 +60,11 @@ class KetherPacket {
     }
 
     /**
-     * packet remove viewer[all/player] id
+     * packet remove viewer[all/player] where [location] <range [int]>
      */
-    class RemovePacket(val viewer: Boolean, val packetID: String): ScriptAction<Void>() {
+    class RemovePacket(val viewer: Boolean, val location: ParsedAction<*>, val range: Double): ScriptAction<Void>() {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {
-            if (viewer) {
+            /*if (viewer) {
                 val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
                 removePacket(mutableSetOf(player.cast()), packetID)
                 return CompletableFuture.completedFuture(null)
@@ -72,7 +72,10 @@ class KetherPacket {
             val viewers = mutableSetOf<Player>()
             viewers.addAll(Bukkit.getOnlinePlayers())
             removePacket(viewers, packetID)
-            return CompletableFuture.completedFuture(null)
+            return CompletableFuture.completedFuture(null)*/
+            return frame.newFrame(location).run<Location>().thenAccept {
+                info("range $range")
+            }
         }
 
         private fun removePacket(viewers: MutableSet<Player>, packetID: String) {
@@ -114,70 +117,26 @@ class KetherPacket {
                     }
                 }
                 "remove" -> {
-                    RemovePacket(
-                        try {
-                            it.mark()
-                            it.expect("player")
-                            true
-                        } catch (ex: Exception) {
-                            false
-                        },
-                        it.nextToken())
-                }
-                else -> error("worry send")
-            }
-        }
-        /*fun parser() = scriptParser {
-            val action = try {
-                when (val type = it.nextToken()) {
-                    "send" -> Type.SEND
-                    "remove" -> Type.REMOVE
-                    else -> throw KetherError.CUSTOM.create("未知数据包动作类型: $type")
-                }
-            } catch (ignored: Exception) {
-                it.reset()
-                Type.REMOVE
-            }
-            if (action == Type.SEND) {
-                val packetID = it.nextToken()
-                it.mark()
-                when (it.expects("where", "number")) {
-                    "where" -> SendPacket(
-                        packetID,
-                        it.run {
-                            it.mark()
-                            it.expect("where")
-                            it.next(ArgTypes.ACTION)
-                        })
-                    "number" -> SendMathPacket(
-                        packetID,
-                        it.nextInt(),
-                        it.run {
-                            it.mark()
-                            it.expect("where")
-                            it.next(ArgTypes.ACTION)
-                        },
-                        it.run {
-                            it.mark()
-                            it.expect("type")
-                            it.nextToken()
-                        },
-                        it.nextDouble(), it.nextDouble()
-                    )
-                    else -> throw KetherError.CUSTOM.create("未知数据包语句")
-                }
-            }else {
-                RemovePacket(
-                    try {
+                    val isPlayer = try {
                         it.mark()
                         it.expect("player")
                         true
                     } catch (ex: Exception) {
                         false
-                    },
-                    it.nextToken())
+                    }
+                    it.mark()
+                    it.expect("where")
+                    val loc = it.next(ArgTypes.ACTION)
+                    val range = if (it.hasNext()) {
+                        it.mark()
+                        it.expect("range")
+                        it.nextDouble()
+                    }else 0.0
+                    RemovePacket(isPlayer, loc, range)
+                }
+                else -> error("worry send")
             }
-        }*/
+        }
     }
 
 }
