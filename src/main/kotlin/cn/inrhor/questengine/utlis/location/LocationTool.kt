@@ -28,4 +28,24 @@ object LocationTool {
             else -> throw KetherError.CUSTOM.create("未知方向类型")
         }
     }
+
+    fun inLoc(fromLoc: Location, targetLoc: Location, range: Double): Boolean {
+        val x = fromLoc.x
+        val y = fromLoc.y
+        val z = fromLoc.z
+        val tX = targetLoc.x
+        val tY = targetLoc.y
+        val tZ = targetLoc.z
+        val r = if (range == 0.0) 1.0 else range
+        val minX = tX-r
+        val maxX = tX+r
+        val minY = tY-r
+        val maxY = tY+r
+        val minZ = tZ-r
+        val maxZ = tZ+r
+        if (x in minX..maxX && y in minY..maxY && z in minZ..maxZ ) {
+            return true
+        }
+        return false
+    }
 }

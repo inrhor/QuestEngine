@@ -1,17 +1,21 @@
 package cn.inrhor.questengine.common.packet
 
-import cn.inrhor.questengine.common.database.data.DataStorage
+import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.*
 
+/**
+ * 生成数据包整数型ID和控制数量
+ */
 class DataPacketID(
     val player: Player,
     val packetID: String,
     var number: Int,
-    private val entityIDs: MutableList<Int>) {
+    var location: Location,
+    private val dataPackets: MutableList<DataPacket>) {
 
-    constructor(player: Player, packetID: String, number: Int):
-            this(player, packetID, number, mutableListOf())
+    constructor(player: Player, packetID: String, number: Int, location: Location):
+            this(player, packetID, number, location, mutableListOf())
 
     private var hasAmount = 0
 
@@ -20,17 +24,15 @@ class DataPacketID(
     init {
         for (n in 0..number) {
             val entityID = UUID.randomUUID().hashCode()
-            entityIDs.add(entityID)
+            dataPackets.add(DataPacket(packetID, entityID, location))
         }
-        val pData = DataStorage.getPlayerData(player)
-        pData.packetEntitys[packetID] = entityIDs
+        PacketManager.addDataPacket(player, packetID, dataPackets)
     }
 
     fun getEntityID(): Int {
-        if (!canGet()) return 0
-        val entityID = entityIDs[hasAmount]
+        val dataPacket = dataPackets[hasAmount]
         hasAmount++
-        return entityID
+        return dataPacket.entityID
     }
 
 }

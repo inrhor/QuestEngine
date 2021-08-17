@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.packet
 
 import cn.inrhor.questengine.api.packet.*
+import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.utlis.file.GetFile
 import cn.inrhor.questengine.utlis.UtilString
@@ -31,6 +32,11 @@ object PacketManager {
 
     fun removeID(packetID: String) {
         packetMap.remove(packetID)
+    }
+
+    fun addDataPacket(player: Player, packetID: String, dataPackets: MutableList<DataPacket>) {
+        val pData = DataStorage.getPlayerData(player)
+        pData.addDataPacket(packetID, dataPackets)
     }
 
     fun sendThisPacket(packetID: String, entityID: Int, sender: Player, location: Location) {

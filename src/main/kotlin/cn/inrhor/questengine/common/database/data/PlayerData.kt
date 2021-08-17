@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.database.data
 
 import cn.inrhor.questengine.api.collaboration.TeamOpen
 import cn.inrhor.questengine.common.database.data.quest.QuestData
+import cn.inrhor.questengine.common.packet.DataPacket
 import java.util.*
 
 /**
@@ -16,7 +17,7 @@ class PlayerData(
     val dialogData: DialogData,
     var questDataList: MutableMap<UUID, QuestData>, /* QuestUUID 对应 QuestData */
     var controlData: ControlData,
-    var packetEntitys: MutableMap<String, MutableList<Int>>) {
+    var dataPacket: MutableMap<String, MutableList<DataPacket>>) {
 
     constructor(uuid: UUID):
             this(uuid, null,
@@ -25,5 +26,13 @@ class PlayerData(
                 ControlData(linkedMapOf(), mutableMapOf()),
                 mutableMapOf()
             )
+
+    fun addDataPacket(packetID: String, dataPackets: MutableList<DataPacket>) {
+        if (dataPacket.containsKey(packetID)) {
+            dataPackets.forEach {
+                dataPacket[packetID]!!.add(it)
+            }
+        }else dataPacket[packetID] = dataPackets
+    }
 
 }

@@ -4,29 +4,24 @@ import cn.inrhor.questengine.api.packet.*
 import cn.inrhor.questengine.common.packet.DataPacketID
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.packet.PacketManager
-import cn.inrhor.questengine.common.packet.PacketSpawner
+import cn.inrhor.questengine.common.packet.spawner.PacketEntitySpawner
+import cn.inrhor.questengine.utlis.location.LocationTool
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyPlayer
-import taboolib.common.platform.function.info
 import taboolib.common.util.Location
 import taboolib.module.effect.Circle
 import taboolib.module.effect.Polygon
 import taboolib.module.kether.*
 import taboolib.library.kether.*
+import taboolib.platform.util.toBukkitLocation
 import java.util.concurrent.CompletableFuture
 
-enum class Type {
-    SEND, REMOVE
-}
 
-/**
- * type send id where world loc...
- */
 class KetherPacket {
 
     /*
-     * packet send id where location [location]
+     * packet send packet where location [location]
      */
     class SendPacket(val packetID: String, val location: ParsedAction<*>): ScriptAction<Void>() {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {
@@ -38,17 +33,15 @@ class KetherPacket {
     }
 
     /*
-     * packet send id number [int] where location [location] [type] [value] [step]
+     * packet send packet number [int] where location [location] type [type] [value] [step]
      */
     class SendMathPacket(val packetID: String, val number: Int, val location: ParsedAction<*>,
                          val type: String, val value: Double, val step: Double): ScriptAction<Void>() {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {
             return frame.newFrame(location).run<Location>().thenAccept {
                 val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
-                val pData = DataStorage.getPlayerData(player.uniqueId)
-                if (pData.packetEntitys.containsKey(packetID)) return@thenAccept
-                val dataPacketID = DataPacketID(player.cast(), packetID, number)
-                val spawner = PacketSpawner(player.cast(), dataPacketID)
+                val dataPacketID = DataPacketID(player.cast(), packetID, number, it.toBukkitLocation())
+                val spawner = PacketEntitySpawner(player.cast(), dataPacketID)
                 val t = type.lowercase()
                 if (t == "circle") {
                     Circle(it, value, step, spawner).show()
@@ -60,38 +53,66 @@ class KetherPacket {
     }
 
     /**
-     * packet remove viewer[all/player] where [location] <range [int]>
+     * packet remove packetID viewer[all/player] where location <range int>
      */
-    class RemovePacket(val viewer: Boolean, val location: ParsedAction<*>, val range: Double): ScriptAction<Void>() {
+    class RemoveRangePacket(val viewer: Boolean, val packetID: String, val location: ParsedAction<*>, val range: Double): ScriptAction<Void>() {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {
-            /*if (viewer) {
-                val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
-                removePacket(mutableSetOf(player.cast()), packetID)
-                return CompletableFuture.completedFuture(null)
-            }
-            val viewers = mutableSetOf<Player>()
-            viewers.addAll(Bukkit.getOnlinePlayers())
-            removePacket(viewers, packetID)
-            return CompletableFuture.completedFuture(null)*/
             return frame.newFrame(location).run<Location>().thenAccept {
-                info("range $range")
+                if (viewer) {
+                    val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
+                    removeRangePacket(mutableSetOf(player.cast()), packetID, it, range)
+                    return@thenAccept
+                }
+                val viewers = mutableSetOf<Player>()
+                viewers.addAll(Bukkit.getOnlinePlayers())
+                removeRangePacket(viewers, packetID, it, range)
             }
         }
 
-        private fun removePacket(viewers: MutableSet<Player>, packetID: String) {
-            val m = PacketManager.packetMap[packetID]?: return
+        private fun removeRangePacket(viewers: MutableSet<Player>, packetID: String, location: Location, range: Double) {
             viewers.forEach {
                 val pData = DataStorage.getPlayerData(it)
-                if (pData.packetEntitys.containsKey(packetID)) {
-                    pData.packetEntitys[packetID]!!.forEach { id ->
-                        destroyEntity(it, id)
+                pData.dataPacket[packetID]?.forEach { d ->
+                    if (LocationTool.inLoc(location.toBukkitLocation(), d.location, range)) {
+                        destroyEntity(viewers, d.entityID)
                     }
-                }else {
-                    destroyEntity(viewers, m.entityID)
                 }
             }
         }
     }
+
+    /**
+     * packet remove packetID viewer[all/player] where location type [type] [value] [step]
+     */
+    /*class RemoveTypePacket(val viewer: Boolean, val packetID: String, val location: ParsedAction<*>,
+                           val type: String, val value: Double, val step: Double): ScriptAction<Void>() {
+        override fun run(frame: ScriptFrame): CompletableFuture<Void> {
+            return frame.newFrame(location).run<Location>().thenAccept {
+                if (viewer) {
+                    val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
+                    removeTypePacket(mutableSetOf(player.cast()), packetID, it, type, value, step)
+                    return@thenAccept
+                }
+                val viewers = mutableSetOf<Player>()
+                viewers.addAll(Bukkit.getOnlinePlayers())
+                removeTypePacket(viewers, packetID, it, type, value, step)
+            }
+        }
+
+        private fun removeTypePacket(viewers: MutableSet<Player>, packetID: String, location: Location,
+                                     type: String, value: Double, step: Double) {
+            viewers.forEach {
+                val pData = DataStorage.getPlayerData(it)
+                val spawner = PacketRemoveSpawner(it, pData)
+                val t = type.lowercase()
+                if (t == "circle") {
+                    Circle(location, value, step, spawner).show()
+                }else if (t == "polygon") {
+                    Polygon(value.toInt(), location, step, spawner).show()
+                }
+            }
+        }
+    }*/
 
     internal object Parser {
         @KetherParser(["packet"], namespace = "QuestEngine")
@@ -108,6 +129,8 @@ class KetherPacket {
                             it.mark()
                             it.expect("where")
                             val location = it.next(ArgTypes.ACTION)
+                            it.mark()
+                            it.expect("type")
                             val type = it.nextToken()
                             val value = it.nextDouble()
                             val step = it.nextDouble()
@@ -124,17 +147,20 @@ class KetherPacket {
                     } catch (ex: Exception) {
                         false
                     }
+                    val packetID = it.nextToken()
                     it.mark()
                     it.expect("where")
                     val loc = it.next(ArgTypes.ACTION)
-                    val range = if (it.hasNext()) {
+                    if (it.hasNext()) {
                         it.mark()
-                        it.expect("range")
-                        it.nextDouble()
-                    }else 0.0
-                    RemovePacket(isPlayer, loc, range)
+                        when (it.expects("range")) {
+                            "range" -> RemoveRangePacket(isPlayer, packetID, loc, it.nextDouble())
+//                            "type" -> RemoveTypePacket(isPlayer, packetID, loc, it.nextToken(), it.nextDouble(), it.nextDouble())
+                            else -> error("unknown shell: packet remove")
+                        }
+                    }else RemoveRangePacket(isPlayer, packetID, loc, 0.0)
                 }
-                else -> error("worry send")
+                else -> error("unknown shell packet")
             }
         }
     }
