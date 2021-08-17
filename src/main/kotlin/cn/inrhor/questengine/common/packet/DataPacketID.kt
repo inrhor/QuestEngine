@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.packet
 
+import cn.inrhor.questengine.common.database.data.PacketData
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.*
@@ -12,7 +13,7 @@ class DataPacketID(
     val packetID: String,
     var number: Int,
     var location: Location,
-    private val dataPackets: MutableList<DataPacket>) {
+    private val dataPackets: MutableList<PacketData>) {
 
     constructor(player: Player, packetID: String, number: Int, location: Location):
             this(player, packetID, number, location, mutableListOf())
@@ -24,7 +25,7 @@ class DataPacketID(
     init {
         for (n in 0..number) {
             val entityID = UUID.randomUUID().hashCode()
-            dataPackets.add(DataPacket(packetID, entityID, location))
+            dataPackets.add(PacketData(packetID, entityID, location))
         }
         PacketManager.addDataPacket(player, packetID, dataPackets)
     }

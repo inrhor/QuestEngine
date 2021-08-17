@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.packet
 
 import cn.inrhor.questengine.api.packet.*
+import cn.inrhor.questengine.common.database.data.PacketData
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.utlis.file.GetFile
@@ -34,7 +35,7 @@ object PacketManager {
         packetMap.remove(packetID)
     }
 
-    fun addDataPacket(player: Player, packetID: String, dataPackets: MutableList<DataPacket>) {
+    fun addDataPacket(player: Player, packetID: String, dataPackets: MutableList<PacketData>) {
         val pData = DataStorage.getPlayerData(player)
         pData.addDataPacket(packetID, dataPackets)
     }
@@ -43,30 +44,14 @@ object PacketManager {
         val packetModule = packetMap[packetID]?: return
         val viewers = mutableSetOf(sender)
         if (packetModule.viewer == "all") viewers.addAll(Bukkit.getOnlinePlayers())
-        val hook = packetModule.hook.lowercase()
-        sendThisPacket(hook, entityID, packetModule, viewers, location)
+        sendMetaPacket(entityID, packetModule, viewers, location)
     }
 
-    fun sendThisPacket(packetID: String, sender: Player, location: Location) {
-        val packetModule = packetMap[packetID]?: return
-        val viewers = mutableSetOf(sender)
-        if (packetModule.viewer == "all") viewers.addAll(Bukkit.getOnlinePlayers())
-        val hook = packetModule.hook.lowercase()
-        val entityID = packetModule.entityID
-        sendThisPacket(hook, entityID, packetModule, viewers, location)
+    fun sendThisPacket(packetID: String, sender: Player, location: Location, dataPacketID: DataPacketID) {
+        sendThisPacket(packetID, dataPacketID.getEntityID(), sender, location)
     }
 
-    private fun sendThisPacket(hook: String, entityID: Int, packetModule: PacketModule, viewers: MutableSet<Player>, location: Location) {
-        if (hook == "this ") {
-            val id = hook[1].toString()
-            val getPacketModule = packetMap[id] ?: return
-            sendPacket(entityID, getPacketModule, viewers, location)
-        } else if (hook == "normal") {
-            sendPacket(entityID, packetModule, viewers, location)
-        }
-    }
-
-    private fun sendPacket(entityID: Int, packetModule: PacketModule, viewers: MutableSet<Player>, location: Location) {
+    private fun sendMetaPacket(entityID: Int, packetModule: PacketModule, viewers: MutableSet<Player>, location: Location) {
         spawnEntity(viewers, entityID, packetModule.entityType, location)
         packetModule.mate.forEach {
             val sp = it.split(" ")
@@ -87,19 +72,9 @@ object PacketManager {
                 }
             }
         }
-    }
+        packetModule.action.forEach {
 
-    /**
-     * 需要在 packet 文件夹中构造数据包模块
-     * packetID格式 packet-id-type[entity/item]
-     * 将根据packetID检索id
-     */
-    fun sendPacket(packetID: String, sender: Player, location: taboolib.common.util.Location) {
-        sendThisPacket(packetID, sender, location.toBukkitLocation())
-    }
-
-    fun sendPacket(entityID: Int, packetModule: PacketModule, sender: Player, location: taboolib.common.util.Location) {
-        sendPacket(entityID, packetModule, mutableSetOf(sender), location.toBukkitLocation())
+        }
     }
 
     /**

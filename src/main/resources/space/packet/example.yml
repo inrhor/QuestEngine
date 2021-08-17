@@ -11,10 +11,10 @@ packet_1:
     - visible false
   # 数据包动作
   action:
-    - type collection 5
-    - breakCount 10
-    - addBreakCount only 3 itemCheck inv mainHand *'minecraft:wooden_hone'
-
-packet_2:
-  # 继承方法
-  hook: this packet_1
+    type: collection
+    set:
+      - clickCount 10
+      - addClickCount only 3 itemCheck inv mainHand *'minecraft:wooden_hone'
+    pass:
+      - remove
+      - kether shell...

@@ -9,19 +9,13 @@ object PacketFile {
 
     fun init(config: ConfigurationSection) {
         val packetID = config.name
-        val hook = config.getString("hook")?: return run {
-            console().sendLang("PACKET-ERROR_FILE", config.name)
-        }
         val viewer = config.getString("viewer")?: "all"
-        val packerModule = PacketModule(packetID, hook, viewer)
+        val packerModule = PacketModule(packetID, viewer)
         val entityID = PacketManager.generate(packetID, "entity")
         packerModule.entityID = entityID
-        if (!hook.lowercase().startsWith("normal ")) {
-            packerModule.entityType = config.getString("entityType")?: "ARMOR_STAND"
-            val mate = config.getStringList("mate")
-            packerModule.mate = mate
-//            packerModule.itemEntityID = PacketManager.returnItemEntityID(packetID, mate)
-        }
+        packerModule.entityType = config.getString("entityType")?: "ARMOR_STAND"
+        packerModule.mate = config.getStringList("mate")
+        packerModule.action = config.getStringList("action")
         PacketManager.register(packetID, packerModule)
     }
 

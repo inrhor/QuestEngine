@@ -27,7 +27,9 @@ class KetherPacket {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {
             return frame.newFrame(location).run<Location>().thenAccept {
                 val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
-                PacketManager.sendPacket(packetID, player.cast(), it)
+                val bLoc = it.toBukkitLocation()
+                val dataPacketID = DataPacketID(player.cast(), packetID, 1, bLoc)
+                PacketManager.sendThisPacket(packetID, player.cast(), bLoc, dataPacketID)
             }
         }
     }
