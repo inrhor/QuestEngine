@@ -31,3 +31,10 @@ object UtilString {
 fun String.subAfter(meta: String): String {
     return this.substring(this.indexOf(meta)+1)
 }
+
+/**
+ * 截取特殊字符之前的字符串
+ */
+fun String.subBefore(meta: String): String {
+    return this.substring(0, this.indexOf(meta))
+}

@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.packet.action
 
-class ClickAction(var needClickCount: Int) {
+class ClickActionData(var needClickCount: Int = 1) {
 
     // 记录交互次数
     var clickCountLog: Int = 0
@@ -9,5 +9,9 @@ class ClickAction(var needClickCount: Int) {
      * 满足交互次数与否
      */
     fun passClickCount() = clickCountLog >= needClickCount
+
+    val passOnly = mutableListOf<String>()
+
+    val passAdd = mutableListOf<String>()
 
 }

@@ -11,7 +11,7 @@ class PacketEntitySpawner(val player: Player, val dataPacketID: DataPacketID): P
     override fun spawn(location: Location) {
         val bukkitLoc = location.toBukkitLocation()
         if (!dataPacketID.canGet()) return
-        PacketManager.sendThisPacket(dataPacketID.packetID, dataPacketID.getEntityID(), player, bukkitLoc)
+        PacketManager.sendThisPacket(dataPacketID.packetModule, dataPacketID.getEntityID(), player, bukkitLoc)
         dataPacketID.location = bukkitLoc
     }
 }

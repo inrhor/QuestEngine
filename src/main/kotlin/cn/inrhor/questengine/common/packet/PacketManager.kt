@@ -13,19 +13,11 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
 import taboolib.common.platform.function.*
 import taboolib.module.lang.sendLang
-import taboolib.platform.util.toBukkitLocation
 import java.io.File
 
 object PacketManager {
 
     val packetMap = mutableMapOf<String, PacketModule>()
-
-    /**
-     * type > packet
-     */
-    fun generate(packetID: String, type: String): Int {
-        return "packet-$packetID-$type".hashCode()
-    }
 
     fun register(packetID: String, packetModule: PacketModule) {
         packetMap[packetID] = packetModule
@@ -35,20 +27,25 @@ object PacketManager {
         packetMap.remove(packetID)
     }
 
+    fun getPacketDataList(player: Player, packetID: String): MutableList<PacketData> {
+        val pData = DataStorage.getPlayerData(player)
+        if (pData.dataPacket.containsKey(packetID)) return pData.dataPacket[packetID]!!
+        return mutableListOf()
+    }
+
     fun addDataPacket(player: Player, packetID: String, dataPackets: MutableList<PacketData>) {
         val pData = DataStorage.getPlayerData(player)
         pData.addDataPacket(packetID, dataPackets)
     }
 
-    fun sendThisPacket(packetID: String, entityID: Int, sender: Player, location: Location) {
-        val packetModule = packetMap[packetID]?: return
+    fun sendThisPacket(packetModule: PacketModule, entityID: Int, sender: Player, location: Location) {
         val viewers = mutableSetOf(sender)
         if (packetModule.viewer == "all") viewers.addAll(Bukkit.getOnlinePlayers())
         sendMetaPacket(entityID, packetModule, viewers, location)
     }
 
-    fun sendThisPacket(packetID: String, sender: Player, location: Location, dataPacketID: DataPacketID) {
-        sendThisPacket(packetID, dataPacketID.getEntityID(), sender, location)
+    fun sendThisPacket(packetModule: PacketModule, sender: Player, location: Location, dataPacketID: DataPacketID) {
+        sendThisPacket(packetModule, dataPacketID.getEntityID(), sender, location)
     }
 
     private fun sendMetaPacket(entityID: Int, packetModule: PacketModule, viewers: MutableSet<Player>, location: Location) {
@@ -71,9 +68,6 @@ object PacketManager {
                     isInvisible(viewers, entityID)
                 }
             }
-        }
-        packetModule.action.forEach {
-
         }
     }
 
@@ -101,7 +95,7 @@ object PacketManager {
         }
     }
 
-    fun returnItemEntityID(packetID: String, mate: MutableList<String>): MutableMap<String, Int> {
+    /*fun returnItemEntityID(packetID: String, mate: MutableList<String>): MutableMap<String, Int> {
         val itemEntityID = mutableMapOf<String, Int>()
 
         mate.forEach {
@@ -114,6 +108,6 @@ object PacketManager {
         }
 
         return itemEntityID
-    }
+    }*/
 
 }

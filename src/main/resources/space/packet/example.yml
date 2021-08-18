@@ -14,7 +14,7 @@ packet_1:
     type: collection
     set:
       - clickCount 10
-      - addClickCount only 3 itemCheck inv mainHand *'minecraft:wooden_hone'
+      - addClickCount only 3 is *"itemCheck inv mainHand *'minecraft:wooden_hone'"
     pass:
       - remove
       - kether shell...

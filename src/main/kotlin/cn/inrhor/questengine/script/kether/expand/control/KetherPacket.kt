@@ -28,8 +28,9 @@ class KetherPacket {
             return frame.newFrame(location).run<Location>().thenAccept {
                 val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
                 val bLoc = it.toBukkitLocation()
-                val dataPacketID = DataPacketID(player.cast(), packetID, 1, bLoc)
-                PacketManager.sendThisPacket(packetID, player.cast(), bLoc, dataPacketID)
+                val packetModule = PacketManager.packetMap[packetID]?: return@thenAccept
+                val dataPacketID = DataPacketID(player.cast(), packetModule, 1, bLoc)
+                PacketManager.sendThisPacket(packetModule, player.cast(), bLoc, dataPacketID)
             }
         }
     }
@@ -42,7 +43,8 @@ class KetherPacket {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {
             return frame.newFrame(location).run<Location>().thenAccept {
                 val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
-                val dataPacketID = DataPacketID(player.cast(), packetID, number, it.toBukkitLocation())
+                val packetModule = PacketManager.packetMap[packetID]?: return@thenAccept
+                val dataPacketID = DataPacketID(player.cast(), packetModule, number, it.toBukkitLocation())
                 val spawner = PacketEntitySpawner(player.cast(), dataPacketID)
                 val t = type.lowercase()
                 if (t == "circle") {

@@ -1,9 +1,9 @@
 package cn.inrhor.questengine.common.packet
 
+import cn.inrhor.questengine.api.packet.ActionModule
 import cn.inrhor.questengine.api.packet.PacketModule
-import taboolib.common.platform.function.*
+import cn.inrhor.questengine.api.packet.toPacketAction
 import taboolib.library.configuration.ConfigurationSection
-import taboolib.module.lang.sendLang
 
 object PacketFile {
 
@@ -11,11 +11,15 @@ object PacketFile {
         val packetID = config.name
         val viewer = config.getString("viewer")?: "all"
         val packerModule = PacketModule(packetID, viewer)
-        val entityID = PacketManager.generate(packetID, "entity")
-        packerModule.entityID = entityID
         packerModule.entityType = config.getString("entityType")?: "ARMOR_STAND"
         packerModule.mate = config.getStringList("mate")
-        packerModule.action = config.getStringList("action")
+        if (config.contains("action.type")) {
+            val action = ActionModule(
+                config.getString("action.type")!!.toPacketAction(),
+                config.getStringList("action.set"),
+                config.getStringList("action.pass"))
+            packerModule.action = action
+        }
         PacketManager.register(packetID, packerModule)
     }
 
