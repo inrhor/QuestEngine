@@ -33,6 +33,16 @@ object PacketManager {
         return mutableListOf()
     }
 
+    fun getPacketData(player: Player, entityID: Int): PacketData? {
+        val pData = DataStorage.getPlayerData(player)
+        pData.dataPacket.values.forEach {
+            it.forEach { p ->
+                if (p.entityID == entityID) return p
+            }
+        }
+        return null
+    }
+
     fun addDataPacket(player: Player, packetID: String, dataPackets: MutableList<PacketData>) {
         val pData = DataStorage.getPlayerData(player)
         pData.addDataPacket(packetID, dataPackets)

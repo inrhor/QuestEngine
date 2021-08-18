@@ -17,6 +17,7 @@ object PacketFile {
             val action = ActionModule(
                 config.getString("action.type")!!.toPacketAction(),
                 config.getStringList("action.set"),
+                config.getStringList("action.trigger"),
                 config.getStringList("action.pass"))
             packerModule.action = action
         }
