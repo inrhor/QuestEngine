@@ -16,7 +16,7 @@ packet_1:
       - clickCount 10
       - addClickCount only 3 is *"itemCheck inv mainHand *'minecraft:wooden_hone'"
     trigger:
-      - send packet
+      - send packet where @thisLoc addY 2
     pass:
       - remove
-      - kether shell...
+      - @kether shell...

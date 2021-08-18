@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.nms
 
 import cn.inrhor.questengine.api.event.PacketEntityInteractEvent
+import cn.inrhor.questengine.api.packet.PacketActionType
 import cn.inrhor.questengine.common.database.data.PacketData
 import cn.inrhor.questengine.common.packet.PacketManager
 import org.bukkit.entity.Player
@@ -16,6 +17,9 @@ object PacketNMSListener {
         if (ev.packet.name == "PacketPlayInUseEntity") {
             val p = ev.player
             val packetData = PacketManager.getPacketData(p, ev.packet.read("a")!!)?: return
+            val packetModule = packetData.packetModule
+            val packetAction = packetModule.action?: return
+            if (packetAction.type != PacketActionType.COLLECTION) return
             if (MinecraftVersion.isUniversal) {
                 val action = ev.packet.read<Any>("action")!!
                 click(action.javaClass.simpleName, p, packetData)
