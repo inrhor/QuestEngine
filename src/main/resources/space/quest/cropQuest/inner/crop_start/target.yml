@@ -33,3 +33,13 @@ target:
       - "&r体验舒适的天堂"
       - "    &r进度 &8%schedule%"
       - ""
+  4:
+    name: task go to location
+    period: 10
+    async: true
+    condition:
+      - where
+    time: minute 10
+    reward: 2 false
+    description:
+      - "back home"

@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.loader
+package cn.inrhor.questengine.server
 
 import cn.inrhor.questengine.QuestEngine
 import taboolib.common.platform.function.*

@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.hook
+package cn.inrhor.questengine.common.hook
 
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.quest.manager.QuestManager
@@ -8,7 +8,6 @@ import cn.inrhor.questengine.utlis.time.toStr
 import org.bukkit.entity.Player
 import taboolib.platform.compat.PlaceholderExpansion
 import taboolib.platform.util.asLangText
-import java.util.*
 
 object HookPlaceholderAPI: PlaceholderExpansion {
 

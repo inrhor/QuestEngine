@@ -388,6 +388,10 @@ object QuestManager {
         endQuest(player, qData, state, innerFailReward)
     }
 
+    fun finishInnerQuest(player: Player, questData: QuestData, questInnerData: QuestInnerData) {
+        finishInnerQuest(player, questData.questUUID, questData.questID, questInnerData.innerQuestID)
+    }
+
     /**
      * 结束当前内部任务，执行下一个内部任务或最终完成
      *

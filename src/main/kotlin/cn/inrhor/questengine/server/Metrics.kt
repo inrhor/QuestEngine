@@ -1,4 +1,4 @@
-package cn.inrhor.questengine
+package cn.inrhor.questengine.server
 
 import cn.inrhor.questengine.common.dialog.DialogManager
 import cn.inrhor.questengine.common.quest.manager.QuestManager

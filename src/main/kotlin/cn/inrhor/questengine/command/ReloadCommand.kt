@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.command
 
-import cn.inrhor.questengine.loader.PluginLoader
+import cn.inrhor.questengine.server.PluginLoader
 import taboolib.common.platform.*
 import taboolib.common.platform.command.*
 import taboolib.module.lang.sendLang
