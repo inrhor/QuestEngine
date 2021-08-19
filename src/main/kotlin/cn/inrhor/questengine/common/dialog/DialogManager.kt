@@ -121,7 +121,7 @@ object DialogManager {
         val dialogModule = returnCanDialogHolo(players, npcID)?: return
         val holoDialog = HoloDialog(dialogModule, npcLoc, players)
         holoDialog.run()
-        spaceDialogHolo(players, dialogModule, holoDialog)
+        spaceDialogHolo(dialogModule, holoDialog)
     }
 
     fun sendDialogHolo(player: Player, dialogID: String) {
@@ -130,11 +130,11 @@ object DialogManager {
             val dialogModule = get(dialogID)?: return
             val holoDialog = HoloDialog(dialogModule, player.location, mutableSetOf(player))
             holoDialog.run()
-            spaceDialogHolo(mutableSetOf(player), dialogModule, holoDialog)
+            spaceDialogHolo(dialogModule, holoDialog)
         }
     }
 
-    fun spaceDialogHolo(players: MutableSet<Player>, dialogModule: DialogModule, holoDialog: HoloDialog) {
+    fun spaceDialogHolo(dialogModule: DialogModule, holoDialog: HoloDialog) {
         val space = dialogModule.spaceModule
         if (!space.enable) return
         val id = dialogModule.dialogID
