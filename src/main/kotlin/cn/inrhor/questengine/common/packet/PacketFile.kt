@@ -18,7 +18,8 @@ object PacketFile {
                 config.getString("action.type")!!.toPacketAction(),
                 config.getStringList("action.set"),
                 config.getStringList("action.trigger"),
-                config.getStringList("action.pass"))
+                config.getStringList("action.pass"),
+                config.getBoolean("action.ratio.enable"))
             packerModule.action = action
         }
         PacketManager.register(packetID, packerModule)

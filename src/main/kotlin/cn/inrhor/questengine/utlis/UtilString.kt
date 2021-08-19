@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.utlis
 
 import cn.inrhor.questengine.QuestEngine
-import taboolib.module.chat.colored
+import com.google.common.base.Strings
 import java.util.*
 
 object UtilString {
@@ -37,4 +37,24 @@ fun String.subAfter(meta: String): String {
  */
 fun String.subBefore(meta: String): String {
     return this.substring(0, this.indexOf(meta))
+}
+
+/**
+ * 百分比状态
+ * @param current
+ * @param max
+ * @param totalBars
+ * @param symbol
+ * @param completedColor
+ * @param notCompletedColor
+ * @return
+ */
+fun progressBar(
+    current: Int, max: Int, totalBars: Int, symbol:
+    String, completedColor: String,
+    notCompletedColor: String): String {
+    val percent = current.toFloat() / max
+    val progressBars = (totalBars * percent).toInt()
+    return (Strings.repeat("" + completedColor + symbol, progressBars)
+            + Strings.repeat("" + notCompletedColor + symbol, totalBars - progressBars))
 }

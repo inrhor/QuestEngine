@@ -75,12 +75,7 @@ class KetherPacket {
 
         private fun removeRangePacket(viewers: MutableSet<Player>, packetID: String, location: Location, range: Double) {
             viewers.forEach {
-                val pData = DataStorage.getPlayerData(it)
-                pData.dataPacket[packetID]?.forEach { d ->
-                    if (LocationTool.inLoc(location.toBukkitLocation(), d.location, range)) {
-                        destroyEntity(viewers, d.entityID)
-                    }
-                }
+                PacketManager.removePacketEntity(it, packetID, location.toBukkitLocation(), range)
             }
         }
     }

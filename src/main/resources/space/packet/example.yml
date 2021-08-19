@@ -12,11 +12,11 @@ packet_1:
   # 数据包动作
   action:
     type: collection
+    ratio:
+      enable: true
     set:
       - clickCount 10
       - addClickCount only 3 is *"itemCheck inv mainHand *'minecraft:wooden_hone'"
-    trigger:
-      - send packet where @thisLoc addY 2
+    trigger: []
     pass:
       - remove
-      - @kether shell...

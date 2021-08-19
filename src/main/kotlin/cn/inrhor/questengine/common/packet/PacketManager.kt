@@ -6,6 +6,7 @@ import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.utlis.file.GetFile
 import cn.inrhor.questengine.utlis.UtilString
+import cn.inrhor.questengine.utlis.location.LocationTool
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import taboolib.library.configuration.YamlConfiguration
@@ -46,6 +47,32 @@ object PacketManager {
     fun addDataPacket(player: Player, packetID: String, dataPackets: MutableList<PacketData>) {
         val pData = DataStorage.getPlayerData(player)
         pData.addDataPacket(packetID, dataPackets)
+    }
+
+    fun removePacketEntity(player: Player, packetID: String, entityID: Int) {
+        val pData = DataStorage.getPlayerData(player)
+        pData.dataPacket.forEach { (id, data) ->
+            for (i in data.count() -1 downTo 0) {
+                val d = data[i]
+                if (packetID == id && entityID == d.entityID) {
+                    destroyEntity(player, d.entityID)
+                    data.remove(d)
+                }
+            }
+        }
+    }
+
+    fun removePacketEntity(player: Player, packetID: String, location: Location, range: Double) {
+        val pData = DataStorage.getPlayerData(player)
+        pData.dataPacket.forEach { (id, data) ->
+            for (i in data.count() -1 downTo 0) {
+                val d = data[i]
+                if (packetID == id && LocationTool.inLoc(location, d.location, range)) {
+                    destroyEntity(player, d.entityID)
+                    data.remove(d)
+                }
+            }
+        }
     }
 
     fun sendThisPacket(packetModule: PacketModule, entityID: Int, sender: Player, location: Location) {
