@@ -23,7 +23,9 @@ class PacketEntityInteractEvent(val player: Player, val packetData: PacketData, 
     }
 
     private fun passOnly(): Boolean {
-        packetData.clickAction.passOnly.forEach {
+        val list = packetData.clickAction.passOnly
+        if (list.isEmpty()) return true
+        list.forEach {
             if (evalBoolean(player, "$it to "+packetData.entityID)) return true
         }
         return false

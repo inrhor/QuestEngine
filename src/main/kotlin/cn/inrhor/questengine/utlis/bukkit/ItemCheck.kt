@@ -46,6 +46,10 @@ class ItemCheck(private val matchers: MutableMap<String, String>) {
         return true
     }
 
+    fun isMainHand(player: Player, take: Boolean): Boolean {
+        return match(player.inventory.itemInMainHand, take)
+    }
+
     private fun loreContains(meta: ItemMeta, str: String): Boolean {
         val lore = meta.lore?: return false
         return lore.contains(str)
