@@ -29,7 +29,7 @@ class HoloDialog(
         for (id in packetIDs) {
             destroyEntity(viewers, id)
         }
-        viewers.clear()
+        // 在 HoloReply 清理 viewers
     }
 
     fun run() {
