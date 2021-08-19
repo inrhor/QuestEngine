@@ -9,8 +9,6 @@ import cn.inrhor.questengine.common.database.data.ControlData
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.*
-import cn.inrhor.questengine.common.database.type.DatabaseManager
-import cn.inrhor.questengine.common.database.type.DatabaseType
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
@@ -300,6 +298,20 @@ object QuestManager {
         if (isNewQuest) {
             Database.database.createQuest(player, questUUID, questData)
         }
+    }
+
+    /**
+     * 设置任务状态，包括内部任务
+     */
+    fun setQuestState(player: Player, questData: QuestData, state: QuestState) {
+        if (state == QuestState.DOING) {
+            val pData = DataStorage.getPlayerData(player)
+            pData.questDataList.values.forEach {
+                if (it.state == state) setQuestState(player, it, state)
+            }
+        }
+        questData.state = state
+        questData.questInnerData.state = state
     }
 
     /**

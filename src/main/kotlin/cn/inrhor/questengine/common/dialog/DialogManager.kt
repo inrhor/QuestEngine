@@ -5,6 +5,7 @@ import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.dialog.animation.parser.ItemParser
 import cn.inrhor.questengine.common.dialog.animation.parser.TextParser
 import cn.inrhor.questengine.common.dialog.optional.holo.core.HoloDialog
+import cn.inrhor.questengine.script.kether.evalBoolean
 import cn.inrhor.questengine.script.kether.evalBooleanSet
 import cn.inrhor.questengine.utlis.file.GetFile
 import cn.inrhor.questengine.utlis.UtilString
@@ -136,12 +137,27 @@ object DialogManager {
     fun spaceDialogHolo(players: MutableSet<Player>, dialogModule: DialogModule, holoDialog: HoloDialog) {
         val space = dialogModule.spaceModule
         if (!space.enable) return
+        val id = dialogModule.dialogID
         submit(async = true, period = 5L) {
-            if (holoDialog.viewers.isEmpty()) return@submit
-            if (!evalBooleanSet(players, space.condition)) {
-                holoDialog.end()
+            val viewers = holoDialog.viewers
+            if (viewers.isEmpty()) return@submit
+            if (!checkSpace(viewers, space.condition, holoDialog.npcLoc)) {
+                val dialogData = DataStorage.getPlayerData(viewers.first()).dialogData
+                dialogData.endHoloDialog(id)
                 return@submit
             }
         }
+    }
+
+    fun checkSpace(players: MutableSet<Player>, condition: MutableList<String>, loc: Location): Boolean {
+        players.forEach {
+            condition.forEach { cd ->
+                val shell = if (cd.lowercase().startsWith("spacerange"))  cd+
+                        " where location *"+loc.world?.name+
+                        " *"+loc.x+" *"+loc.y+" *"+loc.z else cd
+                if (!evalBoolean(it, shell)) return false
+            }
+        }
+        return true
     }
 }

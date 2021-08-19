@@ -20,10 +20,10 @@ class HoloHitBox(val replyModule: ReplyModule,
     private var task: PlatformExecutor.PlatformTask? = null
 
     fun end() {
-        task?.cancel()
         packetIDs.forEach {
             destroyEntity(viewers, it)
         }
+        viewers.clear()
     }
 
     private fun isBox(viewLoc: Location): Boolean {

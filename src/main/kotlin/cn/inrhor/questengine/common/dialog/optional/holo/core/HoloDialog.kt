@@ -29,6 +29,7 @@ class HoloDialog(
         for (id in packetIDs) {
             destroyEntity(viewers, id)
         }
+        viewers.clear()
     }
 
     fun run() {

@@ -48,4 +48,23 @@ object LocationTool {
         }
         return false
     }
+
+    fun inLoc(fromLoc: Location, targetLoc: Location, rangeX: Double, rangeY: Double, rangeZ: Double): Boolean {
+        val x = fromLoc.x
+        val y = fromLoc.y
+        val z = fromLoc.z
+        val tX = targetLoc.x
+        val tY = targetLoc.y
+        val tZ = targetLoc.z
+        val minX = tX-rangeX
+        val maxX = tX+rangeX
+        val minY = tY-rangeY
+        val maxY = tY+rangeY
+        val minZ = tZ-rangeZ
+        val maxZ = tZ+rangeZ
+        if (x in minX..maxX && y in minY..maxY && z in minZ..maxZ ) {
+            return true
+        }
+        return false
+    }
 }

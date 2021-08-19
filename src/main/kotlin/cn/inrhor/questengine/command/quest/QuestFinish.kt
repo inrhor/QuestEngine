@@ -12,7 +12,7 @@ object QuestFinish {
 
     val finish = subCommand {
         dynamic {
-            suggestion<ProxyCommandSender> { _, context ->
+            suggestion<ProxyCommandSender> { _, _ ->
                 Bukkit.getOnlinePlayers().map { it.name }
             }
             dynamic {

@@ -13,7 +13,7 @@ dialog_1:
     enable: true
     # 检查条件，一旦不符合将终止对话
     condition:
-      - range 30 30 30
+      - spaceRange 30 30 30
       - permission *dialog.prm.1
   # 可选对话类型
   type: holo

@@ -16,6 +16,7 @@ taboolib {
             "module-nms",
             "module-nms-util",
             "module-effect",
+            "module-metrics",
             "platform-bukkit")
     description {
         contributors {
@@ -30,7 +31,7 @@ taboolib {
         prefix("QuestEngine")
     }
     classifier = null
-    version = "6.0.0-pre48"
+    version = "6.0.0-pre54"
 }
 
 repositories {

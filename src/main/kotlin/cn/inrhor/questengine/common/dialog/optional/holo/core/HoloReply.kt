@@ -28,10 +28,15 @@ class HoloReply(
         packetIDs.forEach {
             destroyEntity(viewers, it)
         }
+        viewers.clear()
     }
 
     fun run() {
         submit(async = true, delay = this.delay) {
+            if (viewers.isEmpty()) {
+                cancel()
+                return@submit
+            }
             for (replyModule in replyList) {
                 runContent(replyModule)
             }
