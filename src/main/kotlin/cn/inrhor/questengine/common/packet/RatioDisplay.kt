@@ -17,7 +17,9 @@ object RatioDisplay {
         val need = action.needClickCount
         val now = action.clickCountLog
         player.sendTitle("",
-            progressBar(now, need, 60, "|", "§a", "§7"),
+            "§8[ "+ progressBar(now, need,
+                60, "|",
+                "§a", "§7")+"§8 ]",
             0, 2, 0)
     }
 

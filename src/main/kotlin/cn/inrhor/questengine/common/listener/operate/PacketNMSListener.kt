@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.nms
+package cn.inrhor.questengine.common.listener.operate
 
 import cn.inrhor.questengine.api.event.PacketEntityInteractEvent
 import cn.inrhor.questengine.api.packet.PacketActionType
@@ -33,12 +33,12 @@ object PacketNMSListener {
         when (str) {
             "d", "ATTACK" -> {
                 submit {
-                    PacketEntityInteractEvent(player, packetData, PacketEntityInteractEvent.Type.LEFT)
+                    PacketEntityInteractEvent(player, packetData, PacketEntityInteractEvent.Type.LEFT).call()
                 }
             }
             "e", "INTERACT_AT" -> {
                 submit {
-                    PacketEntityInteractEvent(player, packetData, PacketEntityInteractEvent.Type.RIGHT)
+                    PacketEntityInteractEvent(player, packetData, PacketEntityInteractEvent.Type.RIGHT).call()
                 }
             }
         }
