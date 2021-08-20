@@ -1,11 +1,13 @@
 package cn.inrhor.questengine.common.quest.manager
 
 import cn.inrhor.questengine.api.target.ConditionType
+import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestTarget
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import taboolib.library.configuration.FileConfiguration
 
 object TargetManager {
@@ -84,6 +86,17 @@ object TargetManager {
             return targetData.schedule
         }
         return 0
+    }
+
+    fun runTask(pData: PlayerData, player: Player) {
+        pData.questDataList.values.forEach {
+            val inner = it.questInnerData
+            inner.targetsData.values.forEach { t ->
+                if (t.name.lowercase().startsWith("task ")) {
+                    t.runTask(player, it, inner)
+                }
+            }
+        }
     }
 
 }

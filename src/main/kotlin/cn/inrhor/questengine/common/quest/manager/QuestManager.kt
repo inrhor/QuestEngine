@@ -292,7 +292,7 @@ object QuestManager {
             targetData.runTime(player, questUUID)
             targetDataMap[name] = targetData
             if (name.lowercase().startsWith("task ")) {
-                targetData.runTask(player, questData, innerQuestData, target.period, target.async)
+                targetData.runTask(player, questData, innerQuestData)
             }
         }
         innerQuestData.targetsData = targetDataMap

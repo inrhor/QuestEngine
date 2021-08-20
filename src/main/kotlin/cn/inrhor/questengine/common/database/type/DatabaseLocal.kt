@@ -9,6 +9,7 @@ import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.quest.manager.ControlManager
 import cn.inrhor.questengine.common.quest.manager.RunLogType
+import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.common.quest.toState
 import cn.inrhor.questengine.common.quest.toStr
 import cn.inrhor.questengine.utlis.time.toStr
@@ -107,7 +108,9 @@ class DatabaseLocal: Database() {
                 ControlManager.pullControl(player, it, priority, line, waitTime)
             }
         }
-        DataStorage.getPlayerData(uuid).questDataList = questDataMap
+        val pData = DataStorage.getPlayerData(uuid)
+        pData.questDataList = questDataMap
+        TargetManager.runTask(pData, player)
     }
 
     override fun getInnerQuestData(player: Player, questUUID: UUID, questID: String, innerQuestID: String): QuestInnerData? {

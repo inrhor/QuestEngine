@@ -8,6 +8,7 @@ import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.quest.manager.ControlManager
 import cn.inrhor.questengine.common.quest.manager.RunLogType
+import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.common.quest.toState
 import cn.inrhor.questengine.common.quest.toStr
 import cn.inrhor.questengine.utlis.time.toDate
@@ -170,6 +171,7 @@ class DatabaseSQL: Database() {
             val waitTime = it.second
             ControlManager.pullControl(player, controlID, priority, line, waitTime)
         }
+        TargetManager.runTask(pData, player)
     }
 
     override fun getInnerQuestData(player: Player, questUUID: UUID, questID: String, innerQuestID: String): QuestInnerData? {

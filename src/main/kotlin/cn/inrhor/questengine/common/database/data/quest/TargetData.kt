@@ -40,9 +40,9 @@ class TargetData(val name: String, var timeUnit: String,
      * 启用调度类型的任务目标
      * 备注：要求多人完成的，则判断 成员数 <= 进度
      */
-    fun runTask(player: Player, questData: QuestData, innerData: QuestInnerData, taskPeriod: Int, taskAsync: Boolean) {
+    fun runTask(player: Player, questData: QuestData, innerData: QuestInnerData) {
         var pass = false
-        submit(period = taskPeriod.toLong(), async = taskAsync) {
+        submit(period = questTarget.period.toLong(), async = questTarget.async) {
             if (!player.isOnline ||
                 questData.state != QuestState.DOING ||
                 innerData.state != QuestState.DOING) {
