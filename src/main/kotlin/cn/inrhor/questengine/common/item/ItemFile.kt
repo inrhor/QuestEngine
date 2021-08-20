@@ -1,16 +1,15 @@
 package cn.inrhor.questengine.common.item
 
-import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import taboolib.library.configuration.ConfigurationSection
-import taboolib.library.xseries.setItemStack
+import taboolib.library.xseries.getItemStack
 
 class ItemFile(val itemID: String) {
 
-    var item = ItemStack(Material.STONE)
+    lateinit var itemStack: ItemStack
 
     fun init(config: ConfigurationSection) {
-        config.setItemStack(itemID, item)
+        itemStack = config.getItemStack("")?: return
 
         ItemManager.register(itemID, this)
     }

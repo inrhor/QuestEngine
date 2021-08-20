@@ -56,7 +56,7 @@ object ItemManager {
     /**
      * 获取物品
      */
-    fun get(itemID: String) = (itemFileMap[itemID]?: error("unknown item")).item
+    fun get(itemID: String) = (itemFileMap[itemID]?: error("unknown item")).itemStack
 
     fun clearMap() = itemFileMap.clear()
 }

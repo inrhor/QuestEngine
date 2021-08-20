@@ -61,7 +61,7 @@ class HoloDialog(
                     HoloAnimationText(this, viewers, playText, holoLoc).runTask()
                     packetIDs.add(playText.holoID)
                 }
-                iUc.startsWith("ITEMNORMAL") -> {
+                iUc.startsWith("ITEMWRITE") -> {
                     val playItem = dialogModule.playItem[itemIndex]
                     val holoID = playItem.holoID
                     itemIndex++

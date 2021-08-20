@@ -39,7 +39,7 @@ object DialogManager {
                 iUc.startsWith("TEXT") -> {
                     textContents.add(script)
                 }
-                iUc.startsWith("ITEMNORMAL") -> {
+                iUc.startsWith("ITEMWRITE") -> {
                     itemContents.add(script)
                 }
             }

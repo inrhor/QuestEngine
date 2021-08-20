@@ -10,9 +10,10 @@ class KetherItemWrite {
     class WriteItem(val itemID: String, val delay: Int) : ScriptAction<ItemDialogPlay>() {
         override fun run(frame: ScriptFrame): CompletableFuture<ItemDialogPlay> {
             val dialogItem = CompletableFuture<ItemDialogPlay>()
+            val item = ItemManager.get(itemID)
             dialogItem.complete(
                 ItemDialogPlay(
-                    ItemManager.get(itemID),
+                    item,
                     delay
                 )
             )
@@ -29,6 +30,8 @@ class KetherItemWrite {
             val delay = it.nextInt()
             it.mark()
             it.expect("use")
+            it.mark()
+            it.expect("normal")
             it.mark()
             it.expect("item")
             val itemID = it.nextToken()

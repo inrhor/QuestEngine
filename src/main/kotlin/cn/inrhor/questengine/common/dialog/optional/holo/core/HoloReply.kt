@@ -24,16 +24,18 @@ class HoloReply(
 
     private val packetIDs = mutableListOf<Int>()
 
+    var end = false
+
     fun end() {
+        end = true
         packetIDs.forEach {
             destroyEntity(viewers, it)
         }
-        viewers.clear()
     }
 
     fun run() {
         submit(async = true, delay = this.delay) {
-            if (viewers.isEmpty()) {
+            if (viewers.isEmpty() || end) {
                 cancel()
                 return@submit
             }
