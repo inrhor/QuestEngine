@@ -1,11 +1,11 @@
 package cn.inrhor.questengine.common.database.data.quest
 
-import cn.inrhor.questengine.api.collaboration.TeamData
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.common.quest.manager.QuestManager
+import cn.inrhor.questengine.common.quest.manager.RewardManager
 import cn.inrhor.questengine.script.kether.evalBoolean
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.*
@@ -51,7 +51,7 @@ class TargetData(val name: String, var timeUnit: String,
             if (!pass && runTaskPass(player)) {
                 schedule++
                 if (modeType == ModeType.PERSONAL) {
-                    // rewards
+                    RewardManager.finishReward(player, questData, innerData, questTarget)
                     QuestManager.finishInnerQuest(player, questData, innerData)
                     cancel()
                     return@submit
@@ -69,12 +69,11 @@ class TargetData(val name: String, var timeUnit: String,
                 }
                 if (runTaskModePass(questData, teamData.members)) {
                     teamData.playerMembers().forEach {
-                        // rewards
+                        RewardManager.finishReward(it, questData, innerData, questTarget)
                         QuestManager.finishInnerQuest(it, questData, innerData)
                     }
                 }
             }
-            // end? reward?
         }
     }
 
@@ -90,10 +89,7 @@ class TargetData(val name: String, var timeUnit: String,
     }
 
     private fun runTaskPass(player: Player): Boolean {
-        questTarget.conditionList.values.forEach {
-            if (!evalBoolean(player, it)) return false
-        }
-        questTarget.condition.values.forEach {
+        questTarget.conditions.forEach {
             if (!evalBoolean(player, it)) return false
         }
         return true

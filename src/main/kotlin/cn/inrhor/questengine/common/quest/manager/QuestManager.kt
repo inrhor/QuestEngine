@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.common.quest.manager
 
-import cn.inrhor.questengine.api.quest.control.ControlPriority
 import cn.inrhor.questengine.api.quest.QuestInnerModule
 import cn.inrhor.questengine.api.quest.QuestModule
 import cn.inrhor.questengine.common.collaboration.TeamManager
@@ -269,6 +268,8 @@ object QuestManager {
         val innerModule = getInnerQuestModule(questID, innerQuestID)?: return
         val questModule = getQuestModule(questID)?: return
         val targetDataMap = mutableMapOf<String, TargetData>()
+        val innerQuestData = QuestInnerData(questID, innerQuestID, targetDataMap, state)
+        val questData = QuestData(questUUID, questID, innerQuestData, state, pData.teamData, mutableListOf())
         innerModule.questTargetList.forEach { (name, target) ->
             val timeStr = target.time.lowercase()
             val nowDate = Date()
@@ -290,9 +291,11 @@ object QuestManager {
             val targetData = TargetData(name, timeUnit, 0, target, nowDate, endTime, questModule.modeType)
             targetData.runTime(player, questUUID)
             targetDataMap[name] = targetData
+            if (name.lowercase().startsWith("task ")) {
+                targetData.runTask(player, questData, innerQuestData, target.period, target.async)
+            }
         }
-        val innerQuestData = QuestInnerData(questID, innerQuestID, targetDataMap, state)
-        val questData = QuestData(questUUID, questID, innerQuestData, state, pData.teamData, mutableListOf())
+        innerQuestData.targetsData = targetDataMap
         pData.questDataList[questUUID] = questData
         ControlManager.saveControl(player, pData, innerQuestData)
         if (isNewQuest) {

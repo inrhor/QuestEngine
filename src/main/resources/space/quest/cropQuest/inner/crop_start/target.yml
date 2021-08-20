@@ -37,7 +37,7 @@ target:
     name: task go to location
     period: 10
     async: true
-    condition:
+    conditions:
       - where
     time: minute 10
     reward: 2 false

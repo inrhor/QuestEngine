@@ -55,7 +55,11 @@ object TargetManager {
                 }
             }
             val description = yaml.getStringList(s + "description")
-            val target = QuestTarget(name, time, reward, condition, conditionList, description)
+            val period = yaml.getInt(s+"period")
+            val async = yaml.getBoolean(s+"async")
+            val conditions = yaml.getStringList(s+"conditions")
+            val target = QuestTarget(name, time, reward, period, async, conditions,
+                condition, conditionList, description)
             questTargetList[name] = target
         }
         return questTargetList
