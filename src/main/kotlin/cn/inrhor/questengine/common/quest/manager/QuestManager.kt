@@ -14,9 +14,7 @@ import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.script.kether.eval
 import cn.inrhor.questengine.script.kether.evalBoolean
 import cn.inrhor.questengine.script.kether.evalBooleanSet
-import cn.inrhor.questengine.utlis.time.add
-import cn.inrhor.questengine.utlis.time.toDate
-import cn.inrhor.questengine.utlis.time.toTimeUnit
+import cn.inrhor.questengine.utlis.time.*
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.*
@@ -286,6 +284,15 @@ object QuestManager {
                         endTime = nowDate.add(Calendar.SECOND, timeSpit[1].toInt())
                     }
                     "date" -> endTime = timeSpit[1].toDate()
+                    "timing" -> {
+                        val unit = timeSpit[1] // day month year
+                        val int = timeSpit[2].toInt()
+                        val dd = timeSpit[3] // dd
+                        val time = timeSpit[4] // HH:mm:ss
+                        val nowStrYearMM = nowDate.toStrYearMM()
+                        val strYmd = "$nowStrYearMM-$dd".checkDate(nowStrYearMM)
+                        endTime = "$strYmd $time".toDate().add(unit, int)
+                    }
                 }
             }
             val targetData = TargetData(name, timeUnit, 0, target, nowDate, endTime, questModule.modeType)

@@ -4,8 +4,6 @@ import cn.inrhor.questengine.common.dialog.animation.item.ItemDialogPlay
 import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.script.kether.eval
-import taboolib.common.platform.function.info
-import java.util.*
 
 /**
  * 注册对话传递物品列表，此类做解析并存储
@@ -29,14 +27,11 @@ class ItemParser(private val itemContents: MutableList<String>) {
             HoloIDManager.addEntityID(holoID)
             HoloIDManager.addEntityID(itemID)
             if (script.uppercase().startsWith("ITEMWRITE")) {
-                info("write $script")
                 val dialogItem = eval(script) as ItemDialogPlay
                 dialogItem.holoID = holoID
                 dialogItem.itemID = itemID
                 dialogItemList.add(dialogItem)
-                info("dialogItem "+dialogItem.item)
             }else {
-                info("item $script")
                 val item = ItemManager.get(script)
                 val dialogItem = ItemDialogPlay(holoID, itemID, item, 0)
                 dialogItemList.add(dialogItem)
