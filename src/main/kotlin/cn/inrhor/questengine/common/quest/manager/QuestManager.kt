@@ -283,7 +283,7 @@ object QuestManager {
                     "s" -> {
                         endTime = nowDate.add(Calendar.SECOND, timeSpit[1].toInt())
                     }
-                    "date" -> endTime = timeSpit[1].toDate()
+                    "date" -> endTime = ("${timeSpit[1]} ${timeSpit[2]}").toDate()
                     "timing" -> {
                         val unit = timeSpit[1] // day month year
                         val int = timeSpit[2].toInt()

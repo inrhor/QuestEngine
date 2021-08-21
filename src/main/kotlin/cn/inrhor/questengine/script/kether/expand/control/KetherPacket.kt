@@ -55,7 +55,7 @@ class KetherPacket {
     }
 
     /**
-     * packet remove packetID viewer[all/player] where location <range int>
+     * packet remove packetID viewer[all/player] where location <range double>
      */
     class RemoveRangePacket(val viewer: Boolean, val packetID: String, val location: ParsedAction<*>, val range: Double): ScriptAction<Void>() {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {
