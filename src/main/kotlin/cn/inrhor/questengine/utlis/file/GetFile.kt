@@ -17,7 +17,7 @@ object GetFile {
             if (say.isNotEmpty()) {
                 console().sendLang(say, UtilString.pluginTag)
             }
-            QuestEngine.resource.releaseResourceFile(child, true)
+            QuestEngine.resource.releaseResourceFile("$child/example.yml", true)
         }
         return file
     }

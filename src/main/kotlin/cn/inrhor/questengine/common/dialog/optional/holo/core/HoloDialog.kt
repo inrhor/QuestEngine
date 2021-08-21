@@ -33,7 +33,7 @@ class HoloDialog(
     }
 
     fun run() {
-        var holoLoc = npcLoc
+        var holoLoc = npcLoc.clone()
         var nextY = 0.0
         var textIndex = 0
         var itemIndex = 0
@@ -48,6 +48,7 @@ class HoloDialog(
                     holoLoc = LocationTool.getReferLoc(npcLoc, evalReferLoc(i))
                 }
                 iUc.startsWith("ADDLOC") -> {
+                    holoLoc.yaw = npcLoc.clone().yaw
                     holoLoc = LocationTool.getReferLoc(holoLoc, evalReferLoc(i))
                 }
                 iUc.startsWith("NEXTY") -> {

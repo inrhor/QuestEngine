@@ -27,6 +27,7 @@ taboolib {
             name("Adyeshach").optional(true)
             name("Citizens").optional(true)
             name("ProtocolLib").optional(true)
+            name("PlaceholderAPI").optional(true)
         }
         prefix("QuestEngine")
     }

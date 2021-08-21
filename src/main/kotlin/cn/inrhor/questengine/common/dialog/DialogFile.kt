@@ -22,17 +22,6 @@ object DialogFile {
         }
         for (dialogID in yaml.getKeys(false)) {
             val cfs = yaml.getConfigurationSection(dialogID)
-            if (!cfs.contains("npcIDs")) {
-                return run {
-                    console().sendLang("DIALOG-ERROR_FILE", dialogID)
-                }
-            }
-            if (!cfs.contains("condition")) {
-                return run {
-                    console().sendLang("DIALOG-ERROR_FILE", dialogID)
-                }
-            }
-
             val npcID = cfs.getStringList("npcIDs")
             val condition = cfs.getStringList("condition")
             val type = cfs.getString("type")?: "holo"

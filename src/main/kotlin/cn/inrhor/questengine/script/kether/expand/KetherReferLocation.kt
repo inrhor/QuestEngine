@@ -27,7 +27,7 @@ class KetherReferLocation(
     }
 
     /*
-        addLoc/initLoc dir left add [multiply] [height]
+        addLoc/initLoc dir [dir] add [multiply] [height]
      */
     internal object Parser {
         @KetherParser(["addLoc", "initLoc"], namespace = "QuestEngine")

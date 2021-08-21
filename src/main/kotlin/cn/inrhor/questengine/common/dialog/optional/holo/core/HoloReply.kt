@@ -46,7 +46,7 @@ class HoloReply(
     }
 
     private fun runContent(replyModule: ReplyModule) {
-        var holoLoc = npcLoc
+        var holoLoc = npcLoc.clone()
         var nextY = 0.0
         var textIndex = 0
         var itemIndex = 0
@@ -59,7 +59,7 @@ class HoloReply(
             when {
                 iUc.startsWith("HITBOX") -> {
                     val referHoloHitBox = evalHoloHitBox(i)
-                    val boxLoc = LocationTool.getReferHoloBoxLoc(npcLoc, referHoloHitBox)
+                    val boxLoc = LocationTool.getReferHoloBoxLoc(holoLoc, referHoloHitBox)
                     val holoHitBox = HoloHitBox(replyModule, boxLoc, referHoloHitBox, viewers)
                     holoHitBox.viewBox()
                     for (viewer in viewers) {
@@ -70,6 +70,7 @@ class HoloReply(
                     holoLoc = LocationTool.getReferLoc(npcLoc, evalReferLoc(i))
                 }
                 iUc.startsWith("ADDLOC") -> {
+                    holoLoc.yaw = npcLoc.clone().yaw
                     holoLoc = LocationTool.getReferLoc(holoLoc, evalReferLoc(i))
                 }
                 iUc.startsWith("NEXTY") -> {
