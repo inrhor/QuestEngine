@@ -18,16 +18,7 @@ object TargetPlayerQuitServer: TargetExtend<PlayerQuitEvent>() {
     init {
         event = PlayerQuitEvent::class
         tasker{
-            val questData = QuestManager.getDoingQuest(player)?: return@tasker player
-            if (!QuestManager.matchQuestMode(questData)) return@tasker player
-            val innerData = questData.questInnerData
-            val innerTarget = QuestManager.getDoingTarget(player, name)?: return@tasker player
-            val number = object: ConditionType("number") {
-                override fun check(): Boolean {
-                    return Schedule.isNumber(player, name, "number", questData, innerData, innerTarget)
-                }
-            }
-            TargetManager.set(name, "number", number)
+            TargetPlayerJoinServer.match(player)
             player
         }
         TargetManager.register(name, "number", "number")

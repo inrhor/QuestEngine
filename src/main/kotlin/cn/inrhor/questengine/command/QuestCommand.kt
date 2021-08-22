@@ -17,4 +17,7 @@ internal object QuestCommand {
     @CommandBody
     val quit = QuestQuit.quit
 
+    @CommandBody
+    val state = QuestState.state
+
 }

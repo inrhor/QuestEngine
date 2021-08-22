@@ -22,7 +22,8 @@ object TargetPlayerDeath: TargetExtend<PlayerDeathEvent>() {
             val questData = QuestManager.getDoingQuest(player)?: return@tasker player
             if (!QuestManager.matchQuestMode(questData)) return@tasker player
             val innerData = questData.questInnerData
-            val innerTarget = QuestManager.getDoingTarget(player, name)?: return@tasker player
+            val targetData = QuestManager.getDoingTarget(player, name)?: return@tasker player
+            val innerTarget = targetData.questTarget
             val cause = object: ConditionType(mutableListOf("cause")) {
                 override fun check(): Boolean {
                     return isCause(innerTarget, player.lastDamageCause!!.cause)

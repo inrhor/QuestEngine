@@ -16,8 +16,8 @@ object HookPlaceholderAPI: PlaceholderExpansion {
     override fun onPlaceholderRequest(player: Player, params: String): String {
         val args = params.split("_")
         val questID = args[1]
-        val innerID = if (args.size > 1) args[2] else ""
-        val index = if (args.size > 2) args[3].toInt() else 1
+        val innerID = if (args.size > 2) args[2] else ""
+        val index = if (args.size > 3) args[3].toInt() else 1
         return when (args[0].lowercase()) {
             "state" -> getState(player, questID, "")
             "stateinner" -> getState(player, questID, innerID)

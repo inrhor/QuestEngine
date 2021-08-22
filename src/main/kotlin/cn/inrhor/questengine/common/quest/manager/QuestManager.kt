@@ -303,7 +303,7 @@ object QuestManager {
                     }
                 }
             }
-            val targetData = TargetData(name, timeUnit, 0, target, nowDate, endTime, questModule.modeType)
+            val targetData = TargetData(questUUID, innerQuestID, name, timeUnit, 0, target, nowDate, endTime, questModule.modeType)
             targetData.runTime(player, questUUID)
             targetDataMap[name] = targetData
             if (name.lowercase().startsWith("task ")) {
@@ -489,13 +489,18 @@ object QuestManager {
     }
 
     /**
-     * 获得触发的内部任务目标
+     * 获得触发的内部任务目标数据
      */
-    fun getDoingTarget(player: Player, name: String): QuestTarget? {
-        val questData = getDoingQuest(player) ?: return null
-        val innerData = questData.questInnerData
-        val targetData = innerData.targetsData[name]?: return null
-        return targetData.questTarget
+    fun getDoingTarget(player: Player, name: String): TargetData? {
+        val pData = DataStorage.getPlayerData(player)
+        pData.questDataList.values.forEach { q ->
+            if (q.state == QuestState.DOING) {
+                q.questInnerData.targetsData.forEach { (n, t) ->
+                    if (name == n) return t
+                }
+            }
+        }
+        return null
     }
 
     /**
@@ -503,11 +508,11 @@ object QuestManager {
      *
      * 此为初始值，可许更新
      */
-    fun getInnerModuleTargetMap(modeType: ModeType, innerModule: QuestInnerModule): MutableMap<String, TargetData> {
+    fun getInnerModuleTargetMap(questUUID: UUID, modeType: ModeType, innerModule: QuestInnerModule): MutableMap<String, TargetData> {
         val targetDataMap = mutableMapOf<String, TargetData>()
         val date = Date()
         innerModule.questTargetList.forEach { (name, questTarget) ->
-            val targetData = TargetData(name, questTarget.time.toTimeUnit(), 0,
+            val targetData = TargetData(questUUID, innerModule.innerQuestID, name, questTarget.time.toTimeUnit(), 0,
                 questTarget, date, null, modeType)
             targetDataMap[name] = targetData
         }

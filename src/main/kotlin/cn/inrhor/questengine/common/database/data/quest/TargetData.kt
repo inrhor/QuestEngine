@@ -14,9 +14,13 @@ import java.util.*
 /**
  * 任务目标存储
  */
-class TargetData(val name: String, var timeUnit: String,
-                 var schedule: Int, val questTarget: QuestTarget, var timeDate: Date, var endTimeDate: Date?,
-                 var modeType: ModeType) {
+class TargetData(
+    val questUUID: UUID,
+    val innerID: String,
+    val name: String, var timeUnit: String,
+    var schedule: Int, val questTarget: QuestTarget,
+    var timeDate: Date, var endTimeDate: Date?,
+    var modeType: ModeType) {
 
     fun runTime(player: Player, questUUID: UUID) {
         if (timeUnit == "" || endTimeDate == null) return
@@ -51,7 +55,7 @@ class TargetData(val name: String, var timeUnit: String,
             if (!pass && runTaskPass(player)) {
                 schedule++
                 if (modeType == ModeType.PERSONAL) {
-                    RewardManager.finishReward(player, questData, innerData, questTarget)
+                    RewardManager.finishReward(player, questData, innerData, this@TargetData)
                     QuestManager.finishInnerQuest(player, questData, innerData)
                     cancel()
                     return@submit
@@ -69,7 +73,7 @@ class TargetData(val name: String, var timeUnit: String,
                 }
                 if (runTaskModePass(questData, teamData.members)) {
                     teamData.playerMembers().forEach {
-                        RewardManager.finishReward(it, questData, innerData, questTarget)
+                        RewardManager.finishReward(it, questData, innerData, this@TargetData)
                         QuestManager.finishInnerQuest(it, questData, innerData)
                     }
                 }

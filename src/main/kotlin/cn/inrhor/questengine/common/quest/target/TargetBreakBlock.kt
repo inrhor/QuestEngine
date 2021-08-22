@@ -34,7 +34,7 @@ object TargetBreakBlock: TargetExtend<BlockBreakEvent>() {
                 if (!QuestManager.matchQuestMode(questData)) return false
                 val innerData = questData.questInnerData
                 val innerTarget = QuestManager.getDoingTarget(player, name) ?: return false
-                return targetTrigger(player, name, questData, blockMaterial, innerTarget, innerData)
+                return targetTrigger(player, name, questData, blockMaterial, innerTarget.questTarget, innerData)
             }
         }
     }
@@ -46,7 +46,7 @@ object TargetBreakBlock: TargetExtend<BlockBreakEvent>() {
         val amount = sp[1].toInt()
         if (material == blockMaterial.name) {
             val targetData = questInnerData.targetsData[name]?: return false
-            return Schedule.run(player, name, questData, questInnerData, target, targetData, amount)
+            return Schedule.run(player, name, questData, questInnerData, targetData, amount)
         }
         return true
     }

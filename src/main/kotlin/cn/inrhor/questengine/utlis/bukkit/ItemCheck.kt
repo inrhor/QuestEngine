@@ -3,7 +3,8 @@ package cn.inrhor.questengine.utlis.bukkit
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
-import java.util.*
+import taboolib.platform.util.isAir
+import taboolib.platform.util.isNotAir
 
 class ItemCheck(private val matchers: MutableMap<String, String>) {
 
@@ -28,7 +29,7 @@ class ItemCheck(private val matchers: MutableMap<String, String>) {
         var amount = 0
         matchers.forEach { (mark, data) ->
             when (mark.lowercase()) {
-                "minecraft" -> if (data != itemStack.type.name) return false
+                "minecraft" -> if (data.uppercase() != itemStack.type.name) return false
                 "displayname" -> if (meta == null || data != meta.displayName) return false
                 "lorecontains" -> if (meta == null || !loreContains(meta, data)) return false
                 "custonmodeldata" -> if (meta == null || meta.customModelData != data.toInt()) return false
@@ -40,13 +41,17 @@ class ItemCheck(private val matchers: MutableMap<String, String>) {
     }
 
     fun invHas(player: Player, take: Boolean): Boolean {
+        if (player.inventory.isEmpty) return false
         player.inventory.forEach {
-            if (!match(it, take)) return false
+            if (it.isNotAir()) {
+                if (match(it, take)) return true
+            }
         }
-        return true
+        return false
     }
 
     fun isMainHand(player: Player, take: Boolean): Boolean {
+        if (player.inventory.itemInMainHand.isAir()) return false
         return match(player.inventory.itemInMainHand, take)
     }
 

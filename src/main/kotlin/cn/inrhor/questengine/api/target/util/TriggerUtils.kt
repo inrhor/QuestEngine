@@ -2,6 +2,7 @@ package cn.inrhor.questengine.api.target.util
 
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
+import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.common.quest.manager.RewardManager
 import cn.inrhor.questengine.script.kether.evalBoolean
@@ -17,10 +18,10 @@ object TriggerUtils {
         return false
     }
 
-    fun itemTrigger(player: Player, questData: QuestData, target: QuestTarget, questInnerData: QuestInnerData): Boolean {
-        val itemCondition = target.condition["item"]?: return false
-        if (evalBoolean(player, "itemCheck take *$itemCondition")) {
-            return RewardManager.finishReward(player, questData, questInnerData, target)
+    fun booleanTrigger(player: Player, questData: QuestData, targetData: TargetData, questInnerData: QuestInnerData): Boolean {
+        val needCondition = targetData.questTarget.conditionList["need"]?: return false
+        if (evalBoolean(player, needCondition)) {
+            return RewardManager.finishReward(player, questData, questInnerData, targetData)
         }
         return true
     }

@@ -23,7 +23,8 @@ object TargetPlayerChat: TargetExtend<AsyncPlayerChatEvent>() {
             val questData = QuestManager.getDoingQuest(player)?: return@tasker player
             if (!QuestManager.matchQuestMode(questData)) return@tasker player
             val innerData = questData.questInnerData
-            val innerTarget = QuestManager.getDoingTarget(player, name)?: return@tasker player
+            val targetData = QuestManager.getDoingTarget(player, name)?: return@tasker player
+            val innerTarget = targetData.questTarget
             val message = object : ConditionType("message") {
                 override fun check(): Boolean {
                     return targetTrigger(player, message, innerTarget)
