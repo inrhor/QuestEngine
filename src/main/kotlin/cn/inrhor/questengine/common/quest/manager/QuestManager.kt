@@ -159,6 +159,7 @@ object QuestManager {
         if (!passMaxQuantity(players, questModule)) return false
         val check = questModule.acceptCheck
         val c = questModule.acceptCondition
+        if (c.isEmpty()) return true
         if (check <= 0) {
             return evalBooleanSet(players, c)
         }
@@ -192,6 +193,7 @@ object QuestManager {
         val check = questModule.failCheck
         val c = questModule.failCondition
         var i = 0
+        if (c.isEmpty()) return
         c.forEach {
             list.add(it)
             i++

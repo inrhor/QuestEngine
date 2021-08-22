@@ -89,7 +89,9 @@ class TargetData(val name: String, var timeUnit: String,
     }
 
     private fun runTaskPass(player: Player): Boolean {
-        questTarget.conditions.forEach {
+        val c = questTarget.conditions
+        if (c.isEmpty()) return false
+        c.forEach {
             if (!evalBoolean(player, it)) return false
         }
         return true

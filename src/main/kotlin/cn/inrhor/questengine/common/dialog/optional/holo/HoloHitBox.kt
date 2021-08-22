@@ -71,14 +71,16 @@ class HoloHitBox(val replyModule: ReplyModule,
                 cancel(); return@submit
             }
             if (isBox()) {
+                val boxY = referHoloHitBox.boxY
+                val itemLoc = boxLoc.clone().add(0.0, boxY, 0.0)
                 if (!spawnHolo) {
-                    spawnAS(viewers, holoID, boxLoc)
+                    spawnAS(viewers, holoID, itemLoc)
                     HoloDisplay.initItemAS(holoID, viewers)
-                    HoloDisplay.updateItem(holoID, itemID, viewers, boxLoc, item)
+                    HoloDisplay.updateItem(holoID, itemID, viewers, itemLoc, item)
                     spawnHolo = true
                     displayItem = true
                 }else if (!displayItem) {
-                    HoloDisplay.updateItem(holoID, itemID, viewers, boxLoc, item)
+                    HoloDisplay.updateItem(holoID, itemID, viewers, itemLoc, item)
                     displayItem = true
                 }
             }else {

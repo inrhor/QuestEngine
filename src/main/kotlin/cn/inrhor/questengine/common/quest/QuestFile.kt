@@ -46,7 +46,7 @@ object QuestFile {
             modeShareData = setting.getBoolean("mode.shareData")
         }
         val acceptWay = setting.getString("accept.way")?: ""
-        val maxQuantity = setting.getInt("accept.maxQuantity")
+        val maxQuantity = if (setting.contains("accept.maxQuantity")) setting.getInt("accept.maxQuantity") else 1
         val acceptCheck = setting.getInt("accept.check")
         val acceptCondition = setting.getStringList("accept.condition")
         val failCheck = setting.getInt("failure.check")
@@ -64,7 +64,8 @@ object QuestFile {
             if (!optionFile.exists()) return run {
                 console().sendLang("QUEST-ERROR_FILE", questID)
             }
-            innerQuestList.add(innerQuest(it, questID))
+            val innerModule = innerQuest(it, questID)?: return@forEach
+            innerQuestList.add(innerModule)
         }
 
         val questModule = QuestModule(questID, name, startID,
@@ -77,16 +78,16 @@ object QuestFile {
         QuestManager.register(questID, questModule)
     }
 
-    private fun innerQuest(innerFile: File, questID: String): QuestInnerModule {
+    private fun innerQuest(innerFile: File, questID: String): QuestInnerModule? {
         val optionFile = file(innerFile, "option.yml")
         val option = yaml(optionFile)
-        val innerQuestID = option.getString("innerQuestID")!!
-        val nextInnerQuestID = option.getString("nextInnerQuestID")!!
+        val innerQuestID = option.getString("innerQuestID")?: return null
+        val nextInnerQuestID = option.getString("nextInnerQuestID")?: ""
 
         val description = option.getStringList("description")
 
         val controlFile = file(innerFile, "control.yml")
-        val questControls = control(controlFile, questID, innerQuestID)
+        val questControls = if (controlFile.exists()) control(controlFile, questID, innerQuestID) else mutableListOf()
 
         val rewardFile = file(innerFile, "reward.yml")
         val questReward = reward(rewardFile, questID, innerQuestID)
@@ -111,8 +112,10 @@ object QuestFile {
         var failReward = mutableListOf<String>()
         if (file.exists()) {
             val reward = yaml(file)
-            for (rewardID in reward.getConfigurationSection("finishReward").getKeys(false)) {
-                finishReward[rewardID] = reward.getStringList("finishReward.$rewardID")
+            if (reward.contains("finishReward")) {
+                for (rewardID in reward.getConfigurationSection("finishReward").getKeys(false)) {
+                    finishReward[rewardID] = reward.getStringList("finishReward.$rewardID")
+                }
             }
             failReward = reward.getStringList("failReward")
         }

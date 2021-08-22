@@ -56,6 +56,7 @@ class HoloReply(
         }
         for (i in replyModule.content) {
             val iUc = i.uppercase()
+            holoLoc.yaw = npcLoc.clone().yaw
             when {
                 iUc.startsWith("HITBOX") -> {
                     val referHoloHitBox = evalHoloHitBox(i)
@@ -70,7 +71,6 @@ class HoloReply(
                     holoLoc = LocationTool.getReferLoc(npcLoc, evalReferLoc(i))
                 }
                 iUc.startsWith("ADDLOC") -> {
-                    holoLoc.yaw = npcLoc.clone().yaw
                     holoLoc = LocationTool.getReferLoc(holoLoc, evalReferLoc(i))
                 }
                 iUc.startsWith("NEXTY") -> {

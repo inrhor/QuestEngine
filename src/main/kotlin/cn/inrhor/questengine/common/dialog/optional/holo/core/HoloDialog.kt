@@ -43,12 +43,12 @@ class HoloDialog(
         }
         for (i in dialogModule.dialog) {
             val iUc = i.uppercase()
+            holoLoc.yaw = npcLoc.clone().yaw
             when {
                 iUc.startsWith("INITLOC") -> {
                     holoLoc = LocationTool.getReferLoc(npcLoc, evalReferLoc(i))
                 }
                 iUc.startsWith("ADDLOC") -> {
-                    holoLoc.yaw = npcLoc.clone().yaw
                     holoLoc = LocationTool.getReferLoc(holoLoc, evalReferLoc(i))
                 }
                 iUc.startsWith("NEXTY") -> {
