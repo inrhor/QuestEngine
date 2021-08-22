@@ -32,7 +32,7 @@ accept:
 failure:
   check: 1
   condition:
-    - check player balance < *100
+    - check papi *"%vault_eco_balance%" < *100
   # 脚本 Kether
   kether:
     - title color *"&c任务失败" subtitle color *"&f采集农作物任务"

@@ -140,10 +140,13 @@ object DialogManager {
         val id = dialogModule.dialogID
         submit(async = true, period = 5L) {
             val viewers = holoDialog.viewers
-            if (viewers.isEmpty()) return@submit
+            if (viewers.isEmpty()) {
+                cancel(); return@submit
+            }
             if (!checkSpace(viewers, space.condition, holoDialog.npcLoc)) {
                 val dialogData = DataStorage.getPlayerData(viewers.first()).dialogData
                 dialogData.endHoloDialog(id)
+                cancel()
                 return@submit
             }
         }

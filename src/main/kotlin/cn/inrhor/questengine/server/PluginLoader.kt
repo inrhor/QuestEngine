@@ -6,6 +6,7 @@ import cn.inrhor.questengine.common.dialog.DialogManager
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.common.packet.PacketManager
 import cn.inrhor.questengine.common.quest.QuestFile
+import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.Bukkit
 import taboolib.common.LifeCycle
@@ -71,6 +72,8 @@ object PluginLoader {
     private fun clearMap() {
         DialogManager.clearMap()
         ItemManager.clearMap()
+        PacketManager.packetMap.clear()
+        QuestManager.questMap.clear()
     }
 
 }

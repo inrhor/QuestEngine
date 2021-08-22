@@ -200,15 +200,21 @@ object QuestManager {
             if (i >= check) return@forEach
         }
         submit(async = true, period = 10L) {
-            if (!player.isOnline) return@submit
+            if (!player.isOnline) {
+                cancel(); return@submit
+            }
             if (!evalBoolean(player, list)) {
                 val modeType = questModule.modeType
                 endQuest(player, modeType, questUUID, QuestState.FAILURE, false)
                 runFailTime(player, modeType, questModule.failKether)
+                cancel()
                 return@submit
             }
-            val qData = getQuestData(player, questUUID)?: return@submit
-            if (qData.state == QuestState.FAILURE) return@submit
+            val qData = getQuestData(player, questUUID)
+            if (qData == null || qData.state == QuestState.FAILURE) {
+                cancel()
+                return@submit
+            }
         }
     }
 
