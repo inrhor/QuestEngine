@@ -10,7 +10,6 @@ import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestState
-import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.script.kether.eval
 import cn.inrhor.questengine.script.kether.evalBoolean
 import cn.inrhor.questengine.script.kether.evalBooleanSet
@@ -138,7 +137,7 @@ object QuestManager {
     private fun acceptQuest(player: Player, questModule: QuestModule) {
         val startInnerQuest = questModule.getStartInnerQuest()?: return
         val questUUID = UUID.randomUUID()
-        checkFailTime(player, questUUID, questModule)
+        checkTimeTask(player, questUUID, questModule)
         acceptInnerQuest(player, questUUID, questModule.questID, startInnerQuest, true)
     }
 
@@ -175,24 +174,46 @@ object QuestManager {
 
     /**
      * 接受任务后开始使用调度器检查条件，一旦不符合将失败
+     * 同时启用任务目标完成的检查
      *
      * 属于自动化模块
      */
-    fun checkFailTime(player: Player, questUUID: UUID, questID: String) {
+    fun checkTimeTask(player: Player, questUUID: UUID, questID: String) {
         val questModule = getQuestModule(questID)?: return
-        checkFailTime(player, questUUID, questModule)
+        checkTimeTask(player, questUUID, questModule)
     }
 
     /**
      * 接受任务后开始使用调度器检查条件，一旦不符合将失败
+     * 同时启用任务目标完成的检查
      *
      * 属于自动化模块
      */
-    fun checkFailTime(player: Player, questUUID: UUID, questModule: QuestModule) {
+    fun checkTimeTask(player: Player, questUUID: UUID, questModule: QuestModule) {
         val list = mutableListOf<String>()
         val check = questModule.failCheck
         val c = questModule.failCondition
         var i = 0
+        val questData = getQuestData(player, questUUID)?: return
+        val innerData = questData.questInnerData
+        val targets = innerData.targetsData
+        val targetSize = targets.size
+        if (targetSize > 0) {
+            submit(async = true, period = 10L) {
+                if (!player.isOnline) {
+                    cancel(); return@submit
+                }
+                var finish = 0
+                targets.values.forEach {
+                    if (it.state == QuestState.FINISH) finish++
+                }
+                if (finish >= targetSize) {
+                    cancel()
+                    finishInnerQuest(player, questData, innerData)
+                    return@submit
+                }
+            }
+        }
         if (c.isEmpty()) return
         c.forEach {
             list.add(it)
@@ -330,6 +351,9 @@ object QuestManager {
         }
         questData.state = state
         questData.questInnerData.state = state
+        if (state == QuestState.DOING) {
+            checkTimeTask(player, questData.questUUID, questData.questID)
+        }
     }
 
     /**

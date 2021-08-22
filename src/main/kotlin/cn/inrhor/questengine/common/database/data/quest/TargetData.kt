@@ -20,7 +20,7 @@ class TargetData(
     val name: String, var timeUnit: String,
     var schedule: Int, val questTarget: QuestTarget,
     var timeDate: Date, var endTimeDate: Date?,
-    var modeType: ModeType) {
+    var modeType: ModeType, var state: QuestState = QuestState.DOING) {
 
     fun runTime(player: Player, questUUID: UUID) {
         if (timeUnit == "" || endTimeDate == null) return

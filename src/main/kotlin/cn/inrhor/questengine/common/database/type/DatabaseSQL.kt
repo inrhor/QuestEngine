@@ -154,7 +154,7 @@ class DatabaseSQL: Database() {
                 val fmq = Gson().fromJson(fmqJson, MutableList::class.java) as MutableList<String>
                 val questData = QuestData(questUUID, questID, innerData, state, null, fmq)
                 pData.questDataList[questUUID] = questData
-                QuestManager.checkFailTime(player, questUUID, questID)
+                QuestManager.checkTimeTask(player, questUUID, questID)
             }
         }
         tableControl.workspace(source) {

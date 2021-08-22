@@ -66,8 +66,8 @@ class DatabaseLocal: Database() {
                         time: -1
                         schedule: 0
                     rewards:
-                        rewardID: ""
-                        has: false
+                        rewardID:
+                            has: false
         control:
             controlID:
                 priority: highest
@@ -96,7 +96,7 @@ class DatabaseLocal: Database() {
 
                 val questData = QuestData(UUID.fromString(it), questID, questInnerData, state, TeamManager.getTeamData(uuid), finished)
                 questDataMap[UUID.fromString(it)] = questData
-                QuestManager.checkFailTime(player, questUUID, questID)
+                QuestManager.checkTimeTask(player, questUUID, questID)
             }
         }
         if (data.contains("control")) {
