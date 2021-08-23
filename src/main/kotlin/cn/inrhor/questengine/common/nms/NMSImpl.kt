@@ -17,6 +17,17 @@ import taboolib.module.nms.*
 
 class NMSImpl : NMS() {
 
+    fun returnTypeNMS(type: String): EntityTypes<*> {
+        when (type.uppercase()) {
+            "ITEM" -> EntityTypes.ITEM
+        }
+        return EntityTypes.ARMOR_STAND
+    }
+
+    fun returnInt(type: String): Int {
+        return type.toInt()
+    }
+
     private val version = MinecraftVersion.major
 
     private val minor = MinecraftVersion.minor
@@ -52,7 +63,9 @@ class NMSImpl : NMS() {
                 "x" to location.x,
                 "y" to location.y,
                 "z" to location.z,
-                "type" to EntityTypeUtil.returnTypeNMS(entityType),
+                "type" to if (version >= 6) returnTypeNMS(entityType) else returnInt(
+                    entityType
+                ),
                 "data" to 0
             )
         } else {
@@ -64,7 +77,7 @@ class NMSImpl : NMS() {
                 "c" to location.x,
                 "d" to location.y,
                 "e" to location.z,
-                "k" to if (version >= 6) EntityTypeUtil.returnTypeNMS(entityType) else EntityTypeUtil.returnInt(
+                "k" to if (version >= 6) returnTypeNMS(entityType) else returnInt(
                     entityType
                 )
             )

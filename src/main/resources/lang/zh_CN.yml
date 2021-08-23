@@ -30,7 +30,9 @@ QUEST-NULL_QUEST_DATA: "&7&l[ &c&li &7&l]&c 不存在任务数据 &r{0}"
 
 PACKET-NULL_PACKET_ID: "&7&l[ &c&li &7&l]&c 不存在数据包ID： &r{0}"
 PACKET-ERROR_FILE: "&7&l[ &c&li &7&l]&c 数据包配置不存在或缺少键值： &r{0}"
+PACKET-NO_FILES: "{0}&r &6packet &8文件夹&c不存在，&8开始创建 &6packet &8文件夹"
 
+ITEM-NO_FILES: "{0}&r &6item &8文件夹&c不存在，&8开始创建 &6item &8文件夹"
 
 DATA-NULL_DATA: "&7&l[ &c&li &7&l]&r &c你没有数据，现已为你创建或拉取数据"
 

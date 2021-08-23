@@ -20,7 +20,7 @@ object RatioDisplay {
             "§8[ "+ progressBar(now, need,
                 60, "|",
                 "§a", "§7")+"§8 ]",
-            0, 2, 0)
+            0, 20, 0)
     }
 
 }

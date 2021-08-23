@@ -9,7 +9,7 @@ mode:
   # 可选如下
   #   personal  单人
   #   collaboration  协作
-  type: "collaboration"
+  type: "personal"
   amount: -1
   # 共享任务数据
   shareData: true
@@ -32,7 +32,7 @@ accept:
 failure:
   check: 1
   condition:
-    - check papi *"%vault_eco_balance%" < *100
+    - permission *quest.test
   # 脚本 Kether
   kether:
     - title color *"&c任务失败" subtitle color *"&f采集农作物任务"

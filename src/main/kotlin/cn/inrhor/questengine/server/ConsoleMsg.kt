@@ -30,7 +30,7 @@ object ConsoleMsg {
             "LOADER-INFO",
             pluginCon.name,
             pluginCon.version,
-            "&8[ $state &8]"
+            "&8[ $state &8]".colored()
         )
     }
 

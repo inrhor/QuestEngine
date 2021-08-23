@@ -1,16 +1,4 @@
 target:
-  1:
-    name: give npc-right item
-    id:
-      - test
-    item: "minecraft:stone;amount:5"
-    time: s 60
-    reward: 1 false
-    description:
-      - "&r将 &a3 &r个苹果给予 &6测试长官"
-      - "    &r进度 &8%schedule%"
-      - "    &r剩余时间 &8%time%"
-      - ""
   2:
     name: break block
     block: stone 10
@@ -33,13 +21,3 @@ target:
       - "&r体验舒适的天堂"
       - "    &r进度 &8%schedule%"
       - ""
-  4:
-    name: task go to location
-    period: 10
-    async: true
-    conditions:
-      - where
-    time: minute 10
-    reward: 2 false
-    description:
-      - "back home"

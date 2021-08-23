@@ -4,7 +4,7 @@ item_1:
   name: "&a对话中的物品"
   lore:
     - "&f你可以实现物品模型"
-  custom-model: 1000
+  model-data: 1000
 item_2:
   material: "STONE"
-  custom-model: 12345
+  model-data: 12345

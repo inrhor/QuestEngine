@@ -21,7 +21,7 @@ object PacketDataListener {
         }
         if (packetData.clickAction.passClickCount()) {
             action.pass.forEach {
-                if (it.uppercase() == "remove") {
+                if (it.lowercase() == "remove") {
                    PacketManager.removePacketEntity(p, packetModule.packedID, packetData.entityID)
                 }else {
                     eval(p, it)

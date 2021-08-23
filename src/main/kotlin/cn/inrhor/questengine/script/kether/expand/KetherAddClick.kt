@@ -9,20 +9,30 @@ import taboolib.library.kether.ParsedAction
 import taboolib.module.kether.*
 import java.util.concurrent.CompletableFuture
 
-class KetherAddClick(val type: String, val add: Int, val shell: ParsedAction<*>, val entityID: Int): ScriptAction<Void>() {
+class KetherAddClick(val type: String, val add: Int, val shell: ParsedAction<*>, val entityID: Int): ScriptAction<Boolean>() {
 
-    override fun run(frame: ScriptFrame): CompletableFuture<Void> {
-        return frame.newFrame(shell).run<String>().thenAccept {
+    override fun run(frame: ScriptFrame): CompletableFuture<Boolean> {
+        val isBol = CompletableFuture<Boolean>()
+        frame.newFrame(shell).run<String>().thenAccept {
             val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
-            val packetData = PacketManager.getPacketData(player.cast(), entityID)?: return@thenAccept
-            if (evalBoolean(player.cast(), it)) packetData.clickAction.clickCountLog += add
+            try {
+                if (evalBoolean(player.cast(), it)) {
+                    val packetData = PacketManager.getPacketData(player.cast(), entityID)?: return@thenAccept
+                    val clickAction = packetData.clickAction
+                    val need = clickAction.needClickCount
+                    val log = clickAction.clickCountLog
+                    if (need < log + add) packetData.clickAction.clickCountLog = need else packetData.clickAction.clickCountLog += add
+                    isBol.complete(true)
+                }
+            }catch (ex: Exception) {
+            }
         }
+        return isBol
     }
 
     internal object Parser {
         @KetherParser(["addClickCount"], namespace = "QuestEngine")
         fun parser() = scriptParser {
-            it.mark()
             val type = it.nextToken()
             val add = it.nextInt()
             it.mark()
