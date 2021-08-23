@@ -8,14 +8,14 @@ import taboolib.platform.util.toProxyLocation
 
 object LocationTool {
 
-    fun getReferLoc(ownLoc: Location, referLoc: ReferLocation): Location {
-        return ownLoc.toProxyLocation().referTo(
+    fun getReferLoc(yaw: Float, ownLoc: Location, referLoc: ReferLocation): Location {
+        return ownLoc.toProxyLocation().referTo(yaw,
             referLoc.offset, referLoc.multiply, referLoc.height)
             .toBukkitLocation()
     }
 
-    fun getReferHoloBoxLoc(ownLoc: Location, referHoloHitBox: ReferHoloHitBox): Location {
-        return ownLoc.toProxyLocation().referTo(
+    fun getReferHoloBoxLoc(yaw: Float, ownLoc: Location, referHoloHitBox: ReferHoloHitBox): Location {
+        return ownLoc.toProxyLocation().referTo(yaw,
             referHoloHitBox.offset, referHoloHitBox.multiply, referHoloHitBox.height)
             .toBukkitLocation()
     }
@@ -30,12 +30,12 @@ object LocationTool {
     }
 
     fun inLoc(fromLoc: Location, targetLoc: Location, range: Double): Boolean {
-        val x = fromLoc.x
-        val y = fromLoc.y
-        val z = fromLoc.z
-        val tX = targetLoc.x
-        val tY = targetLoc.y
-        val tZ = targetLoc.z
+        val x = fromLoc.blockX
+        val y = fromLoc.blockY
+        val z = fromLoc.blockZ
+        val tX = targetLoc.blockX
+        val tY = targetLoc.blockY
+        val tZ = targetLoc.blockZ
         val r = if (range == 0.0) 1.0 else range
         val minX = tX-r
         val maxX = tX+r
@@ -43,26 +43,26 @@ object LocationTool {
         val maxY = tY+r
         val minZ = tZ-r
         val maxZ = tZ+r
-        if (x in minX..maxX && y in minY..maxY && z in minZ..maxZ ) {
+        if (x.toDouble() in minX..maxX && y.toDouble() in minY..maxY && z.toDouble() in minZ..maxZ ) {
             return true
         }
         return false
     }
 
     fun inLoc(fromLoc: Location, targetLoc: Location, rangeX: Double, rangeY: Double, rangeZ: Double): Boolean {
-        val x = fromLoc.x
-        val y = fromLoc.y
-        val z = fromLoc.z
-        val tX = targetLoc.x
-        val tY = targetLoc.y
-        val tZ = targetLoc.z
+        val x = fromLoc.blockX
+        val y = fromLoc.blockY
+        val z = fromLoc.blockZ
+        val tX = targetLoc.blockX
+        val tY = targetLoc.blockY
+        val tZ = targetLoc.blockZ
         val minX = tX-rangeX
         val maxX = tX+rangeX
         val minY = tY-rangeY
         val maxY = tY+rangeY
         val minZ = tZ-rangeZ
         val maxZ = tZ+rangeZ
-        if (x in minX..maxX && y in minY..maxY && z in minZ..maxZ ) {
+        if (x.toDouble() in minX..maxX && y.toDouble() in minY..maxY && z.toDouble() in minZ..maxZ ) {
             return true
         }
         return false

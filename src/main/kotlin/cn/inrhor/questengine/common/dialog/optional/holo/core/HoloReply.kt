@@ -54,13 +54,13 @@ class HoloReply(
         viewers.forEach {
             DataStorage.getPlayerData(it).dialogData.addHoloReply(dialogID, this)
         }
+        val yaw = npcLoc.yaw
         for (i in replyModule.content) {
             val iUc = i.uppercase()
-            holoLoc.yaw = npcLoc.clone().yaw
             when {
                 iUc.startsWith("HITBOX") -> {
                     val referHoloHitBox = evalHoloHitBox(i)
-                    val boxLoc = LocationTool.getReferHoloBoxLoc(holoLoc, referHoloHitBox)
+                    val boxLoc = LocationTool.getReferHoloBoxLoc(yaw, holoLoc, referHoloHitBox)
                     val holoHitBox = HoloHitBox(replyModule, boxLoc, referHoloHitBox, viewers)
                     holoHitBox.viewBox()
                     for (viewer in viewers) {
@@ -68,10 +68,10 @@ class HoloReply(
                     }
                 }
                 iUc.startsWith("INITLOC") -> {
-                    holoLoc = LocationTool.getReferLoc(npcLoc, evalReferLoc(i))
+                    holoLoc = LocationTool.getReferLoc(yaw, npcLoc, evalReferLoc(i))
                 }
                 iUc.startsWith("ADDLOC") -> {
-                    holoLoc = LocationTool.getReferLoc(holoLoc, evalReferLoc(i))
+                    holoLoc = LocationTool.getReferLoc(yaw, holoLoc, evalReferLoc(i))
                 }
                 iUc.startsWith("NEXTY") -> {
                     val get = i.substring(i.indexOf(" ")+1)

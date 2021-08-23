@@ -200,7 +200,7 @@ object QuestManager {
         val targetSize = targets.size
         if (targetSize > 0) {
             submit(async = true, period = 10L) {
-                if (!player.isOnline) {
+                if (!player.isOnline || innerData.state != QuestState.DOING) {
                     cancel(); return@submit
                 }
                 var finish = 0
@@ -221,7 +221,7 @@ object QuestManager {
             if (i >= check) return@forEach
         }
         submit(async = true, period = 10L) {
-            if (!player.isOnline) {
+            if (!player.isOnline || innerData.state != QuestState.DOING) {
                 cancel(); return@submit
             }
             if (!evalBoolean(player, list)) {

@@ -1,9 +1,9 @@
-# 任务ID
-questID: "quest_1"
+# 任务ID，不要用有下划线符号
+questID: "quest1"
 # 任务名称
 name: "采集农作物任务"
 # 从哪个内部任务开始，此为内部任务ID
-startInnerQuestID: "main_quest_1"
+startInnerQuestID: "mainQuest1"
 # 任务成员模式
 mode:
   # 可选如下

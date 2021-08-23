@@ -20,17 +20,6 @@ object ClickHoloListener {
                     HoloClickEvent(p, dialogData, holoBox).call()
                     return
                 }
-                /*if (holoBox.isBox()) {
-                    val replyModule = holoBox.replyModule
-                    for (script in replyModule.script) {
-                        eval(p, script)
-                    }
-                    for (viewer in holoBox.viewers) {
-                        val data = DataStorage.getPlayerData(viewer)
-                        data.dialogData.endHoloDialog(holoBox.replyModule.dialogID)
-                    }
-                    return
-                }*/
             }
         }
     }

@@ -29,7 +29,6 @@ class HoloDialog(
         for (id in packetIDs) {
             destroyEntity(viewers, id)
         }
-        // 在 HoloReply 清理 viewers
     }
 
     fun run() {
@@ -41,15 +40,15 @@ class HoloDialog(
         viewers.forEach {
             DataStorage.getPlayerData(it).dialogData.addHoloDialog(dialogID, this)
         }
+        val yaw = npcLoc.clone().yaw
         for (i in dialogModule.dialog) {
             val iUc = i.uppercase()
-            holoLoc.yaw = npcLoc.clone().yaw
             when {
                 iUc.startsWith("INITLOC") -> {
-                    holoLoc = LocationTool.getReferLoc(npcLoc, evalReferLoc(i))
+                    holoLoc = LocationTool.getReferLoc(yaw, npcLoc, evalReferLoc(i))
                 }
                 iUc.startsWith("ADDLOC") -> {
-                    holoLoc = LocationTool.getReferLoc(holoLoc, evalReferLoc(i))
+                    holoLoc = LocationTool.getReferLoc(yaw, npcLoc, evalReferLoc(i))
                 }
                 iUc.startsWith("NEXTY") -> {
                     val get = i.substring(i.indexOf(" ")+1)

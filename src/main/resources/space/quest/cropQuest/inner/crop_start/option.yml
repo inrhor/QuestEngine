@@ -1,7 +1,7 @@
 # 内部任务ID
-innerQuestID: "main_quest_1"
+innerQuestID: "mainQuest1"
 # 下一个内部任务ID，空则无
-nextInnerQuestID: "main_quest_2"
+nextInnerQuestID: ""
 
 # 内部任务描述
 description:

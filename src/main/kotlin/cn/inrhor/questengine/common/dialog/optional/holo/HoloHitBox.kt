@@ -19,11 +19,13 @@ class HoloHitBox(val replyModule: ReplyModule,
     private val packetIDs = mutableListOf<Int>()
     private var task: PlatformExecutor.PlatformTask? = null
 
+    var end = false
+
     fun end() {
+        end = true
         packetIDs.forEach {
             destroyEntity(viewers, it)
         }
-        viewers.clear()
     }
 
     private fun isBox(viewLoc: Location): Boolean {
@@ -67,7 +69,7 @@ class HoloHitBox(val replyModule: ReplyModule,
         packetIDs.add(holoID)
         packetIDs.add(itemID)
         task = submit(async = true, period = 5L) {
-            if (viewers.isEmpty())  {
+            if (viewers.isEmpty() || end)  {
                 cancel(); return@submit
             }
             if (isBox()) {
