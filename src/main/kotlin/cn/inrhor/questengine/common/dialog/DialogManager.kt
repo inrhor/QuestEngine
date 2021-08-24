@@ -109,7 +109,7 @@ object DialogManager {
     fun returnCanDialogHolo(players: MutableSet<Player>, npcID: String): DialogModule? {
         dialogMap.values.forEach {
             if (!it.npcIDs.contains(npcID)) return@forEach
-            if (evalBooleanSet(players, it.condition)) {
+            if (it.condition.isEmpty() || evalBooleanSet(players, it.condition)) {
                 val dialogID = it.dialogID
                 if (!hasDialog(players, dialogID)) return it
             }
