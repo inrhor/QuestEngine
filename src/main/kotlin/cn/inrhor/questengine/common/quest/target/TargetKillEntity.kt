@@ -49,8 +49,8 @@ object TargetKillEntity: TargetExtend<EntityDeathEvent>() {
             player
         }
         TargetManager.register(name, "entity", "entity")
-        TargetManager.register(name, "check", mutableListOf("check"))
-        TargetManager.register(name, "condition", "condition")
+        TargetManager.register(name, "check", "check")
+        TargetManager.register(name, "condition", mutableListOf("condition"))
         TargetManager.register(name, "number", "number")
     }
 
@@ -66,7 +66,7 @@ object TargetKillEntity: TargetExtend<EntityDeathEvent>() {
         val condition = target.conditionList["condition"]?: return false
         val check = target.condition["check"]?: return false
         val checkNumber = check.toInt()
-        var i = 1
+        var i = 0
         condition.forEach {
             if (!checkNumber(checkNumber, i)) return true
             val s = it.lowercase()

@@ -9,7 +9,7 @@ open class ConditionType(open val content: String, open val contentList: Mutable
     constructor(contentList: MutableList<String>): this("", contentList)
 
     open fun check(): Boolean {
-        return false
+        return true
     }
 
 }

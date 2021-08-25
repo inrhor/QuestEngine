@@ -16,7 +16,6 @@ object Schedule {
             targetData: TargetData, amount: Int): Boolean {
         if (targetData.schedule < amount) {
             targetData.schedule++
-            return true
         }
         val allSchedule = TargetManager.scheduleUtil(name, questData, targetData)
         return RewardManager.finishReward(player, questData, questInnerData, targetData, amount, allSchedule)

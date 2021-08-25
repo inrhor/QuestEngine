@@ -122,6 +122,16 @@ class DatabaseSQL: Database() {
         primaryKeyForLegacy.add("controlID")
     }
 
+    val tableTags = Table(table+"_user_tags", host) {
+        add("uuid") {
+            type(ColumnTypeSQL.VARCHAR, 36)
+        }
+        add("tag") {
+            type(ColumnTypeSQL.VARCHAR, 255)
+        }
+        primaryKeyForLegacy.add("uuid")
+    }
+
     val source = host.createDataSource()
 
     init {
@@ -129,6 +139,7 @@ class DatabaseSQL: Database() {
         tableTargets.workspace(source) { createTable() }.run()
         tableInnerQuest.workspace(source) { createTable() }.run()
         tableControl.workspace(source) { createTable() }.run()
+        tableTags.workspace(source) { createTable() }.run()
     }
 
     override fun pull(player: Player) {
@@ -172,6 +183,16 @@ class DatabaseSQL: Database() {
             ControlManager.pullControl(player, controlID, priority, line, waitTime)
         }
         TargetManager.runTask(pData, player)
+        tableTags.workspace(source) {
+            select {
+                where { "uuid" eq uuidStr }
+                rows("tag")
+            }
+        }.map {
+            getString("tag")
+        }.forEach {
+            pData.tagsData.addTag(it)
+        }
     }
 
     override fun getInnerQuestData(player: Player, questUUID: UUID, questID: String, innerQuestID: String): QuestInnerData? {
@@ -267,7 +288,16 @@ class DatabaseSQL: Database() {
         cData.controls.forEach { (cID, cData) ->
             pushControl(uuid, cID, cData)
         }
-
+        pData.tagsData.list().forEach {
+            tableQuest.workspace(source) {
+                update {
+                    where {
+                        "uuid" eq uuid.toString()
+                    }
+                    set("tag", it)
+                }
+            }.run()
+        }
     }
 
     private fun hasControl(uuid: UUID, controlID: String): Boolean {

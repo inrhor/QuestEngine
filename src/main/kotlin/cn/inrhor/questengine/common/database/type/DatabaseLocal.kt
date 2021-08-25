@@ -74,6 +74,9 @@ class DatabaseLocal: Database() {
                 line: 0
                 waitTime: 0
 
+        tags:
+            - tag
+
      */
     override fun pull(player: Player) {
         val uuid = player.uniqueId
@@ -111,6 +114,9 @@ class DatabaseLocal: Database() {
         val pData = DataStorage.getPlayerData(uuid)
         pData.questDataList = questDataMap
         TargetManager.runTask(pData, player)
+        data.getStringList("tags").forEach {
+            pData.tagsData.addTag(it)
+        }
     }
 
     override fun getInnerQuestData(player: Player, questUUID: UUID, questID: String, innerQuestID: String): QuestInnerData? {
@@ -183,6 +189,7 @@ class DatabaseLocal: Database() {
         pData.controlData.controls.forEach { (cID, cData) ->
             pushControl(data, cID, cData)
         }
+        data.set("tags", pData.tagsData.list())
         data.save(file)
     }
 

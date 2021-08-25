@@ -16,7 +16,8 @@ class PlayerData(
     val dialogData: DialogData,
     var questDataList: MutableMap<UUID, QuestData>, /* QuestUUID 对应 QuestData */
     var controlData: ControlData,
-    var dataPacket: MutableMap<String, MutableList<PacketData>>) {
+    var dataPacket: MutableMap<String, MutableList<PacketData>>,
+    val tagsData: TagsData = TagsData()) {
 
     constructor(uuid: UUID):
             this(uuid, null,
