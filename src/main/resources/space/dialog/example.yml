@@ -26,8 +26,8 @@ dialog_1:
     - nextY -0.3
     - text <textWrite 10 3 "&f&l面向异世界的任务系统">
     - addLoc dir right add 5.5 1.0
-    - itemWrite 20 use normal item item_1
-    - itemWrite 60 use normal item item_2
+    - itemWrite 20 use suspend item item_1
+    - itemWrite 60 use fixed item item_2
   reply:
     reply_1:
       content:
@@ -36,7 +36,7 @@ dialog_1:
         - nextY -1.0
         - text "&c&l牛逼！！！"
         - text "&f&l666666"
-        - item item_1
+        - item item_1 suspend
       script:
         - ""
     r2:

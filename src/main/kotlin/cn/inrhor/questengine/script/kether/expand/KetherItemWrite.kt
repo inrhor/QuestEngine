@@ -7,13 +7,14 @@ import java.util.concurrent.CompletableFuture
 
 class KetherItemWrite {
 
-    class WriteItem(val itemID: String, val delay: Int) : ScriptAction<ItemDialogPlay>() {
+    class WriteItem(val itemID: String, val type: ItemDialogPlay.Type, val delay: Int) : ScriptAction<ItemDialogPlay>() {
         override fun run(frame: ScriptFrame): CompletableFuture<ItemDialogPlay> {
             val dialogItem = CompletableFuture<ItemDialogPlay>()
             val item = ItemManager.get(itemID)
             dialogItem.complete(
                 ItemDialogPlay(
                     item,
+                    type,
                     delay
                 )
             )
@@ -22,7 +23,7 @@ class KetherItemWrite {
     }
 
     /*
-        itemWrite [delay] use [normal] item [...]
+        itemWrite [delay] use [suspend/fixed] item [...]
      */
     internal object Parser {
         @KetherParser(["itemWrite"], namespace = "QuestEngine")
@@ -30,12 +31,18 @@ class KetherItemWrite {
             val delay = it.nextInt()
             it.mark()
             it.expect("use")
-            it.mark()
-            it.expect("normal")
+            val itemType = try {
+                when (it.nextToken()) {
+                    "suspend" -> ItemDialogPlay.Type.SUSPEND
+                    else -> ItemDialogPlay.Type.FIXED
+                }
+            } catch (ignored: Exception) {
+                ItemDialogPlay.Type.FIXED
+            }
             it.mark()
             it.expect("item")
             val itemID = it.nextToken()
-            WriteItem(itemID, delay)
+            WriteItem(itemID, itemType, delay)
         }
     }
 }

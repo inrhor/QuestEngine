@@ -92,7 +92,7 @@ class HoloReply(
                     val itemID = itemDisplay.itemID
                     val item = itemDisplay.item
                     itemIndex++
-                    HoloReplyDisplay().item(holoID, itemID, viewers ,holoLoc, item)
+                    HoloReplyDisplay().item(holoID, itemID, viewers ,holoLoc, item, itemDisplay.type)
                     packetIDs.add(holoID)
                     packetIDs.add(itemID)
                 }

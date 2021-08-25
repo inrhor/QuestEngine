@@ -3,6 +3,7 @@ package cn.inrhor.questengine.api.hologram
 import cn.inrhor.questengine.api.packet.*
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 
 object HoloDisplay {
@@ -14,6 +15,11 @@ object HoloDisplay {
     fun updateItem(holoID: Int, itemID: Int, viewers: MutableSet<Player>, loc: Location, item: ItemStack) {
         spawnItem(viewers, itemID, loc, item)
         updatePassengers(viewers, holoID, itemID)
+    }
+
+    fun equipHeadItem(holoID: Int, itemID: Int, viewers: MutableSet<Player>, loc: Location, item: ItemStack) {
+        spawnItem(viewers, itemID, loc, item)
+        updateEquipmentItem(viewers, holoID, EquipmentSlot.HEAD, item)
     }
 
     fun initTextAS(holoID: Int, viewers: MutableSet<Player>) {

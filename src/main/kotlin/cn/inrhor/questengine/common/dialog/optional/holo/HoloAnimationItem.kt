@@ -15,12 +15,21 @@ class HoloAnimationItem(val holoDialog: HoloDialog,
     fun run() {
         submit(delay = itemDialogPlay.delay.toLong(), async = true) {
             if (holoDialog.endDialog || viewers.isEmpty()) { cancel(); return@submit }
-            HoloDisplay.updateItem(
-                itemDialogPlay.holoID,
-                itemDialogPlay.itemID,
-                viewers,
-                holoLoc,
-                itemDialogPlay.item)
+            if (itemDialogPlay.type == ItemDialogPlay.Type.SUSPEND) {
+                HoloDisplay.updateItem(
+                    itemDialogPlay.holoID,
+                    itemDialogPlay.itemID,
+                    viewers,
+                    holoLoc,
+                    itemDialogPlay.item)
+            }else {
+                HoloDisplay.equipHeadItem(
+                    itemDialogPlay.holoID,
+                    itemDialogPlay.itemID,
+                    viewers,
+                    holoLoc,
+                    itemDialogPlay.item)
+            }
         }
     }
 
