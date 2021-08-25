@@ -33,7 +33,7 @@ class ItemParser(private val itemContents: MutableList<String>) {
                 dialogItemList.add(dialogItem)
             }else {
                 val item = ItemManager.get(script)
-                val dialogItem = ItemDialogPlay(holoID, itemID, item, 0)
+                val dialogItem = ItemDialogPlay(holoID, itemID, item, ItemDialogPlay.Type.SUSPEND, 0)
                 dialogItemList.add(dialogItem)
             }
         }
