@@ -72,7 +72,7 @@ object TargetKillEntity: TargetExtend<EntityDeathEvent>() {
             val s = it.lowercase()
             if (s.startsWith("entity name")) {
                 val get = it.subAfter("@")
-                if (!evalBoolean(player, "strMatch type $get *'${entity.name}'")) return false
+                if (!matchName(player, entity, get)) return false
             }else if (s.startsWith("eval ")) {
                 val get = it.subAfter("@").replace("dropExp", dropExp.toString(), true)
                 if (!evalBoolean(player, get)) return false
@@ -80,6 +80,12 @@ object TargetKillEntity: TargetExtend<EntityDeathEvent>() {
             i++
         }
         return true
+    }
+
+    fun matchName(player: Player, entity: Entity, str: String): Boolean {
+        if (evalBoolean(player, "strMatch type $str *'${entity.name}'")) return true
+        if (evalBoolean(player, "strMatch type $str *'${entity.customName}'")) return true
+        return false
     }
 
     fun checkNumber(check: Int, forEach: Int): Boolean {
