@@ -32,14 +32,11 @@ object QuestState {
                         val player = Bukkit.getPlayer(context.argument(-2)!!) ?: return@execute run {
                             sender.sendLang("PLAYER_NOT_ONLINE")
                         }
-                        val uuid = player.uniqueId
 
                         val questID = context.argument(-1)!!
                         val state = args[0].toState()
 
-                        val questData = QuestManager.getQuestData(uuid, questID)?: return@execute
-
-                        QuestManager.setQuestState(player, questData, state)
+                        QuestManager.setQuestState(player, questID, state)
                     }
                 }
             }

@@ -22,4 +22,12 @@ class TagsData(private val tags: MutableSet<String> = mutableSetOf()) {
         return tags
     }
 
+    fun getList(): MutableList<String> {
+        val l = mutableListOf<String>()
+        tags.forEach {
+            l.add(it)
+        }
+        return l
+    }
+
 }

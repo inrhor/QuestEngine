@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.common.listener.holo
 
 import cn.inrhor.questengine.api.event.HoloClickEvent
-import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.script.kether.eval
 import taboolib.common.platform.event.SubscribeEvent
 
@@ -15,8 +14,6 @@ object ClickHolo {
             for (script in replyModule.script) {
                 eval(it, script)
             }
-            val data = DataStorage.getPlayerData(it)
-            data.dialogData.endHoloDialog(holoBox.replyModule.dialogID)
         }
     }
 

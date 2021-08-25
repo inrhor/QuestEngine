@@ -17,8 +17,10 @@ import cn.inrhor.questengine.utlis.time.*
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.*
+import taboolib.module.lang.sendLang
 import taboolib.platform.util.sendLang
 import java.util.*
+import java.util.concurrent.CompletableFuture
 
 object QuestManager {
 
@@ -287,6 +289,12 @@ object QuestManager {
         acceptInnerQuest(player, questData.questUUID, questID, innerModule, isNewQuest)
     }
 
+    fun acceptInnerQuest(player: Player, questID: String, innerQuestID: String, isNewQuest: Boolean) {
+        val questData = getQuestData(player.uniqueId, questID) ?: return
+        val innerModule = getInnerQuestModule(questID, innerQuestID) ?: return
+        acceptInnerQuest(player, questData.questUUID, questID, innerModule, isNewQuest)
+    }
+
     private fun acceptInnerQuest(player: Player, questUUID: UUID, questID: String, innerQuestModule: QuestInnerModule, isNewQuest: Boolean) {
         val pData = DataStorage.getPlayerData(player)
         var state = QuestState.DOING
@@ -354,6 +362,14 @@ object QuestManager {
         if (state == QuestState.DOING) {
             checkTimeTask(player, questData.questUUID, questData.questID)
         }
+    }
+
+    /**
+     * 设置任务状态，包括内部任务
+     */
+    fun setQuestState(player: Player, questID: String, state: QuestState) {
+        val questData = getQuestData(player.uniqueId, questID)?: return
+        setQuestState(player, questData, state)
     }
 
     /**
@@ -430,6 +446,18 @@ object QuestManager {
         endQuest(player, qData, state, innerFailReward)
     }
 
+    fun endQuest(player: Player, questID: String, state: QuestState, innerFailReward: Boolean) {
+        val questModule = getQuestModule(questID)
+        val questData = getQuestData(player.uniqueId, questID)
+
+        if (questModule == null || questData == null) {
+            player.sendLang("QUEST-NULL_QUEST_DATA", questID)
+            return
+        }
+
+        endQuest(player, questModule.modeType, questData.questUUID, state, innerFailReward)
+    }
+
     fun finishInnerQuest(player: Player, questData: QuestData, questInnerData: QuestInnerData) {
         finishInnerQuest(player, questData.questUUID, questData.questID, questInnerData.innerQuestID)
     }
@@ -459,6 +487,11 @@ object QuestManager {
         }else {
             acceptNextInnerQuest(player, questUUID, questData, nextInnerID)
         }
+    }
+
+    fun finishInnerQuest(player: Player, questID: String, innerQuestID: String) {
+        val questData = getQuestData(player.uniqueId, questID) ?: return
+        finishInnerQuest(player, questData.questUUID, questID, innerQuestID)
     }
 
     /**

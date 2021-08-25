@@ -5,7 +5,6 @@ import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestReward
-import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.script.kether.eval
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -43,17 +42,15 @@ object RewardManager {
         val mainID = questInnerData.innerQuestID
         val questID = questInnerData.questID
         val innerModule = QuestManager.getInnerQuestModule(questID, mainID)?: return
-        val name = targetData.name
-        val rewardRepeatState = questInnerData.rewardState[name]?: false
-        finishReward(player, questInnerData, innerModule.questReward, targetData.questTarget.reward, rewardRepeatState)
-        questInnerData.rewardState[name] = true
+        finishReward(player, questInnerData, innerModule.questReward, targetData.questTarget.reward)
     }
 
-    private fun finishReward(player: Player, questInnerData: QuestInnerData, questReward: QuestReward, content: String, repeat: Boolean) {
+    private fun finishReward(player: Player, questInnerData: QuestInnerData, questReward: QuestReward, content: String) {
         val s = content.split(" ")
         val rewardID = s[0]
         val repeatModule = s[1].toBoolean()
-        finishReward(player, questReward, rewardID, repeatModule, repeat)
+        val rewardRepeatState = questInnerData.rewardState[rewardID]?: false
+        finishReward(player, questReward, rewardID, repeatModule, rewardRepeatState)
         questInnerData.rewardState[rewardID] = true
     }
 

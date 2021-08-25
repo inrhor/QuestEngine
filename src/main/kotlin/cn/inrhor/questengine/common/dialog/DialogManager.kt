@@ -144,8 +144,7 @@ object DialogManager {
                 cancel(); return@submit
             }
             if (!checkSpace(viewers, space.condition, holoDialog.npcLoc)) {
-                val dialogData = DataStorage.getPlayerData(viewers.first()).dialogData
-                dialogData.endHoloDialog(id)
+                endHoloDialog(viewers.first(), id)
                 cancel()
                 return@submit
             }
@@ -162,5 +161,10 @@ object DialogManager {
             }
         }
         return true
+    }
+
+    fun endHoloDialog(player: Player, dialogID: String) {
+        val pDate = DataStorage.getPlayerData(player)
+        pDate.dialogData.endHoloDialog(dialogID)
     }
 }

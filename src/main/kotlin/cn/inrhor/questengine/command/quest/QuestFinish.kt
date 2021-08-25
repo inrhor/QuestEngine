@@ -27,19 +27,10 @@ object QuestFinish {
                     val player = Bukkit.getPlayer(context.argument(-1)!!) ?: return@execute run {
                         sender.sendLang("PLAYER_NOT_ONLINE")
                     }
-                    val uuid = player.uniqueId
 
                     val questID = args[0]
 
-                    val questModule = QuestManager.getQuestModule(questID)
-                    val questData = QuestManager.getQuestData(uuid, questID)
-
-                    if (questModule == null || questData == null) {
-                        sender.sendLang("QUEST-NULL_QUEST_DATA", questID)
-                        return@execute
-                    }
-
-                    QuestManager.endQuest(player, questModule.modeType, questData.questUUID, QuestState.FINISH, false)
+                    QuestManager.endQuest(player, questID, QuestState.FINISH, false)
                 }
             }
         }

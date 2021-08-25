@@ -189,7 +189,7 @@ class DatabaseLocal: Database() {
         pData.controlData.controls.forEach { (cID, cData) ->
             pushControl(data, cID, cData)
         }
-        data.set("tags", pData.tagsData.list())
+        data.set("tags", pData.tagsData.getList())
         data.save(file)
     }
 

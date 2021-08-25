@@ -36,11 +36,7 @@ object QuestInnerAccept {
 
                         val innerQuestID = args[0]
 
-                        val questData = QuestManager.getQuestData(uuid, questID) ?: return@execute run {
-                            sender.sendLang("QUEST-NULL_QUEST_DATA")
-                        }
-
-                        QuestManager.acceptInnerQuest(player, questData, innerQuestID, true)
+                        QuestManager.acceptInnerQuest(player, questID, innerQuestID, true)
 
                     }
                 }
