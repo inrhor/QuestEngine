@@ -1,5 +1,6 @@
 ![Logo](https://image-1253288465.cos.ap-shanghai.myqcloud.com/2021/08/12/1105255dd4e38.png)
 
+![bstats](https://bstats.org/signatures/bukkit/QuestEngine.svg)
 ---
 
 [![CodeFactor](https://www.codefactor.io/repository/github/inrhor/questengine/badge)](https://www.codefactor.io/repository/github/inrhor/questengine) 
