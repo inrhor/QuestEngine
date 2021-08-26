@@ -17,8 +17,7 @@ object HoloDisplay {
         updatePassengers(viewers, holoID, itemID)
     }
 
-    fun equipHeadItem(holoID: Int, itemID: Int, viewers: MutableSet<Player>, loc: Location, item: ItemStack) {
-        spawnItem(viewers, itemID, loc, item)
+    fun equipHeadItem(holoID: Int, viewers: MutableSet<Player>, item: ItemStack) {
         updateEquipmentItem(viewers, holoID, EquipmentSlot.HEAD, item)
     }
 

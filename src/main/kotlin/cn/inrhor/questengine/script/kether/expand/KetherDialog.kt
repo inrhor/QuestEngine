@@ -38,7 +38,12 @@ class KetherDialog {
         fun parser() = scriptParser {
             it.mark()
             when (it.expects("send", "end")) {
-                "send" -> SendDialog(it.nextToken(), it.next(ArgTypes.ACTION))
+                "send" -> {
+                    val dialogID = it.nextToken()
+                    it.mark()
+                    it.expect("where")
+                    SendDialog(dialogID, it.next(ArgTypes.ACTION))
+                }
                 "end" -> EndDialog(it.nextToken())
                 else -> error("unknown Dialog")
             }

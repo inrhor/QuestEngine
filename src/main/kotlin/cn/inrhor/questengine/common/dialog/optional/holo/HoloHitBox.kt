@@ -4,10 +4,13 @@ import cn.inrhor.questengine.api.packet.*
 import cn.inrhor.questengine.api.dialog.ReplyModule
 import cn.inrhor.questengine.api.hologram.HoloDisplay
 import cn.inrhor.questengine.api.hologram.HoloIDManager
+import cn.inrhor.questengine.common.dialog.animation.item.ItemDialogPlay
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.utlis.location.ReferHoloHitBox
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.*
 import taboolib.common.platform.service.PlatformExecutor
 
@@ -66,6 +69,7 @@ class HoloHitBox(val replyModule: ReplyModule,
         val holoID = HoloIDManager.generate(dialogID, replyID, 0, "hitBox")
         val itemID = HoloIDManager.generate(dialogID, replyID, 1, "hitBox")
         val item = ItemManager.get(referHoloHitBox.itemID)
+        val type = referHoloHitBox.type
         packetIDs.add(holoID)
         packetIDs.add(itemID)
         task = submit(async = true, period = 5L) {
@@ -78,17 +82,33 @@ class HoloHitBox(val replyModule: ReplyModule,
                 if (!spawnHolo) {
                     spawnAS(viewers, holoID, itemLoc)
                     HoloDisplay.initItemAS(holoID, viewers)
-                    HoloDisplay.updateItem(holoID, itemID, viewers, itemLoc, item)
+                    displayItem(holoID, itemID, viewers, itemLoc, item, type)
                     spawnHolo = true
                     displayItem = true
                 }else if (!displayItem) {
-                    HoloDisplay.updateItem(holoID, itemID, viewers, itemLoc, item)
+                    displayItem(holoID, itemID, viewers, itemLoc, item, type)
                     displayItem = true
                 }
             }else {
                 displayItem = false
-                destroyEntity(viewers, itemID)
+                endDisplayItem(holoID, itemID, viewers, type)
             }
+        }
+    }
+
+    fun displayItem(holoID: Int, itemID: Int, viewers: MutableSet<Player>, itemLoc: Location, item: ItemStack, type: ItemDialogPlay.Type) {
+        if (type == ItemDialogPlay.Type.SUSPEND) {
+            HoloDisplay.updateItem(holoID, itemID, viewers, itemLoc, item)
+        }else {
+            HoloDisplay.equipHeadItem(holoID, viewers, item)
+        }
+    }
+
+    fun endDisplayItem(holoID: Int, itemID: Int, viewers: MutableSet<Player>, type: ItemDialogPlay.Type) {
+        if (type == ItemDialogPlay.Type.SUSPEND) {
+            destroyEntity(viewers, itemID)
+        }else {
+            HoloDisplay.equipHeadItem(holoID, viewers, ItemStack(Material.AIR))
         }
     }
 

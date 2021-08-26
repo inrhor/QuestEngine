@@ -21,7 +21,7 @@ class HoloReplyDisplay {
         if (type == ItemDialogPlay.Type.SUSPEND) {
             HoloDisplay.updateItem(holoID, itemID, viewers, holoLoc, item)
         }else {
-            HoloDisplay.equipHeadItem(holoID, itemID, viewers, holoLoc, item)
+            HoloDisplay.equipHeadItem(holoID, viewers, item)
         }
     }
 }

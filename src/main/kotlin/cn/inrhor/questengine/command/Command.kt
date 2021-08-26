@@ -15,6 +15,9 @@ internal object Command {
     @CommandBody(permission = "QuestEngine.admin.dialog")
     val dialog = DialogCommand.dialog
 
+    @CommandBody(permission = "QuestEngine.admin.item")
+    val item = ItemCommand.item
+
     @CommandBody(permission = "QuestEngine.admin.reload")
     val reload = ReloadCommand.reload
 

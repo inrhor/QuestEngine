@@ -25,9 +25,7 @@ class HoloAnimationItem(val holoDialog: HoloDialog,
             }else {
                 HoloDisplay.equipHeadItem(
                     itemDialogPlay.holoID,
-                    itemDialogPlay.itemID,
                     viewers,
-                    holoLoc,
                     itemDialogPlay.item)
             }
         }

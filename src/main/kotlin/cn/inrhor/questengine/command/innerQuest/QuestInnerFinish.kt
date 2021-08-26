@@ -30,7 +30,6 @@ object QuestInnerFinish {
                         val player = Bukkit.getPlayer(context.argument(-2)!!) ?: return@execute run {
                             sender.sendLang("PLAYER_NOT_ONLINE")
                         }
-                        val uuid = player.uniqueId
 
                         val questID = context.argument(-1)!!
 

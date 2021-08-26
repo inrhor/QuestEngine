@@ -33,6 +33,8 @@ PACKET-ERROR_FILE: "&7&l[ &c&li &7&l]&c 数据包配置不存在或缺少键值�
 PACKET-NO_FILES: "{0}&r &6packet &8文件夹&c不存在，&8开始创建 &6packet &8文件夹"
 
 ITEM-NO_FILES: "{0}&r &6item &8文件夹&c不存在，&8开始创建 &6item &8文件夹"
+ITEM-EXIST-ID: "&7&l[ &c&li &7&l]&c 物品ID已存在： &8{0}"
+ITEM-NOT-SAVE: "&7&l[ &c&li &7&l]&c 错误物品无法存储： &8{0}"
 
 DATA-NULL_DATA: "&7&l[ &c&li &7&l]&r &c你没有数据，现已为你创建或拉取数据"
 
@@ -45,4 +47,5 @@ TEAM-NO_EXIST_TEAM: "&7&l[ &c&li &7&l]&r &c该队伍不存在"
 TEAM-NOT_LEADER: "&7&l[ &c&li &7&l]&r &c你不是队长"
 
 
-COMMAND-SUCCESSFUL_RELOAD: "&7&l[ &c&li &7&l]&a 已重载 &3&lQuestEngine &a配置文件"
+COMMAND-SUCCESSFUL_RELOAD: "&7&l[ &c&li &7&l]&f 已重载 &3&lQuestEngine &f配置文件"
+COMMAND-ITEM-SAVE: "&7&l[ &c&li &7&l]&f 保存了物品配置： &8{0}"

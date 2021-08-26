@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.script.kether.expand
 
+import cn.inrhor.questengine.common.dialog.animation.item.ItemDialogPlay
 import cn.inrhor.questengine.utlis.location.ReferHoloHitBox
 import cn.inrhor.questengine.utlis.location.LocationTool
 import taboolib.module.kether.KetherParser
@@ -20,6 +21,7 @@ class KetherHitBox(
     val maxZ: Double,
     val long: Int,
     val itemID: String,
+    val boxType: ItemDialogPlay.Type,
     val boxY: Double
 ) : ScriptAction<ReferHoloHitBox>() {
 
@@ -35,6 +37,7 @@ class KetherHitBox(
                 minZ, maxZ,
                 long,
                 itemID,
+                boxType,
                 boxY
             )
         )
@@ -46,7 +49,7 @@ class KetherHitBox(
      * hitBox dir [offset] add [multiply] [height]
      * sizeX [minX] [maxX] sizeY .. sizeZ ..
      * long [long]
-     * item [itemID] boxY [boxY]
+     * item [itemID] use [suspend/fixed] boxY [boxY]
      */
     internal object Parser {
         @KetherParser(["hitBox"], namespace = "QuestEngine")
@@ -77,9 +80,18 @@ class KetherHitBox(
             it.expect("item")
             val itemID = it.nextToken()
             it.mark()
+            it.expect("use")
+            val itemType = try {
+                when (it.nextToken()) {
+                    "suspend" -> ItemDialogPlay.Type.SUSPEND
+                    else -> ItemDialogPlay.Type.FIXED
+                }
+            } catch (ignored: Exception) {
+                ItemDialogPlay.Type.FIXED
+            }
             it.expect("boxY")
             val boxY = it.nextDouble()
-            KetherHitBox(offset, multiply, height, minX, maxX, minY, maxY, minZ, maxZ, long, itemID, boxY)
+            KetherHitBox(offset, multiply, height, minX, maxX, minY, maxY, minZ, maxZ, long, itemID, itemType, boxY)
         }
     }
 }
