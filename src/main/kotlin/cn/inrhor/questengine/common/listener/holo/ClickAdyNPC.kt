@@ -19,7 +19,7 @@ class ClickAdyNPC{
         DialogManager.sendDialogHolo(mutableSetOf(player), npcID, npcLoc)
     }
 
-    @SubscribeEvent(bind = "ink.ptms.adyeshach.api.event.AdyeshachEntityInteractEvent")
+    @SubscribeEvent(bind = "ink.ptms.adyeshach.api.event.AdyeshachEntityDamageEvent")
     fun leftClickNPC(op: OptionalEvent) {
         val ev = op.cast(AdyeshachEntityDamageEvent::class.java)
         val player = ev.player

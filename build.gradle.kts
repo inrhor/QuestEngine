@@ -1,6 +1,6 @@
 plugins {
     java
-    id("io.izzel.taboolib") version "1.20"
+    id("io.izzel.taboolib") version "1.26"
     id("org.jetbrains.kotlin.jvm") version "1.5.20"
 }
 
@@ -32,7 +32,7 @@ taboolib {
         prefix("QuestEngine")
     }
     classifier = null
-    version = "6.0.0-pre56"
+    version = "6.0.0-29"
 }
 
 repositories {
@@ -53,7 +53,7 @@ dependencies {
     compileOnly("ink.ptms.core:v11000:11000:all")
     compileOnly("ink.ptms.core:v10900:10900:all")
     compileOnly("public:Citizens:1.0.0")
-    compileOnly("ink.ptms:Adyeshach:1.3.1@jar")
+    compileOnly("ink.ptms:Adyeshach:1.3.2@jar")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree("libs"))
