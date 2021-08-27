@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.listener
 
+import cn.inrhor.questengine.api.event.CollectionPassEvent
 import cn.inrhor.questengine.api.event.PacketEntityInteractEvent
 import cn.inrhor.questengine.common.packet.PacketManager
 import cn.inrhor.questengine.common.packet.RatioDisplay
@@ -20,6 +21,7 @@ object PacketDataListener {
             eval(p, it)
         }
         if (packetData.clickAction.passClickCount()) {
+            CollectionPassEvent(p, packetData, ev.type).call()
             action.pass.forEach {
                 if (it.lowercase() == "remove") {
                    PacketManager.removePacketEntity(p, packetModule.packedID, packetData.entityID)

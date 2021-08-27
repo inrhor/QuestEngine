@@ -1,9 +1,7 @@
 package cn.inrhor.questengine.common.quest.target
 
-import cn.inrhor.questengine.api.event.PacketEntityInteractEvent
-import cn.inrhor.questengine.api.packet.PacketActionType
+import cn.inrhor.questengine.api.event.CollectionPassEvent
 import cn.inrhor.questengine.api.packet.PacketModule
-import cn.inrhor.questengine.api.packet.toPacketAction
 import cn.inrhor.questengine.api.target.ConditionType
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.api.target.TargetExtend
@@ -11,12 +9,12 @@ import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.api.target.util.Schedule
 
-object TargetClickPacket: TargetExtend<PacketEntityInteractEvent>() {
+object TargetClickCollection: TargetExtend<CollectionPassEvent>() {
 
-    override val name = "click packet"
+    override val name = "pass collection packet"
 
     init {
-        event = PacketEntityInteractEvent::class
+        event = CollectionPassEvent::class
         tasker{
             val questData = QuestManager.getDoingQuest(player) ?: return@tasker player
             if (!QuestManager.matchQuestMode(questData)) return@tasker player
@@ -38,17 +36,12 @@ object TargetClickPacket: TargetExtend<PacketEntityInteractEvent>() {
             player
         }
         TargetManager.register(name, "packetID", "packetID")
-        TargetManager.register(name, "packetType", "packetType")
         TargetManager.register(name, "number", "number")
     }
 
     fun checkPacketID(target: QuestTarget, packetModule: PacketModule): Boolean {
         val id = target.condition["packetID"]?: return false
-        val type = target.condition["packetType"]?: return false
-        if (id == packetModule.packedID) {
-            return type.toPacketAction() == PacketActionType.COLLECTION
-        }
-        return false
+        return id == packetModule.packedID
     }
 
 }
