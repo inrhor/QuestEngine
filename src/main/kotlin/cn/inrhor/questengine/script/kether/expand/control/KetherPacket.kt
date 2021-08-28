@@ -34,7 +34,7 @@ class KetherPacket {
     }
 
     /*
-     * packet send packet number [int] where location [location] type [type] [value] [step]
+     * packet send [packetID] number [int] where location [location] type [type] [value] [step]
      */
     class SendMathPacket(val packetID: String, val number: Int, val location: ParsedAction<*>,
                          val type: String, val value: Double, val step: Double): ScriptAction<Void>() {

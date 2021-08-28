@@ -28,6 +28,7 @@ taboolib {
             name("Citizens").optional(true)
             name("ProtocolLib").optional(true)
             name("PlaceholderAPI").optional(true)
+            name("BigDoors").optional(true)
         }
         prefix("QuestEngine")
     }
@@ -56,5 +57,5 @@ dependencies {
     compileOnly("ink.ptms:Adyeshach:1.3.2@jar")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly(kotlin("stdlib"))
-    compileOnly(fileTree("libs"))
+    compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 }
