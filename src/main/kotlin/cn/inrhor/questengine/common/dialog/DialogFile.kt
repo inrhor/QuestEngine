@@ -26,7 +26,7 @@ object DialogFile {
 
             if (cfs.contains("hook")) {
                 val id = cfs.getString("hook")!!
-                regDialog(yaml.getConfigurationSection(id), cfs)
+                regDialog(cfs, yaml.getConfigurationSection(id))
             }else {
                 regDialog(cfs)
             }
