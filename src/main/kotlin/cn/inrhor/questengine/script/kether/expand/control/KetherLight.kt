@@ -37,9 +37,13 @@ class KetherLight() {
                     it.mark()
                     it.expect("level")
                     val level = it.nextInt()
+                    it.mark()
+                    it.expect("where")
                     CreateLight(level, it.next(ArgTypes.ACTION))
                 }
                 "delete" -> {
+                    it.mark()
+                    it.expect("where")
                     DeleteLight(it.next(ArgTypes.ACTION))
                 }
                 else -> error("unknown type")
