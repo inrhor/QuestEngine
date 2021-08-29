@@ -15,13 +15,11 @@ class ReplyModule(val dialogID: String,
                   val replyID: String,
                   var content: MutableList<String>,
                   var script: MutableList<String>,
-                  var textList: MutableList<TextDisplay>,
-                  var itemList: MutableList<ItemDisplay>) {
+                  var condition: MutableList<String>,
+                  var textList: MutableList<TextDisplay> = mutableListOf(),
+                  var itemList: MutableList<ItemDisplay> = mutableListOf()) {
 
-    constructor(dialogID: String, replyID: String, content: MutableList<String>, script: MutableList<String>) :
-            this(dialogID, replyID, content, script, mutableListOf(), mutableListOf())
-
-    fun holoInit() {
+    init {
         var textLine = 0
         var itemLine = 0
         for (i in content) {

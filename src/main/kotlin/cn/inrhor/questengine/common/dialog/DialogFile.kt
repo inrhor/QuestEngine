@@ -6,6 +6,7 @@ import cn.inrhor.questengine.api.dialog.SpaceModule
 import cn.inrhor.questengine.utlis.UtilString
 import taboolib.library.configuration.YamlConfiguration
 import taboolib.common.platform.function.*
+import taboolib.library.configuration.ConfigurationSection
 import taboolib.module.lang.sendLang
 import java.io.File
 
@@ -22,34 +23,55 @@ object DialogFile {
         }
         for (dialogID in yaml.getKeys(false)) {
             val cfs = yaml.getConfigurationSection(dialogID)
-            val npcID = cfs.getStringList("npcIDs")
-            val condition = cfs.getStringList("condition")
-            val type = cfs.getString("type")?: "holo"
-            val dialog = cfs.getStringList("dialog")
 
-            val enableSpace = cfs.getBoolean("space.enable")
-            val listSpace = cfs.getStringList("space.condition")
-            val space = SpaceModule(enableSpace, listSpace)
-
-            val dialogModule = DialogModule(
-                dialogID, npcID, condition, type, dialog,
-                mutableListOf(), mutableListOf(),
-                space)
-
-            if (cfs.contains("reply")) {
-                val replySfc = cfs.getConfigurationSection("reply")
-                if (replySfc.getKeys(false).isNotEmpty()) {
-                    for (replyID in replySfc.getKeys(false)) {
-                        val content = replySfc.getStringList("$replyID.content")
-                        val script = replySfc.getStringList("$replyID.script")
-                        val replyCube = ReplyModule(dialogID, replyID, content, script)
-                        replyCube.holoInit()
-                        dialogModule.replyModuleList.add(replyCube)
-                    }
-                }
+            if (cfs.contains("hook")) {
+                val id = cfs.getString("hook")!!
+                regDialog(yaml.getConfigurationSection(id), cfs)
+            }else {
+                regDialog(cfs)
             }
 
-            DialogManager.register(dialogID, dialogModule)
+        }
+    }
+
+    private fun regDialog(section: ConfigurationSection, hook: ConfigurationSection = section) {
+        val dialogID = section.name
+
+        val npcID = hook.getStringList("npcIDs")
+        val condition = hook.getStringList("condition")
+        val type = hook.getString("type")?: "holo"
+
+        val dialog = section.getStringList("dialog")
+
+        val enableSpace = hook.getBoolean("space.enable")
+        val listSpace = hook.getStringList("space.condition")
+        val space = SpaceModule(enableSpace, listSpace)
+
+        val dialogModule = DialogModule(
+            dialogID, npcID, condition, type, dialog,
+            mutableListOf(), mutableListOf(),
+            space)
+
+        addReply(section, dialogID, dialogModule)
+        if (dialogID != hook.name) {
+            addReply(hook, dialogID, dialogModule)
+        }
+
+        DialogManager.register(dialogID, dialogModule)
+    }
+
+    private fun addReply(section: ConfigurationSection, dialogID: String, dialogModule: DialogModule) {
+        if (section.contains("reply")) {
+            val replySfc = section.getConfigurationSection("reply")
+            if (replySfc.getKeys(false).isNotEmpty()) {
+                for (replyID in replySfc.getKeys(false)) {
+                    val content = replySfc.getStringList("$replyID.content")
+                    val script = replySfc.getStringList("$replyID.script")
+                    val cd = replySfc.getStringList("$replyID.condition")
+                    val replyCube = ReplyModule(dialogID, replyID, content, script, cd)
+                    dialogModule.replyModuleList.add(replyCube)
+                }
+            }
         }
     }
 

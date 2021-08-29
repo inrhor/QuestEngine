@@ -81,11 +81,21 @@ class HoloDialog(
                     packetIDs.add(playItem.holoID)
                     packetIDs.add(playItem.itemID)
                 }
-                iUc.startsWith("REPLY") -> { // 弹出回复选项
+                iUc.startsWith("REPLYALL") -> { // 弹出全部回复选项
                     val replyList = dialogModule.replyModuleList
-                    val get = i.substring(i.indexOf(" ")+1)
-                    val delay = get.toLong()
+                    val sp = i.split(" ")
+                    val delay = sp[1].toLong()
                     HoloReply(replyList, npcLoc, viewers, delay).run()
+                }
+                iUc.startsWith("REPLY") -> { // 弹出指定回复选项
+                    val sp = i.split(" ")
+                    val delay = sp[1].toLong()
+                    val id = sp[2]
+                    dialogModule.replyModuleList.forEach {
+                        if (it.replyID == id) {
+                            HoloReply(mutableListOf(it), npcLoc, viewers, delay).run()
+                        }
+                    }
                 }
             }
         }
