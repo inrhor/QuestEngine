@@ -17,7 +17,7 @@ import taboolib.common.platform.service.PlatformExecutor
 class HoloHitBox(val replyModule: ReplyModule,
                  val boxLoc: Location,
                  val referHoloHitBox: ReferHoloHitBox,
-                 var viewers: MutableSet<Player>) {
+                 var viewers: MutableSet<Player>, val npcLoc: Location = boxLoc) {
 
     private val packetIDs = mutableListOf<Int>()
     private var task: PlatformExecutor.PlatformTask? = null

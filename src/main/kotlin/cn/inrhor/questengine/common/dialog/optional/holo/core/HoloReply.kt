@@ -64,7 +64,7 @@ class HoloReply(
                     iUc.startsWith("HITBOX") -> {
                         val referHoloHitBox = evalHoloHitBox(i)
                         val boxLoc = LocationTool.getReferHoloBoxLoc(yaw, holoLoc, referHoloHitBox)
-                        val holoHitBox = HoloHitBox(replyModule, boxLoc, referHoloHitBox, viewers)
+                        val holoHitBox = HoloHitBox(replyModule, boxLoc, referHoloHitBox, viewers, npcLoc)
                         holoHitBox.viewBox()
                         for (viewer in viewers) {
                             DataStorage.getPlayerData(viewer).dialogData.addHoloBox(dialogID, holoHitBox)

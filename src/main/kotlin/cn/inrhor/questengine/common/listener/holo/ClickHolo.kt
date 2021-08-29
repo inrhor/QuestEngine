@@ -12,7 +12,14 @@ object ClickHolo {
         val replyModule = holoBox.replyModule
         holoBox.viewers.forEach {
             for (script in replyModule.script) {
-                eval(it, script)
+                if (script.lowercase().startsWith("npcdialog send")) {
+                    val loc = holoBox.npcLoc
+                    eval(it, script.replace("npcdialog", "dialog", true)
+                            +" where *"+loc.world?.name
+                            +" *"+loc.x+" *"+loc.y+" *"+loc.z)
+                }else {
+                    eval(it, script)
+                }
             }
         }
     }
