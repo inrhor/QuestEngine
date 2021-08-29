@@ -3,28 +3,28 @@ package cn.inrhor.questengine.common.listener.holo
 import cn.inrhor.questengine.common.dialog.DialogManager
 import ink.ptms.adyeshach.api.event.AdyeshachEntityDamageEvent
 import ink.ptms.adyeshach.api.event.AdyeshachEntityInteractEvent
+import ink.ptms.adyeshach.common.entity.EntityInstance
+import org.bukkit.entity.Player
 import taboolib.common.platform.event.*
 
 
-class ClickAdyNPC{
+class ClickAdyNPC {
 
     @SubscribeEvent(bind = "ink.ptms.adyeshach.api.event.AdyeshachEntityInteractEvent")
     fun rightClickNPC(op: OptionalEvent) {
         val ev = op.cast(AdyeshachEntityInteractEvent::class.java)
         if (!ev.isMainHand) return
-        val player = ev.player
-        val npc = ev.entity
-        val npcLoc = npc.location
-        val npcID = npc.id
-        DialogManager.sendDialogHolo(mutableSetOf(player), npcID, npcLoc)
+        sendDialog(ev.player, ev.entity)
     }
 
     @SubscribeEvent(bind = "ink.ptms.adyeshach.api.event.AdyeshachEntityDamageEvent")
     fun leftClickNPC(op: OptionalEvent) {
         val ev = op.cast(AdyeshachEntityDamageEvent::class.java)
-        val player = ev.player
-        val npc = ev.entity
-        val npcLoc = npc.location
+        sendDialog(ev.player, ev.entity)
+    }
+
+    private fun sendDialog(player: Player, npc: EntityInstance) {
+        val npcLoc = npc.getLocation()
         val npcID = npc.id
         DialogManager.sendDialogHolo(mutableSetOf(player), npcID, npcLoc)
     }
