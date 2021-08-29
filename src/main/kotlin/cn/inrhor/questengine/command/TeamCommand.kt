@@ -32,4 +32,7 @@ internal object TeamCommand {
     @CommandBody
     val kick = TeamKick.kick
 
+    @CommandBody
+    val tags = TagsCommand.admin
+
 }

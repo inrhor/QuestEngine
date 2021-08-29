@@ -28,23 +28,36 @@ QUEST-ERROR_FILE: "&7&l[ &c&li &7&l]&c 任务配置不存在或缺少键值： &
 QUEST-ALREADY_ACCEPT: "&7&l[ &c&li &7&l]&c 已接受过任务，请完成任务"
 QUEST-NULL_QUEST_DATA: "&7&l[ &c&li &7&l]&c 不存在任务数据 &r{0}"
 
+
 PACKET-NULL_PACKET_ID: "&7&l[ &c&li &7&l]&c 不存在数据包ID： &r{0}"
 PACKET-ERROR_FILE: "&7&l[ &c&li &7&l]&c 数据包配置不存在或缺少键值： &r{0}"
 PACKET-NO_FILES: "{0}&r &6packet &8文件夹&c不存在，&8开始创建 &6packet &8文件夹"
+
 
 ITEM-NO_FILES: "{0}&r &6item &8文件夹&c不存在，&8开始创建 &6item &8文件夹"
 ITEM-EXIST-ID: "&7&l[ &c&li &7&l]&c 物品ID已存在： &8{0}"
 ITEM-NOT-SAVE: "&7&l[ &c&li &7&l]&c 错误物品无法存储： &8{0}"
 
+
 DATA-NULL_DATA: "&7&l[ &c&li &7&l]&r &c你没有数据，现已为你创建或拉取数据"
 
+
 PLAYER_NOT_ONLINE: "&7&l[ &c&li &7&l]&r &c当前玩家不在线"
+
 
 TEAM-HAS_TEAM: "&7&l[ &c&li &7&l]&r &c你已经有了队伍"
 TEAM-NO_TEAM: "&7&l[ &c&li &7&l]&r &c你没有队伍"
 TEAM-OTHER_NO_TEAM: "&7&l[ &c&li &7&l]r &c该玩家没有队伍"
 TEAM-NO_EXIST_TEAM: "&7&l[ &c&li &7&l]&r &c该队伍不存在"
 TEAM-NOT_LEADER: "&7&l[ &c&li &7&l]&r &c你不是队长"
+
+
+COMMAND-TAGS-ADD: "&7&l[ &c&li &7&l]&f 已为玩家 &8{0} &a添加&f标签 &8{1}"
+COMMAND-TAGS-REMOVE: "&7&l[ &c&li &7&l]&f 已为玩家 &8{0} &c删除&f标签 &8{1}"
+
+
+TAGS-LIST: "&7&l[ &c&li &7&l]&f 玩家 &8{0} &f标签列表："
+TAGS-LIST-FORMAT: "&f     - &8{0}"
 
 
 COMMAND-SUCCESSFUL_RELOAD: "&7&l[ &c&li &7&l]&f 已重载 &3&lQuestEngine &f配置文件"

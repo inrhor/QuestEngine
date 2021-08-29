@@ -16,7 +16,6 @@ object BookQuestInfo {
             PublicJson.questInfo(player, questUUID).forEach {
                 write(it)
             }
-
         }
 
     }
