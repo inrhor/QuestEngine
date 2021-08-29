@@ -24,4 +24,7 @@ internal object Command {
     @CommandBody(permission = "QuestEngine.use.team")
     val team = TeamCommand
 
+    @CommandBody(permission = "QuestEngine.admin.tags")
+    val tags = TagsCommand
+
 }
