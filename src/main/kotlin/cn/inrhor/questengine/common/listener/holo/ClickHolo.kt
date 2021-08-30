@@ -15,7 +15,7 @@ object ClickHolo {
                 if (script.lowercase().startsWith("npcdialog send")) {
                     val loc = holoBox.npcLoc
                     eval(it, script.replace("npcdialog", "dialog", true)
-                            +" where *"+loc.world?.name
+                            +" where location *"+loc.world?.name
                             +" *"+loc.x+" *"+loc.y+" *"+loc.z)
                 }else {
                     eval(it, script)

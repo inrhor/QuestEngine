@@ -124,11 +124,11 @@ object DialogManager {
         spaceDialogHolo(dialogModule, holoDialog)
     }
 
-    fun sendDialogHolo(player: Player, dialogID: String) {
+    fun sendDialogHolo(player: Player, dialogID: String, location: Location = player.location) {
         if (hasDialog(player, dialogID)) return
         if (exist(dialogID)) {
             val dialogModule = get(dialogID)?: return
-            val holoDialog = HoloDialog(dialogModule, player.location, mutableSetOf(player))
+            val holoDialog = HoloDialog(dialogModule, location, mutableSetOf(player))
             holoDialog.run()
             spaceDialogHolo(dialogModule, holoDialog)
         }

@@ -37,14 +37,18 @@ object DialogFile {
     private fun regDialog(section: ConfigurationSection, hook: ConfigurationSection = section) {
         val dialogID = section.name
 
-        val npcID = hook.getStringList("npcIDs")
-        val condition = hook.getStringList("condition")
-        val type = hook.getString("type")?: "holo"
+        val npcID = if (section.contains("npcIDs")) section.getStringList("npcIDs") else hook.getStringList("npcIDs")
 
-        val dialog = section.getStringList("dialog")
+        val condition = if (section.contains("condition")) section.getStringList("condition") else hook.getStringList("condition")
 
-        val enableSpace = hook.getBoolean("space.enable")
-        val listSpace = hook.getStringList("space.condition")
+        val type = if (section.contains("type")) section.getString("type") else hook.getString("type")?: "holo"
+
+        val dialog = if (section.contains("dialog")) section.getStringList("dialog") else hook.getStringList("dialog")
+
+        val e = "space.enable"
+        val enableSpace = if (section.contains(e)) section.getBoolean(e) else hook.getBoolean(e)
+        val es = "space.condition"
+        val listSpace = if (section.contains(es)) section.getStringList(es) else hook.getStringList(es)
         val space = SpaceModule(enableSpace, listSpace)
 
         val dialogModule = DialogModule(

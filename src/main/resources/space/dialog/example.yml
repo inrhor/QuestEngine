@@ -50,6 +50,7 @@ dialog_1:
 dialog2:
   # 继承了父对象的属性（除了dialog）
   hook: dialog_1
+  condition: []
   dialog:
     - reply 20 rep
   reply:
