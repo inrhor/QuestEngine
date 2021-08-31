@@ -12,14 +12,14 @@ class ClickAdyNPC {
 
     @SubscribeEvent(bind = "ink.ptms.adyeshach.api.event.AdyeshachEntityInteractEvent")
     fun rightClickNPC(op: OptionalEvent) {
-        val ev = op.cast(AdyeshachEntityInteractEvent::class.java)
+        val ev = op.get<AdyeshachEntityInteractEvent>()
         if (!ev.isMainHand) return
         sendDialog(ev.player, ev.entity)
     }
 
     @SubscribeEvent(bind = "ink.ptms.adyeshach.api.event.AdyeshachEntityDamageEvent")
     fun leftClickNPC(op: OptionalEvent) {
-        val ev = op.cast(AdyeshachEntityDamageEvent::class.java)
+        val ev = op.get<AdyeshachEntityDamageEvent>()
         sendDialog(ev.player, ev.entity)
     }
 

@@ -11,7 +11,7 @@ object ClickCitizens {
 
     @SubscribeEvent(bind = "net.citizensnpcs.api.event.NPCRightClickEvent")
     fun rightClickNPC(op: OptionalEvent) {
-        val ev = op.cast(NPCRightClickEvent::class.java)
+        val ev = op.get<NPCRightClickEvent>()
         val player = ev.clicker
         val npc = ev.npc
         npc(player, npc)
@@ -19,7 +19,7 @@ object ClickCitizens {
 
     @SubscribeEvent(bind = "net.citizensnpcs.api.event.NPCLeftClickEvent")
     fun leftClickNPC(op: OptionalEvent) {
-        val ev = op.cast(NPCLeftClickEvent::class.java)
+        val ev = op.get<NPCLeftClickEvent>()
         val player = ev.clicker
         val npc = ev.npc
         npc(player, npc)
