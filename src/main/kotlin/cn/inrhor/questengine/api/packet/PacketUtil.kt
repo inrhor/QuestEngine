@@ -45,6 +45,10 @@ fun spawnAS(players: MutableSet<Player>, entityId: Int, location: Location) {
     }
 }
 
+fun initAS(player: Player, entityId: Int, showName: Boolean, isSmall: Boolean, marker: Boolean) {
+    initAS(mutableSetOf(player), entityId, showName, isSmall, marker)
+}
+
 fun initAS(players: MutableSet<Player>, entityId: Int, showName: Boolean, isSmall: Boolean, marker: Boolean) {
     when (PacketUtil.hookPacket) {
         HookPacket.DEFAULT -> getPackets().initAS(players, entityId, showName, isSmall, marker)

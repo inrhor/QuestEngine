@@ -55,6 +55,10 @@ object HookProtocolLib {
         sendPacket(players, packet)
     }
 
+    fun spawnAS(player: Player, entityId: Int, location: Location) {
+        spawnAS(mutableSetOf(player), entityId, location)
+    }
+
     fun spawnAS(players: MutableSet<Player>, entityId: Int, location: Location) {
         val entityType = if (version >= 6) "ARMOR_STAND" else "78"
         spawnEntity(players, entityId, entityType, location)

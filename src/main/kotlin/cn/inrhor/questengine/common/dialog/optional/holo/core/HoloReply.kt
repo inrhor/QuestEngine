@@ -23,7 +23,7 @@ class HoloReply(
     var viewers: MutableSet<Player>,
     val delay: Long) {
 
-    private val packetIDs = mutableListOf<Int>()
+    private val packetIDs = mutableSetOf<Int>()
 
     var end = false
 
@@ -84,10 +84,10 @@ class HoloReply(
                         val textDisplay = replyModule.textList[textIndex]
                         val text = textDisplay.text
                         val holoID = textDisplay.holoID
-                        textIndex++
                         holoLoc = holoLoc.add(0.0, nextY, 0.0)
                         HoloReplyDisplay().text(holoID, viewers, holoLoc, text)
                         packetIDs.add(holoID)
+                        textIndex++
                     }
                     iUc.startsWith("ITEM") -> {
                         val itemDisplay = replyModule.itemList[itemIndex]

@@ -6,13 +6,16 @@ import cn.inrhor.questengine.common.dialog.animation.item.ItemDialogPlay
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import taboolib.platform.compat.replacePlaceholder
 
 class HoloReplyDisplay {
 
     fun text(holoID: Int, viewers: MutableSet<Player>, holoLoc: Location, text: String) {
         spawnAS(viewers, holoID, holoLoc)
-        HoloDisplay.initTextAS(holoID, viewers)
-        HoloDisplay.updateText(holoID, viewers, text)
+        viewers.forEach {
+            HoloDisplay.initTextAS(holoID, it)
+            HoloDisplay.updateText(holoID, it, text.replacePlaceholder(it))
+        }
     }
 
     fun item(holoID: Int, itemID: Int, viewers: MutableSet<Player>, holoLoc: Location, item: ItemStack, type: ItemDialogPlay.Type) {

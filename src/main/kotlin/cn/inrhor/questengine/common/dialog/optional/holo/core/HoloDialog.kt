@@ -4,6 +4,7 @@ import cn.inrhor.questengine.api.packet.*
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.api.hologram.HoloDisplay
 import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.dialog.DialogManager
 import cn.inrhor.questengine.common.dialog.optional.holo.HoloAnimationItem
 import cn.inrhor.questengine.common.dialog.optional.holo.HoloAnimationText
 import cn.inrhor.questengine.script.kether.evalReferLoc
@@ -24,7 +25,7 @@ class HoloDialog(
 
     var endDialog = false
 
-    private val packetIDs = mutableListOf<Int>()
+    private val packetIDs = mutableSetOf<Int>()
 
     fun end() {
         endDialog = true
@@ -57,11 +58,14 @@ class HoloDialog(
                     nextY = get.toDouble()
                 }
                 iUc.startsWith("TEXT") -> {
-                    val playText = dialogModule.playText[textIndex]
-                    textIndex++
                     holoLoc.add(0.0, nextY, 0.0)
-                    HoloAnimationText(this, viewers, playText, holoLoc).runTask()
-                    packetIDs.add(playText.holoID)
+                    viewers.forEach {
+                        DialogManager.animation(dialogID, it)
+                        val playText = dialogModule.playText[textIndex]
+                        HoloAnimationText(this, it, playText, holoLoc).runTask()
+                        packetIDs.add(playText.holoID)
+                    }
+                    textIndex++
                 }
                 iUc.startsWith("ITEMWRITE") -> {
                     val playItem = dialogModule.playItem[itemIndex]

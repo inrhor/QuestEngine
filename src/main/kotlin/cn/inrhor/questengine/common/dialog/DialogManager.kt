@@ -14,6 +14,7 @@ import org.bukkit.entity.Player
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.submit
 import taboolib.module.lang.sendLang
+import taboolib.platform.compat.replacePlaceholder
 import java.util.*
 
 
@@ -32,27 +33,37 @@ object DialogManager {
             return
         }
         val itemContents = mutableListOf<String>()
-        val textContents = mutableListOf<String>()
         for (script in dialogModule.dialog) {
             val iUc = script.uppercase()
             when {
-                iUc.startsWith("TEXT") -> {
-                    textContents.add(script)
-                }
                 iUc.startsWith("ITEMWRITE") -> {
                     itemContents.add(script)
                 }
             }
         }
         val itemParser = ItemParser(itemContents)
-        val textParser = TextParser(textContents)
         itemParser.init(dialogID)
-        textParser.init(dialogID, "dialog")
 
         dialogModule.playItem = itemParser.dialogItemList
-        dialogModule.playText = textParser.dialogTextList
 
         dialogMap[dialogID] = dialogModule
+    }
+
+    fun animation(dialogID: String, player: Player) {
+        val dialogModule = dialogMap[dialogID]?: return
+        val textContents = mutableListOf<String>()
+        for (script in dialogModule.dialog) {
+            val iUc = script.uppercase()
+            when {
+                iUc.startsWith("TEXT") -> {
+                    textContents.add(script.replacePlaceholder(player))
+                }
+            }
+        }
+        val textParser = TextParser(textContents)
+        textParser.init(dialogID, "dialog")
+
+        dialogModule.playText = textParser.dialogTextList
     }
 
     /**

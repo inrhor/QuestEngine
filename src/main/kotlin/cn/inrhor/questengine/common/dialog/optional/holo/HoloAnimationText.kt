@@ -12,7 +12,7 @@ import taboolib.common.platform.function.*
  * 一行一个动态调度器
  */
 class HoloAnimationText(val holoDialog: HoloDialog,
-                        var viewers: MutableSet<Player>,
+                        var viewer: Player,
                         val textDialogPlay: TextDialogPlay,
                         val holoLoc: Location
 ) {
@@ -22,15 +22,15 @@ class HoloAnimationText(val holoDialog: HoloDialog,
 
         val holoID = textDialogPlay.holoID
 
-        spawnAS(viewers, holoID, holoLoc)
-        HoloDisplay.initTextAS(holoID, viewers)
+        spawnAS(mutableSetOf(viewer), holoID, holoLoc)
+        HoloDisplay.initTextAS(holoID, viewer)
 
         submit(async = true, delay = textDialogPlay.startTime.toLong(), period = 1L) {
             val texts = textDialogPlay.texts
-            if (holoDialog.endDialog || viewers.isEmpty() || line >= texts.size) {
+            if (holoDialog.endDialog || !viewer.isOnline || line >= texts.size) {
                 cancel(); return@submit
             }
-            HoloDisplay.updateText(holoID, viewers, texts[line])
+            HoloDisplay.updateText(holoID, viewer, texts[line])
             line++
         }
 
