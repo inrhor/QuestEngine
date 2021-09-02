@@ -3,6 +3,8 @@ package cn.inrhor.questengine.common.dialog.animation.text
 import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.common.dialog.animation.text.type.TextWrite
 import cn.inrhor.questengine.script.kether.evalTextWrite
+import taboolib.common.platform.function.console
+import taboolib.common.platform.function.info
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -14,63 +16,24 @@ class TextAnimation(val dialogID: String, val line: Int, val script: String, val
 
     fun init() {
         val texts = mutableListOf<String>()
+        val sendChat = mutableListOf<String>()
         var indTag = pattern.matcher(script)
         val delay = minDelay(indTag)
         indTag = pattern.matcher(script)
         // 对独立标签而言
         var firstFrame = true
         while (indTag.find()) {
-            var frame = 0
             val script = indTag.group(1)
-            var frameTextIndex = 0 // 第x行的文字帧
-            if (script.uppercase().startsWith("TEXTWRITE")) {
+            val iU = script.uppercase()
+            if (iU.startsWith("TEXTWRITE") || iU.startsWith("EMPTYWRITE")) {
                 val textWrite = evalTextWrite(script)
                 val abDelay = textWrite.delay
                 val abSpeed = textWrite.speedWrite
                 val abText = textWrite.text
-                val abTextLength = abText.length
-                var length = abTextLength
-
-                if (abDelay > delay) frameTextIndex += abDelay
-
-                var end = 2; var speed = 1
-                val ts = texts.size - 1
-                for (index in 0..abTextLength+abTextLength*abSpeed) {
-                    if (!UtilAnimation().isColor(abText.substring(0, end))) {
-                        val getText = abText.substring(0, end)
-
-                        if (speed >= abSpeed) { speed = 1; end++; frame++ } else speed++
-
-                        if (texts.isEmpty()) {  // 首次由于延迟
-                            for (i in 0..frameTextIndex) {
-                                if (i == frameTextIndex) {
-                                    texts.add(getText)
-                                }else texts.add("")
-                            }
-                        }else if (texts.size > frameTextIndex) { // 在已有帧数内
-                            texts[frameTextIndex] = texts[frameTextIndex]+getText
-                        }else { // 新帧数
-                            if (firstFrame) {
-                                texts.add(getText)
-                            }else {
-                                val long = frameTextIndex-texts.size
-                                if (long > 0) {
-                                    for (i in 0 until long) {
-                                        texts.add(texts[ts])
-                                    }
-                                }
-                                texts.add(texts[ts]+getText)
-                            }
-                        }
-                        frameTextIndex++
-                    }else { end++; length -= 1 }
-                    if (frame >= length-1)  {
-                        for (i in frameTextIndex until texts.size) {
-                            texts[i] = texts[i]+abText
-                        }
-                        break
-                    }
+                if (textWrite.sendChat) {
+                    sendChat.add(abText)
                 }
+                writeType(abDelay, delay, texts, abSpeed, abText, firstFrame, textWrite.sendChat)
             }
             firstFrame = false
         }
@@ -79,8 +42,66 @@ class TextAnimation(val dialogID: String, val line: Int, val script: String, val
 //                if (HoloIDManager.existEntityID(holoID))
         HoloIDManager.addEntityID(holoID)
 
-        val textAnimation = TextDialogPlay(holoID, texts, delay)
+        val textAnimation = TextDialogPlay(holoID, texts, delay, sendChat)
         dialogTextList.add(textAnimation)
+    }
+
+    private fun writeType(abDelay: Int, delay: Int,
+                          texts: MutableList<String>, abSpeed: Int, abText: String,
+                          firstFrame: Boolean, sendChat: Boolean) {
+        var frame = 0
+        var frameTextIndex = 0 // 第x行的文字帧
+        if (abDelay > delay) frameTextIndex += abDelay
+        var end = 2; var speed = 1
+        val ts = texts.size - 1
+        var writeIndex = 0
+//        val text = if (sendChat) "$abText          " else abText
+        var length = abText.length
+        var color = ""
+        for (index in 0..length+length*abSpeed) {
+            val text = abText.substring(writeIndex, end)
+            if (!UtilAnimation().isColor(text)) {
+                info("write $writeIndex  end $end")
+                val getText = color+text
+
+                if (speed >= abSpeed) {
+                    speed = 1; end++; frame++
+                    if (sendChat && end > 25) writeIndex++
+                } else speed++
+
+                if (texts.isEmpty()) {  // 首次由于延迟
+                    for (i in 0..frameTextIndex) {
+                        if (i == frameTextIndex) {
+                            texts.add(getText)
+                        }else texts.add("")
+                    }
+                }else if (texts.size > frameTextIndex) { // 在已有帧数内
+                    texts[frameTextIndex] = texts[frameTextIndex]+getText
+                }else { // 新帧数
+                    if (firstFrame) {
+                        texts.add(getText)
+                    }else {
+                        val long = frameTextIndex-texts.size
+                        if (long > 0) {
+                            for (i in 0 until long) {
+                                texts.add(texts[ts])
+                            }
+                        }
+                        texts.add(texts[ts]+getText)
+                    }
+                }
+                frameTextIndex++
+            }else {
+                color = text.substring(text.length-2)
+                end++; length -= 1
+            }
+            if (frame >= length-1)  {
+                for (i in frameTextIndex until texts.size) {
+                    texts[i] = texts[i]+abText
+                }
+                break
+            }
+        }
     }
 
     private fun minDelay(tags: Matcher): Int {

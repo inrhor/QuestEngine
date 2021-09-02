@@ -15,7 +15,8 @@ class KetherTextWrite(val delay: Int, val speedWrite: Int, val text: String) : S
             TextWrite(
                 delay,
                 speedWrite,
-                text
+                text,
+                TextWrite.Type.TEXTWRITE
             )
         )
         return referLocation

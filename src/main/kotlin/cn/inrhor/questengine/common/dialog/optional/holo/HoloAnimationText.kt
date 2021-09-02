@@ -27,7 +27,13 @@ class HoloAnimationText(val holoDialog: HoloDialog,
 
         submit(async = true, delay = textDialogPlay.startTime.toLong(), period = 1L) {
             val texts = textDialogPlay.texts
-            if (holoDialog.endDialog || !viewer.isOnline || line >= texts.size) {
+            if (holoDialog.endDialog || !viewer.isOnline) {
+                cancel(); return@submit
+            }
+            if (line >= texts.size) {
+                textDialogPlay.sendChat.forEach {
+                    viewer.sendMessage(it)
+                }
                 cancel(); return@submit
             }
             HoloDisplay.updateText(holoID, viewer, texts[line])
