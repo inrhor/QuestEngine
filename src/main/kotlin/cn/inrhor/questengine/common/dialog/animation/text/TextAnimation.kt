@@ -3,9 +3,7 @@ package cn.inrhor.questengine.common.dialog.animation.text
 import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.common.dialog.animation.text.type.TextWrite
 import cn.inrhor.questengine.script.kether.evalTextWrite
-import taboolib.common.platform.function.console
 import taboolib.common.platform.function.info
-import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -33,7 +31,8 @@ class TextAnimation(val dialogID: String, val line: Int, val script: String, val
                 if (textWrite.sendChat) {
                     sendChat.add(abText)
                 }
-                writeType(abDelay, delay, texts, abSpeed, abText, firstFrame, textWrite.sendChat)
+                val emptyWrite = textWrite.type == TextWrite.Type.EMPTYWRITE
+                writeType(abDelay, delay, texts, abSpeed, " &r$abText", firstFrame, emptyWrite)
             }
             firstFrame = false
         }
@@ -54,19 +53,13 @@ class TextAnimation(val dialogID: String, val line: Int, val script: String, val
         if (abDelay > delay) frameTextIndex += abDelay
         var end = 2; var speed = 1
         val ts = texts.size - 1
-        var writeIndex = 0
-//        val text = if (sendChat) "$abText          " else abText
         var length = abText.length
-        var color = ""
         for (index in 0..length+length*abSpeed) {
-            val text = abText.substring(writeIndex, end)
-            if (!UtilAnimation().isColor(text)) {
-                info("write $writeIndex  end $end")
-                val getText = color+text
+            val getText = abText.substring(0, end)
+            if (!UtilAnimation().isColor(getText)) {
 
                 if (speed >= abSpeed) {
                     speed = 1; end++; frame++
-                    if (sendChat && end > 25) writeIndex++
                 } else speed++
 
                 if (texts.isEmpty()) {  // 首次由于延迟
@@ -91,10 +84,7 @@ class TextAnimation(val dialogID: String, val line: Int, val script: String, val
                     }
                 }
                 frameTextIndex++
-            }else {
-                color = text.substring(text.length-2)
-                end++; length -= 1
-            }
+            }else { end++; length -= 1 }
             if (frame >= length-1)  {
                 for (i in frameTextIndex until texts.size) {
                     texts[i] = texts[i]+abText
@@ -102,14 +92,19 @@ class TextAnimation(val dialogID: String, val line: Int, val script: String, val
                 break
             }
         }
+        if (sendChat) {
+            for (s in 0..abSpeed) {
+                texts.add(texts.last())
+            }
+            texts.add(texts.last().replace(abText, ""))
+        }
     }
 
     private fun minDelay(tags: Matcher): Int {
         val t = mutableListOf<TextWrite>()
         while (tags.find()) {
             val script = tags.group(1)
-            var textWrite = evalTextWrite(script)
-            t.add(textWrite)
+            t.add(evalTextWrite(script))
         }
         val nt = t.sortedBy { TextWrite -> TextWrite.delay }
         return nt[0].delay
