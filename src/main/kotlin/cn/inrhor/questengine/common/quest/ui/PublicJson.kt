@@ -4,6 +4,7 @@ import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.quest.toUnit
 import cn.inrhor.questengine.utlis.UtilString
 import cn.inrhor.questengine.utlis.time.TimeUtil
+import cn.inrhor.questengine.utlis.toJsonStr
 import org.bukkit.entity.Player
 import taboolib.module.chat.TellrawJson
 import taboolib.module.chat.colored
@@ -30,7 +31,7 @@ object PublicJson {
             return jsList
         }
 
-        val ds = UtilString.getJsonStr(innerModule.description)
+        val ds = innerModule.description.toJsonStr()
             .replace("%state%", innerData.state.toUnit(player), true)
         val dsJs = TellrawJson()
             .append(ds.colored())
@@ -43,7 +44,7 @@ object PublicJson {
             if (endDate != null) {
                 time = TimeUtil.remainDate(player, innerData.state, endDate)
             }
-            val tds = UtilString.getJsonStr(target.description)
+            val tds = target.description.toJsonStr()
                 .replace("%schedule%", tData.schedule.toString(), true)
                 .replace("%time%", time, true)
             val tdsJs = TellrawJson()

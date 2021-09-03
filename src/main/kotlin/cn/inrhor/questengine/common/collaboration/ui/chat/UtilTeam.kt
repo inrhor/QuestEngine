@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.collaboration.ui.chat
 
 import cn.inrhor.questengine.api.collaboration.TeamOpen
 import cn.inrhor.questengine.utlis.UtilString
+import cn.inrhor.questengine.utlis.toJsonStr
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import taboolib.library.configuration.YamlConfiguration
@@ -28,7 +29,7 @@ object UtilTeam {
     }
 
     fun getStr(yaml: YamlConfiguration, node: String): String {
-        return UtilString.getJsonStr(yaml.getStringList(node))
+        return yaml.getStringList(node).toJsonStr()
     }
 
     fun leaderName(player: Player, tData: TeamOpen): String {

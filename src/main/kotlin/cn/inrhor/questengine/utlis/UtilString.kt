@@ -11,18 +11,6 @@ object UtilString {
     val pluginTag by lazy {
         "§7§l[ §c§li §7§l]§7§l[ §3§lQuestEngine §7§l]"
     }
-
-    fun getJsonStr(list: MutableList<String>): String {
-        var content = ""
-        list.forEach {
-            if (content.isEmpty()) {
-                content = it
-                return@forEach
-            }
-            content = "$content§r\n$it"
-        }
-        return content
-    }
 }
 
 /**
@@ -57,4 +45,16 @@ fun progressBar(
     val progressBars = (totalBars * percent).toInt()
     return (Strings.repeat("" + completedColor + symbol, progressBars)
             + Strings.repeat("" + notCompletedColor + symbol, totalBars - progressBars))
+}
+
+fun MutableList<String>.toJsonStr(): String {
+    var content = ""
+    this.forEach {
+        if (content.isEmpty()) {
+            content = it
+            return@forEach
+        }
+        content = "$content§r\n$it"
+    }
+    return content
 }
