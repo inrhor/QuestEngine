@@ -38,13 +38,10 @@ object QuestManager {
     /**
      * 注册任务模块内容
      */
-    fun register(questID: String, questModule: QuestModule, sort: String) {
+    fun register(questID: String, questModule: QuestModule) {
         questMap[questID] = questModule
         if (questModule.acceptWay.lowercase() == "auto") {
             autoQuestMap[questID] = questModule
-        }
-        if (sort.isNotEmpty()) {
-//            QuestSort.sortList[sort] = questModule
         }
     }
 

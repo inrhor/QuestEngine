@@ -6,11 +6,11 @@ import cn.inrhor.questengine.utlis.ui.buildUI
 object SortBook {
 
     fun home() {
-        QuestSort.sortList.forEach { (sort, qModule) ->
+        /*QuestSort.sortList.forEach { (sort, qModule) ->
             val ui = buildUI() {
                 description.add("")
             }
-        }
+        }*/
     }
 
 }

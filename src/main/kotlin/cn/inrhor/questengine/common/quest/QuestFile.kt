@@ -4,6 +4,7 @@ import cn.inrhor.questengine.api.quest.control.*
 import cn.inrhor.questengine.api.quest.QuestInnerModule
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.api.quest.QuestModule
+import cn.inrhor.questengine.api.quest.buildQuestModule
 import cn.inrhor.questengine.common.quest.manager.ControlManager
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.utlis.file.GetFile
@@ -34,24 +35,6 @@ object QuestFile {
         val questID = setting.getString("questID")?: return run {
             console().sendLang("QUEST-ERROR_FILE")
         }
-        val name = setting.getString("name")?: "test"
-        val startID = setting.getString("startInnerQuestID")?: "test"
-        var modeType = ModeType.PERSONAL
-        val modeTypeStr = setting.getString("mode.type")?: "personal"
-        var modeAmount = -1
-        var modeShareData = false
-        if (modeTypeStr == "collaboration") {
-            modeType = ModeType.COLLABORATION
-            modeAmount = setting.getInt("mode.amount")
-            modeShareData = setting.getBoolean("mode.shareData")
-        }
-        val acceptWay = setting.getString("accept.way")?: ""
-        val maxQuantity = if (setting.contains("accept.maxQuantity")) setting.getInt("accept.maxQuantity") else 1
-        val acceptCheck = setting.getInt("accept.check")
-        val acceptCondition = setting.getStringList("accept.condition")
-        val failCheck = setting.getInt("failure.check")
-        val failCondition = setting.getStringList("failure.condition")
-        val failKether = setting.getStringList("failure.kether")
 
         val innerQuestList = mutableListOf<QuestInnerModule>()
 
@@ -68,16 +51,27 @@ object QuestFile {
             innerQuestList.add(innerModule)
         }
 
-        val questModule = QuestModule(questID, name, startID,
-            modeType, modeAmount, modeShareData,
-            acceptWay, maxQuantity,
-            acceptCheck, acceptCondition,
-            failCheck, failCondition, failKether,
-            innerQuestList)
+        val questModule = buildQuestModule {
+            this.questID = questID
+            startInnerQuestID = setting.getString("startInnerQuestID")
+            if (setting.getString("mode.type").uppercase() == "COLLABORATION") {
+                modeType = ModeType.COLLABORATION
+                modeAmount = setting.getInt("mode.amount")
+                modeShareData = setting.getBoolean("mode.shareData")
+            }
+            acceptWay = setting.getString("accept.way")
+            if (setting.contains("accept.maxQuantity")) {
+                maxQuantity = setting.getInt("accept.maxQuantity")
+            }
+            acceptCheck = setting.getInt("accept.check")
+            acceptCondition = setting.getStringList("accept.condition")
+            failCheck = setting.getInt("failure.check")
+            failCondition = setting.getStringList("failure.condition")
+            failKether = setting.getStringList("failure.kether")
+            sort = setting.getString("sort")
+        }
 
-        val sort = setting.getString("sort")?: ""
-
-        QuestManager.register(questID, questModule, sort)
+        QuestManager.register(questID, questModule)
     }
 
     private fun innerQuest(innerFile: File, questID: String): QuestInnerModule? {
