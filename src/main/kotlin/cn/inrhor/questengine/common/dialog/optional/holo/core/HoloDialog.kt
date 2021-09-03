@@ -58,7 +58,6 @@ class HoloDialog(
                     nextY = get.toDouble()
                 }
                 iUc.startsWith("TEXT") -> {
-                    holoLoc.add(0.0, nextY, 0.0)
                     viewers.forEach {
                         DialogManager.animation(dialogID, it)
                         val playText = dialogModule.playText[textIndex]

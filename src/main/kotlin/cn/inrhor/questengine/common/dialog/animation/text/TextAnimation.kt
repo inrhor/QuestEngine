@@ -3,7 +3,6 @@ package cn.inrhor.questengine.common.dialog.animation.text
 import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.common.dialog.animation.text.type.TextWrite
 import cn.inrhor.questengine.script.kether.evalTextWrite
-import taboolib.common.platform.function.info
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
