@@ -44,7 +44,7 @@ object QuestManager {
             autoQuestMap[questID] = questModule
         }
         if (sort.isNotEmpty()) {
-            QuestSort.sortList[sort] = questModule
+//            QuestSort.sortList[sort] = questModule
         }
     }
 
