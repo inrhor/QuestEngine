@@ -7,14 +7,15 @@ import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.common.packet.PacketManager
 import cn.inrhor.questengine.common.quest.QuestFile
 import cn.inrhor.questengine.common.quest.manager.QuestManager
+import cn.inrhor.questengine.common.quest.ui.QuestSort
 import cn.inrhor.questengine.utlis.UtilString
+import cn.inrhor.questengine.utlis.file.releaseFile
 import org.bukkit.Bukkit
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import taboolib.common.platform.function.*
 import taboolib.module.lang.sendLang
 import taboolib.module.nms.MinecraftVersion
-import java.io.File
 import kotlin.system.measureTimeMillis
 
 object PluginLoader {
@@ -48,12 +49,9 @@ object PluginLoader {
                 ItemManager.loadItem()
                 DialogManager.loadDialog()
                 PacketManager.loadPacket()
+                QuestSort.init()
                 QuestFile.loadDialog()
-                val teamChat = File(QuestEngine.plugin.dataFolder, "team/chat.yml")
-                if (!teamChat.exists()) {
-                    QuestEngine.resource.releaseResourceFile("team/chat.yml", true)
-                }
-                UpdateYaml.run("team/chat.yml")
+                releaseFile("team/chat.yml")
             }
             console().sendLang("LOADER-TIME_COST", UtilString.pluginTag, timeCost)
         }

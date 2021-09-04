@@ -4,7 +4,7 @@ import cn.inrhor.questengine.api.packet.*
 import cn.inrhor.questengine.common.database.data.PacketData
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.item.ItemManager
-import cn.inrhor.questengine.utlis.file.GetFile
+import cn.inrhor.questengine.utlis.file.FileUtil
 import cn.inrhor.questengine.utlis.UtilString
 import cn.inrhor.questengine.utlis.location.LocationTool
 import org.bukkit.Bukkit
@@ -112,8 +112,8 @@ object PacketManager {
      * 加载并注册数据包文件
      */
     fun loadPacket() {
-        val packetFolder = GetFile.getFile("space/packet/", "PACKET-NO_FILES", true)
-        GetFile.getFileList(packetFolder).forEach{
+        val packetFolder = FileUtil.getFile("space/packet/", "PACKET-NO_FILES", true)
+        FileUtil.getFileList(packetFolder).forEach{
             checkRegPacket(it)
         }
     }

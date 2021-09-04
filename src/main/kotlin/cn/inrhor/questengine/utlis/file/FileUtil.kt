@@ -1,13 +1,14 @@
 package cn.inrhor.questengine.utlis.file
 
 import cn.inrhor.questengine.QuestEngine
+import cn.inrhor.questengine.server.UpdateYaml
 import cn.inrhor.questengine.utlis.UtilString
 import taboolib.library.configuration.YamlConfiguration
 import taboolib.common.platform.function.*
 import taboolib.module.lang.sendLang
 import java.io.File
 
-object GetFile {
+object FileUtil {
     /**
      * 返回文件夹的内容
      */
@@ -38,10 +39,15 @@ object GetFile {
 
     fun yaml(path: String, yaml: String): YamlConfiguration {
         val str = "$path/$yaml.yml"
-        val file = File(QuestEngine.plugin.dataFolder, str)
-        if (!file.exists()) {
-            QuestEngine.resource.releaseResourceFile(str, true)
-        }
-        return YamlConfiguration.loadConfiguration(file)
+        return releaseFile(str)
     }
+}
+
+fun releaseFile(child: String): YamlConfiguration {
+    val file = File(QuestEngine.plugin.dataFolder, child)
+    if (!file.exists()) {
+        QuestEngine.resource.releaseResourceFile(child, true)
+    }
+    UpdateYaml.run(child)
+    return YamlConfiguration.loadConfiguration(file)
 }

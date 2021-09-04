@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.collaboration.ui.chat
 
 import cn.inrhor.questengine.common.collaboration.TeamManager
-import cn.inrhor.questengine.utlis.file.GetFile
+import cn.inrhor.questengine.utlis.file.FileUtil
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.*
 import taboolib.module.chat.TellrawJson
@@ -18,7 +18,7 @@ object NoTeam {
             return
         }
 
-        val yaml = GetFile.yaml("team", "chat")
+        val yaml = FileUtil.yaml("team", "chat")
 
         val head = UtilTeam.getStr(yaml, "noTeamHome.head")
         TellrawJson()

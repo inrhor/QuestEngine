@@ -7,7 +7,7 @@ import cn.inrhor.questengine.common.dialog.animation.parser.TextParser
 import cn.inrhor.questengine.common.dialog.optional.holo.core.HoloDialog
 import cn.inrhor.questengine.script.kether.evalBoolean
 import cn.inrhor.questengine.script.kether.evalBooleanSet
-import cn.inrhor.questengine.utlis.file.GetFile
+import cn.inrhor.questengine.utlis.file.FileUtil
 import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -70,8 +70,8 @@ object DialogManager {
      * 加载并注册对话
      */
     fun loadDialog() {
-        val dialogFolder = GetFile.getFile("space/dialog/", "DIALOG-NO_FILES", true)
-        GetFile.getFileList(dialogFolder).forEach{
+        val dialogFolder = FileUtil.getFile("space/dialog/", "DIALOG-NO_FILES", true)
+        FileUtil.getFileList(dialogFolder).forEach{
             DialogFile.checkRegDialog(it)
         }
     }

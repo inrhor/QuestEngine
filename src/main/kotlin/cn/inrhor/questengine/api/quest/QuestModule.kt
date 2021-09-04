@@ -18,25 +18,20 @@ import cn.inrhor.questengine.common.quest.ModeType
  * @param failCondition 失败条件
  * @param failKether 失败脚本
  * @param innerQuestList 内部任务集
- * @param sort 分类
+ * @param sort 任务手册分类
  */
-open class QuestModule {
-
-    var questID: String = ""
-    var name: String = ""
-    var startInnerQuestID: String = ""
-    var modeType: ModeType = ModeType.PERSONAL
-    var modeAmount: Int = -1
-    var modeShareData: Boolean = true
-    var acceptWay: String = ""
-    var maxQuantity: Int = 1
-    var acceptCheck: Int = -1
-    var acceptCondition = mutableListOf<String>()
-    var failCheck: Int = -1
-    var failCondition = mutableListOf<String>()
-    var failKether = mutableListOf<String>()
-    var innerQuestList = mutableListOf<QuestInnerModule>()
-    var sort: String = ""
+class QuestModule(val questID: String,
+                  var name: String,
+                  var startInnerQuestID: String,
+                  var modeType: ModeType,
+                  var modeAmount: Int,
+                  var modeShareData: Boolean,
+                  var acceptWay: String,
+                  var maxQuantity: Int,
+                  var acceptCheck: Int, var acceptCondition: MutableList<String>,
+                  var failCheck: Int, var failCondition: MutableList<String>,
+                  var failKether: MutableList<String>,
+                  var innerQuestList: MutableList<QuestInnerModule>, var sort: String) {
 
     fun getStartInnerQuest(): QuestInnerModule? {
         innerQuestList.forEach {
@@ -45,8 +40,4 @@ open class QuestModule {
         return null
     }
 
-}
-
-inline fun buildQuestModule(builder: QuestModule.() -> Unit = {}): QuestModule {
-    return QuestModule().also(builder)
 }

@@ -5,7 +5,7 @@ name: "采集农作物任务"
 # 从哪个内部任务开始，此为内部任务ID
 startInnerQuestID: "mainQuest1"
 # 任务手册分类
-sort: "default"
+sort: "new"
 # 任务成员模式
 mode:
   # 可选如下

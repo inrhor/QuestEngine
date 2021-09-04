@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.collaboration.ui.chat
 
 import cn.inrhor.questengine.common.collaboration.TeamManager
-import cn.inrhor.questengine.utlis.file.GetFile
+import cn.inrhor.questengine.utlis.file.FileUtil
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.*
@@ -18,7 +18,7 @@ object HasTeam {
         val uuid = player.uniqueId
         val tData = TeamManager.getTeamData(uuid)?: return run { player.sendLang("TEAM-NO_TEAM") }
 
-        val yaml = GetFile.yaml("team", "chat")
+        val yaml = FileUtil.yaml("team", "chat")
 
         val leaderName = UtilTeam.leaderName(player, tData)
 
@@ -71,7 +71,7 @@ object HasTeam {
         val uuid = player.uniqueId
         val tData = TeamManager.getTeamData(uuid)?: return run { player.sendLang("TEAM-NO_TEAM") }
 
-        val yaml = GetFile.yaml("team", "chat")
+        val yaml = FileUtil.yaml("team", "chat")
 
         val leaderName = UtilTeam.leaderName(player, tData)
 
@@ -107,7 +107,7 @@ object HasTeam {
         val uuid = player.uniqueId
         val tData = TeamManager.getTeamData(uuid)?: return run { player.sendLang("TEAM-NO_TEAM") }
 
-        val yaml = GetFile.yaml("team", "chat")
+        val yaml = FileUtil.yaml("team", "chat")
 
         val leaderName = UtilTeam.leaderName(player, tData)
 

@@ -4,10 +4,9 @@ import cn.inrhor.questengine.api.quest.control.*
 import cn.inrhor.questengine.api.quest.QuestInnerModule
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.api.quest.QuestModule
-import cn.inrhor.questengine.api.quest.buildQuestModule
 import cn.inrhor.questengine.common.quest.manager.ControlManager
 import cn.inrhor.questengine.common.quest.manager.TargetManager
-import cn.inrhor.questengine.utlis.file.GetFile
+import cn.inrhor.questengine.utlis.file.FileUtil
 import taboolib.library.configuration.YamlConfiguration
 import taboolib.common.platform.function.*
 import taboolib.library.configuration.FileConfiguration
@@ -20,7 +19,7 @@ object QuestFile {
      * 加载并注册任务
      */
     fun loadDialog() {
-        val questFolder = GetFile.getFile("space/quest")
+        val questFolder = FileUtil.getFile("space/quest")
         val lists = questFolder.listFiles()?: return
         for (file in lists) {
             if (!file.isDirectory) continue
@@ -35,10 +34,29 @@ object QuestFile {
         val questID = setting.getString("questID")?: return run {
             console().sendLang("QUEST-ERROR_FILE")
         }
+        val name = setting.getString("name")?: "test"
+        val startID = setting.getString("startInnerQuestID")?: "test"
+        val sort = setting.getString("sort")?: ""
+        var modeType = ModeType.PERSONAL
+        val modeTypeStr = setting.getString("mode.type")?: "personal"
+        var modeAmount = -1
+        var modeShareData = false
+        if (modeTypeStr == "collaboration") {
+            modeType = ModeType.COLLABORATION
+            modeAmount = setting.getInt("mode.amount")
+            modeShareData = setting.getBoolean("mode.shareData")
+        }
+        val acceptWay = setting.getString("accept.way")?: ""
+        val maxQuantity = if (setting.contains("accept.maxQuantity")) setting.getInt("accept.maxQuantity") else 1
+        val acceptCheck = setting.getInt("accept.check")
+        val acceptCondition = setting.getStringList("accept.condition")
+        val failCheck = setting.getInt("failure.check")
+        val failCondition = setting.getStringList("failure.condition")
+        val failKether = setting.getStringList("failure.kether")
 
         val innerQuestList = mutableListOf<QuestInnerModule>()
 
-        val innerFolder = GetFile.getFile("space/quest/"+file.name+"/inner")
+        val innerFolder = FileUtil.getFile("space/quest/"+file.name+"/inner")
         val lists = innerFolder.listFiles()?: return run {
             console().sendLang("QUEST-ERROR_FILE", questID)
         }
@@ -51,25 +69,12 @@ object QuestFile {
             innerQuestList.add(innerModule)
         }
 
-        val questModule = buildQuestModule {
-            this.questID = questID
-            startInnerQuestID = setting.getString("startInnerQuestID")
-            if (setting.getString("mode.type").uppercase() == "COLLABORATION") {
-                modeType = ModeType.COLLABORATION
-                modeAmount = setting.getInt("mode.amount")
-                modeShareData = setting.getBoolean("mode.shareData")
-            }
-            acceptWay = setting.getString("accept.way")
-            if (setting.contains("accept.maxQuantity")) {
-                maxQuantity = setting.getInt("accept.maxQuantity")
-            }
-            acceptCheck = setting.getInt("accept.check")
-            acceptCondition = setting.getStringList("accept.condition")
-            failCheck = setting.getInt("failure.check")
-            failCondition = setting.getStringList("failure.condition")
-            failKether = setting.getStringList("failure.kether")
-            sort = setting.getString("sort")
-        }
+        val questModule = QuestModule(questID, name, startID,
+            modeType, modeAmount, modeShareData,
+            acceptWay, maxQuantity,
+            acceptCheck, acceptCondition,
+            failCheck, failCondition, failKether,
+            innerQuestList, sort)
 
         QuestManager.register(questID, questModule)
     }

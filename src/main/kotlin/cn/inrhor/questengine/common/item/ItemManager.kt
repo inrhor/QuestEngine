@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.item
 
-import cn.inrhor.questengine.utlis.file.GetFile
+import cn.inrhor.questengine.utlis.file.FileUtil
 import cn.inrhor.questengine.utlis.UtilString
 import taboolib.common.platform.function.*
 import taboolib.library.configuration.YamlConfiguration
@@ -28,8 +28,8 @@ object ItemManager {
      * 加载并注册物品文件
      */
     fun loadItem() {
-        val itemFolder = GetFile.getFile("space/item/", "ITEM.NO_FILES", true)
-        GetFile.getFileList(itemFolder).forEach{
+        val itemFolder = FileUtil.getFile("space/item/", "ITEM.NO_FILES", true)
+        FileUtil.getFileList(itemFolder).forEach{
             checkRegItem(it)
         }
     }
