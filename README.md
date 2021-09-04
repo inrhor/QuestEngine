@@ -8,7 +8,7 @@
 [![GPL-3](https://img.shields.io/github/license/inrhor/QuestEngine)](https://img.shields.io/github/license/inrhor/QuestEngine) 
 
 
-[![Version](https://img.shields.io/badge/version-1.0.0--Pre25-blue)](https://img.shields.io/badge/version-1.0.0--Pre1-blue)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue)](https://img.shields.io/badge/version-1.0.0--Pre1-blue)
 [![Minecraft-Java](https://img.shields.io/badge/minecraft-Java%201.12--1.17-purple)](https://img.shields.io/badge/minecraft-Java%201.12--1.17-purple)
 
 ---

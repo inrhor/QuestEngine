@@ -75,9 +75,7 @@ object QuestFile {
             failCheck, failCondition, failKether,
             innerQuestList)
 
-        val sort = setting.getString("sort")?: ""
-
-        QuestManager.register(questID, questModule, sort)
+        QuestManager.register(questID, questModule)
     }
 
     private fun innerQuest(innerFile: File, questID: String): QuestInnerModule? {
