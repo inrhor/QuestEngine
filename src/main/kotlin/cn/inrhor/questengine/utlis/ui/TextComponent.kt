@@ -7,8 +7,12 @@ package cn.inrhor.questengine.utlis.ui
  */
 open class TextComponent {
 
-    var text: String = ""
-    var hover: String = ""
+    var text: MutableList<String> = mutableListOf()
+    var hover: MutableList<String> = mutableListOf()
     var command: String = ""
 
+}
+
+inline fun textComponent(component: TextComponent.() -> Unit = {}): TextComponent {
+    return TextComponent().also(component)
 }
