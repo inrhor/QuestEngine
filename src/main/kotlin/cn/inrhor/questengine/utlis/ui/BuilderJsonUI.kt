@@ -1,6 +1,9 @@
 package cn.inrhor.questengine.utlis.ui
 
+import cn.inrhor.questengine.utlis.toJsonStr
+import taboolib.common.platform.function.info
 import taboolib.library.configuration.YamlConfiguration
+import taboolib.module.chat.TellrawJson
 
 /**
  * 高度自定义 JSON 内容
@@ -17,7 +20,7 @@ open class BuilderJsonUI {
     /**
      * 文字组件，使内容物调用指定组件
      */
-    val textList = mutableMapOf<String, TextComponent>()
+    val textList = mutableMapOf<String, TellrawJson>()
 
     fun yamlAddDesc(yaml: YamlConfiguration, node: String) {
         yaml.getStringList(node).forEach {
@@ -35,22 +38,27 @@ open class BuilderJsonUI {
                         description.add(n)
                     }
                 }else {
-                    yaml.getStringList(node).forEach { tag ->
-                        val text = textComponent {
-                            val nodeTag = "$node.$tag"
-                            text = yaml.getStringList("$nodeTag.text")
-                            hover = yaml.getStringList("$nodeTag.hover")
-                            command = "/qen handbook sort $sort"
-                        }
-                        textList[id] = text
+                    val text = textComponent {
+                        text = yaml.getStringList("$node.text")
+                        hover = yaml.getStringList("$node.hover")
+                        command = "/qen handbook sort $sort"
                     }
+                    textList[id] = text
                 }
             }
         }
     }
 
+    open fun build(): String {
+        var text = description.toJsonStr()
+        var json = TellrawJson().append()
+        /*textList.forEach { (id, comp) ->
+        }*/
+        return json.toRawMessage()
+    }
+
 }
 
-inline fun buildJsonUI(builder: BuilderJsonUI.() -> Unit = {}): BuilderJsonUI {
-    return BuilderJsonUI().also(builder)
+inline fun buildJsonUI(builder: BuilderJsonUI.() -> Unit = {}): String {
+    return BuilderJsonUI().also(builder).build()
 }

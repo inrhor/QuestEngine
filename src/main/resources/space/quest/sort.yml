@@ -10,7 +10,7 @@ sort:
     # 内容物
     note:
       - ""
-      - "&7&l< &8&l新手任务 &7&l>  @click"
+      - "&7&l< &8&l新手任务 &7&l>  @new.click"
       - ""
     # JSON标签
     click:
@@ -22,5 +22,5 @@ sort:
     # 内容物
     note:
       - ""
-      - "&7&l< &8&l每日任务 &7&l>  @click-new"
+      - "&7&l< &8&l每日任务 &7&l>  @new.click"
       - ""

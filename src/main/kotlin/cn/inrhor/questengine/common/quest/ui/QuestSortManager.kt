@@ -1,11 +1,8 @@
 package cn.inrhor.questengine.common.quest.ui
 
 import cn.inrhor.questengine.utlis.file.releaseFile
-import cn.inrhor.questengine.utlis.ui.TextComponent
 import cn.inrhor.questengine.utlis.ui.buildJsonUI
-import cn.inrhor.questengine.utlis.ui.textComponent
-import taboolib.common.LifeCycle
-import taboolib.common.platform.Awake
+import taboolib.module.chat.TellrawJson
 
 /**
  * 任务手册分类
@@ -19,28 +16,27 @@ object QuestSortManager {
     val sortList = mutableMapOf<String, QuestSort>()
 
     /**
-     * 分类标签包含的JSON内容
+     * JSON界面内容
      */
-    val sortJson = mutableMapOf<String, String>()
+    val jsonUI = mutableMapOf<String, String>()
 
-
-    @Awake(LifeCycle.ACTIVE)
     fun init() {
         load()
     }
 
     fun load() {
-        val yaml = releaseFile("quest/sort.yml")
+        val yaml = releaseFile("space/quest/sort.yml", false)
         // 分类界面
         val sortJsonUI = buildJsonUI {
             yamlAddDesc(yaml, "head")
             sectionAdd(yaml, "sort")
         }
-        sortJson["home"] = sortJsonUI
+        jsonUI["home"] = sortJsonUI
     }
 
     fun reload() {
-
+        jsonUI.clear()
+        load()
     }
 
 }

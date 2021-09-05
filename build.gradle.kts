@@ -54,7 +54,7 @@ dependencies {
     compileOnly("ink.ptms.core:v11000:11000:all")
     compileOnly("ink.ptms.core:v10900:10900:all")
     compileOnly("public:Citizens:1.0.0")
-    compileOnly("ink.ptms:Adyeshach:1.3.9@jar")
+    compileOnly("ink.ptms:Adyeshach:1.3.13")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly(kotlin("stdlib"))
     compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))

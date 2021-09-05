@@ -2,6 +2,7 @@ package cn.inrhor.questengine.utlis
 
 import cn.inrhor.questengine.QuestEngine
 import com.google.common.base.Strings
+import taboolib.module.chat.colored
 import java.util.*
 
 object UtilString {
@@ -56,5 +57,5 @@ fun MutableList<String>.toJsonStr(): String {
         }
         content = "$content§r\n$it"
     }
-    return content
+    return content.colored()
 }

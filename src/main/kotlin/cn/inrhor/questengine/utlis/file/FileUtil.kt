@@ -43,11 +43,11 @@ object FileUtil {
     }
 }
 
-fun releaseFile(child: String): YamlConfiguration {
+fun releaseFile(child: String, update: Boolean = true): YamlConfiguration {
     val file = File(QuestEngine.plugin.dataFolder, child)
     if (!file.exists()) {
         QuestEngine.resource.releaseResourceFile(child, true)
     }
-    UpdateYaml.run(child)
+    if (update) UpdateYaml.run(child)
     return YamlConfiguration.loadConfiguration(file)
 }
