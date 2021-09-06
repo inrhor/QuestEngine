@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.utlis.ui
 
 import cn.inrhor.questengine.utlis.toJsonStr
-import taboolib.common.platform.function.info
 import taboolib.library.configuration.YamlConfiguration
 import taboolib.module.chat.TellrawJson
 
@@ -50,10 +49,21 @@ open class BuilderJsonUI {
     }
 
     open fun build(): String {
-        var text = description.toJsonStr()
-        var json = TellrawJson().append()
-        /*textList.forEach { (id, comp) ->
-        }*/
+        val text = description.toJsonStr()
+        val json = TellrawJson()
+
+        val sp = text.split("@")
+        sp.forEach {
+            textList.forEach { (id, comp) ->
+                if (it.contains(id)) {
+                    json.append(comp)
+                    json.append(it.replace(id, ""))
+                }else {
+                    json.append(it)
+                }
+            }
+        }
+
         return json.toRawMessage()
     }
 

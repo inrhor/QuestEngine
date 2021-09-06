@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.utlis.ui
 
 import cn.inrhor.questengine.utlis.toJsonStr
-import taboolib.common.platform.function.info
 import taboolib.module.chat.TellrawJson
 
 /**
@@ -19,7 +18,6 @@ open class TextComponent {
         val json = TellrawJson().append(text.toJsonStr())
         if (hover.isNotEmpty()) json.hoverText(hover.toJsonStr())
         if (command.isNotEmpty()) json.runCommand(command)
-        info("asdasd ${json.toRawMessage()}")
         return json
     }
 
