@@ -19,4 +19,4 @@ sort:
   daily:
     # 内容物
     note:
-      - "&7&l< &8&l每日任务 &7&l>  @new.click"
+      - "&7&l< &8&l每日任务 &7&l>  @daily-new.click"

@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.quest.ui
 
 import cn.inrhor.questengine.utlis.file.releaseFile
+import cn.inrhor.questengine.utlis.ui.BuilderJsonUI
 import cn.inrhor.questengine.utlis.ui.buildJsonUI
 import taboolib.module.chat.TellrawJson
 
@@ -29,9 +30,9 @@ object QuestSortManager {
         // 分类界面
         val sortJsonUI = buildJsonUI {
             yamlAddDesc(yaml, "head")
-            sectionAdd(yaml, "sort")
+            sectionAdd(yaml, "sort", BuilderJsonUI.Type.SORT)
         }
-        jsonUI["home"] = sortJsonUI
+        jsonUI["sortHome"] = sortJsonUI
     }
 
     fun reload() {

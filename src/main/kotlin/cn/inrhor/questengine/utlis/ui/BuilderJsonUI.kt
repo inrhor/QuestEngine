@@ -19,7 +19,7 @@ open class BuilderJsonUI {
     /**
      * 文字组件，使内容物调用指定组件
      */
-    val textList = mutableMapOf<String, TellrawJson>()
+    val textComponentMap = mutableMapOf<String, TextComponent>()
 
     fun yamlAddDesc(yaml: YamlConfiguration, node: String) {
         yaml.getStringList(node).forEach {
@@ -27,7 +27,7 @@ open class BuilderJsonUI {
         }
     }
 
-    fun sectionAdd(yaml: YamlConfiguration, path: String) {
+    fun sectionAdd(yaml: YamlConfiguration, path: String, type: Type) {
         yaml.getConfigurationSection(path).getKeys(false).forEach { sort ->
             yaml.getConfigurationSection("$path.$sort").getKeys(false).forEach { sign ->
                 val id = "$sort.$sign"
@@ -40,12 +40,18 @@ open class BuilderJsonUI {
                     val text = textComponent {
                         text = yaml.getStringList("$node.text")
                         hover = yaml.getStringList("$node.hover")
-                        command = "/qen handbook sort $sort"
+                        command = if (type == Type.CUSTOM) {
+                            yaml.getString("$node.command")
+                        }else "/qen handbook sort "
                     }
-                    textList[id] = text
+                    textComponentMap[id] = text
                 }
             }
         }
+    }
+
+    enum class Type {
+        SORT, CUSTOM
     }
 
     open fun build(): String {
@@ -54,11 +60,19 @@ open class BuilderJsonUI {
 
         val sp = text.split("@")
         sp.forEach {
-            textList.forEach { (id, comp) ->
+            textComponentMap.forEach { (id, comp) ->
                 if (it.contains(id)) {
-                    json.append(comp)
-                    json.append(it.replace(id, ""))
-                }else {
+                    var rep = id
+                    if (it.contains("-")) {
+                        val sort = it.split("-")[0]
+                        comp.setCommand(Type.SORT, sort)
+                        rep = "$sort-$id"
+                    } else {
+                        comp.setCommand(Type.SORT, id.split(".")[0])
+                    }
+                    json.append(comp.build())
+                    json.append(it.replace(rep, ""))
+                } else {
                     json.append(it)
                 }
             }

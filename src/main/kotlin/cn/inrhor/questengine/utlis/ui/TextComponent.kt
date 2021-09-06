@@ -21,8 +21,14 @@ open class TextComponent {
         return json
     }
 
+    open fun setCommand(type: BuilderJsonUI.Type, arg: String) {
+        if (type == BuilderJsonUI.Type.SORT) {
+            command = "/qen handbook sort $arg"
+        }
+    }
+
 }
 
-inline fun textComponent(component: TextComponent.() -> Unit = {}): TellrawJson {
-    return TextComponent().also(component).build()
+inline fun textComponent(component: TextComponent.() -> Unit = {}): TextComponent {
+    return TextComponent().also(component)
 }
