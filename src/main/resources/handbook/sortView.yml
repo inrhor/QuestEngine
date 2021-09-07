@@ -1,0 +1,26 @@
+head:
+  - "     &7&l< &8&l新手任务列表 &7&l>"
+  - ""
+  - "&8&l&m                       "
+
+for:
+  # 内容物
+  note:
+    - ""
+    - "&7&l< &8&l#quest-name &7&l>"
+    - "     @for.no@for.click"
+  # JSON标签
+  no:
+    condition:
+      - "#!quest-accept"
+    text:
+      - "&7&l[ &c&l尚未接受 &7&l]"
+    hover:
+      - "&7&l[ &6&l需要接受任务才能阅览 &7&l]"
+  click:
+    condition:
+      - "#quest-accept"
+    text:
+      - "&7&l[ &6&l点击阅览 &7&l]"
+    hover:
+      - "&7&l[ &a&l点击 &7&l]"
