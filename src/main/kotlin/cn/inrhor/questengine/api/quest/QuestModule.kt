@@ -19,6 +19,7 @@ import cn.inrhor.questengine.common.quest.ModeType
  * @param failKether 失败脚本
  * @param innerQuestList 内部任务集
  * @param sort 任务手册分类
+ * @param descMap 信息拓展
  */
 class QuestModule(val questID: String,
                   var name: String,
@@ -31,7 +32,8 @@ class QuestModule(val questID: String,
                   var acceptCheck: Int, var acceptCondition: MutableList<String>,
                   var failCheck: Int, var failCondition: MutableList<String>,
                   var failKether: MutableList<String>,
-                  var innerQuestList: MutableList<QuestInnerModule>, var sort: String) {
+                  var innerQuestList: MutableList<QuestInnerModule>,
+                  var sort: String, var descMap: MutableMap<String, MutableList<String>> = mutableMapOf()) {
 
     fun getStartInnerQuest(): QuestInnerModule? {
         innerQuestList.forEach {

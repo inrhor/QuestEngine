@@ -38,3 +38,8 @@ failure:
   # 脚本 Kether
   kether:
     - title color *"&c任务失败" subtitle color *"&f采集农作物任务"
+
+
+desc:
+  info:
+    - "&6&l显示在任务手册中"

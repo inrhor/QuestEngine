@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.quest.ui
 
+import cn.inrhor.questengine.api.quest.QuestModule
 import cn.inrhor.questengine.utlis.file.releaseFile
 import cn.inrhor.questengine.utlis.ui.BuilderJsonUI
 import cn.inrhor.questengine.utlis.ui.buildJsonUI
@@ -10,15 +11,15 @@ import cn.inrhor.questengine.utlis.ui.buildJsonUI
 object QuestSortManager {
 
     /**
-     * 分类标签
-     * 包含的任务模块内容
+     * 分类界面
      */
-    val sortList = mutableMapOf<String, QuestSort>()
+    var sortHomeUI = ""
 
-    /**
-     * JSON界面内容
-     */
-    val jsonUI = mutableMapOf<String, String>()
+    val sortQuest = mutableMapOf<String, MutableSet<QuestModule>>()
+
+    fun addSortQuest(sort: String, questModule: QuestModule) {
+        (sortQuest[sort]?: mutableSetOf()).add(questModule)
+    }
 
     fun init() {
         load()
@@ -27,16 +28,11 @@ object QuestSortManager {
     fun load() {
         val yaml = releaseFile("handbook/sort.yml", false)
         // 分类界面
-        val sortJsonUI = buildJsonUI {
+        val sortUI = buildJsonUI {
             yamlAddDesc(yaml, "head")
             sectionAdd(yaml, "sort", BuilderJsonUI.Type.SORT)
         }
-        jsonUI["sortHome"] = sortJsonUI
-    }
-
-    fun reload() {
-        jsonUI.clear()
-        load()
+        sortHomeUI = sortUI.build().toRawMessage()
     }
 
 }

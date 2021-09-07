@@ -16,7 +16,7 @@ for:
     text:
       - "&7&l[ &c&l尚未接受 &7&l]"
     hover:
-      - "&7&l[ &6&l需要接受任务才能阅览 &7&l]"
+      - "#quest-desc-info"
   click:
     condition:
       - "#quest-accept"

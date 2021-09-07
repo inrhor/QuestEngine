@@ -1,6 +1,11 @@
 package cn.inrhor.questengine.utlis.ui
 
+import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.quest.QuestState
+import cn.inrhor.questengine.common.quest.manager.QuestManager
+import cn.inrhor.questengine.common.quest.ui.QuestSortManager
 import cn.inrhor.questengine.utlis.toJsonStr
+import org.bukkit.entity.Player
 import taboolib.library.configuration.YamlConfiguration
 import taboolib.module.chat.TellrawJson
 
@@ -54,7 +59,32 @@ open class BuilderJsonUI {
         SORT, CUSTOM
     }
 
-    open fun build(): String {
+    open fun questSortBuild(player: Player, sort: String): String {
+        val str = description.toJsonStr()
+
+        val pData = DataStorage.getPlayerData(player)
+        val qData = pData.questDataList
+        val hasDisplay = mutableSetOf<String>()
+        qData.values.forEach {
+            val id = it.questID
+            val m = QuestManager.getQuestModule(id)
+            if (m?.sort == sort && it.state != QuestState.FINISH && !hasDisplay.contains(id)) {
+                hasDisplay.add(id)
+
+            }
+        }
+        val sortList = QuestSortManager.sortQuest[sort]
+        sortList?.forEach {
+            val id = it.questID
+            if (!hasDisplay.contains(id)) {
+
+            }
+        }
+
+        return str
+    }
+
+    open fun build(): TellrawJson {
         val text = description.toJsonStr()
         val json = TellrawJson()
 
@@ -78,11 +108,11 @@ open class BuilderJsonUI {
             }
         }
 
-        return json.toRawMessage()
+        return json
     }
 
 }
 
-inline fun buildJsonUI(builder: BuilderJsonUI.() -> Unit = {}): String {
-    return BuilderJsonUI().also(builder).build()
+inline fun buildJsonUI(builder: BuilderJsonUI.() -> Unit = {}): BuilderJsonUI {
+    return BuilderJsonUI().also(builder)
 }

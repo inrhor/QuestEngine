@@ -69,14 +69,19 @@ object QuestFile {
             innerQuestList.add(innerModule)
         }
 
+        val descMap = mutableMapOf<String, MutableList<String>>()
+        setting.getConfigurationSection("desc").getKeys(false).forEach {
+            descMap[it] = setting.getStringList("desc.$it")
+        }
+
         val questModule = QuestModule(questID, name, startID,
             modeType, modeAmount, modeShareData,
             acceptWay, maxQuantity,
             acceptCheck, acceptCondition,
             failCheck, failCondition, failKether,
-            innerQuestList, sort)
+            innerQuestList, sort, descMap)
 
-        QuestManager.register(questID, questModule)
+        QuestManager.register(questID, questModule, sort)
     }
 
     private fun innerQuest(innerFile: File, questID: String): QuestInnerModule? {
