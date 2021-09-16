@@ -154,5 +154,10 @@ object QuestFile {
         return mutableListOf(highestModule, normalModule)
     }
 
+    @JvmStatic
+    fun main(args: Array<String>) {
+        println("Hello World!")
+    }
+
 
 }

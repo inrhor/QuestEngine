@@ -1,9 +1,6 @@
 package cn.inrhor.questengine.utlis.ui
 
-import cn.inrhor.questengine.common.database.data.DataStorage
-import cn.inrhor.questengine.common.quest.QuestState
-import cn.inrhor.questengine.common.quest.manager.QuestManager
-import cn.inrhor.questengine.common.quest.ui.QuestSortManager
+import cn.inrhor.questengine.script.kether.evalBoolean
 import cn.inrhor.questengine.utlis.toJsonStr
 import org.bukkit.entity.Player
 import taboolib.library.configuration.YamlConfiguration
@@ -34,23 +31,26 @@ open class BuilderJsonUI {
 
     fun sectionAdd(yaml: YamlConfiguration, path: String, type: Type) {
         yaml.getConfigurationSection(path).getKeys(false).forEach { sort ->
-            yaml.getConfigurationSection("$path.$sort").getKeys(false).forEach { sign ->
-                val id = "$sort.$sign"
-                val node = "$path.$id"
-                if (sign == "note") {
-                    yaml.getStringList(node).forEach { n ->
-                        description.add(n)
-                    }
-                }else {
-                    val text = textComponent {
-                        text = yaml.getStringList("$node.text")
-                        hover = yaml.getStringList("$node.hover")
-                        command = if (type == Type.CUSTOM) {
-                            yaml.getString("$node.command")
-                        }else "/qen handbook sort "
-                    }
-                    textComponentMap[id] = text
+            yamlAdd(yaml, "$path.$sort", type)
+        }
+    }
+
+    fun yamlAdd(yaml: YamlConfiguration, path: String, type: Type) {
+        yaml.getConfigurationSection(path).getKeys(false).forEach { sign ->
+            val node = "$path.$sign"
+            if (sign == "note") {
+                yaml.getStringList(node).forEach { n ->
+                    description.add(n)
                 }
+            }else {
+                val text = textComponent {
+                    text = yaml.getStringList("$node.text")
+                    hover = yaml.getStringList("$node.hover")
+                    command = if (type == Type.CUSTOM) {
+                        yaml.getString("$node.command")
+                    }else "/qen handbook sort "
+                }
+                textComponentMap[path] = text
             }
         }
     }
@@ -59,56 +59,38 @@ open class BuilderJsonUI {
         SORT, CUSTOM
     }
 
-    open fun questSortBuild(player: Player, sort: String): String {
-        val str = description.toJsonStr()
-
-        val pData = DataStorage.getPlayerData(player)
-        val qData = pData.questDataList
-        val hasDisplay = mutableSetOf<String>()
-        qData.values.forEach {
-            val id = it.questID
-            val m = QuestManager.getQuestModule(id)
-            if (m?.sort == sort && it.state != QuestState.FINISH && !hasDisplay.contains(id)) {
-                hasDisplay.add(id)
-
-            }
-        }
-        val sortList = QuestSortManager.sortQuest[sort]
-        sortList?.forEach {
-            val id = it.questID
-            if (!hasDisplay.contains(id)) {
-
-            }
-        }
-
-        return str
-    }
-
-    open fun build(): TellrawJson {
+    open fun build(player: Player? = null): TellrawJson {
         val text = description.toJsonStr()
         val json = TellrawJson()
 
         val sp = text.split("@")
         sp.forEach {
             textComponentMap.forEach { (id, comp) ->
-                if (it.contains(id)) {
-                    var rep = id
-                    if (it.contains("-")) {
-                        val sort = it.split("-")[0]
-                        comp.setCommand(Type.SORT, sort)
-                        rep = "$sort-$id"
+                if (textCondition(player, comp.condition)) {
+                    if (it.contains(id)) {
+                        var rep = id
+                        if (it.contains("-")) {
+                            val sort = it.split("-")[0]
+                            comp.setCommand(Type.SORT, sort)
+                            rep = "$sort-$id"
+                        } else {
+                            comp.setCommand(Type.SORT, id.split(".")[0])
+                        }
+                        json.append(comp.build())
+                        json.append(it.replace(rep, ""))
                     } else {
-                        comp.setCommand(Type.SORT, id.split(".")[0])
+                        json.append(it)
                     }
-                    json.append(comp.build())
-                    json.append(it.replace(rep, ""))
-                } else {
-                    json.append(it)
                 }
             }
         }
 
         return json
+    }
+
+    private fun textCondition(player: Player?, conditions: MutableList<String>): Boolean {
+        if (player == null) return true
+        return evalBoolean(player, conditions)
     }
 
 }

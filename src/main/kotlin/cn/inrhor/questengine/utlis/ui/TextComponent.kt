@@ -12,6 +12,7 @@ open class TextComponent {
 
     var text: MutableList<String> = mutableListOf()
     var hover: MutableList<String> = mutableListOf()
+    var condition: MutableList<String> = mutableListOf()
     var command: String = ""
 
     open fun build(): TellrawJson {
@@ -25,6 +26,15 @@ open class TextComponent {
         if (type == BuilderJsonUI.Type.SORT) {
             command = "/qen handbook sort $arg"
         }
+    }
+
+    fun copy(): TextComponent {
+        val textComponent = TextComponent()
+        textComponent.text = this.text
+        textComponent.hover = this.hover
+        textComponent.condition = this.condition
+        textComponent.command = this.command
+        return textComponent
     }
 
 }
