@@ -6,6 +6,7 @@ import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.utlis.file.releaseFile
 import cn.inrhor.questengine.utlis.ui.BuilderJsonUI
+import cn.inrhor.questengine.utlis.ui.TextComponent
 import cn.inrhor.questengine.utlis.ui.buildJsonUI
 import org.bukkit.entity.Player
 
@@ -55,23 +56,32 @@ object QuestSortManager {
         val pData = DataStorage.getPlayerData(player)
         val qData = pData.questDataList
         val hasDisplay = mutableSetOf<String>()
+        val sortView = sortViewUI.copy()
+        sortView.textComponentMap.clear()
+        val textCompView = sortViewUI.textComponentMap["for"]?: return ""
         qData.values.forEach {
             val id = it.questID
             val m = QuestManager.getQuestModule(id)
             if (m?.sort == sort && it.state != QuestState.FINISH && !hasDisplay.contains(id)) {
                 hasDisplay.add(id)
-
+                val textComp = textCompView.copy()
+                setText(sortView, textComp)
             }
         }
         val sortList = sortQuest[sort]
         sortList?.forEach {
             val id = it.questID
             if (!hasDisplay.contains(id)) {
-
+                val textComp = textCompView.copy()
+                setText(sortView, textComp)
             }
         }
 
-        return
+        return sortView.build(player).toRawMessage()
+    }
+
+    private fun setText(builderJsonUI: BuilderJsonUI, textComponent: TextComponent) {
+
     }
 
 }

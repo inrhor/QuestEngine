@@ -29,12 +29,12 @@ open class TextComponent {
     }
 
     fun copy(): TextComponent {
-        val textComponent = TextComponent()
-        textComponent.text = this.text
-        textComponent.hover = this.hover
-        textComponent.condition = this.condition
-        textComponent.command = this.command
-        return textComponent
+        return textComponent {
+            text = this@TextComponent.text
+            hover = this@TextComponent.hover
+            condition = this@TextComponent.hover
+            command = this@TextComponent.command
+        }
     }
 
 }

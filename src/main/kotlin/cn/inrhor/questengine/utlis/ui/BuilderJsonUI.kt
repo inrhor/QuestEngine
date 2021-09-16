@@ -21,7 +21,7 @@ open class BuilderJsonUI {
     /**
      * 文字组件，使内容物调用指定组件
      */
-    val textComponentMap = mutableMapOf<String, TextComponent>()
+    var textComponentMap = mutableMapOf<String, TextComponent>()
 
     fun yamlAddDesc(yaml: YamlConfiguration, node: String) {
         yaml.getStringList(node).forEach {
@@ -91,6 +91,15 @@ open class BuilderJsonUI {
     private fun textCondition(player: Player?, conditions: MutableList<String>): Boolean {
         if (player == null) return true
         return evalBoolean(player, conditions)
+    }
+
+    fun copy(): BuilderJsonUI {
+        return buildJsonUI {
+            this@BuilderJsonUI.description.forEach {
+                description.add(it)
+            }
+            textComponentMap = this@BuilderJsonUI.textComponentMap
+        }
     }
 
 }
