@@ -49,6 +49,10 @@ object QuestSortManager {
         sortViewUI.yamlAdd(sortView, "for", BuilderJsonUI.Type.CUSTOM)
     }
 
+    private fun getTextComp(id: String): TextComponent? {
+        return sortViewUI.textComponentMap[id]
+    }
+
     /**
      * 为用户编译任务手册的任务分类信息
      */
@@ -58,13 +62,14 @@ object QuestSortManager {
         val hasDisplay = mutableSetOf<String>()
         val sortView = sortViewUI.copy()
         sortView.textComponentMap.clear()
-        val textCompView = sortViewUI.textComponentMap["for"]?: return ""
+        val textCompNo = getTextComp("for.no")?: return ""
+        val textCompClick = getTextComp("for.click")?: return ""
         qData.values.forEach {
             val id = it.questID
             val m = QuestManager.getQuestModule(id)
             if (m?.sort == sort && it.state != QuestState.FINISH && !hasDisplay.contains(id)) {
                 hasDisplay.add(id)
-                val textComp = textCompView.copy()
+                val textComp = textCompClick.copy()
                 setText(sortView, textComp)
             }
         }
@@ -72,8 +77,10 @@ object QuestSortManager {
         sortList?.forEach {
             val id = it.questID
             if (!hasDisplay.contains(id)) {
-                val textComp = textCompView.copy()
-                setText(sortView, textComp)
+                val noText = textCompNo.copy()
+                val clickText = textCompClick.copy()
+                setText(sortView, noText)
+                setText(sortView, clickText)
             }
         }
 
@@ -81,7 +88,13 @@ object QuestSortManager {
     }
 
     private fun setText(builderJsonUI: BuilderJsonUI, textComponent: TextComponent) {
-
+        var i = 0
+        textComponent.condition.forEach {
+            if (it == "#!quest-accept") {
+                textComponent.condition[i] = ""
+            }
+            i++
+        }
     }
 
 }

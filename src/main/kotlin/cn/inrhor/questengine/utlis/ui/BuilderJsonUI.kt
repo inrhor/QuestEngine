@@ -50,7 +50,7 @@ open class BuilderJsonUI {
                         yaml.getString("$node.command")
                     }else "/qen handbook sort "
                 }
-                textComponentMap[path] = text
+                textComponentMap[node] = text
             }
         }
     }
