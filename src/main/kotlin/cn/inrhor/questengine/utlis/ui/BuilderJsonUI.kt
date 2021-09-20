@@ -47,7 +47,7 @@ open class BuilderJsonUI {
                     text = yaml.getStringList("$node.text")
                     hover = yaml.getStringList("$node.hover")
                     command = if (type == Type.CUSTOM) {
-                        yaml.getString("$node.command")
+                        yaml.getString("$node.command")?: ""
                     }else "/qen handbook sort "
                 }
                 textComponentMap[node] = text

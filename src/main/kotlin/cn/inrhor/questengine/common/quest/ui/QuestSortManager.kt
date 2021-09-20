@@ -70,7 +70,7 @@ object QuestSortManager {
             if (m?.sort == sort && it.state != QuestState.FINISH && !hasDisplay.contains(id)) {
                 hasDisplay.add(id)
                 val textComp = textCompClick.copy()
-                setText(sortView, textComp)
+                setText(player, id, sortView, textComp)
             }
         }
         val sortList = sortQuest[sort]
@@ -79,22 +79,42 @@ object QuestSortManager {
             if (!hasDisplay.contains(id)) {
                 val noText = textCompNo.copy()
                 val clickText = textCompClick.copy()
-                setText(sortView, noText)
-                setText(sortView, clickText)
+                setText(player, id, sortView, noText)
+                setText(player, id, sortView, clickText)
             }
         }
 
         return sortView.build(player).toRawMessage()
     }
 
-    private fun setText(builderJsonUI: BuilderJsonUI, textComponent: TextComponent) {
+    private fun setText(player: Player, questID: String, builderJsonUI: BuilderJsonUI, textComponent: TextComponent) {
         var i = 0
         textComponent.condition.forEach {
             if (it == "#!quest-accept") {
-                textComponent.condition[i] = ""
+                textComponent.condition[i] = "type "+!accept(player, questID)
+            }else if (it == "#quest-accept") {
+                textComponent.condition[i] = "type "+accept(player, questID)
             }
             i++
         }
+        val qModule = QuestManager.getQuestModule(questID)?: return
+        val qDesc = "#quest-desc-info"
+        val hover = textComponent.hover
+        if (hover.contains(qDesc)) {
+            val desc = qModule.descMap["info"]
+            if (desc != null) {
+                textComponent.hover = desc
+            }
+        }
+        val qName = "#quest-name"
+        builderJsonUI.description.forEach {
+            it.replace(qName, qModule.name, true)
+        }
+        builderJsonUI.textComponentMap[questID] = textComponent
+    }
+
+    private fun accept(player: Player, questID: String): Boolean {
+        return QuestManager.existQuestData(player.uniqueId, questID)
     }
 
 }

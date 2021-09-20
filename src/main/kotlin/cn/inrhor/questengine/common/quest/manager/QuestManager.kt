@@ -629,7 +629,6 @@ object QuestManager {
 
     private fun databaseRemoveQuest(player: Player, questData: QuestData) {
         Database.database.removeQuest(player, questData)
-
     }
 
     private fun databaseRemoveInner(player: Player, questUUID: UUID) {
