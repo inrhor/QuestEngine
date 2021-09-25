@@ -1,8 +1,8 @@
 package cn.inrhor.questengine.script.kether.expand
 
 import cn.inrhor.questengine.utlis.location.LocationTool
+import org.bukkit.Location
 import taboolib.common.platform.ProxyPlayer
-import taboolib.common.util.Location
 import taboolib.library.kether.ArgTypes
 import taboolib.library.kether.ParsedAction
 import taboolib.module.kether.*
@@ -16,7 +16,7 @@ class KetherSpaceRange(val x: Double, val y: Double, val z: Double, val location
             frame.newFrame(location).run<Location>().thenAccept {
                 val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
                 val loc = player.location
-                future.complete(LocationTool.inLoc(loc.toBukkitLocation(), it.toBukkitLocation(), x, y, z))
+                future.complete(LocationTool.inLoc(loc.toBukkitLocation(), it, x, y, z))
             }
         }
     }

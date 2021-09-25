@@ -7,12 +7,12 @@ import cn.inrhor.questengine.common.packet.spawner.PacketEntitySpawner
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyPlayer
-import taboolib.common.util.Location
+import org.bukkit.Location
 import taboolib.module.effect.Circle
 import taboolib.module.effect.Polygon
 import taboolib.module.kether.*
 import taboolib.library.kether.*
-import taboolib.platform.util.toBukkitLocation
+import taboolib.platform.util.toProxyLocation
 import java.util.concurrent.CompletableFuture
 
 
@@ -25,10 +25,9 @@ class KetherPacket {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {
             return frame.newFrame(location).run<Location>().thenAccept {
                 val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
-                val bLoc = it.toBukkitLocation()
                 val packetModule = PacketManager.packetMap[packetID]?: return@thenAccept
-                val dataPacketID = DataPacketID(player.cast(), packetModule, 1, bLoc)
-                PacketManager.sendThisPacket(packetModule, player.cast(), bLoc, dataPacketID)
+                val dataPacketID = DataPacketID(player.cast(), packetModule, 1, it)
+                PacketManager.sendThisPacket(packetModule, player.cast(), it, dataPacketID)
             }
         }
     }
@@ -42,13 +41,14 @@ class KetherPacket {
             return frame.newFrame(location).run<Location>().thenAccept {
                 val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
                 val packetModule = PacketManager.packetMap[packetID]?: return@thenAccept
-                val dataPacketID = DataPacketID(player.cast(), packetModule, number, it.toBukkitLocation())
+                val dataPacketID = DataPacketID(player.cast(), packetModule, number, it)
                 val spawner = PacketEntitySpawner(player.cast(), dataPacketID)
                 val t = type.lowercase()
+                val loc = it.toProxyLocation()
                 if (t == "circle") {
-                    Circle(it, value, step, spawner).show()
+                    Circle(loc, value, step, spawner).show()
                 }else if (t == "polygon") {
-                    Polygon(value.toInt(), it, step, spawner).show()
+                    Polygon(value.toInt(), loc, step, spawner).show()
                 }
             }
         }
@@ -73,7 +73,7 @@ class KetherPacket {
 
         private fun removeRangePacket(viewers: MutableSet<Player>, packetID: String, location: Location, range: Double) {
             viewers.forEach {
-                PacketManager.removePacketEntity(it, packetID, location.toBukkitLocation(), range)
+                PacketManager.removePacketEntity(it, packetID, location, range)
             }
         }
     }

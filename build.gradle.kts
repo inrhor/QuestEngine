@@ -1,6 +1,6 @@
 plugins {
     java
-    id("io.izzel.taboolib") version "1.26"
+    id("io.izzel.taboolib") version "1.27"
     id("org.jetbrains.kotlin.jvm") version "1.5.20"
 }
 
@@ -33,7 +33,7 @@ taboolib {
         prefix("QuestEngine")
     }
     classifier = null
-    version = "6.0.0-48"
+    version = "6.0.3-4"
 }
 
 repositories {

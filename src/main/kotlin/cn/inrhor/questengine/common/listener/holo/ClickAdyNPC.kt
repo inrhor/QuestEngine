@@ -8,7 +8,7 @@ import org.bukkit.entity.Player
 import taboolib.common.platform.event.*
 
 
-class ClickAdyNPC {
+object ClickAdyNPC {
 
     @SubscribeEvent(bind = "ink.ptms.adyeshach.api.event.AdyeshachEntityInteractEvent")
     fun rightClickNPC(op: OptionalEvent) {
