@@ -1,13 +1,12 @@
 package cn.inrhor.questengine.script.kether.expand.control
 
-import taboolib.common.util.Location
 import taboolib.library.kether.ArgTypes
 import taboolib.library.kether.ParsedAction
 import taboolib.module.kether.*
 import taboolib.module.nms.createLight
 import taboolib.module.nms.deleteLight
 import taboolib.module.nms.type.LightType
-import taboolib.platform.util.toBukkitLocation
+import org.bukkit.Location
 import java.util.concurrent.CompletableFuture
 
 class KetherLight() {
@@ -15,7 +14,7 @@ class KetherLight() {
     class CreateLight(val level: Int, val location: ParsedAction<*>): ScriptAction<Void>() {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {
             return frame.newFrame(location).run<Location>().thenAccept {
-                it.toBukkitLocation().block.createLight(level, LightType.ALL, true)
+                it.block.createLight(level, LightType.ALL, true)
             }
         }
     }
@@ -23,7 +22,7 @@ class KetherLight() {
     class DeleteLight(val location: ParsedAction<*>): ScriptAction<Void>() {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {
             return frame.newFrame(location).run<Location>().thenAccept {
-                it.toBukkitLocation().block.deleteLight(LightType.ALL, true)
+                it.block.deleteLight(LightType.ALL, true)
             }
         }
     }

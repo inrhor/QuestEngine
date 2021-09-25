@@ -1,15 +1,13 @@
 package cn.inrhor.questengine.script.kether.expand
 
 import cn.inrhor.questengine.common.dialog.DialogManager
+import org.bukkit.Location
 import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyPlayer
-import taboolib.common.platform.function.info
-import taboolib.common.util.Location
 import taboolib.library.kether.ArgTypes
 import taboolib.library.kether.ParsedAction
 import taboolib.module.kether.*
 import taboolib.module.kether.scriptParser
-import taboolib.platform.util.toBukkitLocation
 import java.util.concurrent.CompletableFuture
 
 class KetherDialog {
@@ -19,8 +17,7 @@ class KetherDialog {
             return frame.newFrame(location).run<Location>().thenAccept {
                 val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
                 val p: Player = player.cast()
-                info("eee  $dialogID  "+it.toBukkitLocation())
-                DialogManager.sendDialogHolo(p, dialogID, it.toBukkitLocation())
+                DialogManager.sendDialogHolo(p, dialogID, it)
             }
         }
     }

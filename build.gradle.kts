@@ -33,7 +33,7 @@ taboolib {
         prefix("QuestEngine")
     }
     classifier = null
-    version = "6.0.2-11"
+    version = "6.0.3-4"
 }
 
 repositories {

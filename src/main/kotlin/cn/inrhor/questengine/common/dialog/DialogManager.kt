@@ -163,9 +163,10 @@ object DialogManager {
     }
 
     fun checkSpace(players: MutableSet<Player>, condition: MutableList<String>, loc: Location): Boolean {
+        val sp = "spacerange"
         players.forEach {
             condition.forEach { cd ->
-                val shell = if (cd.lowercase().startsWith("spacerange"))  cd+
+                val shell = if (cd.lowercase().startsWith(sp))  cd+
                         " where location *"+loc.world?.name+
                         " *"+loc.x+" *"+loc.y+" *"+loc.z else cd
                 if (!evalBoolean(it, shell)) return false
