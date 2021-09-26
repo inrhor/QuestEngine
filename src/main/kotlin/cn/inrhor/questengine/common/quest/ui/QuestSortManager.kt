@@ -9,6 +9,7 @@ import cn.inrhor.questengine.utlis.ui.BuilderJsonUI
 import cn.inrhor.questengine.utlis.ui.TextComponent
 import cn.inrhor.questengine.utlis.ui.buildJsonUI
 import org.bukkit.entity.Player
+import taboolib.common.platform.function.info
 
 /**
  * 任务手册分类
@@ -28,7 +29,16 @@ object QuestSortManager {
     val sortQuest = mutableMapOf<String, MutableSet<QuestModule>>()
 
     fun addSortQuest(sort: String, questModule: QuestModule) {
-        (sortQuest[sort]?: mutableSetOf()).add(questModule)
+        info("addQuestSort $sort")
+        /*(sortQuest[sort]?: mutableSetOf()).add(questModule)
+        sortQuest.keys.forEach {
+            info("questSort $it")
+        }*/
+        if (sortQuest.containsKey(sort)) {
+            sortQuest[sort]!!.add(questModule)
+            return
+        }
+        sortQuest[sort] = mutableSetOf(questModule)
     }
 
     fun init() {
@@ -61,22 +71,31 @@ object QuestSortManager {
         val qData = pData.questDataList
         val hasDisplay = mutableSetOf<String>()
         val sortView = sortViewUI.copy()
-        sortView.textComponentMap.clear()
-        val textCompNo = getTextComp("for.no")?: return ""
+        info("quest sort")
+        val textCompNo = getTextComp("for.noClick")?: return ""
         val textCompClick = getTextComp("for.click")?: return ""
+        sortView.textComponentMap.remove("for.noClick")
+        sortView.textComponentMap.remove("for.click")
         qData.values.forEach {
             val id = it.questID
             val m = QuestManager.getQuestModule(id)
+            info("sort "+m?.sort+"  e $sort")
             if (m?.sort == sort && it.state != QuestState.FINISH && !hasDisplay.contains(id)) {
                 hasDisplay.add(id)
                 val textComp = textCompClick.copy()
+                info("set")
                 setText(player, id, sortView, textComp)
             }
+        }
+        sortQuest.keys.forEach {
+            info("sortKey $it")
         }
         val sortList = sortQuest[sort]
         sortList?.forEach {
             val id = it.questID
+            info("sort   eppp $sort")
             if (!hasDisplay.contains(id)) {
+                info("eee set")
                 val noText = textCompNo.copy()
                 val clickText = textCompClick.copy()
                 setText(player, id, sortView, noText)
@@ -88,8 +107,10 @@ object QuestSortManager {
     }
 
     private fun setText(player: Player, questID: String, builderJsonUI: BuilderJsonUI, textComponent: TextComponent) {
+        info("setText $questID")
         var i = 0
         textComponent.condition.forEach {
+            info("eval "+"type "+accept(player, questID))
             if (it == "#!quest-accept") {
                 textComponent.condition[i] = "type "+!accept(player, questID)
             }else if (it == "#quest-accept") {

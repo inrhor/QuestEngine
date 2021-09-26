@@ -10,7 +10,7 @@ for:
     - "&7&l< &8&l#quest-name &7&l>"
     - "     @for.no@for.click"
   # JSON标签
-  no:
+  noClick:
     condition:
       - "#!quest-accept"
     text:
