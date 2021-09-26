@@ -3,6 +3,7 @@ package cn.inrhor.questengine.utlis.ui
 import cn.inrhor.questengine.script.kether.evalBoolean
 import cn.inrhor.questengine.utlis.toJsonStr
 import org.bukkit.entity.Player
+import taboolib.common.platform.function.info
 import taboolib.library.configuration.YamlConfiguration
 import taboolib.module.chat.TellrawJson
 
@@ -31,13 +32,17 @@ open class BuilderJsonUI {
 
     fun sectionAdd(yaml: YamlConfiguration, path: String, type: Type) {
         yaml.getConfigurationSection(path).getKeys(false).forEach { sort ->
-            yamlAdd(yaml, "$path.$sort", type)
+            info("section $path")
+            yamlAdd(yaml, type, "$path.$sort", sort)
         }
     }
 
-    fun yamlAdd(yaml: YamlConfiguration, path: String, type: Type) {
+    fun yamlAdd(yaml: YamlConfiguration, type: Type, path: String, child: String = path) {
+        info("add $path")
+        info("child $child")
         yaml.getConfigurationSection(path).getKeys(false).forEach { sign ->
             val node = "$path.$sign"
+            info("sign $sign")
             if (sign == "note") {
                 yaml.getStringList(node).forEach { n ->
                     description.add(n)
@@ -50,7 +55,7 @@ open class BuilderJsonUI {
                         yaml.getString("$node.command")?: ""
                     }else "/qen handbook sort "
                 }
-                textComponentMap[node] = text
+                textComponentMap["$child.$sign"] = text
             }
         }
     }
@@ -65,7 +70,9 @@ open class BuilderJsonUI {
 
         val sp = text.split("@")
         sp.forEach {
+            info("sp $it")
             textComponentMap.forEach { (id, comp) ->
+                info("id $id")
                 if (textCondition(player, comp.condition)) {
                     if (it.contains(id)) {
                         var rep = id

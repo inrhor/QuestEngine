@@ -46,7 +46,7 @@ object QuestSortManager {
 
         val sortView = releaseFile("handbook/sortView.yml", false)
         sortViewUI.yamlAddDesc(sortView, "head")
-        sortViewUI.yamlAdd(sortView, "for", BuilderJsonUI.Type.CUSTOM)
+        sortViewUI.yamlAdd(sortView, BuilderJsonUI.Type.CUSTOM, "for")
     }
 
     private fun getTextComp(id: String): TextComponent? {
