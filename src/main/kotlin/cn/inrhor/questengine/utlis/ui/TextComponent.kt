@@ -32,7 +32,7 @@ open class TextComponent {
         return textComponent {
             text = this@TextComponent.text
             hover = this@TextComponent.hover
-            condition = this@TextComponent.hover
+            condition = this@TextComponent.condition
             command = this@TextComponent.command
         }
     }

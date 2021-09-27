@@ -9,7 +9,6 @@ import cn.inrhor.questengine.utlis.ui.BuilderJsonUI
 import cn.inrhor.questengine.utlis.ui.TextComponent
 import cn.inrhor.questengine.utlis.ui.buildJsonUI
 import org.bukkit.entity.Player
-import taboolib.common.platform.function.info
 
 /**
  * 任务手册分类
@@ -29,11 +28,6 @@ object QuestSortManager {
     val sortQuest = mutableMapOf<String, MutableSet<QuestModule>>()
 
     fun addSortQuest(sort: String, questModule: QuestModule) {
-        info("addQuestSort $sort")
-        /*(sortQuest[sort]?: mutableSetOf()).add(questModule)
-        sortQuest.keys.forEach {
-            info("questSort $it")
-        }*/
         if (sortQuest.containsKey(sort)) {
             sortQuest[sort]!!.add(questModule)
             return
@@ -71,7 +65,6 @@ object QuestSortManager {
         val qData = pData.questDataList
         val hasDisplay = mutableSetOf<String>()
         val sortView = sortViewUI.copy()
-        info("quest sort")
         val textCompNo = getTextComp("for.noClick")?: return ""
         val textCompClick = getTextComp("for.click")?: return ""
         sortView.textComponentMap.remove("for.noClick")
@@ -79,23 +72,17 @@ object QuestSortManager {
         qData.values.forEach {
             val id = it.questID
             val m = QuestManager.getQuestModule(id)
-            info("sort "+m?.sort+"  e $sort")
             if (m?.sort == sort && it.state != QuestState.FINISH && !hasDisplay.contains(id)) {
                 hasDisplay.add(id)
                 val textComp = textCompClick.copy()
-                info("set")
                 setText(player, id, sortView, textComp)
             }
         }
-        sortQuest.keys.forEach {
-            info("sortKey $it")
-        }
+
         val sortList = sortQuest[sort]
         sortList?.forEach {
             val id = it.questID
-            info("sort   eppp $sort")
             if (!hasDisplay.contains(id)) {
-                info("eee set")
                 val noText = textCompNo.copy()
                 val clickText = textCompClick.copy()
                 setText(player, id, sortView, noText)
@@ -107,17 +94,16 @@ object QuestSortManager {
     }
 
     private fun setText(player: Player, questID: String, builderJsonUI: BuilderJsonUI, textComponent: TextComponent) {
-        info("setText $questID")
-        var i = 0
-        textComponent.condition.forEach {
-            info("eval "+"type "+accept(player, questID))
+        val c = textComponent.condition
+        for (i in 0 until c.size) {
+            val it = c[i]
             if (it == "#!quest-accept") {
-                textComponent.condition[i] = "type "+!accept(player, questID)
+                c[i] = "type "+!accept(player, questID)
             }else if (it == "#quest-accept") {
-                textComponent.condition[i] = "type "+accept(player, questID)
+                c[i] = "type "+accept(player, questID)
             }
-            i++
         }
+
         val qModule = QuestManager.getQuestModule(questID)?: return
         val qDesc = "#quest-desc-info"
         val hover = textComponent.hover
@@ -127,10 +113,13 @@ object QuestSortManager {
                 textComponent.hover = desc
             }
         }
+
         val qName = "#quest-name"
-        builderJsonUI.description.forEach {
-            it.replace(qName, qModule.name, true)
+        val d = builderJsonUI.description
+        for (s in 0 until d.size) {
+            d[s] = d[s].replace(qName, qModule.name, true)
         }
+
         builderJsonUI.textComponentMap[questID] = textComponent
     }
 

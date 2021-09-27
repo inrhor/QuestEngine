@@ -51,6 +51,7 @@ open class BuilderJsonUI {
                 val text = textComponent {
                     text = yaml.getStringList("$node.text")
                     hover = yaml.getStringList("$node.hover")
+                    condition = yaml.getStringList("$node.condition")
                     command = if (type == Type.CUSTOM) {
                         yaml.getString("$node.command")?: ""
                     }else "/qen handbook sort "

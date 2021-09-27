@@ -58,7 +58,7 @@ class HoloReply(
         val yaw = npcLoc.yaw
         for (i in replyModule.content) {
             val condition = replyModule.condition
-            if (condition.isEmpty() || evalBooleanSet(viewers, condition)) {
+            if (evalBooleanSet(viewers, condition)) {
                 val iUc = i.uppercase()
                 when {
                     iUc.startsWith("HITBOX") -> {
