@@ -8,7 +8,7 @@ for:
   note:
     - ""
     - "&7&l< &8&l#quest-name &7&l>"
-    - "     @for.no@for.click"
+    - "     @for.noClick@for.click"
   # JSON标签
   noClick:
     condition:

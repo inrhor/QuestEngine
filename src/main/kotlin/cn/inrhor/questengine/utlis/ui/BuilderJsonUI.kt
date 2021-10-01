@@ -24,6 +24,10 @@ open class BuilderJsonUI {
      */
     var textComponentMap = mutableMapOf<String, TextComponent>()
 
+    fun clear() {
+        description.clear()
+    }
+
     fun yamlAddDesc(yaml: YamlConfiguration, node: String) {
         yaml.getStringList(node).forEach {
             description.add(it)
@@ -32,17 +36,13 @@ open class BuilderJsonUI {
 
     fun sectionAdd(yaml: YamlConfiguration, path: String, type: Type) {
         yaml.getConfigurationSection(path).getKeys(false).forEach { sort ->
-            info("section $path")
             yamlAdd(yaml, type, "$path.$sort", sort)
         }
     }
 
     fun yamlAdd(yaml: YamlConfiguration, type: Type, path: String, child: String = path) {
-        info("add $path")
-        info("child $child")
         yaml.getConfigurationSection(path).getKeys(false).forEach { sign ->
             val node = "$path.$sign"
-            info("sign $sign")
             if (sign == "note") {
                 yaml.getStringList(node).forEach { n ->
                     description.add(n)
@@ -69,9 +69,15 @@ open class BuilderJsonUI {
         val text = description.toJsonStr()
         val json = TellrawJson()
 
+        info("text $text")
         val sp = text.split("@")
+        var first = false
         sp.forEach {
             info("sp $it")
+            if (!first) {
+                json.append(it)
+                first = true
+            }
             textComponentMap.forEach { (id, comp) ->
                 info("id $id")
                 if (textCondition(player, comp.condition)) {
@@ -86,9 +92,11 @@ open class BuilderJsonUI {
                         }
                         json.append(comp.build())
                         json.append(it.replace(rep, ""))
-                    } else {
+                        info("contains it $it")
+                    }/* else {
+                        info("append $it")
                         json.append(it)
-                    }
+                    }*/
                 }
             }
         }

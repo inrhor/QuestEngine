@@ -9,6 +9,7 @@ import cn.inrhor.questengine.utlis.ui.BuilderJsonUI
 import cn.inrhor.questengine.utlis.ui.TextComponent
 import cn.inrhor.questengine.utlis.ui.buildJsonUI
 import org.bukkit.entity.Player
+import taboolib.common.platform.function.info
 
 /**
  * 任务手册分类
@@ -49,6 +50,7 @@ object QuestSortManager {
         sortHomeUI = sortUI.build().toRawMessage()
 
         val sortView = releaseFile("handbook/sortView.yml", false)
+        sortViewUI.clear()
         sortViewUI.yamlAddDesc(sortView, "head")
         sortViewUI.yamlAdd(sortView, BuilderJsonUI.Type.CUSTOM, "for")
     }
@@ -67,8 +69,8 @@ object QuestSortManager {
         val sortView = sortViewUI.copy()
         val textCompNo = getTextComp("for.noClick")?: return ""
         val textCompClick = getTextComp("for.click")?: return ""
-        sortView.textComponentMap.remove("for.noClick")
-        sortView.textComponentMap.remove("for.click")
+        sortView.textComponentMap.clear()
+
         qData.values.forEach {
             val id = it.questID
             val m = QuestManager.getQuestModule(id)
@@ -82,11 +84,13 @@ object QuestSortManager {
         val sortList = sortQuest[sort]
         sortList?.forEach {
             val id = it.questID
+            info("qen $id  "+hasDisplay.contains(id))
             if (!hasDisplay.contains(id)) {
                 val noText = textCompNo.copy()
                 val clickText = textCompClick.copy()
-                setText(player, id, sortView, noText)
+                setText(player, id,  sortView, noText)
                 setText(player, id, sortView, clickText)
+//                sortView.textComponentMap["for.click"] = noText
             }
         }
 
@@ -115,9 +119,17 @@ object QuestSortManager {
         }
 
         val qName = "#quest-name"
+        val qID = "#quest-sb"
         val d = builderJsonUI.description
         for (s in 0 until d.size) {
             d[s] = d[s].replace(qName, qModule.name, true)
+        }
+        for (s in 0 until d.size) {
+            val u = d[s]
+            if (u.lowercase().contains(qID)) {
+                d[s] = d[s].replace(qID, questID, true)
+                break
+            }
         }
 
         builderJsonUI.textComponentMap[questID] = textComponent
