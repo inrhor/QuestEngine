@@ -28,6 +28,8 @@ open class BuilderJsonUI {
      */
     var textComponentMap = mutableMapOf<String, TextComponent>()
 
+    var line = 0
+
     fun clear() {
         description.clear()
     }
@@ -75,15 +77,16 @@ open class BuilderJsonUI {
         SORT, CUSTOM
     }
 
-    open fun build(player: Player? = null): TellrawJson {
+    open fun build(player: Player? = null): MutableList<TellrawJson> {
+        val jsonList = mutableListOf<TellrawJson>()
+
         val text = description.toJsonStr()
-        val json = TellrawJson()
 
         val sp = text.split("@")
         var first = false
         sp.forEach {
             if (!first) {
-                json.append(it)
+                autoPage(jsonList,).append(it)
                 first = true
             }
             textComponentMap.forEach { (id, comp) ->
@@ -107,7 +110,20 @@ open class BuilderJsonUI {
             }
         }
 
-        return json
+        return jsonList
+    }
+
+    private fun autoPage(jsonList: MutableList<TellrawJson>, size: Int): TellrawJson {
+        if (needNewPage(jsonList.size, line, size, jsonList.isEmpty())) {
+            line = 0
+            jsonList.add(TellrawJson())
+        }
+        return jsonList[jsonList.size]
+    }
+
+    private fun needNewPage(page: Int, line: Int, size: Int, hasNote: Boolean = false): Boolean {
+        if (size > 14 && hasNote) return true
+        return line+size >14*(page+1)
     }
 
     private fun textCondition(player: Player?, conditions: MutableList<String>): Boolean {

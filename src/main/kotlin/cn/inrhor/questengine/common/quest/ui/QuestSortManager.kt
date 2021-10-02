@@ -10,6 +10,7 @@ import cn.inrhor.questengine.utlis.ui.TextComponent
 import cn.inrhor.questengine.utlis.ui.buildJsonUI
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.info
+import taboolib.module.chat.TellrawJson
 
 /**
  * 任务手册分类
@@ -19,7 +20,7 @@ object QuestSortManager {
     /**
      * 分类界面
      */
-    var sortHomeUI = ""
+    var sortHomeUI = mutableListOf<TellrawJson>()
 
     val sortViewUI = buildJsonUI()
 
@@ -47,7 +48,7 @@ object QuestSortManager {
             yamlAddDesc(sort, "head")
             sectionAdd(sort, "sort", BuilderJsonUI.Type.SORT)
         }
-        sortHomeUI = sortUI.build().toRawMessage()
+        sortHomeUI = sortUI.build()
 
         val sortView = releaseFile("handbook/sortView.yml", false)
         sortViewUI.clear()
@@ -62,13 +63,13 @@ object QuestSortManager {
     /**
      * 为用户编译任务手册的任务分类信息
      */
-    fun questSortBuild(player: Player, sort: String): String {
+    fun questSortBuild(player: Player, sort: String): MutableList<TellrawJson> {
         val pData = DataStorage.getPlayerData(player)
         val qData = pData.questDataList
         val hasDisplay = mutableSetOf<String>()
         val sortView = sortViewUI.copy()
-        val textCompNo = getTextComp("for.noClick")?: return ""
-        val textCompClick = getTextComp("for.click")?: return ""
+        val textCompNo = getTextComp("for.noClick")?: return mutableListOf()
+        val textCompClick = getTextComp("for.click")?: return mutableListOf()
         sortView.textComponentMap.clear()
 
         qData.values.forEach {
@@ -90,11 +91,10 @@ object QuestSortManager {
                 val clickText = textCompClick.copy()
                 setText(player, id,  sortView, noText)
                 setText(player, id, sortView, clickText)
-//                sortView.textComponentMap["for.click"] = noText
             }
         }
 
-        return sortView.build(player).toRawMessage()
+        return sortView.build(player)
     }
 
     private fun setText(player: Player, questID: String, builderJsonUI: BuilderJsonUI, textComponent: TextComponent) {
