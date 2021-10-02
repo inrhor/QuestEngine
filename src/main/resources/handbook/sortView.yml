@@ -5,7 +5,7 @@ head:
 
 for:
   # 内容物
-  note:
+  fork:
     - ""
     - "&7&l< &8&l#quest-name &7&l>"
     - "     @for.noClick@for.click"

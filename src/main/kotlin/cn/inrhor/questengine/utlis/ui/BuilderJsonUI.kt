@@ -3,7 +3,6 @@ package cn.inrhor.questengine.utlis.ui
 import cn.inrhor.questengine.script.kether.evalBoolean
 import cn.inrhor.questengine.utlis.toJsonStr
 import org.bukkit.entity.Player
-import taboolib.common.platform.function.info
 import taboolib.library.configuration.YamlConfiguration
 import taboolib.module.chat.TellrawJson
 
@@ -18,6 +17,11 @@ open class BuilderJsonUI {
      * 内容物
      */
     val description = mutableListOf<String>()
+
+    /**
+     * 复制性内容物组件
+     */
+    var forkComponent = mutableMapOf<String, MutableList<String>>()
 
     /**
      * 文字组件，使内容物调用指定组件
@@ -43,20 +47,26 @@ open class BuilderJsonUI {
     fun yamlAdd(yaml: YamlConfiguration, type: Type, path: String, child: String = path) {
         yaml.getConfigurationSection(path).getKeys(false).forEach { sign ->
             val node = "$path.$sign"
-            if (sign == "note") {
-                yaml.getStringList(node).forEach { n ->
-                    description.add(n)
+            when (sign) {
+                "note" -> {
+                    yaml.getStringList(node).forEach { n ->
+                        description.add(n)
+                    }
                 }
-            }else {
-                val text = textComponent {
-                    text = yaml.getStringList("$node.text")
-                    hover = yaml.getStringList("$node.hover")
-                    condition = yaml.getStringList("$node.condition")
-                    command = if (type == Type.CUSTOM) {
-                        yaml.getString("$node.command")?: ""
-                    }else "/qen handbook sort "
+                "fork" -> {
+                    forkComponent[path] = yaml.getStringList(node)
                 }
-                textComponentMap["$child.$sign"] = text
+                else -> {
+                    val text = textComponent {
+                        text = yaml.getStringList("$node.text")
+                        hover = yaml.getStringList("$node.hover")
+                        condition = yaml.getStringList("$node.condition")
+                        command = if (type == Type.CUSTOM) {
+                            yaml.getString("$node.command")?: ""
+                        }else "/qen handbook sort "
+                    }
+                    textComponentMap["$child.$sign"] = text
+                }
             }
         }
     }
@@ -69,17 +79,14 @@ open class BuilderJsonUI {
         val text = description.toJsonStr()
         val json = TellrawJson()
 
-        info("text $text")
         val sp = text.split("@")
         var first = false
         sp.forEach {
-            info("sp $it")
             if (!first) {
                 json.append(it)
                 first = true
             }
             textComponentMap.forEach { (id, comp) ->
-                info("id $id")
                 if (textCondition(player, comp.condition)) {
                     if (it.contains(id)) {
                         var rep = id
@@ -92,7 +99,6 @@ open class BuilderJsonUI {
                         }
                         json.append(comp.build())
                         json.append(it.replace(rep, ""))
-                        info("contains it $it")
                     }/* else {
                         info("append $it")
                         json.append(it)
@@ -114,6 +120,7 @@ open class BuilderJsonUI {
             this@BuilderJsonUI.description.forEach {
                 description.add(it)
             }
+            forkComponent = this@BuilderJsonUI.forkComponent
             textComponentMap = this@BuilderJsonUI.textComponentMap
         }
     }

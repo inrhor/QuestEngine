@@ -98,6 +98,13 @@ object QuestSortManager {
     }
 
     private fun setText(player: Player, questID: String, builderJsonUI: BuilderJsonUI, textComponent: TextComponent) {
+        if (builderJsonUI.textComponentMap.containsKey(questID)) return
+        val fork = builderJsonUI.forkComponent["for"]?: return
+        fork.forEach {
+            builderJsonUI.description.add(it)
+            info("fork $it")
+        }
+
         val c = textComponent.condition
         for (i in 0 until c.size) {
             val it = c[i]
