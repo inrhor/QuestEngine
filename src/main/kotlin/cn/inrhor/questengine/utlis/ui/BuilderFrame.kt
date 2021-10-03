@@ -42,8 +42,8 @@ open class BuilderFrame {
             if (!v.fork) {
                 val note = v.note
                 val json = autoPage(note.size)
-//                val text = note.toJsonStr().replace("#enter", "/n", true)
-                val sp = note.toJsonStr().split("@")
+                val sp = (note.toJsonStr()+"\n").split("@")
+                info("sp $sp")
                 var first = false
                 sp.forEach {
                     if (!first) {
