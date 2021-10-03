@@ -6,6 +6,7 @@ import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.utlis.file.releaseFile
 import cn.inrhor.questengine.utlis.ui.BuilderFrame
+import cn.inrhor.questengine.utlis.ui.NoteComponent
 import cn.inrhor.questengine.utlis.ui.TextComponent
 import cn.inrhor.questengine.utlis.ui.buildFrame
 import org.bukkit.entity.Player
@@ -63,12 +64,16 @@ object QuestSortManager {
      * 为用户编译任务手册的任务分类信息
      */
     fun questSortBuild(player: Player, sort: String): MutableList<TellrawJson> {
+        info("build")
         val pData = DataStorage.getPlayerData(player)
         val qData = pData.questDataList
         val hasDisplay = mutableSetOf<String>()
         val sortView = sortViewUI.copy()
+        info("next")
         val textCompNo = getTextComp("for.noClick")?: return mutableListOf()
+        info("haha")
         val textCompClick = getTextComp("for.click")?: return mutableListOf()
+        info("sbsb")
         sortView.textComponent.clear()
 
         qData.values.forEach {
@@ -99,8 +104,11 @@ object QuestSortManager {
     private fun setText(player: Player, questID: String, builderFrame: BuilderFrame, textComponent: TextComponent) {
         if (builderFrame.textComponent.containsKey(questID)) return
         val fork = builderFrame.noteComponent["for.fork"]?: return
-        builderFrame.noteComponent[questID] = fork
-        builderFrame.noteComponent[questID]!!.fork = false
+        val noteList = mutableListOf<String>()
+        fork.note.forEach {
+            noteList.add(it)
+        }
+        builderFrame.noteComponent[questID] = NoteComponent(noteList)
 
         val c = textComponent.condition
         for (i in 0 until c.size) {
@@ -111,6 +119,7 @@ object QuestSortManager {
                 c[i] = "type "+accept(player, questID)
             }
         }
+        if (!builderFrame.textCondition(player, c)) return
 
         val qModule = QuestManager.getQuestModule(questID)?: return
         val qDesc = "#quest-desc-info"
@@ -124,8 +133,9 @@ object QuestSortManager {
 
         val qName = "#quest-name"
         val qID = "#quest-sb"
-        builderFrame.noteComponent.values.forEach {
+        builderFrame.noteComponent.forEach { t, it ->
             if (!it.fork) {
+                info("replace $t  it ${it.note}")
                 val d = it.note
                 for (s in 0 until d.size) {
                     d[s] = d[s].replace(qName, qModule.name, true)
@@ -138,6 +148,10 @@ object QuestSortManager {
                     }
                 }
             }
+        }
+
+        builderFrame.noteComponent["for.fork"]!!.note.forEach {
+            info("for.fork $it  "+"fork is "+builderFrame.noteComponent["for.fork"]!!.fork)
         }
 
         builderFrame.textComponent[questID] = textComponent

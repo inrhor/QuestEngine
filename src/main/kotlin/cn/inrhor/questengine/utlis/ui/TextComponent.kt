@@ -8,32 +8,23 @@ import taboolib.module.chat.TellrawJson
  *
  * 文字组件
  */
-open class TextComponent {
-
-    var text: MutableList<String> = mutableListOf()
-    var hover: MutableList<String> = mutableListOf()
-    var condition: MutableList<String> = mutableListOf()
+data class TextComponent(
+    var text: MutableList<String> = mutableListOf(),
+    var hover: MutableList<String> = mutableListOf(),
+    var condition: MutableList<String> = mutableListOf(),
     var command: String = ""
+) {
 
-    open fun build(): TellrawJson {
+    fun build(): TellrawJson {
         val json = TellrawJson().append(text.toJsonStr())
         if (hover.isNotEmpty()) json.hoverText(hover.toJsonStr())
         if (command.isNotEmpty()) json.runCommand(command)
         return json
     }
 
-    open fun setCommand(type: BuilderFrame.Type, arg: String) {
+    fun setCommand(type: BuilderFrame.Type, arg: String) {
         if (type == BuilderFrame.Type.SORT) {
             command = "/qen handbook sort $arg"
-        }
-    }
-
-    fun copy(): TextComponent {
-        return textComponent {
-            text = this@TextComponent.text
-            hover = this@TextComponent.hover
-            condition = this@TextComponent.condition
-            command = this@TextComponent.command
         }
     }
 

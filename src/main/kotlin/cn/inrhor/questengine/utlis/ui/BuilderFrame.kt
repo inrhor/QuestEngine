@@ -12,7 +12,7 @@ import taboolib.module.chat.TellrawJson
  *
  * 框架容器
  */
-open class BuilderFrame {
+class BuilderFrame {
 
     /**
      * 当前页面已打印的行数
@@ -37,13 +37,14 @@ open class BuilderFrame {
     /**
      * 构建
      */
-    open fun build(player: Player? = null): MutableList<TellrawJson> {
-        noteComponent.values.forEach { v ->
+    fun build(player: Player? = null): MutableList<TellrawJson> {
+        noteComponent.forEach { t, v ->
             if (!v.fork) {
+                info("vvv "+v.note+"   t $t  "+v.fork)
+                info("    ")
                 val note = v.note
                 val json = autoPage(note.size)
                 val sp = (note.toJsonStr()+"\n").split("@")
-                info("sp $sp")
                 var first = false
                 sp.forEach {
                     if (!first) {
@@ -63,6 +64,7 @@ open class BuilderFrame {
                                 }
                                 json.append(comp.build())
                                 json.append(it.replace(rep, ""))
+                                info("addText Rep $rep")
                             }
                         }
                     }
@@ -104,7 +106,7 @@ open class BuilderFrame {
     /**
      * 文字组件所需条件
      */
-    private fun textCondition(player: Player?, conditions: MutableList<String>): Boolean {
+    fun textCondition(player: Player?, conditions: MutableList<String>): Boolean {
         if (player == null) return true
         return evalBoolean(player, conditions)
     }
@@ -114,6 +116,7 @@ open class BuilderFrame {
     }
 
     fun yamlAddNote(yaml: YamlConfiguration, node: String, fork: Boolean = false) {
+        info("addNoteYaml $node  fork $fork")
         noteComponent[node] = NoteComponent(yaml.getStringList(node), fork)
     }
 
@@ -150,8 +153,12 @@ open class BuilderFrame {
 
     fun copy(): BuilderFrame {
         return buildFrame() {
-            noteComponent = this@BuilderFrame.noteComponent
-            textComponent = this@BuilderFrame.textComponent
+            this@BuilderFrame.noteComponent.forEach { (t, u) ->
+                noteComponent[t] = u
+            }
+            this@BuilderFrame.textComponent.forEach { (t, u) ->
+                textComponent[t] = u
+            }
         }
     }
 
