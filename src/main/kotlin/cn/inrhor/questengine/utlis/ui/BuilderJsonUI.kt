@@ -1,3 +1,4 @@
+/*
 package cn.inrhor.questengine.utlis.ui
 
 import cn.inrhor.questengine.script.kether.evalBoolean
@@ -6,26 +7,34 @@ import org.bukkit.entity.Player
 import taboolib.library.configuration.YamlConfiguration
 import taboolib.module.chat.TellrawJson
 
+*/
 /**
  * 高度自定义 JSON 内容
  *
  * 窗口组件
- */
+ *//*
+
 open class BuilderJsonUI {
 
-    /**
+    */
+/**
      * 内容物
-     */
+     *//*
+
     val description = mutableListOf<String>()
 
-    /**
+    */
+/**
      * 复制性内容物组件
-     */
+     *//*
+
     var forkComponent = mutableMapOf<String, MutableList<String>>()
 
-    /**
+    */
+/**
      * 文字组件，使内容物调用指定组件
-     */
+     *//*
+
     var textComponentMap = mutableMapOf<String, TextComponent>()
 
     var line = 0
@@ -86,7 +95,7 @@ open class BuilderJsonUI {
         var first = false
         sp.forEach {
             if (!first) {
-                autoPage(jsonList,).append(it)
+                autoPage(jsonList, ).append(it)
                 first = true
             }
             textComponentMap.forEach { (id, comp) ->
@@ -100,12 +109,14 @@ open class BuilderJsonUI {
                         } else {
                             comp.setCommand(Type.SORT, id.split(".")[0])
                         }
-                        json.append(comp.build())
+                        autoPage(jsonList, ).append(comp.build())
                         json.append(it.replace(rep, ""))
-                    }/* else {
+                    }*/
+/* else {
                         info("append $it")
                         json.append(it)
-                    }*/
+                    }*//*
+
                 }
             }
         }
@@ -114,7 +125,9 @@ open class BuilderJsonUI {
     }
 
     private fun autoPage(jsonList: MutableList<TellrawJson>, size: Int): TellrawJson {
-        if (needNewPage(jsonList.size, line, size, jsonList.isEmpty())) {
+        val theLine = line
+        line += size
+        if (needNewPage(jsonList.size, theLine, size, jsonList.isEmpty())) {
             line = 0
             jsonList.add(TellrawJson())
         }
@@ -145,4 +158,4 @@ open class BuilderJsonUI {
 
 inline fun buildJsonUI(builder: BuilderJsonUI.() -> Unit = {}): BuilderJsonUI {
     return BuilderJsonUI().also(builder)
-}
+}*/

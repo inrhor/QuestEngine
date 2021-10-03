@@ -22,8 +22,8 @@ open class TextComponent {
         return json
     }
 
-    open fun setCommand(type: BuilderJsonUI.Type, arg: String) {
-        if (type == BuilderJsonUI.Type.SORT) {
+    open fun setCommand(type: BuilderFrame.Type, arg: String) {
+        if (type == BuilderFrame.Type.SORT) {
             command = "/qen handbook sort $arg"
         }
     }
