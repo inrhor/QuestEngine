@@ -5,9 +5,9 @@ import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.utlis.file.releaseFile
-import cn.inrhor.questengine.utlis.ui.BuilderJsonUI
+import cn.inrhor.questengine.utlis.ui.BuilderFrame
 import cn.inrhor.questengine.utlis.ui.TextComponent
-import cn.inrhor.questengine.utlis.ui.buildJsonUI
+import cn.inrhor.questengine.utlis.ui.buildFrame
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.info
 import taboolib.module.chat.TellrawJson
@@ -22,7 +22,7 @@ object QuestSortManager {
      */
     var sortHomeUI = mutableListOf<TellrawJson>()
 
-    val sortViewUI = buildJsonUI()
+    val sortViewUI = buildFrame()
 
     /**
      * 分类任务模块列表
@@ -44,20 +44,19 @@ object QuestSortManager {
     fun load() {
         val sort = releaseFile("handbook/sort.yml", false)
         // 分类界面
-        val sortUI = buildJsonUI {
-            yamlAddDesc(sort, "head")
-            sectionAdd(sort, "sort", BuilderJsonUI.Type.SORT)
+        val sortUI = buildFrame {
+            yamlAddNote(sort, "head")
+            sectionAdd(sort, "sort", BuilderFrame.Type.SORT)
         }
         sortHomeUI = sortUI.build()
 
         val sortView = releaseFile("handbook/sortView.yml", false)
-        sortViewUI.clear()
-        sortViewUI.yamlAddDesc(sortView, "head")
-        sortViewUI.yamlAdd(sortView, BuilderJsonUI.Type.CUSTOM, "for")
+        sortViewUI.yamlAddNote(sortView, "head")
+        sortViewUI.yamlAutoAdd(sortView, BuilderFrame.Type.CUSTOM, "for")
     }
 
     private fun getTextComp(id: String): TextComponent? {
-        return sortViewUI.textComponentMap[id]
+        return sortViewUI.textComponent[id]
     }
 
     /**
@@ -70,7 +69,7 @@ object QuestSortManager {
         val sortView = sortViewUI.copy()
         val textCompNo = getTextComp("for.noClick")?: return mutableListOf()
         val textCompClick = getTextComp("for.click")?: return mutableListOf()
-        sortView.textComponentMap.clear()
+        sortView.textComponent.clear()
 
         qData.values.forEach {
             val id = it.questID
@@ -97,13 +96,11 @@ object QuestSortManager {
         return sortView.build(player)
     }
 
-    private fun setText(player: Player, questID: String, builderJsonUI: BuilderJsonUI, textComponent: TextComponent) {
-        if (builderJsonUI.textComponentMap.containsKey(questID)) return
-        val fork = builderJsonUI.forkComponent["for"]?: return
-        fork.forEach {
-            builderJsonUI.description.add(it)
-            info("fork $it")
-        }
+    private fun setText(player: Player, questID: String, builderFrame: BuilderFrame, textComponent: TextComponent) {
+        if (builderFrame.textComponent.containsKey(questID)) return
+        val fork = builderFrame.noteComponent["for.fork"]?: return
+        builderFrame.noteComponent[questID] = fork
+        builderFrame.noteComponent[questID]!!.fork = false
 
         val c = textComponent.condition
         for (i in 0 until c.size) {
@@ -127,19 +124,23 @@ object QuestSortManager {
 
         val qName = "#quest-name"
         val qID = "#quest-sb"
-        val d = builderJsonUI.description
-        for (s in 0 until d.size) {
-            d[s] = d[s].replace(qName, qModule.name, true)
-        }
-        for (s in 0 until d.size) {
-            val u = d[s]
-            if (u.lowercase().contains(qID)) {
-                d[s] = d[s].replace(qID, questID, true)
-                break
+        builderFrame.noteComponent.values.forEach {
+            if (!it.fork) {
+                val d = it.note
+                for (s in 0 until d.size) {
+                    d[s] = d[s].replace(qName, qModule.name, true)
+                }
+                for (s in 0 until d.size) {
+                    val u = d[s]
+                    if (u.lowercase().contains(qID)) {
+                        d[s] = d[s].replace(qID, questID, true)
+                        break
+                    }
+                }
             }
         }
 
-        builderJsonUI.textComponentMap[questID] = textComponent
+        builderFrame.textComponent[questID] = textComponent
     }
 
     private fun accept(player: Player, questID: String): Boolean {

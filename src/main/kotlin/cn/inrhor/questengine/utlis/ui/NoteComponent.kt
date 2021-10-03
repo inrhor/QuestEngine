@@ -7,5 +7,5 @@ package cn.inrhor.questengine.utlis.ui
  */
 class NoteComponent(
     val note: MutableList<String> = mutableListOf(),
-    val fork: Boolean = false) {
+    var fork: Boolean = false) {
 }

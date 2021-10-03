@@ -3,6 +3,8 @@ package cn.inrhor.questengine.utlis.ui
 import cn.inrhor.questengine.script.kether.evalBoolean
 import cn.inrhor.questengine.utlis.toJsonStr
 import org.bukkit.entity.Player
+import taboolib.common.platform.function.info
+import taboolib.library.configuration.YamlConfiguration
 import taboolib.module.chat.TellrawJson
 
 /**
@@ -20,12 +22,12 @@ open class BuilderFrame {
     /**
      * 内容物组件
      */
-    val noteComponent = mutableMapOf<String, NoteComponent>()
+    var noteComponent = mutableMapOf<String, NoteComponent>()
 
     /**
      * 文字组件
      */
-    val textComponent = mutableMapOf<String, TextComponent>()
+    var textComponent = mutableMapOf<String, TextComponent>()
 
     /**
      * 页面内容
@@ -35,11 +37,12 @@ open class BuilderFrame {
     /**
      * 构建
      */
-    open fun build(player: Player? = null) {
+    open fun build(player: Player? = null): MutableList<TellrawJson> {
         noteComponent.values.forEach { v ->
             if (!v.fork) {
                 val note = v.note
                 val json = autoPage(note.size)
+//                val text = note.toJsonStr().replace("#enter", "/n", true)
                 val sp = note.toJsonStr().split("@")
                 var first = false
                 sp.forEach {
@@ -49,12 +52,12 @@ open class BuilderFrame {
                     }
                     textComponent.forEach { (id, comp) ->
                         if (textCondition(player, comp.condition)) {
-                            if (it.contains(id)) {
-                                var rep = id
+                            var rep = "$id;"
+                            if (it.contains(rep)) {
                                 if (it.contains("-")) {
                                     val sort = it.split("-")[0]
                                     comp.setCommand(Type.SORT, sort)
-                                    rep = "$sort-$id"
+                                    rep = "$sort-$id;"
                                 } else {
                                     comp.setCommand(Type.SORT, id.split(".")[0])
                                 }
@@ -66,6 +69,7 @@ open class BuilderFrame {
                 }
             }
         }
+        return pageFrame
     }
 
     /**
@@ -77,11 +81,11 @@ open class BuilderFrame {
      */
     private fun autoPage(size: Int): TellrawJson {
         line += size
-        if (needNewPage(pageFrame.size, pageFrame.isEmpty())) {
+        if (pageFrame.isEmpty() || needNewPage(pageFrame.size, pageFrame.isEmpty())) {
             line = 0
             pageFrame.add(TellrawJson())
         }
-        return pageFrame[pageFrame.size]
+        return pageFrame[pageFrame.size-1]
     }
 
     /**
@@ -94,7 +98,7 @@ open class BuilderFrame {
      */
     private fun needNewPage(size: Int, hasNote: Boolean = false): Boolean {
         if (size > 14 && hasNote) return true
-        return line+size >14*(pageFrame.size+1)
+        return line+size >14*(pageFrame.size)
     }
 
     /**
@@ -107,6 +111,48 @@ open class BuilderFrame {
 
     enum class Type {
         SORT, CUSTOM
+    }
+
+    fun yamlAddNote(yaml: YamlConfiguration, node: String, fork: Boolean = false) {
+        noteComponent[node] = NoteComponent(yaml.getStringList(node), fork)
+    }
+
+    fun sectionAdd(yaml: YamlConfiguration, path: String, type: Type) {
+        yaml.getConfigurationSection(path).getKeys(false).forEach { sort ->
+            yamlAutoAdd(yaml, type, "$path.$sort", sort)
+        }
+    }
+
+    fun yamlAutoAdd(yaml: YamlConfiguration, type: Type, path: String, child: String = path) {
+        yaml.getConfigurationSection(path).getKeys(false).forEach { sign ->
+            val node = "$path.$sign"
+            when (sign) {
+                "note" -> {
+                    yamlAddNote(yaml, node)
+                }
+                "fork" -> {
+                    yamlAddNote(yaml, node, true)
+                }
+                else -> {
+                    val text = textComponent {
+                        text = yaml.getStringList("$node.text")
+                        hover = yaml.getStringList("$node.hover")
+                        condition = yaml.getStringList("$node.condition")
+                        command = if (type == Type.CUSTOM) {
+                            yaml.getString("$node.command")?: ""
+                        }else "/qen handbook sort "
+                    }
+                    textComponent["$child.$sign"] = text
+                }
+            }
+        }
+    }
+
+    fun copy(): BuilderFrame {
+        return buildFrame() {
+            noteComponent = this@BuilderFrame.noteComponent
+            textComponent = this@BuilderFrame.textComponent
+        }
     }
 
 }
