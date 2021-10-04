@@ -3,7 +3,6 @@ package cn.inrhor.questengine.utlis.ui
 import cn.inrhor.questengine.script.kether.evalBoolean
 import cn.inrhor.questengine.utlis.toJsonStr
 import org.bukkit.entity.Player
-import taboolib.common.platform.function.info
 import taboolib.library.configuration.YamlConfiguration
 import taboolib.module.chat.TellrawJson
 
@@ -38,10 +37,8 @@ class BuilderFrame {
      * 构建
      */
     fun build(player: Player? = null): MutableList<TellrawJson> {
-        noteComponent.forEach { t, v ->
+        noteComponent.values.forEach { v ->
             if (!v.fork) {
-                info("vvv "+v.note+"   t $t  "+v.fork)
-                info("    ")
                 val note = v.note
                 val json = autoPage(note.size)
                 val sp = (note.toJsonStr()+"\n").split("@")
@@ -57,14 +54,13 @@ class BuilderFrame {
                             if (it.contains(rep)) {
                                 if (it.contains("-")) {
                                     val sort = it.split("-")[0]
-                                    comp.setCommand(Type.SORT, sort)
+                                    comp.autoCommand(sort)
                                     rep = "$sort-$id;"
                                 } else {
-                                    comp.setCommand(Type.SORT, id.split(".")[0])
+                                    comp.autoCommand(id.split(".")[0])
                                 }
                                 json.append(comp.build())
                                 json.append(it.replace(rep, ""))
-                                info("addText Rep $rep")
                             }
                         }
                     }
@@ -116,7 +112,6 @@ class BuilderFrame {
     }
 
     fun yamlAddNote(yaml: YamlConfiguration, node: String, fork: Boolean = false) {
-        info("addNoteYaml $node  fork $fork")
         noteComponent[node] = NoteComponent(yaml.getStringList(node), fork)
     }
 
@@ -144,6 +139,7 @@ class BuilderFrame {
                         command = if (type == Type.CUSTOM) {
                             yaml.getString("$node.command")?: ""
                         }else "/qen handbook sort "
+                        this.type = type
                     }
                     textComponent["$child.$sign"] = text
                 }

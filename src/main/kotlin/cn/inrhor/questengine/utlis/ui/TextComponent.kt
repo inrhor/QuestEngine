@@ -12,7 +12,8 @@ data class TextComponent(
     var text: MutableList<String> = mutableListOf(),
     var hover: MutableList<String> = mutableListOf(),
     var condition: MutableList<String> = mutableListOf(),
-    var command: String = ""
+    var command: String = "",
+    var type: BuilderFrame.Type = BuilderFrame.Type.CUSTOM
 ) {
 
     fun build(): TellrawJson {
@@ -22,7 +23,7 @@ data class TextComponent(
         return json
     }
 
-    fun setCommand(type: BuilderFrame.Type, arg: String) {
+    fun autoCommand(arg: String) {
         if (type == BuilderFrame.Type.SORT) {
             command = "/qen handbook sort $arg"
         }

@@ -10,7 +10,6 @@ import cn.inrhor.questengine.utlis.ui.NoteComponent
 import cn.inrhor.questengine.utlis.ui.TextComponent
 import cn.inrhor.questengine.utlis.ui.buildFrame
 import org.bukkit.entity.Player
-import taboolib.common.platform.function.info
 import taboolib.module.chat.TellrawJson
 
 /**
@@ -64,16 +63,12 @@ object QuestSortManager {
      * 为用户编译任务手册的任务分类信息
      */
     fun questSortBuild(player: Player, sort: String): MutableList<TellrawJson> {
-        info("build")
         val pData = DataStorage.getPlayerData(player)
         val qData = pData.questDataList
         val hasDisplay = mutableSetOf<String>()
         val sortView = sortViewUI.copy()
-        info("next")
         val textCompNo = getTextComp("for.noClick")?: return mutableListOf()
-        info("haha")
         val textCompClick = getTextComp("for.click")?: return mutableListOf()
-        info("sbsb")
         sortView.textComponent.clear()
 
         qData.values.forEach {
@@ -89,7 +84,6 @@ object QuestSortManager {
         val sortList = sortQuest[sort]
         sortList?.forEach {
             val id = it.questID
-            info("qen $id  "+hasDisplay.contains(id))
             if (!hasDisplay.contains(id)) {
                 val noText = textCompNo.copy()
                 val clickText = textCompClick.copy()
@@ -131,11 +125,12 @@ object QuestSortManager {
             }
         }
 
+        textComponent.command = "/qen handbook info $questID"
+
         val qName = "#quest-name"
-        val qID = "#quest-sb"
-        builderFrame.noteComponent.forEach { t, it ->
+        val qID = "#quest-id"
+        builderFrame.noteComponent.values.forEach {
             if (!it.fork) {
-                info("replace $t  it ${it.note}")
                 val d = it.note
                 for (s in 0 until d.size) {
                     d[s] = d[s].replace(qName, qModule.name, true)
@@ -148,10 +143,6 @@ object QuestSortManager {
                     }
                 }
             }
-        }
-
-        builderFrame.noteComponent["for.fork"]!!.note.forEach {
-            info("for.fork $it  "+"fork is "+builderFrame.noteComponent["for.fork"]!!.fork)
         }
 
         builderFrame.textComponent[questID] = textComponent
