@@ -2,6 +2,7 @@ package cn.inrhor.questengine.utlis.ui
 
 import cn.inrhor.questengine.utlis.toJsonStr
 import org.bukkit.entity.Player
+import taboolib.common.platform.function.info
 import taboolib.module.chat.TellrawJson
 import taboolib.platform.compat.replacePlaceholder
 
@@ -18,10 +19,10 @@ data class TextComponent(
     var type: BuilderFrame.Type = BuilderFrame.Type.CUSTOM
 ) {
 
-    fun build(): TellrawJson {
-        val json = TellrawJson().append(text.toJsonStr())
-        if (hover.isNotEmpty()) json.hoverText(hover.toJsonStr())
-        if (command.isNotEmpty()) json.runCommand(command)
+    fun build(player: Player?): TellrawJson {
+        val json = TellrawJson().append(text(player).toJsonStr())
+        if (hover.isNotEmpty()) json.hoverText(hover(player).toJsonStr())
+        if (command.isNotEmpty()) json.runCommand(command(player))
         return json
     }
 
@@ -31,8 +32,24 @@ data class TextComponent(
         }
     }
 
-    fun text(player: Player): List<String> {
-        return text.replacePlaceholder(player)
+    fun text(player: Player?): MutableList<String> {
+        player?: return text
+        return text.replacePlaceholder(player).toMutableList()
+    }
+
+    fun hover(player: Player?): MutableList<String> {
+        player?: return hover
+        return hover.replacePlaceholder(player).toMutableList()
+    }
+
+    fun condition(player: Player?): MutableList<String> {
+        player?: return condition
+        return condition.replacePlaceholder(player).toMutableList()
+    }
+
+    fun command(player: Player?): String {
+        player?: return command
+        return command.replacePlaceholder(player)
     }
 
 }

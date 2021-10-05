@@ -59,7 +59,7 @@ class BuilderFrame {
                                 } else {
                                     comp.autoCommand(id.split(".")[0])
                                 }
-                                json.append(comp.build())
+                                json.append(comp.build(player))
                                 json.append(it.replace(rep, ""))
                             }
                         }
