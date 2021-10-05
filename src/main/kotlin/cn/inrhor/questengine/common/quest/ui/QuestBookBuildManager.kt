@@ -4,6 +4,7 @@ import cn.inrhor.questengine.api.quest.QuestModule
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.manager.QuestManager
+import cn.inrhor.questengine.utlis.copy
 import cn.inrhor.questengine.utlis.file.releaseFile
 import cn.inrhor.questengine.utlis.ui.BuilderFrame
 import cn.inrhor.questengine.utlis.ui.NoteComponent
@@ -13,9 +14,9 @@ import org.bukkit.entity.Player
 import taboolib.module.chat.TellrawJson
 
 /**
- * 任务手册分类
+ * 任务手册构建工具
  */
-object QuestSortManager {
+object QuestBookBuildManager {
 
     /**
      * 分类界面
@@ -98,22 +99,9 @@ object QuestSortManager {
     private fun setText(player: Player, questID: String, builderFrame: BuilderFrame, textComponent: TextComponent) {
         if (builderFrame.textComponent.containsKey(questID)) return
         val fork = builderFrame.noteComponent["for.fork"]?: return
-        val noteList = mutableListOf<String>()
-        fork.note.forEach {
-            noteList.add(it)
-        }
-        builderFrame.noteComponent[questID] = NoteComponent(noteList)
+        builderFrame.noteComponent[questID] = NoteComponent(fork.note.copy(), fork.condition.copy())
 
-        val c = textComponent.condition
-        for (i in 0 until c.size) {
-            val it = c[i]
-            if (it == "#!quest-accept") {
-                c[i] = "type "+!accept(player, questID)
-            }else if (it == "#quest-accept") {
-                c[i] = "type "+accept(player, questID)
-            }
-        }
-        if (!builderFrame.textCondition(player, c)) return
+        if (!builderFrame.textCondition(player, listReply(player, questID, textComponent.condition))) return
 
         val qModule = QuestManager.getQuestModule(questID)?: return
         val qDesc = "#quest-desc-info"
@@ -127,21 +115,10 @@ object QuestSortManager {
 
         textComponent.command = "/qen handbook info $questID"
 
-        val qName = "#quest-name"
-        val qID = "#quest-id"
         builderFrame.noteComponent.values.forEach {
             if (!it.fork) {
-                val d = it.note
-                for (s in 0 until d.size) {
-                    d[s] = d[s].replace(qName, qModule.name, true)
-                }
-                for (s in 0 until d.size) {
-                    val u = d[s]
-                    if (u.lowercase().contains(qID)) {
-                        d[s] = d[s].replace(qID, questID, true)
-                        break
-                    }
-                }
+                it.note = listReply(player, questID, it.note)
+                it.condition = listReply(player, questID, it.condition)
             }
         }
 
@@ -150,6 +127,26 @@ object QuestSortManager {
 
     private fun accept(player: Player, questID: String): Boolean {
         return QuestManager.existQuestData(player.uniqueId, questID)
+    }
+
+    fun listReply(player: Player, questID: String, list: MutableList<String>): MutableList<String> {
+        for (i in 0 until list.size) {
+            val it = list[i]
+            val qModule = QuestManager.getQuestModule(questID)?: break
+            list[i] = list[i].replace("#quest-name", qModule.name, true)
+            when {
+                it == "#!quest-accept" -> {
+                    list[i] = "type " + !accept(player, questID)
+                }
+                it == "#quest-accept" -> {
+                    list[i] = "type " + accept(player, questID)
+                }
+                list[i].lowercase().contains("#quest-id") -> {
+                    list[i] = list[i].replace("#quest-id", questID, true)
+                }
+            }
+        }
+        return list
     }
 
 }

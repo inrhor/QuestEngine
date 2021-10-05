@@ -10,7 +10,7 @@ import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestState
-import cn.inrhor.questengine.common.quest.ui.QuestSortManager
+import cn.inrhor.questengine.common.quest.ui.QuestBookBuildManager
 import cn.inrhor.questengine.script.kether.eval
 import cn.inrhor.questengine.script.kether.evalBoolean
 import cn.inrhor.questengine.script.kether.evalBooleanSet
@@ -41,7 +41,7 @@ object QuestManager {
         if (questModule.acceptWay.lowercase() == "auto") {
             autoQuestMap[questID] = questModule
         }
-        QuestSortManager.addSortQuest(sort, questModule)
+        QuestBookBuildManager.addSortQuest(sort, questModule)
     }
 
     /**

@@ -1,7 +1,9 @@
 package cn.inrhor.questengine.utlis.ui
 
 import cn.inrhor.questengine.utlis.toJsonStr
+import org.bukkit.entity.Player
 import taboolib.module.chat.TellrawJson
+import taboolib.platform.compat.replacePlaceholder
 
 /**
  * 高度自定义 JSON 内容
@@ -27,6 +29,10 @@ data class TextComponent(
         if (type == BuilderFrame.Type.SORT) {
             command = "/qen handbook sort $arg"
         }
+    }
+
+    fun text(player: Player): List<String> {
+        return text.replacePlaceholder(player)
     }
 
 }

@@ -38,7 +38,7 @@ class BuilderFrame {
      */
     fun build(player: Player? = null): MutableList<TellrawJson> {
         noteComponent.values.forEach { v ->
-            if (!v.fork) {
+            if (!v.fork && textCondition(player, v.condition)) {
                 val note = v.note
                 val json = autoPage(note.size)
                 val sp = (note.toJsonStr()+"\n").split("@")
@@ -100,7 +100,7 @@ class BuilderFrame {
     }
 
     /**
-     * 文字组件所需条件
+     * 组件所需条件
      */
     fun textCondition(player: Player?, conditions: MutableList<String>): Boolean {
         if (player == null) return true
@@ -112,7 +112,10 @@ class BuilderFrame {
     }
 
     fun yamlAddNote(yaml: YamlConfiguration, node: String, fork: Boolean = false) {
-        noteComponent[node] = NoteComponent(yaml.getStringList(node), fork)
+        noteComponent[node] = NoteComponent(
+            yaml.getStringList(node),
+            yaml.getStringList("$node.condition"),
+            fork)
     }
 
     fun sectionAdd(yaml: YamlConfiguration, path: String, type: Type) {

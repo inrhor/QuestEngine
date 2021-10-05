@@ -1,5 +1,5 @@
 head:
-  - "     &7&l< &8&l新手任务列表 &7&l>"
+  - "     &7&l< &8&l任务列表 &7&l>"
   - ""
   - "&8&l&m                       "
 
@@ -7,7 +7,7 @@ for:
   # 内容物
   fork:
     - ""
-    - "&7&l< &8&l#quest-name &7&l>"
+    - "&7&l[ &8&l#quest-name &7&l]"
     - "     @for.noClick@for.click"
   # JSON标签
   noClick:

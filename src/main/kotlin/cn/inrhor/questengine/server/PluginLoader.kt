@@ -7,7 +7,7 @@ import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.common.packet.PacketManager
 import cn.inrhor.questengine.common.quest.QuestFile
 import cn.inrhor.questengine.common.quest.manager.QuestManager
-import cn.inrhor.questengine.common.quest.ui.QuestSortManager
+import cn.inrhor.questengine.common.quest.ui.QuestBookBuildManager
 import cn.inrhor.questengine.utlis.UtilString
 import cn.inrhor.questengine.utlis.file.releaseFile
 import org.bukkit.Bukkit
@@ -49,7 +49,7 @@ object PluginLoader {
                 ItemManager.loadItem()
                 DialogManager.loadDialog()
                 PacketManager.loadPacket()
-                QuestSortManager.init()
+                QuestBookBuildManager.init()
                 QuestFile.loadDialog()
                 releaseFile("team/chat.yml")
             }

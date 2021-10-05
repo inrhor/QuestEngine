@@ -1,0 +1,40 @@
+# 首页顶部内容物
+head:
+  - "&7&l[ &8&l#quest-name &7&l]"
+  - ""
+
+# 已经接受任务时的界面内容物
+# 任务信息手册
+already:
+  desc:
+    note:
+      - "任务状态： %questengine_state_#quest-id%"
+      - ""
+      - "#quest-desc-note"
+      - ""
+  target:
+    note:
+      - "@now_target.click"
+    click:
+      text:
+        - "&7&l[ &3&l查看当前任务目标 &7&l]"
+      hover:
+        - "&7&l[ &a&l点击 &7&l]"
+  inner:
+    note:
+      - "@inner.click"
+    click:
+      text:
+        - "&7&l[ &3&l查看内部任务列表 &7&l]"
+      hover:
+        - "&7&l[ &a&l点击 &7&l]"
+  quit:
+    note:
+      - "@quit.click"
+    condition:
+      - "#!quest-finish"
+    click:
+      text:
+        - "&7&l[ &c&l点击放弃任务 &7&l]"
+        hover:
+          - "&7&l[ &a&l点击 &7&l]"

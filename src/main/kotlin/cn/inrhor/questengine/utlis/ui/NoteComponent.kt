@@ -6,6 +6,7 @@ package cn.inrhor.questengine.utlis.ui
  * 内容物组件
  */
 class NoteComponent(
-    val note: MutableList<String>,
+    var note: MutableList<String>,
+    var condition: MutableList<String>,
     var fork: Boolean = false) {
 }

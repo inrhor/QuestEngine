@@ -59,3 +59,11 @@ fun MutableList<String>.toJsonStr(): String {
     }
     return content.colored()
 }
+
+fun MutableList<String>.copy(): MutableList<String> {
+    val list = mutableListOf<String>()
+    this.forEach {
+        list.add(it)
+    }
+    return list
+}
