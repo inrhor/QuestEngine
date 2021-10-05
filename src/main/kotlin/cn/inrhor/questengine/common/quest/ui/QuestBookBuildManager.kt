@@ -99,7 +99,7 @@ object QuestBookBuildManager {
     private fun setText(player: Player, questID: String, builderFrame: BuilderFrame, textComponent: TextComponent) {
         if (builderFrame.textComponent.containsKey(questID)) return
         val fork = builderFrame.noteComponent["for.fork"]?: return
-        builderFrame.noteComponent[questID] = NoteComponent(fork.note.copy(), fork.condition.copy())
+        builderFrame.noteComponent[questID] = NoteComponent(fork.note.copy(), fork.condition(player).copy())
 
         if (!builderFrame.textCondition(player, listReply(player, questID, textComponent.condition))) return
 
@@ -117,8 +117,8 @@ object QuestBookBuildManager {
 
         builderFrame.noteComponent.values.forEach {
             if (!it.fork) {
-                it.note = listReply(player, questID, it.note)
-                it.condition = listReply(player, questID, it.condition)
+                it.note = listReply(player, questID, it.note(player))
+                it.condition = listReply(player, questID, it.condition(player))
             }
         }
 
