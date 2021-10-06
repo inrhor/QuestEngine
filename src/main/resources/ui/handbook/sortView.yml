@@ -7,19 +7,18 @@ for:
   # 内容物
   fork:
     - ""
-    - "&7&l[ &8&l#quest-name &7&l]"
-    - "     @for.noClick@for.click"
+    - "&7&l< &8&l#quest-name &7&l>"
+    - "     @#quest-id;"
+    - ""
   # JSON标签
   noClick:
-    condition:
-      - "#!quest-accept"
+    condition: []
     text:
       - "&7&l[ &c&l尚未接受 &7&l]"
     hover:
       - "#quest-desc-info"
   click:
-    condition:
-      - "#quest-accept"
+    condition: []
     text:
       - "&7&l[ &6&l点击阅览 &7&l]"
     hover:

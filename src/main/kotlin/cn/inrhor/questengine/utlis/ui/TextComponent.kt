@@ -2,7 +2,6 @@ package cn.inrhor.questengine.utlis.ui
 
 import cn.inrhor.questengine.utlis.toJsonStr
 import org.bukkit.entity.Player
-import taboolib.common.platform.function.info
 import taboolib.module.chat.TellrawJson
 import taboolib.platform.compat.replacePlaceholder
 
