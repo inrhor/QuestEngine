@@ -3,7 +3,6 @@ package cn.inrhor.questengine.utlis.ui
 import cn.inrhor.questengine.script.kether.evalBoolean
 import cn.inrhor.questengine.utlis.toJsonStr
 import org.bukkit.entity.Player
-import taboolib.common.platform.function.info
 import taboolib.library.configuration.YamlConfiguration
 import taboolib.module.chat.TellrawJson
 
@@ -120,9 +119,7 @@ class BuilderFrame {
     }
 
     fun sectionAdd(yaml: YamlConfiguration, path: String, type: Type) {
-        info("path $path")
         yaml.getConfigurationSection(path).getKeys(false).forEach { sign ->
-            info("sign  $path.$sign  s $sign")
             yamlAutoAdd(yaml, type, "$path.$sign", sign)
         }
     }

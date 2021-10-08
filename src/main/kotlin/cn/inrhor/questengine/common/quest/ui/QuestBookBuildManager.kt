@@ -140,11 +140,18 @@ object QuestBookBuildManager {
 
     fun descSet(list: MutableList<String>, sign: String, questID: String): MutableList<String> {
         val qModule = QuestManager.getQuestModule(questID)?: return list
-        if (list.contains("#quest-desc-$sign")) {
-            val desc = qModule.descMap[sign]
-            return desc?: list
+        val s = "#quest-desc-$sign"
+        val desc = mutableListOf<String>()
+        for (i in 0 until list.size) {
+            if (list[i] == s) {
+                qModule.descMap[sign]?.forEach { e ->
+                    desc.add(e)
+                }
+            }else {
+                desc.add(list[i])
+            }
         }
-        return list
+        return desc
     }
 
     private fun accept(player: Player, questID: String): Boolean {

@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.utlis.ui
 
 import org.bukkit.entity.Player
-import taboolib.common.platform.function.info
 import taboolib.platform.compat.replacePlaceholder
 
 /**
