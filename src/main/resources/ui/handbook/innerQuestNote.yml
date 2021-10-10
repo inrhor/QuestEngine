@@ -1,0 +1,13 @@
+# 首页顶部内容物
+head:
+  - "&7&l[ &8&l#innerQuest-name &7&l]"
+  - ""
+
+# 内部任务信息手册
+inner:
+  desc:
+    note:
+      - "任务状态： %questengine_stateInner_#quest-id_#innerQuest-id%"
+      - ""
+      - "#innerQuest-description"
+      - ""

@@ -4,12 +4,7 @@ innerQuestID: "mainQuest1"
 nextInnerQuestID: ""
 
 # 内部任务描述
+# 显示于内部任务信息任务手册
 description:
-  - ""
-  - "&8&l[ &3&lQuestEngine &8&l]"
-  - ""
   - "&a这是一个关于农业的任务主线之一"
   - "&r   收集家"
-  - ""
-  - "     &r&l状态 &7%state%"
-  - ""
