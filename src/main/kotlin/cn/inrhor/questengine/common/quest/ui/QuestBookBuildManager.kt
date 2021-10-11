@@ -2,17 +2,21 @@ package cn.inrhor.questengine.common.quest.ui
 
 import cn.inrhor.questengine.api.quest.QuestModule
 import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.utlis.copy
 import cn.inrhor.questengine.utlis.file.releaseFile
+import cn.inrhor.questengine.utlis.time.TimeUtil
 import cn.inrhor.questengine.utlis.ui.BuilderFrame
 import cn.inrhor.questengine.utlis.ui.NoteComponent
 import cn.inrhor.questengine.utlis.ui.TextComponent
 import cn.inrhor.questengine.utlis.ui.buildFrame
 import org.bukkit.entity.Player
+import taboolib.common.util.replaceWithOrder
 import taboolib.module.chat.TellrawJson
+import java.util.*
 
 /**
  * 任务手册构建工具
@@ -136,14 +140,33 @@ object QuestBookBuildManager {
         return ui.build(player)
     }
 
-    fun targetNoteBuild(player: Player, target: QuestTarget) {
-        val yaml = target.yaml
-        val targetUI = buildFrame {
-            // 有问题，这个还得判断一下父节点的
-//            sectionAdd(yaml, "ui", BuilderFrame.Type.CUSTOM)
-//            yamlAddNote(yaml, "description")
+    private fun targetNodeBuild(player: Player, questUUID: UUID, innerID: String): MutableList<TellrawJson> {
+        val list = mutableListOf<TellrawJson>()
+        val innerData = QuestManager.getInnerQuestData(player, questUUID, innerID)?: return list
+        innerData.targetsData.values.forEach {
+            allTargetNoteBuild(player, innerData, it.questTarget).forEach { t ->
+                list.add(t)
+            }
         }
-        targetUI.build(player)
+        return list
+    }
+
+    private fun allTargetNoteBuild(player: Player, innerData: QuestInnerData, target: QuestTarget): MutableList<TellrawJson> {
+        val tData = innerData.targetsData[target.name]?: return mutableListOf()
+        var time = "null"
+        val endDate = tData.endTimeDate
+        if (endDate != null) {
+            time = TimeUtil.remainDate(player, innerData.state, endDate)
+        }
+        val targetUI = buildFrame() {
+            noteComponent = target.noteMap.toMutableMap()
+            noteComponent.values.forEach {
+                it.note.forEach { s ->
+                    s.replaceWithOrder(time, tData.schedule)
+                }
+            }
+        }
+        return targetUI.build(player)
     }
 
     private fun setText(player: Player, questID: String, builderFrame: BuilderFrame, textComponent: TextComponent) {

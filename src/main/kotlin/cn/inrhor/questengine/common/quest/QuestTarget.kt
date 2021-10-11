@@ -1,14 +1,14 @@
 package cn.inrhor.questengine.common.quest
 
-import taboolib.library.configuration.YamlConfiguration
+import cn.inrhor.questengine.utlis.ui.NoteComponent
 
 class QuestTarget(val name: String, var time: String, val reward: String,
                   var period: Int, var async: Boolean, var conditions: MutableList<String>,
                   val condition: MutableMap<String, String>, val conditionList: MutableMap<String, MutableList<String>>,
-                  var yaml: YamlConfiguration
+                  val noteMap: MutableMap<String, NoteComponent>
 ) {
     constructor(name: String, time: String, reward: String,
                 period: Int, async: Boolean, conditions: MutableList<String>,
-                condition: MutableMap<String, String>, yaml: YamlConfiguration):
-            this(name, time, reward, period, async, conditions, condition, mutableMapOf(), yaml)
+                condition: MutableMap<String, String>, noteMap: MutableMap<String, NoteComponent>):
+            this(name, time, reward, period, async, conditions, condition, mutableMapOf(), noteMap)
 }

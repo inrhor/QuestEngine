@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.common.quest.ui.book
 
-import cn.inrhor.questengine.common.quest.ui.PublicJson
 import org.bukkit.entity.Player
 import taboolib.platform.util.sendBook
 import java.util.*
@@ -13,9 +12,9 @@ object BookQuestInfo {
     fun open(player: Player, questUUID: UUID) {
 
         player.sendBook {
-            PublicJson.questInfo(player, questUUID).forEach {
+            /*PublicJson.questInfo(player, questUUID).forEach {
                 write(it)
-            }
+            }*/
         }
 
     }
