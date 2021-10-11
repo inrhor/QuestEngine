@@ -34,9 +34,14 @@ object QuestBookBuildManager {
     val sortQuest = mutableMapOf<String, MutableSet<QuestModule>>()
 
     /**
-     * 分类中任务列表
+     * 任务信息手册
      */
     val questNoteUI = buildFrame()
+
+    /**
+     * 内部任务信息手册
+     */
+    val innerQuestNoteUI = buildFrame()
 
     fun addSortQuest(sort: String, questModule: QuestModule) {
         if (sortQuest.containsKey(sort)) {
@@ -63,9 +68,12 @@ object QuestBookBuildManager {
         sortViewUI.yamlAddNote(sortView, "head")
         sortViewUI.yamlAutoAdd(sortView, BuilderFrame.Type.CUSTOM, "for")
 
-        val questNote = releaseFile("ui/handbook/questNote.yml", false)
-        questNoteUI.yamlAddNote(questNote, "head")
-        questNoteUI.sectionAdd(questNote, "already", BuilderFrame.Type.CUSTOM)
+        val qNoteYaml = releaseFile("ui/handbook/questNote.yml", false)
+        questNoteUI.yamlAddNote(qNoteYaml, "head")
+        questNoteUI.sectionAdd(qNoteYaml, "already", BuilderFrame.Type.CUSTOM)
+
+        val iNoteYaml = releaseFile("ui/handbook/innerQuestNote.yml", false)
+        innerQuestNoteUI.sectionAdd(iNoteYaml, "inner", BuilderFrame.Type.CUSTOM)
     }
 
     private fun getTextComp(id: String): TextComponent? {
@@ -117,6 +125,16 @@ object QuestBookBuildManager {
         return ui.build(player)
     }
 
+    fun innerQuestNoteBuild(player: Player, questID: String, innerID: String): MutableList<TellrawJson> {
+        val ui = innerQuestNoteUI.copy()
+        ui.noteComponent.values.forEach {
+            it.note = listReply(player, questID, it.note, innerID)
+            it.note = descSet(it.note, "", questID, innerID)
+            it.condition = listReply(player, questID, it.condition, innerID)
+        }
+        return ui.build(player)
+    }
+
     private fun setText(player: Player, questID: String, builderFrame: BuilderFrame, textComponent: TextComponent) {
         if (builderFrame.textComponent.containsKey(questID)) return
         val fork = builderFrame.noteComponent["for.fork"]?: return
@@ -138,13 +156,12 @@ object QuestBookBuildManager {
         builderFrame.textComponent[questID] = textComponent
     }
 
-    fun descSet(list: MutableList<String>, sign: String, questID: String): MutableList<String> {
-        val qModule = QuestManager.getQuestModule(questID)?: return list
-        val s = "#quest-desc-$sign"
+    fun descSet(list: MutableList<String>, sign: String, questID: String, innerID: String = ""): MutableList<String> {
         val desc = mutableListOf<String>()
+
         for (i in 0 until list.size) {
-            if (list[i] == s) {
-                qModule.descMap[sign]?.forEach { e ->
+            if ((sign.isNotEmpty() && list[i] == "#quest-desc-$sign") || list[i] == "#innerQuest-description") {
+                getDescMap(questID, innerID, sign)?.forEach { e ->
                     desc.add(e)
                 }
             }else {
@@ -152,6 +169,15 @@ object QuestBookBuildManager {
             }
         }
         return desc
+    }
+
+    private fun getDescMap(questID: String, innerID: String, sign: String): MutableList<String>? {
+        if (innerID.isNotEmpty()) {
+            val innerModule = QuestManager.getInnerQuestModule(questID, innerID)?: return null
+            return innerModule.description
+        }
+        val qModule = QuestManager.getQuestModule(questID)?: return null
+        return qModule.descMap[sign]
     }
 
     private fun accept(player: Player, questID: String): Boolean {
@@ -163,7 +189,7 @@ object QuestBookBuildManager {
         return qData.state == QuestState.FINISH
     }
 
-    fun listReply(player: Player, questID: String, list: MutableList<String>): MutableList<String> {
+    fun listReply(player: Player, questID: String, list: MutableList<String>, innerID: String = ""): MutableList<String> {
         for (i in 0 until list.size) {
             val it = list[i]
             val qModule = QuestManager.getQuestModule(questID)?: break
@@ -183,6 +209,9 @@ object QuestBookBuildManager {
                 }
                 list[i].lowercase().contains("#quest-id") -> {
                     list[i] = list[i].replace("#quest-id", questID, true)
+                }
+                list[i].lowercase().contains("#innerquest-id") -> {
+                    list[i] = list[i].replace("#innerquest-id", innerID, true)
                 }
             }
         }
