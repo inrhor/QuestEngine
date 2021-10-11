@@ -118,12 +118,18 @@ class BuilderFrame {
             fork)
     }
 
+    /**
+     * 遍历添加组件
+     */
     fun sectionAdd(yaml: YamlConfiguration, path: String, type: Type) {
         yaml.getConfigurationSection(path).getKeys(false).forEach { sign ->
             yamlAutoAdd(yaml, type, "$path.$sign", sign)
         }
     }
 
+    /**
+     * 自动分配组件
+     */
     fun yamlAutoAdd(yaml: YamlConfiguration, type: Type, path: String, child: String = path) {
         yaml.getConfigurationSection(path).getKeys(false).forEach { sign ->
             val node = "$path.$sign"

@@ -4,11 +4,13 @@ target:
     block: stone 10
     time: minute 5
     reward: all false
-    description:
-      - "&r挖掘石块 &a3 &r个"
-      - "    &r进度 &8%schedule%"
-      - "    &r剩余时间 &8%time%"
-      - ""
+    ui:
+      desc:
+        note:
+          - "&r挖掘石块 &a3 &r个"
+          - "    &r进度 &8(0)"
+          - "    &r剩余时间 &8(1)"
+          - ""
   3:
     name: player death
     cause:
@@ -19,5 +21,5 @@ target:
     reward: 2 true
     description:
       - "&r体验舒适的天堂"
-      - "    &r进度 &8%schedule%"
+      - "    &r进度 &8(0)"
       - ""

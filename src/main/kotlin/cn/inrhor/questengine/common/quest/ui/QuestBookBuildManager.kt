@@ -3,6 +3,7 @@ package cn.inrhor.questengine.common.quest.ui
 import cn.inrhor.questengine.api.quest.QuestModule
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.quest.QuestState
+import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.utlis.copy
 import cn.inrhor.questengine.utlis.file.releaseFile
@@ -133,6 +134,16 @@ object QuestBookBuildManager {
             it.condition = listReply(player, questID, it.condition, innerID)
         }
         return ui.build(player)
+    }
+
+    fun targetNoteBuild(player: Player, target: QuestTarget) {
+        val yaml = target.yaml
+        val targetUI = buildFrame {
+            // 有问题，这个还得判断一下父节点的
+//            sectionAdd(yaml, "ui", BuilderFrame.Type.CUSTOM)
+//            yamlAddNote(yaml, "description")
+        }
+        targetUI.build(player)
     }
 
     private fun setText(player: Player, questID: String, builderFrame: BuilderFrame, textComponent: TextComponent) {
