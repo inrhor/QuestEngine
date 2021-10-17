@@ -140,7 +140,7 @@ object QuestBookBuildManager {
         return ui.build(player)
     }
 
-    private fun targetNodeBuild(player: Player, questUUID: UUID, innerID: String): MutableList<TellrawJson> {
+    fun targetNodeBuild(player: Player, questUUID: UUID, innerID: String): MutableList<TellrawJson> {
         val list = mutableListOf<TellrawJson>()
         val innerData = QuestManager.getInnerQuestData(player, questUUID, innerID)?: return list
         innerData.targetsData.values.forEach {
