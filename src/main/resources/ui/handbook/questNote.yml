@@ -29,7 +29,7 @@ already:
         - "&7&l[ &3&l查看内部任务列表 &7&l]"
       hover:
         - "&7&l[ &a&l点击 &7&l]"
-      command: "/qen handbook inner #quest-id"
+      command: "/qen handbook innerList #quest-uuid"
   quit:
     note:
       - "@quit.click;"

@@ -15,6 +15,9 @@ object HandbookCommand {
     val info = HandbookInfo.info
 
     @CommandBody
+    val innerList = HandbookInnerList.innerList
+
+    @CommandBody
     val inner = HandbookInner.inner
 
     @CommandBody
