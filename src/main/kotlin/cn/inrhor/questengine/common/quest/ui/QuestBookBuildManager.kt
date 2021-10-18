@@ -6,6 +6,8 @@ import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.common.quest.manager.QuestManager
+import cn.inrhor.questengine.common.quest.toStr
+import cn.inrhor.questengine.common.quest.toUnit
 import cn.inrhor.questengine.utlis.copy
 import cn.inrhor.questengine.utlis.file.releaseFile
 import cn.inrhor.questengine.utlis.time.TimeUtil
@@ -149,10 +151,12 @@ object QuestBookBuildManager {
         val fork = builderFrame.noteComponent["for.fork"]?: return
         builderFrame.noteComponent[innerID] = NoteComponent(fork.note.copy(), fork.condition(player).copy())
         builderFrame.noteComponent.values.forEach {
-            it.note.forEach { s -> // {0} innerName
+            it.note.forEach { s -> // (0) innerName
                 s.replaceWithOrder(innerModule.innerQuestName)
             }
         }
+        textComponent.command = "/qen handbook "
+        builderFrame.textComponent[innerID] = textComponent
     }
 
     fun questNoteBuild(player: Player, questID: String, questUUID: String): MutableList<TellrawJson> {
@@ -167,12 +171,16 @@ object QuestBookBuildManager {
         return ui.build(player)
     }
 
-    fun innerQuestNoteBuild(player: Player, questID: String, innerID: String): MutableList<TellrawJson> {
+    fun innerQuestNoteBuild(player: Player, questUUID: UUID, innerID: String): MutableList<TellrawJson> {
         val ui = innerQuestNoteUI.copy()
+        val innerData = QuestManager.getInnerQuestData(player, questUUID, innerID)?: return mutableListOf()
+        val questID = innerData.innerQuestID
+        val innerModule = QuestManager.getInnerQuestModule(questID, innerID)?: return mutableListOf()
         ui.noteComponent.values.forEach {
-            it.note = listReply(player, questID, it.note, innerID)
+            it.note.forEach { s ->
+                s.replaceWithOrder(innerModule.innerQuestName, innerData.state.toUnit(player))
+            }
             it.note = descSet(it.note, "", questID, innerID)
-            it.condition = listReply(player, questID, it.condition, innerID)
         }
         return ui.build(player)
     }
@@ -260,11 +268,20 @@ object QuestBookBuildManager {
         return qData.state == QuestState.FINISH
     }
 
-    fun listReply(player: Player, questID: String, list: MutableList<String>, innerID: String = ""): MutableList<String> {
+    fun listReply(player: Player, questID: String, list: MutableList<String>): MutableList<String> {
         for (i in 0 until list.size) {
-            val it = list[i]
             val qModule = QuestManager.getQuestModule(questID)?: break
-            list[i] = list[i].replace("#quest-name", qModule.name, true)
+            list.forEach {
+                it.replaceWithOrder(
+                    qModule.name, // (0)
+                    "type " + !accept(player, questID), // 1
+                    "type " + accept(player, questID),
+                    "type " + !finish(player, questID),
+                    "type " + finish(player, questID),
+                    questID
+                )
+            }
+            /*list[i] = list[i].replace("#quest-name", qModule.name, true)
             when {
                 it == "#!quest-accept" -> {
                     list[i] = "type " + !accept(player, questID)
@@ -284,7 +301,7 @@ object QuestBookBuildManager {
                 list[i].lowercase().contains("#innerquest-id") -> {
                     list[i] = list[i].replace("#innerquest-id", innerID, true)
                 }
-            }
+            }*/
         }
         return list
     }

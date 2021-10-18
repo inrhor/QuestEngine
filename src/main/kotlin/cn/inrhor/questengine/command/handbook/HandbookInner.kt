@@ -7,22 +7,25 @@ import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyPlayer
 import taboolib.common.platform.command.*
 import taboolib.platform.util.sendBook
+import java.util.*
 
 object HandbookInner {
 
     val inner = subCommand {
         dynamic {
-            suggestion<ProxyPlayer> { sender, _ ->
-                DataStorage.getPlayerData(sender.uniqueId).questDataList.values.map { it.questID }
+            suggestion<ProxyPlayer> { sender, _ -> // questUUID
+                DataStorage.getPlayerData(sender.uniqueId).questDataList.values.map { it.questUUID.toString() }
             }
             dynamic {
                 suggestion<ProxyPlayer> { sender, context ->
-                    listOf(QuestManager.getQuestData(sender.uniqueId, context.argument(-1)!!)!!.questInnerData.innerQuestID)
+                    listOf(QuestManager.getQuestData(sender.cast(), UUID.fromString(context.argument(-1)!!))!!.questInnerData.innerQuestID)
                 }
-                execute<ProxyPlayer> { sender, context, _ ->
+                execute<ProxyPlayer> { sender, context, _ -> // innerID
                     val p = sender.cast<Player>()
                     p.sendBook {
-                        QuestBookBuildManager.innerQuestNoteBuild(p, context.argument(-1)!!, context.argument(0)!!).forEach {
+                        QuestBookBuildManager.innerQuestNoteBuild(p,
+                            UUID.fromString(context.argument(-1)!!),
+                            context.argument(0)!!).forEach {
                             write(it)
                         }
                     }

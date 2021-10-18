@@ -2,7 +2,7 @@
 inner:
   desc:
     note:
-      - "任务状态： %questengine_stateInner_#quest-id_#innerQuest-id%"
+      - "任务状态： (1)"
       - ""
       - "#innerQuest-description"
       - ""
