@@ -474,6 +474,7 @@ object QuestManager {
         val questInnerModule = getInnerQuestModule(questID, innerQuestID) ?: return
         val nextInnerID = questInnerModule.nextInnerQuestID
         if (nextInnerID == "") {
+            questData.finishedList.add(innerQuestID)
             questData.state = QuestState.FINISH
             val questModule = getQuestModule(questID)?: return
             if (questModule.modeType == ModeType.COLLABORATION) {
@@ -482,6 +483,7 @@ object QuestManager {
                     val m = Bukkit.getPlayer(it)?: return@forEach
                     val mQuestData = getQuestData(m, questUUID)?: return@forEach
                     mQuestData.state = QuestState.FINISH
+                    mQuestData.finishedList.add(innerQuestID)
                 }
             }
         }else {

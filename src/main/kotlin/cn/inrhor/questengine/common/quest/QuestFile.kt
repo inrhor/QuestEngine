@@ -88,6 +88,7 @@ object QuestFile {
         val optionFile = file(innerFile, "option.yml")
         val option = yaml(optionFile)
         val innerQuestID = option.getString("innerQuestID")?: return null
+        val innerQuestName = option.getString("innerQuestName")?: "无名内部任务"
         val nextInnerQuestID = option.getString("nextInnerQuestID")?: ""
 
         val description = option.getStringList("description")
@@ -102,7 +103,8 @@ object QuestFile {
         val target = yaml(targetFile)
         val questTarget = TargetManager.getTargetList(target)
 
-        return QuestInnerModule(innerQuestID, nextInnerQuestID, questControls, questReward, questTarget, description)
+        return QuestInnerModule(innerQuestID, innerQuestName, nextInnerQuestID,
+            questControls, questReward, questTarget, description)
     }
 
     private fun file(file: File, path: String): File {
