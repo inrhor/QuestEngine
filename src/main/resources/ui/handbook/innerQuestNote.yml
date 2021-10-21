@@ -2,7 +2,7 @@
 inner:
   desc:
     note:
-      - "任务状态： (1)"
+      - "任务状态： {1}"
       - ""
       - "#innerQuest-description"
       - ""

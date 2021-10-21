@@ -111,7 +111,7 @@ object QuestFile {
         return File(file.path + File.separator + path)
     }
 
-    private fun yaml(file: File): FileConfiguration {
+    private fun yaml(file: File): YamlConfiguration {
         return YamlConfiguration.loadConfiguration(file)
     }
 

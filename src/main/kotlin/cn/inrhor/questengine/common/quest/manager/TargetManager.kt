@@ -6,9 +6,12 @@ import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestTarget
+import cn.inrhor.questengine.utlis.ui.BuilderFrame
+import cn.inrhor.questengine.utlis.ui.NoteComponent
+import cn.inrhor.questengine.utlis.ui.buildFrame
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import taboolib.library.configuration.FileConfiguration
+import taboolib.library.configuration.YamlConfiguration
 
 object TargetManager {
 
@@ -29,7 +32,7 @@ object TargetManager {
         targetMap["$name-$meta"] = conditionType
     }
 
-    fun getTargetList(yaml: FileConfiguration): MutableMap<String, QuestTarget> {
+    fun getTargetList(yaml: YamlConfiguration): MutableMap<String, QuestTarget> {
         val questTargetList = mutableMapOf<String, QuestTarget>()
         for (i in yaml.getConfigurationSection("target").getKeys(false)) {
             val s = "target.$i."
@@ -39,18 +42,30 @@ object TargetManager {
             val condition = mutableMapOf<String, String>()
             val conditionList = mutableMapOf<String, MutableList<String>>()
 
+            val ui = buildFrame()
+
             targetMap.forEach { (eventNameMeta, conditionType) ->
                 val eventName = eventNameMeta.split("-")[0]
                 if (eventName == name) {
-                    for (node in yaml.getConfigurationSection("target.$i").getKeys(true)) {
-                        val u = "target.$i.$node"
-                        if (conditionType.content != "") {
-                            if (conditionType.content == node) {
-                                condition[node] = yaml.getString(u)!!
+                    val path = "target.$i"
+                    for (node in yaml.getConfigurationSection(path).getKeys(true)) {
+                        val u = "$path.$node"
+                        if (node == "ui" || node == "description") {
+                            if (node == "description") {
+                                val note = NoteComponent(yaml.getStringList("$u.description"))
+                                ui.noteComponent[u] = note
+                            }else {
+                                ui.sectionAdd(yaml, u, BuilderFrame.Type.CUSTOM)
                             }
-                        } else {
-                            if (conditionType.contentList.contains(node)) {
-                                conditionList[node] = yaml.getStringList(u)
+                        }else {
+                            if (conditionType.content != "") {
+                                if (conditionType.content == node) {
+                                    condition[node] = yaml.getString(u)!!
+                                }
+                            } else {
+                                if (conditionType.contentList.contains(node)) {
+                                    conditionList[node] = yaml.getStringList(u)
+                                }
                             }
                         }
                     }
@@ -61,7 +76,7 @@ object TargetManager {
             val async = yaml.getBoolean(s+"async")
             val conditions = yaml.getStringList(s+"conditions")
             val target = QuestTarget(name, time, reward, period, async, conditions,
-                condition, conditionList, description)
+                condition, conditionList, ui)
             questTargetList[name] = target
         }
         return questTargetList

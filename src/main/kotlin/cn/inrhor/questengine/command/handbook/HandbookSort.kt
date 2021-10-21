@@ -13,10 +13,11 @@ object HandbookSort {
             suggestion<ProxyPlayer> { _, _ ->
                 QuestBookBuildManager.sortQuest.map { it.key }
             }
-            execute<ProxyPlayer> { sender, context, _ ->
+            execute<ProxyPlayer> { sender, _, argument ->
+                val args = argument.split(" ")
                 val p = sender.cast<Player>()
                 p.sendBook {
-                    QuestBookBuildManager.questSortBuild(p, context.argument(0)!!).forEach {
+                    QuestBookBuildManager.questSortBuild(p, args[0]).forEach {
                         write(it)
                     }
                 }

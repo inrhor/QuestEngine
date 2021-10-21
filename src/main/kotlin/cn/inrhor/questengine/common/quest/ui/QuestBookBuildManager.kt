@@ -97,7 +97,7 @@ object QuestBookBuildManager {
     }
 
     /**
-     * 为用户编译任务手册的任务分类信息
+     * 为用户编译任务手册的任务信息
      */
     fun questSortBuild(player: Player, sort: String): MutableList<TellrawJson> {
         val pData = DataStorage.getPlayerData(player)
@@ -105,6 +105,7 @@ object QuestBookBuildManager {
         val hasDisplay = mutableSetOf<String>()
         val sortView = sortViewQuestUI.copy()
         val textCompNo = getTextComp("for.noClick")?: return mutableListOf()
+        textCompNo.command = ""
         val textCompClick = getTextComp("for.click")?: return mutableListOf()
         sortView.textComponent.clear()
 
@@ -123,9 +124,7 @@ object QuestBookBuildManager {
             val id = it.questID
             if (!hasDisplay.contains(id)) {
                 val noText = textCompNo.copy()
-                val clickText = textCompClick.copy()
                 setText(player, id,  "", sortView, noText)
-                setText(player, id, "", sortView, clickText)
             }
         }
 
@@ -166,7 +165,7 @@ object QuestBookBuildManager {
             it.condition = listReply(player, questID, questUUID, it.condition)
         }
         ui.textComponent.values.forEach {
-            it.command = it.command.replace("#quest-uuid", questUUID, true)
+            it.command = it.command.replace("{2}", questUUID, true)
         }
         return ui.build(player)
     }
@@ -203,21 +202,21 @@ object QuestBookBuildManager {
         if (endDate != null) {
             time = TimeUtil.remainDate(player, innerData.state, endDate)
         }
-        val targetUI = buildFrame() {
-            noteComponent = target.noteMap.toMutableMap()
-            noteComponent.values.forEach {
-                it.note.forEach { s ->
-                    s.replaceWithOrder(time, tData.schedule)
-                }
+        val targetUI = target.ui.copy()
+        targetUI.noteComponent.values.forEach {
+            it.note.forEach { s ->
+                s.replaceWithOrder(time, tData.schedule)
             }
         }
         return targetUI.build(player)
     }
 
     private fun setText(player: Player, questID: String, questUUID: String, builderFrame: BuilderFrame, textComponent: TextComponent) {
-        if (builderFrame.textComponent.containsKey(questID)) return
+        if (builderFrame.textComponent.containsKey(questUUID)) return
         val fork = builderFrame.noteComponent["for.fork"]?: return
-        builderFrame.noteComponent[questID] = NoteComponent(fork.note.copy(), fork.condition(player).copy())
+        val id = if (questUUID.isEmpty()) questID else questUUID
+
+        builderFrame.noteComponent[id] = NoteComponent(fork.note.copy(), fork.condition(player).copy())
 
         if (!builderFrame.textCondition(player, listReply(player, questID, questUUID, textComponent.condition))) return
 
@@ -232,7 +231,7 @@ object QuestBookBuildManager {
             }
         }
 
-        builderFrame.textComponent[questID] = textComponent
+        builderFrame.textComponent[id] = textComponent
     }
 
     fun descSet(list: MutableList<String>, sign: String, questID: String, innerID: String = ""): MutableList<String> {
@@ -271,19 +270,16 @@ object QuestBookBuildManager {
     fun listReply(player: Player, questID: String, questUUID: String, list: MutableList<String>): MutableList<String> {
         for (i in 0 until list.size) {
             val qModule = QuestManager.getQuestModule(questID)?: break
-            val qData = QuestManager.getQuestData(player, UUID.fromString(questUUID))
-            list.forEach {
-                it.replaceWithOrder(
-                    qModule.name, // (0)
-                    questID, // (1)
-                    questUUID,
-                    qData?.state?.toStr() ?: QuestState.NOT_ACCEPT.toStr(),
-                    "type " + !accept(player, questID), // (4)
-                    "type " + accept(player, questID),
-                    "type " + !finish(player, questID),
-                    "type " + finish(player, questID)
-                )
-            }
+            list[i] = list[i].replaceWithOrder(
+                qModule.name, // {0}
+                questID, // {1}
+                if (questUUID.isEmpty()) questID else questUUID,
+                if (questUUID.isNotEmpty()) QuestManager.getQuestData(player, UUID.fromString(questUUID))?.state?.toStr() ?: QuestState.NOT_ACCEPT.toStr() else QuestState.NOT_ACCEPT.toStr(),
+                "type " + !accept(player, questID), // {4}
+                "type " + accept(player, questID),
+                "type " + !finish(player, questID),
+                "type " + finish(player, questID)
+            )
             /*list[i] = list[i].replace("#quest-name", qModule.name, true)
             when {
                 it == "#!quest-accept" -> {

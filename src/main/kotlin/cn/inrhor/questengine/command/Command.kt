@@ -6,6 +6,9 @@ import taboolib.common.platform.command.*
 @CommandHeader("questengine", ["qen"])
 internal object Command {
 
+    @CommandBody(permission = "QuestEngine.use.handbook")
+    val handbook = HandbookCommand
+
     @CommandBody(permission = "QuestEngine.admin.quest")
     val quest = QuestCommand
 

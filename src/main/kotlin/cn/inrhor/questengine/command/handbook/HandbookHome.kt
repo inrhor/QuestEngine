@@ -9,13 +9,11 @@ import taboolib.platform.util.sendBook
 object HandbookHome {
 
     val home = subCommand {
-        dynamic {
-            execute<ProxyPlayer> { sender, context, _ ->
-                val p = sender.cast<Player>()
-                p.sendBook {
-                    QuestBookBuildManager.sortHomeUI.forEach {
-                        write(it)
-                    }
+        execute<ProxyPlayer> { sender, _, _ ->
+            val p = sender.cast<Player>()
+            p.sendBook {
+                QuestBookBuildManager.sortHomeUI.forEach {
+                    write(it)
                 }
             }
         }
