@@ -592,17 +592,14 @@ object QuestManager {
         return null
     }
 
-    /**
-     * 放弃和清空任务数据
-     */
-    fun quitQuest(player: Player, questID: String) {
+    fun quitQuest(player: Player, questUUID: UUID) {
         val uuid = player.uniqueId
-        val questData = getQuestData(uuid, questID)?: return run {
-            player.sendLang("QUEST-NULL_QUEST_DATA", questID) }
-        val questModule = getQuestModule(questID)?: return
-        val questUUID = questData.questUUID
+        val questData = getQuestData(player, questUUID)?: return run {
+            player.sendLang("QUEST-NULL_QUEST_DATA", questUUID) }
         val pData = DataStorage.getPlayerData(uuid)
         val questList = pData.questDataList
+        val questID = questData.questID
+        val questModule = getQuestModule(questID)?: return
         if (questModule.modeType == ModeType.COLLABORATION) {
             val tData = questData.teamData?: run { questList.remove(questUUID); return }
             tData.members.forEach {
@@ -619,6 +616,16 @@ object QuestManager {
         }
         databaseRemove(player, questUUID, questData, pData.controlData)
         questList.remove(questUUID)
+    }
+
+    /**
+     * 放弃和清空任务数据
+     */
+    fun quitQuest(player: Player, questID: String) {
+        val uuid = player.uniqueId
+        val questData = getQuestData(uuid, questID)?: return run {
+            player.sendLang("QUEST-NULL_QUEST_DATA", questID) }
+        quitQuest(player, questData.questUUID)
     }
 
     private fun databaseRemove(player: Player,

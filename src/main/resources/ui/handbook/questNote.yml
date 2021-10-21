@@ -8,7 +8,7 @@ head:
 already:
   desc:
     note:
-      - "任务状态： %questengine_state_#quest-id%"
+      - "任务状态： (3)"
       - ""
       - "#quest-desc-note"
       - ""
@@ -20,7 +20,7 @@ already:
         - "&7&l[ &3&l查看当前任务目标 &7&l]"
       hover:
         - "&7&l[ &a&l点击 &7&l]"
-      command: "/qen handbook target #quest-uuid"
+      command: "/qen handbook target (2)"
   inner:
     note:
       - "@inner.click;"
@@ -29,15 +29,15 @@ already:
         - "&7&l[ &3&l查看内部任务列表 &7&l]"
       hover:
         - "&7&l[ &a&l点击 &7&l]"
-      command: "/qen handbook innerList #quest-uuid"
+      command: "/qen handbook innerList (2)"
   quit:
     note:
       - "@quit.click;"
     condition:
-      - "#!quest-finish"
+      - "(6)"
     click:
       text:
         - "&7&l[ &c&l点击放弃任务 &7&l]"
       hover:
         - "&7&l[ &a&l点击 &7&l]"
-      command: "/qen quest quit #quest-id"
+      command: "/qen quest quit uuid (6)"

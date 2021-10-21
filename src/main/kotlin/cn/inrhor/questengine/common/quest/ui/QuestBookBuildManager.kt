@@ -162,8 +162,8 @@ object QuestBookBuildManager {
     fun questNoteBuild(player: Player, questID: String, questUUID: String): MutableList<TellrawJson> {
         val ui = questNoteUI.copy()
         ui.noteComponent.values.forEach {
-            it.note = listReply(player, questID, it.note)
-            it.condition = listReply(player, questID, it.condition)
+            it.note = listReply(player, questID, questUUID, it.note)
+            it.condition = listReply(player, questID, questUUID, it.condition)
         }
         ui.textComponent.values.forEach {
             it.command = it.command.replace("#quest-uuid", questUUID, true)
@@ -219,7 +219,7 @@ object QuestBookBuildManager {
         val fork = builderFrame.noteComponent["for.fork"]?: return
         builderFrame.noteComponent[questID] = NoteComponent(fork.note.copy(), fork.condition(player).copy())
 
-        if (!builderFrame.textCondition(player, listReply(player, questID, textComponent.condition))) return
+        if (!builderFrame.textCondition(player, listReply(player, questID, questUUID, textComponent.condition))) return
 
         textComponent.hover = descSet(textComponent.hover, "info", questID)
 
@@ -227,8 +227,8 @@ object QuestBookBuildManager {
 
         builderFrame.noteComponent.values.forEach {
             if (!it.fork) {
-                it.note = listReply(player, questID, it.note(player))
-                it.condition = listReply(player, questID, it.condition(player))
+                it.note = listReply(player, questID, questUUID, it.note(player))
+                it.condition = listReply(player, questID, questUUID, it.condition(player))
             }
         }
 
@@ -268,17 +268,20 @@ object QuestBookBuildManager {
         return qData.state == QuestState.FINISH
     }
 
-    fun listReply(player: Player, questID: String, list: MutableList<String>): MutableList<String> {
+    fun listReply(player: Player, questID: String, questUUID: String, list: MutableList<String>): MutableList<String> {
         for (i in 0 until list.size) {
             val qModule = QuestManager.getQuestModule(questID)?: break
+            val qData = QuestManager.getQuestData(player, UUID.fromString(questUUID))
             list.forEach {
                 it.replaceWithOrder(
                     qModule.name, // (0)
-                    "type " + !accept(player, questID), // 1
+                    questID, // (1)
+                    questUUID,
+                    qData?.state?.toStr() ?: QuestState.NOT_ACCEPT.toStr(),
+                    "type " + !accept(player, questID), // (4)
                     "type " + accept(player, questID),
                     "type " + !finish(player, questID),
-                    "type " + finish(player, questID),
-                    questID
+                    "type " + finish(player, questID)
                 )
             }
             /*list[i] = list[i].replace("#quest-name", qModule.name, true)

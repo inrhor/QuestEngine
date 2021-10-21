@@ -22,16 +22,21 @@ internal object QuestQuit {
                         DataStorage.getPlayerData(p).questDataList.values.map { it.questID }
                     }
                 }
-                execute<ProxyCommandSender> { sender, context, argument ->
-                    val args = argument.split(" ")
-
-                    val player = Bukkit.getPlayer(context.argument(-1)!!) ?: return@execute run {
-                        sender.sendLang("PLAYER_NOT_ONLINE")
+                dynamic {
+                    suggestion<ProxyCommandSender> { _, _ ->
+                        listOf("id", "uuid")
                     }
+                    execute<ProxyCommandSender> { sender, context, argument ->
+                        val args = argument.split(" ")
 
-                    val questID = args[0]
+                        val player = Bukkit.getPlayer(context.argument(-2)!!) ?: return@execute run {
+                            sender.sendLang("PLAYER_NOT_ONLINE")
+                        }
 
-                    QuestManager.quitQuest(player, questID)
+                        val questID = args[0]
+
+                        QuestManager.quitQuest(player, questID)
+                    }
                 }
             }
         }
