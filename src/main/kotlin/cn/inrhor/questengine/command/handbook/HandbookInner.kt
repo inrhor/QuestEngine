@@ -18,14 +18,14 @@ object HandbookInner {
             }
             dynamic {
                 suggestion<ProxyPlayer> { sender, context ->
-                    listOf(QuestManager.getQuestData(sender.cast(), UUID.fromString(context.argument(-1)!!))!!.questInnerData.innerQuestID)
+                    listOf(QuestManager.getQuestData(sender.cast(), UUID.fromString(context.argument(-1)))!!.questInnerData.innerQuestID)
                 }
                 execute<ProxyPlayer> { sender, context, _ -> // innerID
                     val p = sender.cast<Player>()
                     p.sendBook {
                         QuestBookBuildManager.innerQuestNoteBuild(p,
-                            UUID.fromString(context.argument(-1)!!),
-                            context.argument(0)!!).forEach {
+                            UUID.fromString(context.argument(-1)),
+                            context.argument(0)).forEach {
                             write(it)
                         }
                     }

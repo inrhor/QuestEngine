@@ -6,7 +6,6 @@ import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.QuestTarget
 import cn.inrhor.questengine.common.quest.manager.QuestManager
-import cn.inrhor.questengine.common.quest.toStr
 import cn.inrhor.questengine.common.quest.toUnit
 import cn.inrhor.questengine.utlis.copy
 import cn.inrhor.questengine.utlis.file.releaseFile
@@ -16,6 +15,7 @@ import cn.inrhor.questengine.utlis.ui.NoteComponent
 import cn.inrhor.questengine.utlis.ui.TextComponent
 import cn.inrhor.questengine.utlis.ui.buildFrame
 import org.bukkit.entity.Player
+import taboolib.common.platform.function.info
 import taboolib.common.util.replaceWithOrder
 import taboolib.module.chat.TellrawJson
 import java.util.*
@@ -105,7 +105,6 @@ object QuestBookBuildManager {
         val hasDisplay = mutableSetOf<String>()
         val sortView = sortViewQuestUI.copy()
         val textCompNo = getTextComp("for.noClick")?: return mutableListOf()
-        textCompNo.command = ""
         val textCompClick = getTextComp("for.click")?: return mutableListOf()
         sortView.textComponent.clear()
 
@@ -161,7 +160,10 @@ object QuestBookBuildManager {
     fun questNoteBuild(player: Player, questID: String, questUUID: String): MutableList<TellrawJson> {
         val ui = questNoteUI.copy()
         ui.noteComponent.values.forEach {
+            info("note "+it.note)
             it.note = listReply(player, questID, questUUID, it.note)
+            it.note = descSet(it.note, "note", questID)
+            info("eeeeee  "+it.note)
             it.condition = listReply(player, questID, questUUID, it.condition)
         }
         ui.textComponent.values.forEach {
@@ -214,15 +216,17 @@ object QuestBookBuildManager {
     private fun setText(player: Player, questID: String, questUUID: String, builderFrame: BuilderFrame, textComponent: TextComponent) {
         if (builderFrame.textComponent.containsKey(questUUID)) return
         val fork = builderFrame.noteComponent["for.fork"]?: return
-        val id = if (questUUID.isEmpty()) questID else questUUID
+//        val id = if (questUUID.isEmpty()) questID else questUUID.replace("-", "")
 
-        builderFrame.noteComponent[id] = NoteComponent(fork.note.copy(), fork.condition(player).copy())
+        builderFrame.noteComponent[questID] = NoteComponent(fork.note.copy(), fork.condition(player).copy())
 
         if (!builderFrame.textCondition(player, listReply(player, questID, questUUID, textComponent.condition))) return
 
         textComponent.hover = descSet(textComponent.hover, "info", questID)
 
-        textComponent.command = "/qen handbook info $questID $questUUID"
+        if (questUUID.isNotEmpty()) {
+            textComponent.command = "/qen handbook info $questID $questUUID"
+        }
 
         builderFrame.noteComponent.values.forEach {
             if (!it.fork) {
@@ -231,7 +235,7 @@ object QuestBookBuildManager {
             }
         }
 
-        builderFrame.textComponent[id] = textComponent
+        builderFrame.textComponent[questID] = textComponent
     }
 
     fun descSet(list: MutableList<String>, sign: String, questID: String, innerID: String = ""): MutableList<String> {
@@ -270,37 +274,17 @@ object QuestBookBuildManager {
     fun listReply(player: Player, questID: String, questUUID: String, list: MutableList<String>): MutableList<String> {
         for (i in 0 until list.size) {
             val qModule = QuestManager.getQuestModule(questID)?: break
+            val stateUnit = QuestState.NOT_ACCEPT.toUnit(player)
             list[i] = list[i].replaceWithOrder(
                 qModule.name, // {0}
                 questID, // {1}
                 if (questUUID.isEmpty()) questID else questUUID,
-                if (questUUID.isNotEmpty()) QuestManager.getQuestData(player, UUID.fromString(questUUID))?.state?.toStr() ?: QuestState.NOT_ACCEPT.toStr() else QuestState.NOT_ACCEPT.toStr(),
+                if (questUUID.isNotEmpty()) QuestManager.getQuestData(player, UUID.fromString(questUUID))?.state?.toUnit(player) ?: stateUnit else stateUnit,
                 "type " + !accept(player, questID), // {4}
                 "type " + accept(player, questID),
                 "type " + !finish(player, questID),
                 "type " + finish(player, questID)
             )
-            /*list[i] = list[i].replace("#quest-name", qModule.name, true)
-            when {
-                it == "#!quest-accept" -> {
-                    list[i] = "type " + !accept(player, questID)
-                }
-                it == "#quest-accept" -> {
-                    list[i] = "type " + accept(player, questID)
-                }
-                it == "#!quest-finish" -> {
-                    list[i] = "type " + !finish(player, questID)
-                }
-                it == "#quest-finish" -> {
-                    list[i] = "type " + finish(player, questID)
-                }
-                list[i].lowercase().contains("#quest-id") -> {
-                    list[i] = list[i].replace("#quest-id", questID, true)
-                }
-                list[i].lowercase().contains("#innerquest-id") -> {
-                    list[i] = list[i].replace("#innerquest-id", innerID, true)
-                }
-            }*/
         }
         return list
     }

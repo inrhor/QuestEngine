@@ -10,11 +10,12 @@ object HandbookInfo {
 
     val info = subCommand {
         dynamic {
-            execute<ProxyPlayer> { sender, context, _ ->
+            execute<ProxyPlayer> { sender, context, argument ->
                 val p = sender.cast<Player>()
-                val qUUID = context.argument(1)?: ""
+                val args = argument.split(" ")
+                val qUUID = if (args.size >= 2) args[1] else ""
                 p.sendBook {
-                    QuestBookBuildManager.questNoteBuild(p, context.argument(0)!!, qUUID).forEach {
+                    QuestBookBuildManager.questNoteBuild(p, args[0], qUUID).forEach {
                         write(it)
                     }
                 }
