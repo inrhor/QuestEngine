@@ -15,7 +15,6 @@ import cn.inrhor.questengine.utlis.ui.NoteComponent
 import cn.inrhor.questengine.utlis.ui.TextComponent
 import cn.inrhor.questengine.utlis.ui.buildFrame
 import org.bukkit.entity.Player
-import taboolib.common.platform.function.info
 import taboolib.common.util.replaceWithOrder
 import taboolib.module.chat.TellrawJson
 import java.util.*
@@ -131,39 +130,37 @@ object QuestBookBuildManager {
     }
 
     fun innerQuestListBuild(player: Player, questUUID: String): MutableList<TellrawJson> {
-        val innerList = innerQuestListUI.copy()
         val qData = QuestManager.getQuestData(player, UUID.fromString(questUUID))?: return mutableListOf()
         val ui = innerQuestListUI.copy()
-        val textComponent = getTextComp("for.click")?: return mutableListOf()
+        val textComponent = innerQuestListUI.textComponent["for.click"]?: return mutableListOf()
         ui.textComponent.clear()
         val qID = qData.questID
-        setInnerText(player, qID, qData.questInnerData.innerQuestID, ui, textComponent)
+        setInnerText(player, qID, questUUID, qData.questInnerData.innerQuestID, ui, textComponent)
         qData.finishedList.forEach {
-            setInnerText(player, qID, it, ui, textComponent)
+            setInnerText(player, qID, questUUID, it, ui, textComponent)
         }
-        return innerList.build(player)
+        return ui.build(player)
     }
 
-    private fun setInnerText(player: Player, questID: String, innerID: String, builderFrame: BuilderFrame, textComponent: TextComponent) {
+    private fun setInnerText(player: Player, questID: String, questUUID: String, innerID: String, builderFrame: BuilderFrame, textComponent: TextComponent) {
         val innerModule = QuestManager.getInnerQuestModule(questID, innerID)?: return
         val fork = builderFrame.noteComponent["for.fork"]?: return
         builderFrame.noteComponent[innerID] = NoteComponent(fork.note.copy(), fork.condition(player).copy())
         builderFrame.noteComponent.values.forEach {
-            it.note.forEach { s -> // (0) innerName
-                s.replaceWithOrder(innerModule.innerQuestName)
+            val note = it.note
+            for (i in 0 until note.size) {
+                note[i] = note[i].replaceWithOrder(innerModule.innerQuestName, innerID)
             }
         }
-        textComponent.command = "/qen handbook "
+        textComponent.command = "/qen handbook innerList questUUID"
         builderFrame.textComponent[innerID] = textComponent
     }
 
     fun questNoteBuild(player: Player, questID: String, questUUID: String): MutableList<TellrawJson> {
         val ui = questNoteUI.copy()
         ui.noteComponent.values.forEach {
-            info("note "+it.note)
             it.note = listReply(player, questID, questUUID, it.note)
             it.note = descSet(it.note, "note", questID)
-            info("eeeeee  "+it.note)
             it.condition = listReply(player, questID, questUUID, it.condition)
         }
         ui.textComponent.values.forEach {
@@ -206,8 +203,9 @@ object QuestBookBuildManager {
         }
         val targetUI = target.ui.copy()
         targetUI.noteComponent.values.forEach {
-            it.note.forEach { s ->
-                s.replaceWithOrder(time, tData.schedule)
+            val note = it.note
+            for (i in 0 until note.size) {
+                note[i] = note[i].replaceWithOrder(time, tData.schedule)
             }
         }
         return targetUI.build(player)
@@ -216,7 +214,6 @@ object QuestBookBuildManager {
     private fun setText(player: Player, questID: String, questUUID: String, builderFrame: BuilderFrame, textComponent: TextComponent) {
         if (builderFrame.textComponent.containsKey(questUUID)) return
         val fork = builderFrame.noteComponent["for.fork"]?: return
-//        val id = if (questUUID.isEmpty()) questID else questUUID.replace("-", "")
 
         builderFrame.noteComponent[questID] = NoteComponent(fork.note.copy(), fork.condition(player).copy())
 

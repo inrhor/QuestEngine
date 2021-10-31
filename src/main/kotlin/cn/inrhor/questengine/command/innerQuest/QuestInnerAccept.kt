@@ -19,17 +19,17 @@ object QuestInnerAccept {
                 }
                 dynamic {
                     suggestion<ProxyCommandSender> { _, context ->
-                        QuestManager.getQuestModule(context.argument(-2)!!)?.innerQuestList?.map { it.innerQuestID }
+                        QuestManager.getQuestModule(context.argument(-2))?.innerQuestList?.map { it.innerQuestID }
                     }
                     execute<ProxyCommandSender> { sender, context, argument ->
                         val args = argument.split(" ")
 
-                        val player = Bukkit.getPlayer(context.argument(-2)!!) ?: return@execute run {
+                        val player = Bukkit.getPlayer(context.argument(-2)) ?: return@execute run {
                             sender.sendLang("PLAYER_NOT_ONLINE")
                         }
                         val uuid = player.uniqueId
 
-                        val questID = context.argument(-1)!!
+                        val questID = context.argument(-1)
                         if (!QuestManager.questMap.containsKey(questID)) {
                             return@execute
                         }

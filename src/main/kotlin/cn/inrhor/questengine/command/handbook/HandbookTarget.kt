@@ -18,7 +18,7 @@ object HandbookTarget {
             }
             execute<ProxyPlayer> { sender, context, _ ->
                 val p = sender.cast<Player>()
-                val questUUID = UUID.fromString(context.argument(0)!!)
+                val questUUID = UUID.fromString(context.argument(0))
                 p.sendBook {
                     QuestBookBuildManager.targetNodeBuild(p, questUUID, QuestManager.getInnerQuestData(p, questUUID)!!.innerQuestID).forEach {
                         write(it)

@@ -52,8 +52,7 @@ object TargetManager {
                         val u = "$path.$node"
                         if (node == "ui" || node == "description") {
                             if (node == "description") {
-                                val note = NoteComponent(yaml.getStringList("$u.description"))
-                                ui.noteComponent[u] = note
+                                ui.noteComponent[u] = NoteComponent(yaml.getStringList(u))
                             }else {
                                 ui.sectionAdd(yaml, u, BuilderFrame.Type.CUSTOM)
                             }
@@ -71,7 +70,6 @@ object TargetManager {
                     }
                 }
             }
-            val description = yaml.getStringList(s + "description")
             val period = yaml.getInt(s+"period")
             val async = yaml.getBoolean(s+"async")
             val conditions = yaml.getStringList(s+"conditions")

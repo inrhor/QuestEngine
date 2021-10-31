@@ -17,7 +17,7 @@ object HandbookInnerList {
             execute<ProxyPlayer> { sender, context, _ ->
                 val p = sender.cast<Player>()
                 p.sendBook {
-                    QuestBookBuildManager.innerQuestListBuild(p, context.argument(0)!!).forEach {
+                    QuestBookBuildManager.innerQuestListBuild(p, context.argument(0)).forEach {
                         write(it)
                     }
                 }
