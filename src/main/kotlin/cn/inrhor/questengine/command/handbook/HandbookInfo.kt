@@ -10,7 +10,7 @@ object HandbookInfo {
 
     val info = subCommand {
         dynamic {
-            execute<ProxyPlayer> { sender, context, argument ->
+            execute<ProxyPlayer> { sender, _, argument ->
                 val p = sender.cast<Player>()
                 val args = argument.split(" ")
                 val qUUID = if (args.size >= 2) args[1] else ""

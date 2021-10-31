@@ -152,7 +152,7 @@ object QuestBookBuildManager {
                 note[i] = note[i].replaceWithOrder(innerModule.innerQuestName, innerID)
             }
         }
-        textComponent.command = "/qen handbook innerList questUUID"
+        textComponent.command = "/qen handbook inner $questUUID $innerID"
         builderFrame.textComponent[innerID] = textComponent
     }
 
@@ -172,11 +172,12 @@ object QuestBookBuildManager {
     fun innerQuestNoteBuild(player: Player, questUUID: UUID, innerID: String): MutableList<TellrawJson> {
         val ui = innerQuestNoteUI.copy()
         val innerData = QuestManager.getInnerQuestData(player, questUUID, innerID)?: return mutableListOf()
-        val questID = innerData.innerQuestID
+        val questID = innerData.questID
         val innerModule = QuestManager.getInnerQuestModule(questID, innerID)?: return mutableListOf()
         ui.noteComponent.values.forEach {
-            it.note.forEach { s ->
-                s.replaceWithOrder(innerModule.innerQuestName, innerData.state.toUnit(player))
+            val note = it.note
+            for (i in 0 until note.size) {
+                note[i] = note[i].replaceWithOrder(innerModule.innerQuestName, innerData.state.toUnit(player))
             }
             it.note = descSet(it.note, "", questID, innerID)
         }

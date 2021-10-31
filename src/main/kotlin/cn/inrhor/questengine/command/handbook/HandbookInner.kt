@@ -22,10 +22,9 @@ object HandbookInner {
                 }
                 execute<ProxyPlayer> { sender, context, _ -> // innerID
                     val p = sender.cast<Player>()
+                    val qUUID = UUID.fromString(context.argument(-1))
                     p.sendBook {
-                        QuestBookBuildManager.innerQuestNoteBuild(p,
-                            UUID.fromString(context.argument(-1)),
-                            context.argument(0)).forEach {
+                        QuestBookBuildManager.innerQuestNoteBuild(p, qUUID, context.argument(0)).forEach {
                             write(it)
                         }
                     }
