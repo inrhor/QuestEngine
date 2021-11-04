@@ -1,5 +1,5 @@
 # 对话ID
-dialog_1:
+dialog1:
   # 交互NPC
   npcIDs:
     - test
@@ -19,18 +19,18 @@ dialog_1:
   type: holo
   # 关于对话 如下是全息对话示例
   dialog:
-    - initLoc dir left add 2.5 2.5 # 初始化源位置
-    - nextY -0.3 # 设置源位置递增的Y轴，使每行内容不重叠
+    - initLoc {{ dir left }} {{ add 2.5 2.5 }} # 初始化源位置
+    - nextY -0.3 # 设置源位置递增的Y轴，使每行内容换行而不重叠
     - replyAll 20 # 20 tick后显示全部回复内容
-    - text <textWrite 40 2 "&3&lQuest &f&lEngine"><textWrite 20 2 "&r   &c&l任&e&l务&a&l引擎"> # 可合并的打字型标签
-    - text <textWrite 10 3 "&f&l面向异世界的任务系统">
-    - text <emptyWrite 10 4 true "&f&l这是一个打字型，打印完毕后&c&l会清除掉"> # 自清空标签打字型，不合适合并
+    - text {{ textWrite 40 2 }} {{ &3&lQuest &f&lEngine }} {{ textWrite 20 2 }} {{ &r   &c&l任&e&l务&a&l引擎 }} # 可合并的打字型标签
+    - text {{ textWrite 10 3 }} {{ &f&l面向异世界的任务系统 }}
+    - text {{ auto true }} {{ &f&l这是一个打字型，打印完毕后&c&l会清除掉 }} # 自清空标签打字型，不合适合并
     - nextY 0.0 # 设置源位置递增的Y轴为0，使得上下自清空标签打字型可在同一位置显示
-    - text <emptyWrite 84 4 true "&3&l继续打印下一段对话内容"> # 尽量把控好延迟时间，显示自清空标签打字型
+    - text {{ &3&l继续打印下一段对话内容 }} {{ auto true }} # 尽量把控好延迟时间，显示自清空标签打字型
     - nextY -0.3 # 设置源位置递增的Y轴，使每行内容不重叠
-    - addLoc dir right add 5.5 1.0 # 对源位置增加数值
-    - itemWrite 20 use suspend item item_1 # 显示物品组内容
-    - itemWrite 60 use fixed item item_2 # 显示物品组内容
+    - addLoc {{ add 5.5 1.0 }} {{ dir right }} # 对源位置增加数值
+    - item {{ delay 20 }} {{ use suspend }} {{ item item_1 }} # 显示物品组内容
+    - item {{ delay 60 }} {{ item item_2 }} {{ use fixed }}  # 显示物品组内容
   # 关于回复
   reply:
     # 回复ID
@@ -39,8 +39,8 @@ dialog_1:
       # 支持 Kether 布尔值语句
       condition: []
       content:
-        - hitBox dir left add 2.5 1.5 sizeX 3 3 sizeY 3 3 sizeZ 3 3 long 5 item item_2 use suspend boxY 2 # 释放点击框
-        - initLoc dir left add 2.0 1.5
+        - hitBox {{ dir left }} {{ add 2.5 1.5 }} {{ sizeX 3 3 }} {{ size 3 3 }} {{ long 5 }} {{ item item_2 }} {{ use suspend }} {{ boxY 2 }}
+        - initLoc {{ add 2.0 1.5 }} {{ dir left }}
         - nextY -1.0
         - text "&c&l你好世界 Hello World"
         - text "&3&l欢迎使用全息对话系统"
@@ -52,8 +52,8 @@ dialog_1:
 
 # 对话ID
 dialog2:
-  # 继承了父对象的属性（同时包含父dialog_1对话的全部回复项）
-  hook: dialog_1
+  # 继承了父对象的属性（同时包含父dialog1对话的全部回复项）
+  hook: dialog1
   condition: []
   dialog:
     - reply 20 rep # 在 20 tick后释放本回复项的 rep 回复ID内容
@@ -64,16 +64,16 @@ dialog2:
       condition:
         - tags has hello
       content:
-        - hitBox dir left add 2.5 1.5 sizeX 3 3 sizeY 3 3 sizeZ 3 3 long 5 item item_2 use suspend boxY 2
-        - initLoc dir left add 2.0 1.5
-        - item item_2 fixed
+        - hitBox {{ sizeX 3 3 }} {{ sizeY 3 3 }} {{ sizeZ 3 3}} {{ add 2.5 1.5 }} {{ dir left }} {{ long 5 }} {{ item item_2 }} {{ use suspend }} {{ boxY 2 }}
+        - initLoc {{ dir left }} {{ add 2.0 1.5 }}
+        - item {{ item item_2 }} {{ use fixed }}
       script:
         - dialog end dialog_2
 
 # 对话ID
 dialog3:
-  # 继承了父对象的属性（除了dialog）
-  hook: dialog_1
+  # 继承了父对象的属性
+  hook: dialog1
   # 可以直接调用父对象的回复项
   dialog:
     - reply 20 reply_1 # 释放父dialog_1对象的回复项的 reply_1 回复ID
