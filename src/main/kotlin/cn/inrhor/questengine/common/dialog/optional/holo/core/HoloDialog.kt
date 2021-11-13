@@ -9,6 +9,8 @@ import cn.inrhor.questengine.common.dialog.optional.holo.HoloAnimationItem
 import cn.inrhor.questengine.common.dialog.optional.holo.HoloAnimationText
 import cn.inrhor.questengine.script.kether.evalReferLoc
 import cn.inrhor.questengine.utlis.location.LocationTool
+import cn.inrhor.questengine.utlis.location.builderReferLoc
+import cn.inrhor.questengine.utlis.variableReader
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
@@ -44,17 +46,17 @@ class HoloDialog(
             DataStorage.getPlayerData(it).dialogData.addHoloDialog(dialogID, this)
         }
         val yaw = npcLoc.clone().yaw
-        for (i in dialogModule.dialog) {
-            val iUc = i.uppercase()
+        dialogModule.dialog.forEach {
+            val iUc = it.uppercase()
             when {
                 iUc.startsWith("INITLOC") -> {
-                    holoLoc = LocationTool.getReferLoc(yaw, npcLoc, evalReferLoc(i))
+                    holoLoc = LocationTool.getReferLoc(yaw, npcLoc, builderReferLoc(it))
                 }
                 iUc.startsWith("ADDLOC") -> {
-                    holoLoc = LocationTool.getReferLoc(yaw, npcLoc, evalReferLoc(i))
+                    holoLoc = LocationTool.getReferLoc(yaw, npcLoc, builderReferLoc(it))
                 }
                 iUc.startsWith("NEXTY") -> {
-                    val get = i.substring(i.indexOf(" ")+1)
+                    val get = it.substring(it.indexOf(" ")+1)
                     nextY = get.toDouble()
                 }
                 iUc.startsWith("TEXT") -> {
@@ -87,12 +89,12 @@ class HoloDialog(
                 }
                 iUc.startsWith("REPLYALL") -> { // 弹出全部回复选项
                     val replyList = dialogModule.replyModuleList
-                    val sp = i.split(" ")
+                    val sp = it.split(" ")
                     val delay = sp[1].toLong()
                     HoloReply(replyList, npcLoc, viewers, delay).run()
                 }
                 iUc.startsWith("REPLY") -> { // 弹出指定回复选项
-                    val sp = i.split(" ")
+                    val sp = it.split(" ")
                     val delay = sp[1].toLong()
                     val id = sp[2]
                     dialogModule.replyModuleList.forEach {

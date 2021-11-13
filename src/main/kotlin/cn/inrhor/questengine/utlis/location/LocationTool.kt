@@ -20,8 +20,8 @@ object LocationTool {
             .toBukkitLocation()
     }
 
-    fun getOffsetType(q: QuestReader): Float {
-        return when (q.nextToken().lowercase()) {
+    fun getOffsetType(dir: String): Float {
+        return when (dir.lowercase()) {
             "left" -> -90F
             "right" -> 90F
             "behind" -> 180F

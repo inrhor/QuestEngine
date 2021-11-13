@@ -2,6 +2,7 @@ package cn.inrhor.questengine.utlis
 
 import cn.inrhor.questengine.QuestEngine
 import com.google.common.base.Strings
+import taboolib.common.util.VariableReader
 import taboolib.module.chat.colored
 import java.util.*
 
@@ -64,6 +65,14 @@ fun MutableList<String>.copy(): MutableList<String> {
     val list = mutableListOf<String>()
     this.forEach {
         list.add(it)
+    }
+    return list
+}
+
+fun String.variableReader(): MutableList<String> {
+    val list = mutableListOf<String>()
+    VariableReader(this, '{', '}', repeat = 2).parts.forEach {
+        if (it.isVariable) list.add(it.text)
     }
     return list
 }
