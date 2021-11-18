@@ -1,9 +1,8 @@
 package cn.inrhor.questengine.common.dialog.animation.parser
 
-import cn.inrhor.questengine.common.dialog.animation.text.TextAnimation
+import cn.inrhor.questengine.common.dialog.animation.text.TextAnimationFail
 import cn.inrhor.questengine.common.dialog.animation.text.TextDialogPlay
 import cn.inrhor.questengine.api.hologram.HoloIDManager
-import java.util.regex.Pattern
 
 
 /**
@@ -30,11 +29,7 @@ class TextParser(private val textContents: MutableList<String>) {
 
             if (type == "dialog") {
 
-                // 分割 取 独立标签
-                val pContent = Pattern.compile("<(.*?)>")
-//                val indTag = pContent.matcher(script)
-
-                val textAnimation = TextAnimation(dialogID, line, script, pContent, dialogTextList)
+                val textAnimation = TextAnimationFail(dialogID, line, script, dialogTextList)
                 textAnimation.init()
 
             }

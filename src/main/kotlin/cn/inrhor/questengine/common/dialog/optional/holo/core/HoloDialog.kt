@@ -7,15 +7,10 @@ import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.dialog.DialogManager
 import cn.inrhor.questengine.common.dialog.optional.holo.HoloAnimationItem
 import cn.inrhor.questengine.common.dialog.optional.holo.HoloAnimationText
-import cn.inrhor.questengine.script.kether.evalReferLoc
 import cn.inrhor.questengine.utlis.location.LocationTool
 import cn.inrhor.questengine.utlis.location.builderReferLoc
-import cn.inrhor.questengine.utlis.variableReader
 import org.bukkit.Location
 import org.bukkit.entity.Player
-
-
-
 
 /**
  * 全息主体对话管理
@@ -61,10 +56,10 @@ class HoloDialog(
                 }
                 iUc.startsWith("TEXT") -> {
                     holoLoc = holoLoc.add(0.0, nextY, 0.0)
-                    viewers.forEach {
-                        DialogManager.animation(dialogID, it)
+                    viewers.forEach { p ->
+                        DialogManager.animation(dialogID, p)
                         val playText = dialogModule.playText[textIndex]
-                        HoloAnimationText(this, it, playText, holoLoc).runTask()
+                        HoloAnimationText(this, p, playText, holoLoc).runTask()
                         packetIDs.add(playText.holoID)
                     }
                     textIndex++
@@ -97,9 +92,9 @@ class HoloDialog(
                     val sp = it.split(" ")
                     val delay = sp[1].toLong()
                     val id = sp[2]
-                    dialogModule.replyModuleList.forEach {
-                        if (it.replyID == id) {
-                            HoloReply(mutableListOf(it), npcLoc, viewers, delay).run()
+                    dialogModule.replyModuleList.forEach { r ->
+                        if (r.replyID == id) {
+                            HoloReply(mutableListOf(r), npcLoc, viewers, delay).run()
                         }
                     }
                 }

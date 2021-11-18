@@ -4,7 +4,6 @@ import cn.inrhor.questengine.QuestEngine
 import com.google.common.base.Strings
 import taboolib.common.util.VariableReader
 import taboolib.module.chat.colored
-import java.util.*
 
 object UtilString {
 
