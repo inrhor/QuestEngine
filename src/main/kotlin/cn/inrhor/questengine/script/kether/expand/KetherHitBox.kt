@@ -56,7 +56,7 @@ class KetherHitBox(
         fun parser() = scriptParser {
             it.mark()
             it.expect("dir")
-            val offset = LocationTool.getOffsetType(it)
+            val offset = LocationTool.getOffsetType(it.toString())
             it.mark()
             it.expect("add")
             val multiply = it.nextDouble()

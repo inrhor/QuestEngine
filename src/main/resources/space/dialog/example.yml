@@ -19,18 +19,18 @@ dialog1:
   type: holo
   # 关于对话 如下是全息对话示例
   dialog:
-    - initLoc {{ dir left }} {{ add 2.5 2.5 }} # 初始化源位置
+    - initLoc {{dir left}} {{add 2.5 2.5}} # 初始化源位置
     - nextY -0.3 # 设置源位置递增的Y轴，使每行内容换行而不重叠
     - replyAll 20 # 20 tick后显示全部回复内容
-    - text {{ textWrite 40 2 }} {{ &3&lQuest &f&lEngine }} {{ textWrite 20 2 }} {{ &r   &c&l任&e&l务&a&l引擎 }} # 可合并的打字型标签
-    - text {{ textWrite 10 3 }} {{ &f&l面向异世界的任务系统 }}
-    - text {{ auto true }} {{ &f&l这是一个打字型，打印完毕后&c&l会清除掉 }} # 自清空标签打字型，不合适合并
+    - text {{write}} {{&3&lQuest &f&lEngine&r   &c&l任&e&l务&a&l引擎}} # 选择打字型输出
+    - text {{&f&l面向异世界的任务系统}} # 完整显示
+    - text {{writeClear out}} {{&f&l这是一个打字型，打印完毕后&c&l会清除掉}} # 自清除打字型，并完整发送到聊天框
     - nextY 0.0 # 设置源位置递增的Y轴为0，使得上下自清空标签打字型可在同一位置显示
-    - text {{ &3&l继续打印下一段对话内容 }} {{ auto true }} # 尽量把控好延迟时间，显示自清空标签打字型
+    - text {{&3&l继续打印下一段对话内容}} {{write out}} # 选择打字型输出，并完整发送到聊天框，可调换标签位置
     - nextY -0.3 # 设置源位置递增的Y轴，使每行内容不重叠
-    - addLoc {{ add 5.5 1.0 }} {{ dir right }} # 对源位置增加数值
-    - item {{ delay 20 }} {{ use suspend }} {{ item item_1 }} # 显示物品组内容
-    - item {{ delay 60 }} {{ item item_2 }} {{ use fixed }}  # 显示物品组内容
+    - addLoc {{add 5.5 1.0}} {{dir right}} # 对源位置增加数值
+    - item {{delay 20}} {{use suspend}} {{item item_1}} # 显示物品组内容
+    - item {{delay 60}} {{item item_2}} {{use fixed}}  # 显示物品组内容
   # 关于回复
   reply:
     # 回复ID
@@ -39,11 +39,11 @@ dialog1:
       # 支持 Kether 布尔值语句
       condition: []
       content:
-        - hitBox {{ dir left }} {{ add 2.5 1.5 }} {{ sizeX 3 3 }} {{ size 3 3 }} {{ long 5 }} {{ item item_2 }} {{ use suspend }} {{ boxY 2 }}
-        - initLoc {{ add 2.0 1.5 }} {{ dir left }}
+        - hitBox {{dir left}} {{add 2.5 1.5}} {{sizeX 3 3}} {{size 3 3}} {{long 5}} {{item item_2}} {{use suspend}} {{boxY 2}}
+        - initLoc {{add 2.0 1.5}} {{dir left}}
         - nextY -1.0
-        - text "&c&l你好世界 Hello World"
-        - text "&3&l欢迎使用全息对话系统"
+        - text {{&c&l你好世界 Hello World}}
+        - text {{&3&l欢迎使用全息对话系统}}
         - item item_1 suspend
       # 支持 Kether 语句
       script:
@@ -64,9 +64,9 @@ dialog2:
       condition:
         - tags has hello
       content:
-        - hitBox {{ sizeX 3 3 }} {{ sizeY 3 3 }} {{ sizeZ 3 3}} {{ add 2.5 1.5 }} {{ dir left }} {{ long 5 }} {{ item item_2 }} {{ use suspend }} {{ boxY 2 }}
-        - initLoc {{ dir left }} {{ add 2.0 1.5 }}
-        - item {{ item item_2 }} {{ use fixed }}
+        - hitBox {{sizeX 3 3}} {{sizeY 3 3}} {{sizeZ 3 3}} {{add 2.5 1.5}} {{dir left}} {{long 5}} {{item item_2}} {{use suspend}} {{boxY 2}}
+        - initLoc {{dir left}} {{add 2.0 1.5}}
+        - item {{item item_2}} {{use fixed}}
       script:
         - dialog end dialog_2
 
