@@ -18,7 +18,7 @@ object FileUtil {
             if (say.isNotEmpty()) {
                 console().sendLang(say, UtilString.pluginTag)
             }
-            QuestEngine.resource.releaseResourceFile(child+"example.yml", true)
+            QuestEngine.resource.releaseResourceFile(child+"dialog1.yml", true)
         }
         return file
     }
