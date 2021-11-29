@@ -67,16 +67,6 @@ object DialogManager {
     }
 
     /**
-     * 加载并注册对话
-     */
-    fun loadDialog() {
-        val dialogFolder = FileUtil.getFile("space/dialog/", "DIALOG-NO_FILES", true)
-        FileUtil.getFileList(dialogFolder).forEach{
-            DialogFile.checkRegDialog(it)
-        }
-    }
-
-    /**
      * 删除对话
      */
     fun remove(dialogID: String) {dialogMap.remove(dialogID)}
@@ -146,7 +136,7 @@ object DialogManager {
     }
 
     fun spaceDialogHolo(dialogModule: DialogModule, holoDialog: HoloDialog) {
-        val space = dialogModule.spaceModule
+        val space = dialogModule.space
         if (!space.enable) return
         val id = dialogModule.dialogID
         submit(async = true, period = 5L) {
@@ -162,7 +152,7 @@ object DialogManager {
         }
     }
 
-    fun checkSpace(players: MutableSet<Player>, condition: MutableList<String>, loc: Location): Boolean {
+    fun checkSpace(players: MutableSet<Player>, condition: List<String>, loc: Location): Boolean {
         players.forEach {
             condition.forEach { cd ->
                 val shell = if (cd.lowercase().startsWith("spacerange"))  cd+
