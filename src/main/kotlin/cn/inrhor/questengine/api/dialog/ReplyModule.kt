@@ -1,17 +1,17 @@
 package cn.inrhor.questengine.api.dialog
 
-import cn.inrhor.questengine.api.hologram.HoloIDManager
-import cn.inrhor.questengine.common.dialog.animation.item.ItemDialogPlay
-import cn.inrhor.questengine.common.dialog.optional.holo.reply.ItemDisplay
-import cn.inrhor.questengine.common.dialog.optional.holo.reply.TextDisplay
-import cn.inrhor.questengine.common.item.ItemManager
-import cn.inrhor.questengine.utlis.subAfter
-import java.util.*
-
 /**
  * 回复属性模块
  */
-class ReplyModule(val dialogID: String,
+data class ReplyModule(val replyID: String) {
+
+    val condition = mutableListOf<String>()
+    val content = mutableListOf<String>()
+    val script = mutableListOf<String>()
+
+}
+
+/*class ReplyModule(val dialogID: String,
                   val replyID: String,
                   var content: MutableList<String>,
                   var script: MutableList<String>,
@@ -46,4 +46,4 @@ class ReplyModule(val dialogID: String,
         }
     }
 
-}
+}*/

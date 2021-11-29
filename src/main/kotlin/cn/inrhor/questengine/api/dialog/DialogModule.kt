@@ -2,6 +2,9 @@ package cn.inrhor.questengine.api.dialog
 
 import cn.inrhor.questengine.common.dialog.DialogManager
 
+/**
+ * 对话模块
+ */
 data class DialogModule(
     val id: String,
     val dialog: List<String>,
@@ -19,6 +22,9 @@ data class DialogModule(
    }
 }
 
+/**
+ * 对话空间模块
+ */
 data class SpaceDialogModule(val enable: Boolean, val condition: List<String>) {
     constructor(): this(false, mutableListOf())
 }

@@ -33,8 +33,9 @@ dialog1:
     - item {{delay 60}} {{item item_2}} {{use fixed}}  # 显示物品组内容
   # 关于回复
   reply:
-    # 回复ID
-    reply_1:
+    -
+      # 回复ID
+      replyID: reply1
       # 弹出该回复的条件，空或不填的话必弹出
       # 支持 Kether 布尔值语句
       condition: []
@@ -59,8 +60,8 @@ dialog2:
     - reply 20 rep # 在 20 tick后释放本回复项的 rep 回复ID内容
   # 回复项
   reply:
-    # 回复ID
-    rep:
+    -
+      replyID: rep
       condition:
         - tags has hello
       content:
