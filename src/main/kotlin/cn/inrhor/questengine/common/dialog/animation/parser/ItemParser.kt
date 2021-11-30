@@ -23,10 +23,9 @@ class ItemParser(private val itemContents: MutableList<String>) {
             val script = this.itemContents[line]
             val holoID = HoloIDManager.generate(dialogID, line, "item")
             val itemID = HoloIDManager.generate(dialogID, line, "itemStack")
-//                if (HoloIDManager.existEntityID(holoID))
             HoloIDManager.addEntityID(holoID)
             HoloIDManager.addEntityID(itemID)
-            if (script.uppercase().startsWith("ITEMWRITE")) {
+            /*if (script.uppercase().startsWith("ITEMWRITE")) {
                 val dialogItem = eval(script) as ItemDialogPlay
                 dialogItem.holoID = holoID
                 dialogItem.itemID = itemID
@@ -35,7 +34,7 @@ class ItemParser(private val itemContents: MutableList<String>) {
                 val item = ItemManager.get(script)
                 val dialogItem = ItemDialogPlay(holoID, itemID, item, ItemDialogPlay.Type.SUSPEND, 0)
                 dialogItemList.add(dialogItem)
-            }
+            }*/
         }
     }
 

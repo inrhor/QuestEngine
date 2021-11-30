@@ -48,6 +48,9 @@ object DialogFile {
         }
     }
 
+    /**
+     * 以节点为 DialogID 进行注册对话模块
+     */
     private fun regDialog(section: ConfigurationSection, hook: ConfigurationSection = section) {
         val id = section.name
         val dialogModule = hook.getObject<DialogModule>(id, ignoreConstructor = true)

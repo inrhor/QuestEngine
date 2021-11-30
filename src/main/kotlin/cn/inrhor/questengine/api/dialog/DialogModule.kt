@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.api.dialog
 
 import cn.inrhor.questengine.common.dialog.DialogManager
+import cn.inrhor.questengine.common.dialog.animation.item.ItemDialogPlay
 
 /**
  * 对话模块
@@ -16,6 +17,8 @@ data class DialogModule(
     val condition = mutableListOf<String>()
     val space = SpaceDialogModule()
     val type: String = "holo"
+
+    var playItem = mutableListOf<ItemDialogPlay>()
 
    fun register() {
        DialogManager.register(dialogID, this)

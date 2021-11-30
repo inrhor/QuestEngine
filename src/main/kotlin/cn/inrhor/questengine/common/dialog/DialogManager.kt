@@ -3,26 +3,22 @@ package cn.inrhor.questengine.common.dialog
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.dialog.animation.parser.ItemParser
-import cn.inrhor.questengine.common.dialog.animation.parser.TextParser
 import cn.inrhor.questengine.common.dialog.optional.holo.core.HoloDialog
 import cn.inrhor.questengine.script.kether.evalBoolean
 import cn.inrhor.questengine.script.kether.evalBooleanSet
-import cn.inrhor.questengine.utlis.file.FileUtil
 import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.submit
 import taboolib.module.lang.sendLang
-import taboolib.platform.compat.replacePlaceholder
-import java.util.*
 
 
 object DialogManager {
     /**
-     * 成功注册的对话
+     * 成功注册的对话模块
      */
-    var dialogMap = mutableMapOf<String, DialogModule>()
+    private var dialogMap = mutableMapOf<String, DialogModule>()
 
     /**
      * 注册对话
@@ -32,24 +28,25 @@ object DialogManager {
             console().sendLang("DIALOG-EXIST_DIALOG_ID", UtilString.pluginTag, dialogID)
             return
         }
+
+        // 输出物品
         val itemContents = mutableListOf<String>()
         for (script in dialogModule.dialog) {
             val iUc = script.uppercase()
             when {
-                iUc.startsWith("ITEMWRITE") -> {
+                iUc.startsWith("ITEM") -> {
                     itemContents.add(script)
                 }
             }
         }
         val itemParser = ItemParser(itemContents)
         itemParser.init(dialogID)
-
         dialogModule.playItem = itemParser.dialogItemList
 
         dialogMap[dialogID] = dialogModule
     }
 
-    fun animation(dialogID: String, player: Player) {
+    /*fun animation(dialogID: String, player: Player) {
         val dialogModule = dialogMap[dialogID]?: return
         val textContents = mutableListOf<String>()
         for (script in dialogModule.dialog) {
@@ -64,7 +61,7 @@ object DialogManager {
         textParser.init(dialogID, "dialog")
 
         dialogModule.playText = textParser.dialogTextList
-    }
+    }*/
 
     /**
      * 删除对话
