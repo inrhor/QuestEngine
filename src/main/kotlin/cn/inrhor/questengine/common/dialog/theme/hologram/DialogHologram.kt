@@ -18,10 +18,13 @@ class DialogHologram(
      */
     override fun play() {
         val origin = OriginLocation(location)
-        content(origin)
+        parserOrigin(origin)
     }
 
-    private fun content(origin: OriginLocation) {
+    /**
+     * 解析源位置字符
+     */
+    private fun parserOrigin(origin: OriginLocation) {
         dialogModule.dialog.forEach {
             val u = it.lowercase()
             if (u.startsWith("initloc ")) {
