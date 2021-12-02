@@ -10,6 +10,8 @@ import org.bukkit.Location
  */
 class OriginLocation(private val location: Location, var nextY: Double = 0.0) {
 
+    private val locationParser = LocationParser()
+
     /**
      * 源位置
      */
@@ -27,17 +29,7 @@ class OriginLocation(private val location: Location, var nextY: Double = 0.0) {
      * 更新源位置
      */
     fun add(content: String) {
-        content.variableReader().forEach {
-            val u = it.lowercase()
-            val dir = ""
-            val m = 0
-            val o = 0
-            if (u.startsWith("dir ")) {
-
-            }else if (u.startsWith("add ")) {
-
-            }
-        }
+        origin = locationParser.getLocation(origin, content)
     }
 
 }
