@@ -7,7 +7,7 @@ import org.bukkit.entity.Player
 /**
  * 聊天框对话
  */
-class DialogChat(val dialogModule: DialogModule): DialogTheme() {
+class DialogChat(val dialogModule: DialogModule): DialogTheme {
 
     override fun play() {
 

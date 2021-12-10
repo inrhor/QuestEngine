@@ -6,6 +6,9 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 
+/**
+ * 全息调用
+ */
 object HoloDisplay {
 
     fun updateText(holoID: Int, viewer: Player, text: String) {

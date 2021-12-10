@@ -6,15 +6,13 @@ import org.bukkit.Location
 
 /**
  * 全息源位置
- *
- * @param location 必须传入 location#clone
  */
 class OriginLocation(private val location: Location, var nextY: Double = 0.0) {
 
     /**
      * 源位置
      */
-    private var origin = location.clone()
+    var origin = location.clone()
 
     /**
      * 从最初始位置进行定义源位置

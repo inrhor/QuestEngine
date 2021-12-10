@@ -1,13 +1,13 @@
 package cn.inrhor.questengine.api.dialog
 
 /**
- * 对话主题
+ * 对话主题接口
  */
-abstract class DialogTheme {
+interface  DialogTheme {
 
     /**
      * 播放对话
      */
-    abstract fun play()
+    fun play()
 
 }
