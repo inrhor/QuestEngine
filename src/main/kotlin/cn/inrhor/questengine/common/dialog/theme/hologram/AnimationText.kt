@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.dialog.theme.hologram
 
+import cn.inrhor.questengine.api.dialog.TextPlay
 import cn.inrhor.questengine.api.packet.updateDisplayName
 import cn.inrhor.questengine.utlis.spaceSplit
 import cn.inrhor.questengine.utlis.variableReader
@@ -11,14 +12,13 @@ import taboolib.platform.compat.replacePlaceholder
 /**
  * 动态全息文本
  */
-class AnimationText(content: String) {
+class AnimationText(content: String): TextPlay {
 
     var writeType = WriteType.NORMAL
-    var delay = 0L
     var out = false
-    var text = ""
-    var speed = 0L
     var clearWait = 0L
+
+    override var text: String = ""
 
     init {
         content.variableReader().forEach {
