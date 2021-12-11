@@ -1,9 +1,12 @@
 package cn.inrhor.questengine.common.dialog.theme.hologram
 
-import cn.inrhor.questengine.api.hologram.HoloDisplay
+import cn.inrhor.questengine.api.packet.updateDisplayName
+import cn.inrhor.questengine.utlis.spaceSplit
 import cn.inrhor.questengine.utlis.variableReader
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.submit
+import taboolib.common5.util.printed
+import taboolib.platform.compat.replacePlaceholder
 
 /**
  * 动态全息文本
@@ -14,8 +17,8 @@ class AnimationText(content: String) {
     var delay = 0L
     var out = false
     var text = ""
-    var speed = 0
-    var clearWait = 0
+    var speed = 0L
+    var clearWait = 0L
 
     init {
         content.variableReader().forEach {
@@ -26,7 +29,11 @@ class AnimationText(content: String) {
             }else if (it == "out") {
                 out = true
             }else if (it.startsWith("delay ")) {
-                delay = it.split(" ")[1].toLong()
+                delay = it.spaceSplit(1).toLong()
+            }else if (it.startsWith("speed ")) {
+                speed = it.spaceSplit(1).toLong()
+            }else if (it.startsWith("clearWait ")) {
+                clearWait = it.spaceSplit(1).toLong()
             }else {
                 text = it
             }
@@ -34,19 +41,37 @@ class AnimationText(content: String) {
     }
 
     fun sendViewers(holoID: Int, viewers: MutableSet<Player>) {
-        if (writeType == WriteType.NORMAL) {
-            submit(async = true, delay = this.delay) {
-                viewers.forEach {
-                    HoloDisplay.updateText(holoID, it, text)
-                }
+        submit(async = true, delay = this.delay) {
+            if (viewers.isEmpty()) {
+                cancel(); return@submit
             }
-        }else if (writeType == WriteType.WRITECLEAR || writeType == WriteType.WRITE) {
-            write()
+            if (writeType == WriteType.NORMAL) {
+                viewers.forEach {
+                    updateDisplayName(it, holoID, text)
+                }
+            } else if (writeType == WriteType.WRITECLEAR || writeType == WriteType.WRITE) {
+                write(holoID, viewers)
+            }
         }
     }
 
-    private fun write() {
+    private fun write(holoID: Int, viewers: MutableSet<Player>) {
+        viewers.forEach {
+            val animationList = text.printed().replacePlaceholder(it)
+            if (animationList.isEmpty()) return
+            updateDisplayName(it, holoID, animationList[0])
+            writeSpeed(it, holoID, 1, animationList)
+        }
+    }
 
+    private fun writeSpeed(viewer: Player, holoID: Int, index: Int, animationList: List<String>) {
+        if (index >= animationList.size) return
+        submit(async = true, delay = speed) {
+            if (viewer.isOnline) {
+                updateDisplayName(viewer, holoID, animationList[index])
+                writeSpeed(viewer, holoID, index + 1, animationList)
+            }
+        }
     }
 
     enum class WriteType {

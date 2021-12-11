@@ -7,7 +7,7 @@ import taboolib.module.chat.colored
 
 object UtilString {
 
-    fun updateLang(): MutableList<String> = QuestEngine.config.getStringList("update.lang")
+    fun updateLang(): List<String> = QuestEngine.config.getStringList("update.lang")
 
     val pluginTag by lazy {
         "§7§l[ §c§li §7§l]§7§l[ §3§lQuestEngine §7§l]"
@@ -74,4 +74,8 @@ fun String.variableReader(): MutableList<String> {
         if (it.isVariable) list.add(it.text)
     }
     return list
+}
+
+fun String.spaceSplit(index: Int): String {
+    return this.split(" ")[index]
 }
