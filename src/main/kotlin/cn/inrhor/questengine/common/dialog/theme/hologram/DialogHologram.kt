@@ -3,7 +3,6 @@ package cn.inrhor.questengine.common.dialog.theme.hologram
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.api.dialog.DialogTheme
 import cn.inrhor.questengine.api.hologram.HoloIDManager
-import cn.inrhor.questengine.utlis.variableReader
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
@@ -48,21 +47,11 @@ class DialogHologram(
      * 支持 PAPI
      */
     private fun textViewers(text: String) {
-        holoData.create(HoloIDManager.generate(
-            dialogModule.dialogID, holoData.size(), HoloIDManager.Type.TEXT))
-
-        viewers.forEach {
-
-        }
-    }
-
-    /**
-     * 解析文本
-     */
-    private fun parserText(text: String) {
-        text.variableReader().forEach {
-
-        }
+        val holoID = HoloIDManager.generate(
+            dialogModule.dialogID, holoData.size(), HoloIDManager.Type.TEXT)
+        holoData.create(holoID, viewers, origin)
+        val animation = AnimationText(text)
+        animation.sendViewers(holoID, viewers)
     }
 
 }

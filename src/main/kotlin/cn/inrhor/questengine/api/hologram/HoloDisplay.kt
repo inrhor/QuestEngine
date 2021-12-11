@@ -7,12 +7,16 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 
 /**
- * 全息调用
+ * 全息显示调用
  */
 object HoloDisplay {
 
     fun updateText(holoID: Int, viewer: Player, text: String) {
         updateDisplayName(mutableSetOf(viewer), holoID, text)
+    }
+
+    fun updateText(holoID: Int, viewers: MutableSet<Player>, text: String) {
+        updateDisplayName(viewers, holoID, text)
     }
 
     fun updateItem(holoID: Int, itemID: Int, viewers: MutableSet<Player>, loc: Location, item: ItemStack) {
@@ -24,9 +28,9 @@ object HoloDisplay {
         updateEquipmentItem(viewers, holoID, EquipmentSlot.HEAD, item)
     }
 
-    fun initTextAS(holoID: Int, viewer: Player) {
-        initAS(viewer, holoID, showName = true, isSmall = true, marker = true)
-        updateText(holoID, viewer, "")
+    fun initTextAS(holoID: Int, viewers: MutableSet<Player>) {
+        initAS(viewers, holoID, showName = true, isSmall = true, marker = true)
+        updateText(holoID, viewers, "")
     }
 
     fun initItemAS(holoID: Int, viewers: MutableSet<Player>) {
