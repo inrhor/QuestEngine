@@ -1,5 +1,8 @@
 package cn.inrhor.questengine.api.dialog
 
+import org.bukkit.Material
+import org.bukkit.inventory.ItemStack
+
 /**
  * 对话主题接口
  */
@@ -13,24 +16,28 @@ interface  DialogTheme {
 }
 
 /**
- * 对话播放接口
+ * 对话播放抽象
  */
-interface DialogPlay {
-    var delay: Long
-    var speed: Long
+abstract class DialogPlay {
+    var delay: Long = 0
+    var speed: Long = 0
 }
 
 /**
- * 对话文本接口
+ * 对话文本抽象
  */
-interface TextPlay: DialogPlay {
-    var text: String
+abstract class TextPlay: DialogPlay() {
+    var text: String = ""
+}
 
-    override var delay: Long
-        get() = 0L
-        set(value) {}
+/**
+ * 对话物品抽象
+ */
+abstract class ItemPlay: DialogPlay() {
+    var itemID: String = ""
+    var displayType: Type = Type.FIXED
 
-    override var speed: Long
-        get() = 0L
-        set(value) {}
+    enum class Type {
+        FIXED, SUSPEND
+    }
 }

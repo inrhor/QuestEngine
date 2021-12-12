@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.dialog.theme.hologram
+package cn.inrhor.questengine.common.dialog.theme.hologram.content
 
 import cn.inrhor.questengine.api.dialog.TextPlay
 import cn.inrhor.questengine.api.packet.updateDisplayName
@@ -12,13 +12,11 @@ import taboolib.platform.compat.replacePlaceholder
 /**
  * 动态全息文本
  */
-class AnimationText(content: String): TextPlay {
+class AnimationText(content: String): TextPlay(), HoloTypeSend {
 
     var writeType = WriteType.NORMAL
     var out = false
     var clearWait = 0L
-
-    override var text: String = ""
 
     init {
         content.variableReader().forEach {
@@ -40,7 +38,7 @@ class AnimationText(content: String): TextPlay {
         }
     }
 
-    fun sendViewers(holoID: Int, viewers: MutableSet<Player>) {
+    override fun sendViewers(holoID: Int, viewers: MutableSet<Player>) {
         submit(async = true, delay = this.delay) {
             if (viewers.isEmpty()) {
                 cancel(); return@submit

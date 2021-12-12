@@ -3,6 +3,9 @@ package cn.inrhor.questengine.common.dialog.theme.hologram
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.api.dialog.DialogTheme
 import cn.inrhor.questengine.api.hologram.HoloIDManager
+import cn.inrhor.questengine.common.dialog.theme.hologram.content.AnimationItem
+import cn.inrhor.questengine.common.dialog.theme.hologram.content.AnimationText
+import cn.inrhor.questengine.common.dialog.theme.hologram.content.HoloTypeSend
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
@@ -37,21 +40,18 @@ class DialogHologram(
             }else if (u.startsWith("nexty")) {
                 origin.nextY = it.split(" ")[1].toDouble()
             }else if (u.startsWith("text")) {
-                textViewers(it)
+                sendViewers(AnimationText(it))
+            }else if (u.startsWith("item ")) {
+                sendViewers(AnimationItem(it))
             }
         }
     }
 
-    /**
-     * 向 viewer 发送文本
-     * 支持 PAPI
-     */
-    private fun textViewers(text: String) {
+    private fun sendViewers(holoDialogSend: HoloTypeSend) {
         val holoID = HoloIDManager.generate(
             dialogModule.dialogID, holoData.size(), HoloIDManager.Type.TEXT)
         holoData.create(holoID, viewers, origin)
-        val animation = AnimationText(text)
-        animation.sendViewers(holoID, viewers)
+        holoDialogSend.sendViewers(holoID, viewers)
     }
 
 }

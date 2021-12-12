@@ -2,8 +2,6 @@ package cn.inrhor.questengine.common.dialog
 
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.common.database.data.DataStorage
-import cn.inrhor.questengine.common.dialog.animation.parser.ItemParser
-import cn.inrhor.questengine.common.dialog.optional.holo.core.HoloDialog
 import cn.inrhor.questengine.script.kether.evalBoolean
 import cn.inrhor.questengine.script.kether.evalBooleanSet
 import cn.inrhor.questengine.utlis.UtilString
@@ -45,23 +43,6 @@ object DialogManager {
 
         dialogMap[dialogID] = dialogModule
     }
-
-    /*fun animation(dialogID: String, player: Player) {
-        val dialogModule = dialogMap[dialogID]?: return
-        val textContents = mutableListOf<String>()
-        for (script in dialogModule.dialog) {
-            val iUc = script.uppercase()
-            when {
-                iUc.startsWith("TEXT") -> {
-                    textContents.add(script.replacePlaceholder(player))
-                }
-            }
-        }
-        val textParser = TextParser(textContents)
-        textParser.init(dialogID, "dialog")
-
-        dialogModule.playText = textParser.dialogTextList
-    }*/
 
     /**
      * 删除对话
