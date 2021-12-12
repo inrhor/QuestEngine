@@ -5,7 +5,6 @@ import cn.inrhor.questengine.api.dialog.DialogTheme
 import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.common.dialog.theme.hologram.content.AnimationItem
 import cn.inrhor.questengine.common.dialog.theme.hologram.content.AnimationText
-import cn.inrhor.questengine.common.dialog.theme.hologram.content.HoloTypeSend
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
@@ -40,18 +39,37 @@ class DialogHologram(
             }else if (u.startsWith("nexty")) {
                 origin.nextY = it.split(" ")[1].toDouble()
             }else if (u.startsWith("text")) {
-                sendViewers(AnimationText(it))
+                textViewers(it)
             }else if (u.startsWith("item ")) {
-                sendViewers(AnimationItem(it))
+                itemViewers(it)
             }
         }
     }
 
-    private fun sendViewers(holoDialogSend: HoloTypeSend) {
+    /**
+     * 向 viewer 发送文本
+     */
+    private fun textViewers(text: String) {
         val holoID = HoloIDManager.generate(
             dialogModule.dialogID, holoData.size(), HoloIDManager.Type.TEXT)
-        holoData.create(holoID, viewers, origin)
-        holoDialogSend.sendViewers(holoID, viewers)
+        holoData.create(holoID, viewers, origin, HoloIDManager.Type.TEXT)
+        val animation = AnimationText(text)
+        animation.sendViewers(holoID, viewers)
+    }
+
+    /**
+     * 向 viewers 发送物品
+     */
+    private fun itemViewers(content: String) {
+        val dialogID = dialogModule.dialogID
+        val index = holoData.size()
+        val itemHoloID = HoloIDManager.generate(
+            dialogID, index, HoloIDManager.Type.ITEM)
+        val stackHoloID = HoloIDManager.generate(
+            dialogID, index+1, HoloIDManager.Type.ITEMSTACK)
+        holoData.create(itemHoloID, viewers, origin, HoloIDManager.Type.ITEM)
+        val animation = AnimationItem(content, holoData)
+        animation.sendViewers(viewers, origin, itemHoloID, stackHoloID)
     }
 
 }

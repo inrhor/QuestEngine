@@ -34,7 +34,7 @@ abstract class TextPlay: DialogPlay() {
  * 对话物品抽象
  */
 abstract class ItemPlay: DialogPlay() {
-    var itemID: String = ""
+    var itemStack: ItemStack = ItemStack(Material.STONE)
     var displayType: Type = Type.FIXED
 
     enum class Type {

@@ -15,10 +15,19 @@ class HologramData {
      */
     val packetIDs = mutableSetOf<Int>()
 
-    fun create(packetID: Int, viewers: MutableSet<Player>, originLocation: OriginLocation) {
+    fun addID(packetID: Int) {
+        packetIDs.add(packetID)
         HoloIDManager.addEntityID(packetID)
+    }
+
+    fun create(packetID: Int, viewers: MutableSet<Player>, originLocation: OriginLocation, type: HoloIDManager.Type) {
+        addID(packetID)
         spawnAS(viewers, packetID, originLocation.origin)
-        HoloDisplay.initTextAS(packetID, viewers)
+        if (type == HoloIDManager.Type.ITEM) {
+            HoloDisplay.initItemAS(packetID, viewers)
+        }else {
+            HoloDisplay.initTextAS(packetID, viewers)
+        }
     }
 
     fun remove() {

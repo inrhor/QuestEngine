@@ -20,7 +20,7 @@ object PacketUtil {
 
     @Awake(LifeCycle.ACTIVE)
     fun setHook() {
-        val hook = QuestEngine.config.getString("hook.packet").uppercase()
+        val hook = QuestEngine.config.getString("hook.packet")?:"TabooLib".uppercase()
         if (hook == "PROTOCOLLIB") {
             if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
                 console().sendLang("LOADER-NOT_INSTALLED-PLIB", UtilString.pluginTag)

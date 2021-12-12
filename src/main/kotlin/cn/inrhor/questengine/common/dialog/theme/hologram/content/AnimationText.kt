@@ -12,7 +12,7 @@ import taboolib.platform.compat.replacePlaceholder
 /**
  * 动态全息文本
  */
-class AnimationText(content: String): TextPlay(), HoloTypeSend {
+class AnimationText(val content: String): TextPlay() {
 
     var writeType = WriteType.NORMAL
     var out = false
@@ -38,7 +38,7 @@ class AnimationText(content: String): TextPlay(), HoloTypeSend {
         }
     }
 
-    override fun sendViewers(holoID: Int, viewers: MutableSet<Player>) {
+    fun sendViewers(holoID: Int, viewers: MutableSet<Player>) {
         submit(async = true, delay = this.delay) {
             if (viewers.isEmpty()) {
                 cancel(); return@submit
