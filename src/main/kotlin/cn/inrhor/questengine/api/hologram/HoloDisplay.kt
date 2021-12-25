@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack
  */
 object HoloDisplay {
 
-    fun updateItem(holoID: Int, itemID: Int, viewers: MutableSet<Player>, loc: Location, item: ItemStack) {
+    fun passengerItem(holoID: Int, itemID: Int, viewers: MutableSet<Player>, loc: Location, item: ItemStack) {
         spawnItem(viewers, itemID, loc, item)
         updatePassengers(viewers, holoID, itemID)
     }

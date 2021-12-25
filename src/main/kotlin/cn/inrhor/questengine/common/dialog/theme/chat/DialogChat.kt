@@ -13,4 +13,16 @@ class DialogChat(val dialogModule: DialogModule): DialogTheme {
 
     }
 
+    override fun end() {
+
+    }
+
+    override fun addViewer(viewer: Player) {
+
+    }
+
+    override fun deleteViewer(viewer: Player) {
+
+    }
+
 }

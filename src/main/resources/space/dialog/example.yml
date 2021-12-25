@@ -40,12 +40,12 @@ dialog1:
       # 支持 Kether 布尔值语句
       condition: []
       content:
-        - hitBox {{dir left}} {{add 2.5 1.5}} {{sizeX 3 3}} {{size 3 3}} {{long 5}} {{item item_2}} {{use suspend}} {{boxY 2}}
+        - hitBox {{sizeX 3 3}} {{sizeY 3 3}} {{sizeZ 3 3}} {{long 5}} {{item item_2}} {{use suspend}} {{boxY 2}}
         - initLoc {{add 2.0 1.5}} {{dir left}}
         - nextY -1.0
         - text {{&c&l你好世界 Hello World}}
         - text {{&3&l欢迎使用全息对话系统}}
-        - item item_1 suspend
+        - item {{item item_1}} {{use suspend}}
       # 支持 Kether 语句
       script:
         - dialog end dialog_1
@@ -65,7 +65,7 @@ dialog2:
       condition:
         - tags has hello
       content:
-        - hitBox {{sizeX 3 3}} {{sizeY 3 3}} {{sizeZ 3 3}} {{add 2.5 1.5}} {{dir left}} {{long 5}} {{item item_2}} {{use suspend}} {{boxY 2}}
+        - hitBox {{sizeX 3 3}} {{sizeY 3 3}} {{sizeZ 3 3}} {{long 5}} {{item item_2}} {{use suspend}} {{boxY 2}}
         - initLoc {{dir left}} {{add 2.0 1.5}}
         - item {{item item_2}} {{use fixed}}
       script:

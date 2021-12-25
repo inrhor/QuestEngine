@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.api.dialog
 
 import org.bukkit.Material
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 /**
@@ -12,6 +13,21 @@ interface  DialogTheme {
      * 播放对话
      */
     fun play()
+
+    /**
+     * 终止对话
+     */
+    fun end()
+
+    /**
+     * 添加 viewer
+     */
+    fun addViewer(viewer: Player)
+
+    /**
+     * 移除 viewer
+     */
+    fun deleteViewer(viewer: Player)
 
 }
 

@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.dialog.theme.hologram
 
 import cn.inrhor.questengine.api.hologram.HoloDisplay
 import cn.inrhor.questengine.api.hologram.HoloIDManager
+import cn.inrhor.questengine.api.packet.destroyEntity
 import cn.inrhor.questengine.api.packet.spawnAS
 import org.bukkit.entity.Player
 
@@ -30,12 +31,14 @@ class HologramData {
         }
     }
 
-    fun remove() {
-
+    fun remove(player: Player) {
+        remove(mutableSetOf(player))
     }
 
-    fun clear() {
-
+    fun remove(viewers: MutableSet<Player>) {
+        packetIDs.forEach {
+            destroyEntity(viewers, it)
+        }
     }
 
     fun size(): Int {

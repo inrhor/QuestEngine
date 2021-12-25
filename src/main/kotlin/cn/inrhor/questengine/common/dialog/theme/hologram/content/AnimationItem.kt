@@ -2,8 +2,6 @@ package cn.inrhor.questengine.common.dialog.theme.hologram.content
 
 import cn.inrhor.questengine.api.dialog.ItemPlay
 import cn.inrhor.questengine.api.hologram.HoloDisplay
-import cn.inrhor.questengine.api.packet.spawnItem
-import cn.inrhor.questengine.api.packet.updatePassengers
 import cn.inrhor.questengine.common.dialog.theme.hologram.HologramData
 import cn.inrhor.questengine.common.dialog.theme.hologram.OriginLocation
 import cn.inrhor.questengine.common.item.ItemManager
@@ -38,8 +36,7 @@ class AnimationItem(val content: String, val holoData: HologramData): ItemPlay()
             val itemHoloID = holoID[0]
             if (displayType == Type.SUSPEND) {
                 val stackID = holoID[1]
-                spawnItem(viewers, stackID, origin.origin, itemStack)
-                updatePassengers(viewers, itemHoloID, stackID)
+                HoloDisplay.passengerItem(itemHoloID, stackID, viewers, origin.origin, itemStack)
                 holoData.addID(stackID)
                 return@submit
             }

@@ -17,8 +17,6 @@ data class DialogModule(
     val space = SpaceDialogModule()
     val type: String = "holo"
 
-    var playItem = mutableListOf<ItemDialogPlay>()
-
    fun register() {
        DialogManager.register(dialogID, this)
    }
