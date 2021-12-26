@@ -26,21 +26,6 @@ object DialogManager {
             console().sendLang("DIALOG-EXIST_DIALOG_ID", UtilString.pluginTag, dialogID)
             return
         }
-
-        // 输出物品
-        val itemContents = mutableListOf<String>()
-        for (script in dialogModule.dialog) {
-            val iUc = script.uppercase()
-            when {
-                iUc.startsWith("ITEM") -> {
-                    itemContents.add(script)
-                }
-            }
-        }
-        val itemParser = ItemParser(itemContents)
-        itemParser.init(dialogID)
-        dialogModule.playItem = itemParser.dialogItemList
-
         dialogMap[dialogID] = dialogModule
     }
 
@@ -75,7 +60,7 @@ object DialogManager {
     }
 
     fun hasDialog(player: Player, dialogID: String): Boolean {
-        val holoDialog = DataStorage.getPlayerData(player).dialogData.holoDialogMap[dialogID]?: return false
+        val holoDialog = DataStorage.getPlayerData(player).dialogData.dialogMap[dialogID]?: return false
         holoDialog.forEach {
             if (it.dialogModule.dialogID == dialogID) return true
         }

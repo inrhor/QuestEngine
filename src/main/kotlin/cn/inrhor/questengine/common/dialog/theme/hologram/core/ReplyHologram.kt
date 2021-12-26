@@ -1,11 +1,14 @@
-package cn.inrhor.questengine.common.dialog.theme.hologram
+package cn.inrhor.questengine.common.dialog.theme.hologram.core
 
 import cn.inrhor.questengine.api.dialog.DialogTheme
 import cn.inrhor.questengine.api.dialog.ReplyModule
+import cn.inrhor.questengine.api.dialog.ReplyTheme
 import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.api.packet.updateDisplayName
+import cn.inrhor.questengine.common.dialog.theme.hologram.HologramData
+import cn.inrhor.questengine.common.dialog.theme.hologram.OriginLocation
 import cn.inrhor.questengine.common.dialog.theme.hologram.content.AnimationItem
-import cn.inrhor.questengine.utlis.location.ReferHoloHitBox
+import cn.inrhor.questengine.common.dialog.theme.hologram.parserOrigin
 import cn.inrhor.questengine.utlis.variableReader
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -15,21 +18,20 @@ import taboolib.common.platform.function.submit
  * 全息回复
  */
 class ReplyHologram(
-    val dialogID: String,
-    val viewers: MutableSet<Player>,
+    val dialogHolo: DialogHologram,
     val reply: MutableList<ReplyModule>,
     val delay: Long,
-    val location: Location,
-    val holoData: HologramData): DialogTheme {
+    val holoData: HologramData
+): ReplyTheme {
 
-    val origin = OriginLocation(location)
+    val origin = OriginLocation(dialogHolo.npcLoc)
 
     /**
      * 播放回复
      */
     override fun play() {
         submit(async = true, delay = this.delay) {
-            if (viewers.isEmpty()) {
+            if (dialogHolo.viewers.isEmpty()) {
                 cancel()
                 return@submit
             }
@@ -57,44 +59,38 @@ class ReplyHologram(
     private fun text(replyModule: ReplyModule, text: String) {
         val type = HoloIDManager.Type.TEXT
         val holoID = HoloIDManager.generate(
-            dialogID, replyModule.replyID,
+            dialogHolo.dialogModule.dialogID, replyModule.replyID,
             holoData.size(), type)
-        holoData.create(holoID, viewers, origin, type)
-        updateDisplayName(viewers, holoID, text)
+        holoData.create(holoID, dialogHolo.viewers, origin, type)
+        updateDisplayName(dialogHolo.viewers, holoID, text)
     }
 
     private fun item(replyModule: ReplyModule, content: String) {
         val index = holoData.size()
         val type = HoloIDManager.Type.ITEM
         val replyID = replyModule.replyID
+        val dialogID = dialogHolo.dialogModule.dialogID
         val itemHoloID = HoloIDManager.generate(
             dialogID, replyID, index, type)
         val stackHoloID = HoloIDManager.generate(
             dialogID, replyID, index+1, HoloIDManager.Type.ITEMSTACK)
-        holoData.create(itemHoloID, viewers, origin, type)
+        holoData.create(itemHoloID, dialogHolo.viewers, origin, type)
         val animation = AnimationItem(content, holoData)
-        animation.sendViewers(viewers, origin, itemHoloID, stackHoloID)
+        animation.sendViewers(dialogHolo.viewers, origin, itemHoloID, stackHoloID)
     }
 
-    private fun hitBox(replyModule: ReplyModule, content: String): ReferHoloHitBox {
+    private fun hitBox(replyModule: ReplyModule, content: String): HoloHitBox {
         val index = holoData.size()
         val replyID = replyModule.replyID
+        val dialogID = dialogHolo.dialogModule.dialogID
         val hitBoxID = HoloIDManager.generate(
             dialogID, replyID, index, HoloIDManager.Type.HITBOX)
         val stackID = HoloIDManager.generate(
             dialogID, replyID, index+1, HoloIDManager.Type.ITEMSTACK)
-        return ReferHoloHitBox(content, hitBoxID, stackID)
+        return HoloHitBox(dialogHolo, replyModule, content, hitBoxID, stackID)
     }
 
     override fun end() {
-
-    }
-
-    override fun addViewer(viewer: Player) {
-
-    }
-
-    override fun deleteViewer(viewer: Player) {
 
     }
 }

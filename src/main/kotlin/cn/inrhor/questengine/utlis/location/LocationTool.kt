@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.utlis.location
 
+import cn.inrhor.questengine.common.dialog.theme.hologram.core.HoloHitBox
 import org.bukkit.Location
-import taboolib.library.kether.QuestReader
 import taboolib.module.kether.*
 import taboolib.platform.util.toBukkitLocation
 import taboolib.platform.util.toProxyLocation
@@ -14,7 +14,7 @@ object LocationTool {
             .toBukkitLocation()
     }
 
-    fun getReferHoloBoxLoc(yaw: Float, ownLoc: Location, referHoloHitBox: ReferHoloHitBox): Location {
+    fun getReferHoloBoxLoc(yaw: Float, ownLoc: Location, referHoloHitBox: HoloHitBox): Location {
         return ownLoc.toProxyLocation().referTo(yaw,
             referHoloHitBox.offset, referHoloHitBox.multiply, referHoloHitBox.height)
             .toBukkitLocation()

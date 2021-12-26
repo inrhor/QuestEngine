@@ -10,10 +10,10 @@ object ClickHolo {
     fun click(ev: HoloClickEvent) {
         val holoBox = ev.holoHitBox
         val replyModule = holoBox.replyModule
-        holoBox.viewers.forEach {
+        holoBox.dialogHolo.viewers.forEach {
             for (script in replyModule.script) {
                 if (script.lowercase().startsWith("npcdialog send")) {
-                    val loc = holoBox.npcLoc
+                    val loc = holoBox.dialogHolo.npcLoc
                     eval(it, script.replace("npcdialog", "dialog", true)
                             +" where location *"+loc.world?.name
                             +" *"+loc.x+" *"+loc.y+" *"+loc.z)

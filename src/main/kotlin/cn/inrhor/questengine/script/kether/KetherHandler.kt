@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.script.kether
 
 import cn.inrhor.questengine.common.dialog.animation.text.type.TextWrite
-import cn.inrhor.questengine.utlis.location.ReferHoloHitBox
+import cn.inrhor.questengine.common.dialog.theme.hologram.core.HoloHitBox
 import cn.inrhor.questengine.utlis.location.ReferLocation
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.*
@@ -61,6 +61,6 @@ fun evalReferLoc(script: String): ReferLocation {
     return eval(script) as ReferLocation
 }
 
-fun evalHoloHitBox(script: String): ReferHoloHitBox {
-    return eval(script) as ReferHoloHitBox
+fun evalHoloHitBox(script: String): HoloHitBox {
+    return eval(script) as HoloHitBox
 }

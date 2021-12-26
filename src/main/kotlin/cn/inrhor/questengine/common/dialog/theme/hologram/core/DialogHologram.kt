@@ -1,11 +1,14 @@
-package cn.inrhor.questengine.common.dialog.theme.hologram
+package cn.inrhor.questengine.common.dialog.theme.hologram.core
 
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.api.dialog.DialogTheme
 import cn.inrhor.questengine.api.dialog.ReplyModule
 import cn.inrhor.questengine.api.hologram.HoloIDManager
+import cn.inrhor.questengine.common.dialog.theme.hologram.HologramData
+import cn.inrhor.questengine.common.dialog.theme.hologram.OriginLocation
 import cn.inrhor.questengine.common.dialog.theme.hologram.content.AnimationItem
 import cn.inrhor.questengine.common.dialog.theme.hologram.content.AnimationText
+import cn.inrhor.questengine.common.dialog.theme.hologram.parserOrigin
 import cn.inrhor.questengine.utlis.spaceSplit
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -16,9 +19,9 @@ import org.bukkit.entity.Player
 class DialogHologram(
     val dialogModule: DialogModule,
     val viewers: MutableSet<Player>,
-    val location: Location): DialogTheme {
+    val npcLoc: Location): DialogTheme {
 
-    val origin = OriginLocation(location)
+    val origin = OriginLocation(npcLoc)
     val replyHoloList = mutableListOf<ReplyHologram>()
     private val holoData = HologramData()
 
@@ -28,17 +31,14 @@ class DialogHologram(
 
     override fun end() {
         holoData.remove(viewers)
-        replyHoloList.forEach { it.end() }
     }
 
     override fun addViewer(viewer: Player) {
         viewers.add(viewer)
-        replyHoloList.forEach { it.addViewer(viewer) }
     }
 
     override fun deleteViewer(viewer: Player) {
         viewers.remove(viewer)
-        replyHoloList.forEach { it.deleteViewer(viewer) }
     }
 
     /**
@@ -54,8 +54,9 @@ class DialogHologram(
             }else if (u.startsWith("replyall ") || u.startsWith("reply ")) {
                 val replyList = if (u.startsWith("replyall")) dialogModule.reply else
                     getReply((it.spaceSplit(2)))
-                val reply = ReplyHologram(dialogModule.dialogID,
-                    viewers, replyList,it.spaceSplit(1).toLong(), location, holoData)
+                val reply = ReplyHologram(
+                    this, replyList,
+                    it.spaceSplit(1).toLong(), holoData)
                 reply.play()
                 replyHoloList.add(reply)
             }else {
