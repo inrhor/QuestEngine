@@ -241,7 +241,7 @@ object QuestManager {
         }
     }
 
-    private fun runFailTime(player: Player, modeType: ModeType, failKether: MutableList<String>) {
+    private fun runFailTime(player: Player, modeType: ModeType, failKether: List<String>) {
         val pData = DataStorage.getPlayerData(player)
         val tData = pData.teamData
         if (modeType == ModeType.COLLABORATION && tData != null) {
@@ -535,7 +535,7 @@ object QuestManager {
      * 得到奖励脚本，成功与否
      * 成功的一般是在目标完成时得到
      */
-    fun getReward(questID: String, innerQuestID: String, rewardID: String, type: QuestState): MutableList<String>? {
+    fun getReward(questID: String, innerQuestID: String, rewardID: String, type: QuestState): List<String>? {
         val questModule = questMap[questID]!!
         for (m in questModule.innerQuestList) {
             if (m.innerQuestID == innerQuestID) {

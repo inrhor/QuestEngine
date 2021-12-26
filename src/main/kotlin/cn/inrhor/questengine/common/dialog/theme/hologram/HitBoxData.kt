@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.dialog.theme.hologram
 
-import cn.inrhor.questengine.api.dialog.ItemPlay
+import cn.inrhor.questengine.api.dialog.theme.ItemPlay
 import cn.inrhor.questengine.utlis.location.BoundingBox
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack

@@ -5,7 +5,7 @@ package cn.inrhor.questengine.api.quest.control
  */
 class ControlNormalModule(
     override val controlID: String,
-    override var controls: MutableList<String>,
+    override var controls: List<String>,
     override var logOpen: ControlLogType
 ): QuestControlOpen() {
 

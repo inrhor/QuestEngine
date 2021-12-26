@@ -9,10 +9,10 @@ import cn.inrhor.questengine.utlis.UtilString
 import cn.inrhor.questengine.utlis.location.LocationTool
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import taboolib.library.configuration.YamlConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
 import taboolib.common.platform.function.*
+import taboolib.module.configuration.Configuration
 import taboolib.module.lang.sendLang
 import java.io.File
 
@@ -122,29 +122,14 @@ object PacketManager {
      * 检查和注册数据包
      */
     private fun checkRegPacket(file: File) {
-        val yaml = YamlConfiguration.loadConfiguration(file)
+        val yaml = Configuration.loadFromFile(file)
         if (yaml.getKeys(false).isEmpty()) {
             console().sendLang("PACKET-EMPTY_CONTENT", UtilString.pluginTag, file.name)
             return
         }
         for (packetID in yaml.getKeys(false)) {
-            PacketFile.init(yaml.getConfigurationSection(packetID))
+            PacketFile.init(yaml.getConfigurationSection(packetID)!!)
         }
     }
-
-    /*fun returnItemEntityID(packetID: String, mate: MutableList<String>): MutableMap<String, Int> {
-        val itemEntityID = mutableMapOf<String, Int>()
-
-        mate.forEach {
-            if (it.lowercase().startsWith("equip ")) {
-                val sp = it.split(" ")
-                val itemID = sp[2]
-                val entityID = generate(packetID, itemID)
-                itemEntityID[itemID] = entityID
-            }
-        }
-
-        return itemEntityID
-    }*/
 
 }

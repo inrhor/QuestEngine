@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.dialog.theme.hologram.content
 
-import cn.inrhor.questengine.api.dialog.ItemPlay
+import cn.inrhor.questengine.api.dialog.theme.ItemPlay
 import cn.inrhor.questengine.api.hologram.HoloDisplay
 import cn.inrhor.questengine.common.dialog.theme.hologram.HologramData
 import cn.inrhor.questengine.common.dialog.theme.hologram.OriginLocation

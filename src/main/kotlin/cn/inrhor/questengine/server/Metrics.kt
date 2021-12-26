@@ -22,7 +22,7 @@ object Metrics {
                 QuestManager.questMap.size
             })
             it.addCustomChart(SingleLineChart("dialog") {
-                DialogManager.dialogMap.size
+                DialogManager.getMap().size
             })
         }
     }

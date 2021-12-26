@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.dialog.theme.hologram.content
 
-import cn.inrhor.questengine.api.dialog.TextPlay
+import cn.inrhor.questengine.api.dialog.theme.TextPlay
 import cn.inrhor.questengine.api.packet.updateDisplayName
 import cn.inrhor.questengine.utlis.spaceSplit
 import cn.inrhor.questengine.utlis.variableReader

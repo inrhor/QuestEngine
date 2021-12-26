@@ -14,9 +14,10 @@ object LocationTool {
             .toBukkitLocation()
     }
 
-    fun getReferHoloBoxLoc(yaw: Float, ownLoc: Location, referHoloHitBox: HoloHitBox): Location {
+    fun getReferHoloBoxLoc(yaw: Float, ownLoc: Location, holoHitBox: HoloHitBox): Location {
+        val data = holoHitBox.hitBoxData
         return ownLoc.toProxyLocation().referTo(yaw,
-            referHoloHitBox.offset, referHoloHitBox.multiply, referHoloHitBox.height)
+            data.offset, data.multiply, data.height)
             .toBukkitLocation()
     }
 

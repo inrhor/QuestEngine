@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.database.data
 
-import cn.inrhor.questengine.api.dialog.DialogTheme
-import cn.inrhor.questengine.api.dialog.ReplyTheme
+import cn.inrhor.questengine.api.dialog.theme.DialogTheme
+import cn.inrhor.questengine.api.dialog.theme.ReplyTheme
 import cn.inrhor.questengine.common.dialog.theme.hologram.core.HoloHitBox
 
 data class DialogData(

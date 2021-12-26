@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.api.dialog
+package cn.inrhor.questengine.api.dialog.theme
 
 interface ReplyTheme {
 

@@ -16,5 +16,4 @@ class QuestData(
     val questInnerData: QuestInnerData,
     var state: QuestState,
     var teamData: TeamOpen?,
-    var finishedList: MutableList<String>) {
-}
+    val finishedList: MutableList<String>)

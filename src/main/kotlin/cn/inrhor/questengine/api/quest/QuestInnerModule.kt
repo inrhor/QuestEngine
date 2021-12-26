@@ -10,6 +10,6 @@ class QuestInnerModule(val innerQuestID: String,
                        var questControls: MutableList<QuestControlOpen>,
                        var questReward: QuestReward,
                        var questTargetList: MutableMap<String, QuestTarget>,
-                       var description: MutableList<String>) {
+                       var description: List<String>) {
 
 }

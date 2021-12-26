@@ -9,7 +9,7 @@ abstract class QuestControlOpen {
 
     abstract val priority: ControlPriority
 
-    abstract var controls: MutableList<String>
+    abstract var controls: List<String>
 
     abstract var logOpen: ControlLogType
 

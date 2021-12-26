@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.dialog
 
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.dialog.theme.hologram.core.DialogHologram
 import cn.inrhor.questengine.script.kether.evalBoolean
 import cn.inrhor.questengine.script.kether.evalBooleanSet
 import cn.inrhor.questengine.utlis.UtilString
@@ -16,7 +17,7 @@ object DialogManager {
     /**
      * 成功注册的对话模块
      */
-    private var dialogMap = mutableMapOf<String, DialogModule>()
+    private val dialogMap = mutableMapOf<String, DialogModule>()
 
     /**
      * 注册对话
@@ -43,6 +44,8 @@ object DialogManager {
      * 获取对话对象
      */
     fun get(dialogID: String) = dialogMap[dialogID]
+
+    fun getMap() = dialogMap
 
     /**
      * 清空对话对象Map
@@ -83,22 +86,22 @@ object DialogManager {
 
     fun sendDialogHolo(players: MutableSet<Player>, npcID: String, npcLoc: Location) {
         val dialogModule = returnCanDialogHolo(players, npcID)?: return
-        val holoDialog = HoloDialog(dialogModule, npcLoc, players)
-        holoDialog.run()
-        spaceDialogHolo(dialogModule, holoDialog)
+        val dialog = DialogHologram(dialogModule, npcLoc, players)
+        dialog.play()
+        spaceDialogHolo(dialogModule, dialog)
     }
 
     fun sendDialogHolo(player: Player, dialogID: String, location: Location = player.location) {
         if (hasDialog(player, dialogID)) return
         if (exist(dialogID)) {
             val dialogModule = get(dialogID)?: return
-            val holoDialog = HoloDialog(dialogModule, location, mutableSetOf(player))
-            holoDialog.run()
+            val holoDialog = DialogHologram(dialogModule, location, mutableSetOf(player))
+            holoDialog.play()
             spaceDialogHolo(dialogModule, holoDialog)
         }
     }
 
-    fun spaceDialogHolo(dialogModule: DialogModule, holoDialog: HoloDialog) {
+    fun spaceDialogHolo(dialogModule: DialogModule, holoDialog: DialogHologram) {
         val space = dialogModule.space
         if (!space.enable) return
         val id = dialogModule.dialogID

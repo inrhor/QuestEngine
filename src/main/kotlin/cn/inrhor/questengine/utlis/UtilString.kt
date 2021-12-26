@@ -48,7 +48,7 @@ fun progressBar(
             + Strings.repeat("" + notCompletedColor + symbol, totalBars - progressBars))
 }
 
-fun MutableList<String>.toJsonStr(): String {
+fun List<String>.toJsonStr(): String {
     var content = ""
     this.forEach {
         if (content.isEmpty()) {

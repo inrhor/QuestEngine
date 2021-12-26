@@ -1,8 +1,7 @@
 package cn.inrhor.questengine.common.dialog.theme.hologram.core
 
-import cn.inrhor.questengine.api.dialog.DialogTheme
 import cn.inrhor.questengine.api.dialog.ReplyModule
-import cn.inrhor.questengine.api.dialog.ReplyTheme
+import cn.inrhor.questengine.api.dialog.theme.ReplyTheme
 import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.api.packet.updateDisplayName
 import cn.inrhor.questengine.common.dialog.theme.hologram.HologramData
@@ -10,8 +9,6 @@ import cn.inrhor.questengine.common.dialog.theme.hologram.OriginLocation
 import cn.inrhor.questengine.common.dialog.theme.hologram.content.AnimationItem
 import cn.inrhor.questengine.common.dialog.theme.hologram.parserOrigin
 import cn.inrhor.questengine.utlis.variableReader
-import org.bukkit.Location
-import org.bukkit.entity.Player
 import taboolib.common.platform.function.submit
 
 /**

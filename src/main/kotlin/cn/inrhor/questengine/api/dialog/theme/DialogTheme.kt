@@ -1,33 +1,36 @@
-package cn.inrhor.questengine.api.dialog
+package cn.inrhor.questengine.api.dialog.theme
 
+import cn.inrhor.questengine.api.dialog.DialogModule
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 /**
- * 对话主题接口
+ * 对话主题抽象
  */
-interface  DialogTheme {
+abstract class DialogTheme {
+
+    abstract val dialogModule: DialogModule
 
     /**
      * 播放对话
      */
-    fun play()
+    abstract fun play()
 
     /**
      * 终止对话
      */
-    fun end()
+    abstract fun end()
 
     /**
      * 添加 viewer
      */
-    fun addViewer(viewer: Player)
+    abstract fun addViewer(viewer: Player)
 
     /**
      * 移除 viewer
      */
-    fun deleteViewer(viewer: Player)
+    abstract fun deleteViewer(viewer: Player)
 
 }
 

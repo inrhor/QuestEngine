@@ -1,19 +1,18 @@
 package cn.inrhor.questengine.common.collaboration.ui.chat
 
 import cn.inrhor.questengine.api.collaboration.TeamOpen
-import cn.inrhor.questengine.utlis.UtilString
 import cn.inrhor.questengine.utlis.toJsonStr
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import taboolib.library.configuration.YamlConfiguration
+import taboolib.module.configuration.Configuration
 
 object UtilTeam {
 
-    fun getStr(yaml: YamlConfiguration, node: String, tData: TeamOpen, leaderName: String): String {
+    fun getStr(yaml: Configuration, node: String, tData: TeamOpen, leaderName: String): String {
         return getStr(yaml, node, tData, leaderName, "%memberName%")
     }
 
-    fun getStr(yaml: YamlConfiguration, node: String, tData: TeamOpen, leaderName: String, memberName: String): String {
+    fun getStr(yaml: Configuration, node: String, tData: TeamOpen, leaderName: String, memberName: String): String {
         var content = ""
         yaml.getStringList(node).forEach {
             if (content.isEmpty()) {
@@ -28,7 +27,7 @@ object UtilTeam {
             .replace("%memberName%", memberName, true)
     }
 
-    fun getStr(yaml: YamlConfiguration, node: String): String {
+    fun getStr(yaml: Configuration, node: String): String {
         return yaml.getStringList(node).toJsonStr()
     }
 

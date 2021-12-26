@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.dialog.theme.hologram.core
 
 import cn.inrhor.questengine.api.dialog.DialogModule
-import cn.inrhor.questengine.api.dialog.DialogTheme
+import cn.inrhor.questengine.api.dialog.theme.DialogTheme
 import cn.inrhor.questengine.api.dialog.ReplyModule
 import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.common.dialog.theme.hologram.HologramData
@@ -17,9 +17,9 @@ import org.bukkit.entity.Player
  * 全息对话
  */
 class DialogHologram(
-    val dialogModule: DialogModule,
-    val viewers: MutableSet<Player>,
-    val npcLoc: Location): DialogTheme {
+    override val dialogModule: DialogModule,
+    val npcLoc: Location,
+    val viewers: MutableSet<Player>): DialogTheme() {
 
     val origin = OriginLocation(npcLoc)
     val replyHoloList = mutableListOf<ReplyHologram>()
