@@ -4,7 +4,6 @@ import cn.inrhor.questengine.api.dialog.ReplyModule
 import cn.inrhor.questengine.api.dialog.theme.ReplyTheme
 import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.api.packet.updateDisplayName
-import cn.inrhor.questengine.common.dialog.theme.hologram.HologramData
 import cn.inrhor.questengine.common.dialog.theme.hologram.OriginLocation
 import cn.inrhor.questengine.common.dialog.theme.hologram.content.AnimationItem
 import cn.inrhor.questengine.common.dialog.theme.hologram.parserOrigin
@@ -18,7 +17,7 @@ class ReplyHologram(
     val dialogHolo: DialogHologram,
     val reply: MutableList<ReplyModule>,
     val delay: Long,
-    val holoData: HologramData
+    val holoHitBox: HoloHitBox = HoloHitBox()
 ): ReplyTheme {
 
     val origin = OriginLocation(dialogHolo.npcLoc)
@@ -55,6 +54,7 @@ class ReplyHologram(
 
     private fun text(replyModule: ReplyModule, text: String) {
         val type = HoloIDManager.Type.TEXT
+        val holoData = dialogHolo.holoData
         val holoID = HoloIDManager.generate(
             dialogHolo.dialogModule.dialogID, replyModule.replyID,
             holoData.size(), type)
@@ -63,6 +63,7 @@ class ReplyHologram(
     }
 
     private fun item(replyModule: ReplyModule, content: String) {
+        val holoData = dialogHolo.holoData
         val index = holoData.size()
         val type = HoloIDManager.Type.ITEM
         val replyID = replyModule.replyID
@@ -76,18 +77,20 @@ class ReplyHologram(
         animation.sendViewers(dialogHolo.viewers, origin, itemHoloID, stackHoloID)
     }
 
-    private fun hitBox(replyModule: ReplyModule, content: String): HoloHitBox {
-        val index = holoData.size()
+    private fun hitBox(replyModule: ReplyModule, content: String): HitBoxSpawner {
+        val index = dialogHolo.holoData.size()
         val replyID = replyModule.replyID
         val dialogID = dialogHolo.dialogModule.dialogID
         val hitBoxID = HoloIDManager.generate(
             dialogID, replyID, index, HoloIDManager.Type.HITBOX)
         val stackID = HoloIDManager.generate(
             dialogID, replyID, index+1, HoloIDManager.Type.ITEMSTACK)
-        return HoloHitBox(dialogHolo, replyModule, content, hitBoxID, stackID)
+        val hitBox = HitBoxSpawner(dialogHolo, replyModule, content, hitBoxID, stackID)
+        holoHitBox.hitBoxList.add(hitBox)
+        return hitBox
     }
 
     override fun end() {
-
+        // 暂无可操作
     }
 }

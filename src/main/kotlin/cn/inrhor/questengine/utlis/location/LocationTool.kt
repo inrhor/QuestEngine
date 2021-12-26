@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.utlis.location
 
-import cn.inrhor.questengine.common.dialog.theme.hologram.core.HoloHitBox
 import org.bukkit.Location
 import taboolib.module.kether.*
 import taboolib.platform.util.toBukkitLocation
@@ -11,13 +10,6 @@ object LocationTool {
     fun getReferLoc(yaw: Float, ownLoc: Location, referLoc: ReferLocation): Location {
         return ownLoc.toProxyLocation().referTo(yaw,
             referLoc.offset, referLoc.multiply, referLoc.height)
-            .toBukkitLocation()
-    }
-
-    fun getReferHoloBoxLoc(yaw: Float, ownLoc: Location, holoHitBox: HoloHitBox): Location {
-        val data = holoHitBox.hitBoxData
-        return ownLoc.toProxyLocation().referTo(yaw,
-            data.offset, data.multiply, data.height)
             .toBukkitLocation()
     }
 

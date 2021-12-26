@@ -5,9 +5,9 @@ import cn.inrhor.questengine.api.dialog.theme.ReplyTheme
 import cn.inrhor.questengine.common.dialog.theme.hologram.core.HoloHitBox
 
 data class DialogData(
-    var dialogMap: MutableMap<String, MutableList<DialogTheme>>,
-    var replyMap: MutableMap<String, MutableList<ReplyTheme>>,
-    var holoBoxMap: MutableMap<String, MutableList<HoloHitBox>>) {
+    val dialogMap: MutableMap<String, MutableList<DialogTheme>>,
+    val replyMap: MutableMap<String, MutableList<ReplyTheme>>,
+    val holoBoxMap: MutableMap<String, MutableList<HoloHitBox>>) {
 
     fun addDialog(dialogID: String, dialogTheme: DialogTheme) {
         val map = dialogMap[dialogID]?: mutableListOf()
@@ -43,7 +43,9 @@ data class DialogData(
         }
         val holoBox = holoBoxMap[dialogID]?: return
         holoBox.forEach {
-            it.dialogHolo.end()
+            it.hitBoxList.forEach { b ->
+                b.endHitBox()
+            }
         }
         dialogMap.remove(dialogID)
         replyMap.remove(dialogID)

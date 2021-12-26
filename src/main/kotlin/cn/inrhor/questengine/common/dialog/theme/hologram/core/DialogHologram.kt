@@ -23,7 +23,7 @@ class DialogHologram(
 
     val origin = OriginLocation(npcLoc)
     val replyHoloList = mutableListOf<ReplyHologram>()
-    private val holoData = HologramData()
+    val holoData = HologramData()
 
     override fun play() {
         parserContent()
@@ -56,7 +56,7 @@ class DialogHologram(
                     getReply((it.spaceSplit(2)))
                 val reply = ReplyHologram(
                     this, replyList,
-                    it.spaceSplit(1).toLong(), holoData)
+                    it.spaceSplit(1).toLong())
                 reply.play()
                 replyHoloList.add(reply)
             }else {
