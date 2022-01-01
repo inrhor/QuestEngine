@@ -2,7 +2,7 @@ package cn.inrhor.questengine.common.item
 
 import cn.inrhor.questengine.utlis.file.FileUtil
 import cn.inrhor.questengine.utlis.UtilString
-import taboolib.common.platform.function.*
+import taboolib.common.platform.function.console
 import taboolib.module.configuration.Configuration
 import taboolib.module.lang.sendLang
 import java.io.File
@@ -44,7 +44,7 @@ object ItemManager {
             return
         }
         yaml.getKeys(false).forEach {
-            ItemFile(it).init(yaml.getConfigurationSection(it)!!)
+            ItemFile(it, yaml)
         }
     }
 

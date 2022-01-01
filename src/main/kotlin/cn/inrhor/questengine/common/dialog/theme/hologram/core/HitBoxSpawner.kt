@@ -50,7 +50,7 @@ data class HitBoxSpawner(
             }else if (u.startsWith("item ")) {
                 hitBoxData.itemStack = ItemManager.get(sp[1])
             }else if (u.startsWith("use ")) {
-                hitBoxData.type = ItemPlay.Type.valueOf(sp[1])
+                hitBoxData.type = ItemPlay.Type.valueOf(sp[1].uppercase())
             }else if (u.startsWith("boxy ")) {
                 hitBoxData.boxY = sp[1].toDouble()
             }

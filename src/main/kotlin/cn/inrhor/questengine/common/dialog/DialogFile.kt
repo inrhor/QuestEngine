@@ -4,7 +4,6 @@ import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.utlis.UtilString
 import cn.inrhor.questengine.utlis.file.FileUtil
 import taboolib.common.platform.function.console
-import taboolib.library.configuration.ConfigurationSection
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.Configuration.Companion.getObject
 import taboolib.module.configuration.Type
@@ -36,14 +35,14 @@ object DialogFile {
             if (cfs.contains("hook")) {
                 val id = cfs.getString("hook")!!
                 FileUtil.getFileList(folder).forEach{
-                    val hook = Configuration.loadFromFile(it, Type.YAML)
+                    val hook = Configuration.loadFromFile(it)
                     val ifs = hook.getConfigurationSection(id)
                     if (ifs != null) {
-                        regDialog(cfs, ifs)
+                        regDialog(dialogID, hook)
                     }
                 }
             }else {
-                regDialog(cfs)
+                regDialog(dialogID, yaml)
             }
         }
     }
@@ -51,10 +50,9 @@ object DialogFile {
     /**
      * 以节点为 DialogID 进行注册对话模块
      */
-    private fun regDialog(section: ConfigurationSection, hook: ConfigurationSection = section) {
-        val id = section.name
-        val dialogModule = hook.getObject<DialogModule>(id, ignoreConstructor = true)
-        dialogModule.dialogID = id
+    private fun regDialog(questID: String, file: Configuration) {
+        val dialogModule = file.getObject<DialogModule>(questID, ignoreConstructor = true)
+        dialogModule.dialogID = questID
         dialogModule.register()
     }
 

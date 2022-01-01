@@ -9,7 +9,6 @@ import taboolib.common.io.getInstance
 import taboolib.common.io.runningClasses
 import taboolib.common.platform.function.*
 import taboolib.common.util.sync
-import java.util.*
 
 object QuestLoader {
 
@@ -27,7 +26,7 @@ object QuestLoader {
 
     fun <T : Event> TargetExtend<T>.register() {
         val ev = event?: return
-        registerListener(ev.java, priority, ignoreCancelled) { e ->
+        registerBukkitListener(ev.java, priority, ignoreCancelled) { e ->
             val event = name
             tasker(e)?.run {
                 TargetManager.targetMap.forEach { (eventMeta, condition) ->

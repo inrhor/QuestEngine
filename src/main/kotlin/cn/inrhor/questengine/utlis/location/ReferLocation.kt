@@ -20,7 +20,7 @@ fun builderReferLoc(str: String): ReferLocation {
     return builderReferLoc {
         str.variableReader().forEach { s ->
             val us = s.lowercase()
-            if (us.contains("dir")) offsetType(s.replace("dir", "", true))
+            if (us.contains("dir ")) offsetType(s.replace("dir ", "", true))
             if (us.contains("add")) {
                 val sp = s.split(" ")
                 multiply = sp[1].toDouble()

@@ -6,13 +6,12 @@ import cn.inrhor.questengine.common.dialog.DialogManager
  * 对话模块
  */
 data class DialogModule(
-    val id: String,
     val dialog: List<String>,
     val reply: MutableList<ReplyModule>) {
 
     lateinit var dialogID: String
 
-    val npcIDs = mutableSetOf<String>()
+    val npcIDs = mutableListOf<String>()
     val condition = mutableListOf<String>()
     val space = SpaceDialogModule()
     val type: String = "holo"
