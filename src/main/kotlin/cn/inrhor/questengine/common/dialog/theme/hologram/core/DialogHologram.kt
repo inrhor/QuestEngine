@@ -57,7 +57,6 @@ class DialogHologram(
                 val reply = ReplyHologram(
                     this, replyList,
                     it.spaceSplit(1).toLong())
-                reply.play()
                 replyHoloList.add(reply)
             }else {
                 parserOrigin(origin, it)

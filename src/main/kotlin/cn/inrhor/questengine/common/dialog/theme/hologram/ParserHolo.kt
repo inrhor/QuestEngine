@@ -6,7 +6,7 @@ fun parserOrigin(origin: OriginLocation, content: String) {
         origin.reset(content)
     }else if (u.startsWith("addloc ")) {
         origin.add(content)
-    }else if (u.startsWith("nexty")) {
+    }else if (u.startsWith("nexty ")) {
         origin.nextY = content.split(" ")[1].toDouble()
     }
 }

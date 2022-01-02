@@ -7,6 +7,7 @@ import cn.inrhor.questengine.utlis.variableReader
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.submit
 import taboolib.common5.util.printed
+import taboolib.module.chat.colored
 import taboolib.platform.compat.replacePlaceholder
 
 /**
@@ -33,7 +34,7 @@ class AnimationText(val content: String): TextPlay() {
             }else if (it.startsWith("clearWait ")) {
                 clearWait = it.spaceSplit(1).toLong()
             }else {
-                text = it
+                text = it.colored()
             }
         }
     }
