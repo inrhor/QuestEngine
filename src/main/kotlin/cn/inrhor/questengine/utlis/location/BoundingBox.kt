@@ -8,14 +8,6 @@ data class BoundingBox(
     var minX: Double, var minY: Double, var minZ: Double,
     var maxX: Double, var maxY: Double, var maxZ: Double) {
 
-    fun move(vector: Vector): BoundingBox {
-        return move(vector.x, vector.y, vector.z)
-    }
-
-    fun move(x: Double, y: Double, z: Double): BoundingBox {
-        return BoundingBox(minX + x, minY + y, minZ + z, maxX + x, maxY + y, maxZ + z)
-    }
-
     fun contains(v: Vector): Boolean {
         return contains(v.x, v.y, v.z)
     }

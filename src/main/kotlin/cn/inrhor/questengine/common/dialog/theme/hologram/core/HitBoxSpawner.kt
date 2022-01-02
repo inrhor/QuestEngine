@@ -31,8 +31,10 @@ data class HitBoxSpawner(
 
     // 是否已经初始化数据包
     var initItem = false
+    // 是否一直在看
+    var looking = false
 
-    fun sendHitBox(origin: OriginLocation) {
+    fun sendHitBox(origin: OriginLocation): HitBoxSpawner {
         content.variableReader().forEach {
             val u = it.lowercase()
             val sp = it.split(" ")
@@ -54,9 +56,8 @@ data class HitBoxSpawner(
             }else if (u.startsWith("boxy ")) {
                 hitBoxData.boxY = sp[1].toDouble()
             }
-            val loc = origin.origin
-            hitBoxData.hitBox = hitBoxData.hitBox.move(loc.x, loc.y, loc.z)
         }
+        return this
     }
 
     fun taskView(viewers: MutableSet<Player>, origin: OriginLocation, holoData: HologramData) {
@@ -66,9 +67,13 @@ data class HitBoxSpawner(
             }
             viewers.forEach {
                 if (isBox(it)) {
-                    sendViewItem(it, origin, holoData)
+                    if (!looking) {
+                        sendViewItem(it, origin, holoData)
+                        looking = true
+                    }
                 }else {
                     pause(it)
+                    looking = false
                 }
             }
         }
@@ -87,9 +92,9 @@ data class HitBoxSpawner(
 
     fun sendViewItem(viewer: Player, origin: OriginLocation, holoData: HologramData) {
         val p = mutableSetOf(viewer)
-        if (initItem) {
+        if (!initItem) {
             holoData.create(hitBoxID, p, origin, HoloIDManager.Type.HITBOX)
-            return
+            initItem = true
         }
         val itemStack = hitBoxData.itemStack
         if (hitBoxData.type == ItemPlay.Type.SUSPEND) {

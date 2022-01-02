@@ -24,7 +24,7 @@ class HologramData {
     fun create(packetID: Int, viewers: MutableSet<Player>, originLocation: OriginLocation, type: HoloIDManager.Type) {
         addID(packetID)
         spawnAS(viewers, packetID, originLocation.origin.add(0.0, -originLocation.nextY, 0.0))
-        if (type == HoloIDManager.Type.ITEM) {
+        if (type == HoloIDManager.Type.ITEM || type == HoloIDManager.Type.HITBOX) {
             HoloDisplay.initItemAS(packetID, viewers)
         }else {
             HoloDisplay.initTextAS(packetID, viewers)

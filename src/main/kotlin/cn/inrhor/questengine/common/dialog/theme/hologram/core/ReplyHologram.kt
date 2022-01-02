@@ -45,7 +45,9 @@ class ReplyHologram(
             }else if (u.startsWith("item ")) {
                 item(replyModule, it)
             }else if (u.startsWith("hitbox ")) {
-                hitBox(replyModule, it).sendHitBox(origin)
+                hitBox(replyModule, it)
+                    .sendHitBox(origin)
+                    .taskView(dialogHolo.viewers, origin, dialogHolo.holoData)
             }else {
                 parserOrigin(origin, it)
             }
