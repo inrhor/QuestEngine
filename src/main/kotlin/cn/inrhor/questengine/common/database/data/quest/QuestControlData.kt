@@ -17,12 +17,12 @@ class QuestControlData(
     val controlData: ControlData,
     val controlID: String,
     val controlPriority: ControlPriority,
-    var controlList: MutableList<String>,
+    var controlList: List<String>,
     var line: Int,
     var waitTime: Int) {
 
     constructor(player: Player, controlData: ControlData,
-                controlID: String, controlPriority: ControlPriority, controlList: MutableList<String>):
+                controlID: String, controlPriority: ControlPriority, controlList: List<String>):
             this(player, controlData, controlID, controlPriority, controlList, 0, 0)
 
     fun runScript() {

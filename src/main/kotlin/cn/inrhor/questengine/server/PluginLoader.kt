@@ -2,6 +2,7 @@ package cn.inrhor.questengine.server
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.common.database.type.DatabaseManager
+import cn.inrhor.questengine.common.dialog.DialogFile
 import cn.inrhor.questengine.common.dialog.DialogManager
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.common.packet.PacketManager
@@ -47,7 +48,7 @@ object PluginLoader {
         submit(async = true) {
             val timeCost = measureTimeMillis {
                 ItemManager.loadItem()
-                DialogManager.loadDialog()
+                DialogFile.loadDialog()
                 PacketManager.loadPacket()
                 QuestBookBuildManager.init()
                 QuestFile.loadDialog()

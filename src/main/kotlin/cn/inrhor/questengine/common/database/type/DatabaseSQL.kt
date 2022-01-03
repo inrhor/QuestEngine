@@ -23,7 +23,7 @@ import java.text.SimpleDateFormat
 
 class DatabaseSQL: Database() {
 
-    val host = HostSQL(QuestEngine.config.getConfigurationSection("data.mysql"))
+    val host = HostSQL(QuestEngine.config.getConfigurationSection("data.mysql")!!)
 
     val table = QuestEngine.config.getString("data.mysql.table")
 

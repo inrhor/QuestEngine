@@ -2,8 +2,8 @@ package cn.inrhor.questengine.common.item
 
 import cn.inrhor.questengine.utlis.file.FileUtil
 import cn.inrhor.questengine.utlis.UtilString
-import taboolib.common.platform.function.*
-import taboolib.library.configuration.YamlConfiguration
+import taboolib.common.platform.function.console
+import taboolib.module.configuration.Configuration
 import taboolib.module.lang.sendLang
 import java.io.File
 
@@ -28,7 +28,7 @@ object ItemManager {
      * 加载并注册物品文件
      */
     fun loadItem() {
-        val itemFolder = FileUtil.getFile("space/item/", "ITEM.NO_FILES", true)
+        val itemFolder = FileUtil.getFile("space/item/", "ITEM-NO_FILES", true)
         FileUtil.getFileList(itemFolder).forEach{
             checkRegItem(it)
         }
@@ -38,13 +38,13 @@ object ItemManager {
      * 检查和注册物品
      */
     private fun checkRegItem(file: File) {
-        val yaml = YamlConfiguration.loadConfiguration(file)
+        val yaml = Configuration.loadFromFile(file)
         if (yaml.getKeys(false).isEmpty()) {
             console().sendLang("ITEM.EMPTY_CONTENT", UtilString.pluginTag, file.name)
             return
         }
         yaml.getKeys(false).forEach {
-            ItemFile(it).init(yaml.getConfigurationSection(it))
+            ItemFile(it, yaml)
         }
     }
 

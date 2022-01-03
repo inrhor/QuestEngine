@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.script.kether
 
-import cn.inrhor.questengine.common.dialog.animation.text.type.TextWrite
-import cn.inrhor.questengine.utlis.location.ReferHoloHitBox
+import cn.inrhor.questengine.common.dialog.theme.hologram.core.HitBoxSpawner
 import cn.inrhor.questengine.utlis.location.ReferLocation
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.*
@@ -13,7 +12,7 @@ fun eval(player: Player, script: String): Any? {
     return eval(player, mutableListOf(script))
 }
 
-fun eval(player: Player, script: MutableList<String>): Any? {
+fun eval(player: Player, script: List<String>): Any? {
     return try {
         KetherShell.eval(script, namespace = listOf("QuestEngine")) {
             sender = adaptPlayer(player)
@@ -27,7 +26,7 @@ fun eval(script: String): Any? {
     return eval(mutableListOf(script))
 }
 
-fun eval(script: MutableList<String>): Any? {
+fun eval(script: List<String>): Any? {
     return try {
         KetherShell.eval(script, namespace = listOf("QuestEngine"))
             .get(1, TimeUnit.SECONDS)
@@ -40,12 +39,12 @@ fun evalBoolean(player: Player, script: String): Boolean {
     return evalBoolean(player, mutableListOf(script))
 }
 
-fun evalBoolean(player: Player, script: MutableList<String>): Boolean {
+fun evalBoolean(player: Player, script: List<String>): Boolean {
     if (script.isEmpty()) return true
     return eval(player, script) as Boolean
 }
 
-fun evalBooleanSet(players: MutableSet<Player>, script: MutableList<String>): Boolean {
+fun evalBooleanSet(players: MutableSet<Player>, script: List<String>): Boolean {
     if (script.isEmpty()) return true
     players.forEach{
         if (!(eval(it, script) as Boolean)) return false
@@ -53,14 +52,10 @@ fun evalBooleanSet(players: MutableSet<Player>, script: MutableList<String>): Bo
     return true
 }
 
-fun evalTextWrite(script: String): TextWrite {
-    return eval(script) as TextWrite
-}
-
 fun evalReferLoc(script: String): ReferLocation {
     return eval(script) as ReferLocation
 }
 
-fun evalHoloHitBox(script: String): ReferHoloHitBox {
-    return eval(script) as ReferHoloHitBox
+fun evalHoloHitBox(script: String): HitBoxSpawner {
+    return eval(script) as HitBoxSpawner
 }

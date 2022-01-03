@@ -29,11 +29,11 @@ class QuestModule(val questID: String,
                   var modeShareData: Boolean,
                   var acceptWay: String,
                   var maxQuantity: Int,
-                  var acceptCheck: Int, var acceptCondition: MutableList<String>,
-                  var failCheck: Int, var failCondition: MutableList<String>,
-                  var failKether: MutableList<String>,
-                  var innerQuestList: MutableList<QuestInnerModule>,
-                  var sort: String, var descMap: MutableMap<String, MutableList<String>> = mutableMapOf()) {
+                  var acceptCheck: Int, var acceptCondition: List<String>,
+                  var failCheck: Int, var failCondition: List<String>,
+                  var failKether: List<String>,
+                  var innerQuestList: List<QuestInnerModule>,
+                  var sort: String, var descMap: MutableMap<String, List<String>> = mutableMapOf()) {
 
     fun getStartInnerQuest(): QuestInnerModule? {
         innerQuestList.forEach {

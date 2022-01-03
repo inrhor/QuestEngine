@@ -13,12 +13,13 @@ object HookPlaceholderAPI: PlaceholderExpansion {
 
     override val identifier = "questengine"
 
-    override fun onPlaceholderRequest(player: Player, params: String): String {
-        val args = params.split("_")
-        val questID = args[1]
-        val innerID = if (args.size > 2) args[2] else ""
-        val index = if (args.size > 3) args[3].toInt() else 1
-        return when (args[0].lowercase()) {
+    override fun onPlaceholderRequest(player: Player?, params: String): String {
+        if (player == null) return "Null Player"
+        val sp = params.split("_")
+        val questID = sp[1]
+        val innerID = if (sp.size > 2) sp[2] else ""
+        val index = if (sp.size > 3) sp[3].toInt() else 1
+        return when (sp[0].lowercase()) {
             "state" -> getState(player, questID, "")
             "stateinner" -> getState(player, questID, innerID)
             "schedule" -> getSchedule(player, questID, innerID, index)

@@ -16,9 +16,11 @@ object ClickHoloListener {
         val dialogData = pData.dialogData
         dialogData.holoBoxMap.values.forEach {
             it.forEach{ holoBox ->
-                if (holoBox.isBox()) {
-                    HoloClickEvent(p, dialogData, holoBox).call()
-                    return
+                holoBox.hitBoxList.forEach { b ->
+                    if (b.isBox(p)) {
+                        HoloClickEvent(p, dialogData, b).call()
+                        return
+                    }
                 }
             }
         }

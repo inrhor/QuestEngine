@@ -14,14 +14,14 @@ import cn.inrhor.questengine.common.quest.toState
 import cn.inrhor.questengine.common.quest.toStr
 import cn.inrhor.questengine.utlis.time.toStr
 import org.bukkit.entity.Player
-import taboolib.library.configuration.YamlConfiguration
+import taboolib.module.configuration.Configuration
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
 class DatabaseLocal: Database() {
 
-    fun getLocal(uuid: UUID): YamlConfiguration {
+    fun getLocal(uuid: UUID): Configuration {
         val data = File(QuestEngine.plugin.dataFolder, "data")
         if (!data.exists()) {
             data.mkdirs()
@@ -30,7 +30,7 @@ class DatabaseLocal: Database() {
         if (!file.exists()) {
             file.createNewFile()
         }
-        return YamlConfiguration.loadConfiguration(file)
+        return Configuration.loadFromFile(file)
     }
 
     override fun removeQuest(player: Player, questData: QuestData) {
@@ -39,7 +39,7 @@ class DatabaseLocal: Database() {
         val questUUID = questData.questUUID
         data.set("quest.$questUUID", null)
         val file = File(QuestEngine.plugin.dataFolder, "data/$uuid.yml")
-        data.save(file)
+        data.saveToFile(file)
     }
 
     override fun removeControl(player: Player, controlID: String) {
@@ -47,7 +47,7 @@ class DatabaseLocal: Database() {
         val data = getLocal(uuid)
         data.set("control.$controlID", null)
         val file = File(QuestEngine.plugin.dataFolder, "data/$uuid.yml")
-        data.save(file)
+        data.saveToFile(file)
     }
 
     /*
@@ -83,7 +83,7 @@ class DatabaseLocal: Database() {
         val data = getLocal(uuid)
         val questDataMap = mutableMapOf<UUID, QuestData>()
         if (data.contains("quest")) {
-            data.getConfigurationSection("quest").getKeys(false).forEach {
+            data.getConfigurationSection("quest")!!.getKeys(false).forEach {
                 val node = "quest.$it."
                 val questUUID = UUID.fromString(it)
                 val questID = data.getString(node+"questID")?: return@forEach
@@ -93,17 +93,18 @@ class DatabaseLocal: Database() {
                 val innerQuestID = data.getString(nodeInner+"innerQuestID")?: return@forEach
                 val questInnerData = getInnerQuestData(data, nodeInner, player, questUUID, questID, innerQuestID)?: return@forEach
 
-                val finished = data.getStringList(node+"finishedQuest")
+                val finished = data.getStringList(node+"finishedQuest").toMutableList()
 
                 val state = (data.getString(node+"state")?: "IDLE").toState()
 
-                val questData = QuestData(UUID.fromString(it), questID, questInnerData, state, TeamManager.getTeamData(uuid), finished)
+                val questData = QuestData(UUID.fromString(it), questID,
+                    questInnerData, state, TeamManager.getTeamData(uuid), finished)
                 questDataMap[UUID.fromString(it)] = questData
                 QuestManager.checkTimeTask(player, questUUID, questID)
             }
         }
         if (data.contains("control")) {
-            data.getConfigurationSection("control").getKeys(false).forEach {
+            data.getConfigurationSection("control")!!.getKeys(false).forEach {
                 val node = "control.$it."
                 val priority = data.getString(node+"priority")?: "normal"
                 val line = data.getInt(node+"line")
@@ -126,7 +127,7 @@ class DatabaseLocal: Database() {
         return getInnerQuestData(data, node, player, questUUID, questID, innerQuestID)
     }
 
-    private fun getInnerQuestData(data: YamlConfiguration, node: String, player: Player, questUUID: UUID, questID: String, innerQuestID: String): QuestInnerData? {
+    private fun getInnerQuestData(data: Configuration, node: String, player: Player, questUUID: UUID, questID: String, innerQuestID: String): QuestInnerData? {
         val rewardInner = returnRewardData(data, node)
         val innerState = (data.getString(node+"state")?: "IDLE").toState()
         val questModule = QuestManager.getQuestModule(questID)?: return null
@@ -137,9 +138,9 @@ class DatabaseLocal: Database() {
         return QuestInnerData(questID, innerQuestID, innerTargetDataMap, innerState, rewardInner)
     }
 
-    private fun returnTargets(player: Player, questUUID: UUID, data: YamlConfiguration, node: String, targetDataMap: MutableMap<String, TargetData>): MutableMap<String, TargetData> {
+    private fun returnTargets(player: Player, questUUID: UUID, data: Configuration, node: String, targetDataMap: MutableMap<String, TargetData>): MutableMap<String, TargetData> {
         if (!data.contains(node+"targets")) return targetDataMap
-        for (name in data.getConfigurationSection(node+"targets").getKeys(false)) {
+        for (name in data.getConfigurationSection(node+"targets")!!.getKeys(false)) {
             val nodeTarget = node+"targets.$name."
             val targetData = targetDataMap[name]?: continue
             targetData.schedule  = data.getInt(nodeTarget+"schedule")
@@ -154,10 +155,10 @@ class DatabaseLocal: Database() {
         return targetDataMap
     }
 
-    private fun returnRewardData(data: YamlConfiguration, node: String): MutableMap<String, Boolean> {
+    private fun returnRewardData(data: Configuration, node: String): MutableMap<String, Boolean> {
         val rewardMap = mutableMapOf<String, Boolean>()
         if (!data.contains(node+"rewards")) return rewardMap
-        for (rewardID in data.getConfigurationSection(node+"rewards").getKeys(false)) {
+        for (rewardID in data.getConfigurationSection(node+"rewards")!!.getKeys(false)) {
             val nodeReward = node+"rewards.$rewardID."
             rewardMap[rewardID] = data.getBoolean(nodeReward+"has")
         }
@@ -169,7 +170,7 @@ class DatabaseLocal: Database() {
         val pData = DataStorage.getPlayerData(uuid)
         val file = File(QuestEngine.plugin.dataFolder, "data/$uuid.yml")
         if (!file.exists()) return
-        val data = YamlConfiguration.loadConfiguration(file)
+        val data = Configuration.loadFromFile(file)
         pData.questDataList.forEach { (questUUID, questData) ->
             val state = questData.state.toStr()
             val node = "quest.$questUUID."
@@ -190,10 +191,10 @@ class DatabaseLocal: Database() {
             pushControl(data, cID, cData)
         }
         data.set("tags", pData.tagsData.getList())
-        data.save(file)
+        data.saveToFile(file)
     }
 
-    private fun pushControl(data: YamlConfiguration, controlID: String, cData: QuestControlData) {
+    private fun pushControl(data: Configuration, controlID: String, cData: QuestControlData) {
         val logType = ControlManager.runLogType(controlID)
         if (logType == RunLogType.DISABLE) return
         val node = "control.$controlID."
@@ -210,7 +211,7 @@ class DatabaseLocal: Database() {
         }
     }
 
-    private fun pushData(data: YamlConfiguration, node: String, questInnerData: QuestInnerData) {
+    private fun pushData(data: Configuration, node: String, questInnerData: QuestInnerData) {
         val state = questInnerData.state.toStr()
         data.set(node+"state", state)
         questInnerData.rewardState.forEach { (rewardID, has) ->
@@ -225,7 +226,7 @@ class DatabaseLocal: Database() {
         }
     }
 
-    private fun setTimeDate(data: YamlConfiguration, timeNode: String, date: Date) {
+    private fun setTimeDate(data: Configuration, timeNode: String, date: Date) {
         if (!data.contains(timeNode)) {
             val dateStr = date.toStr()
             data.set(timeNode, dateStr)

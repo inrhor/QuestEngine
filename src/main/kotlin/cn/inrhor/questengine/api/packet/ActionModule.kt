@@ -1,6 +1,10 @@
 package cn.inrhor.questengine.api.packet
 
-class ActionModule(val type: PacketActionType, val set: MutableList<String>, val trigger: MutableList<String>, val pass: MutableList<String>,
+class ActionModule(
+    val type: PacketActionType,
+    val set: List<String>,
+    val trigger: List<String>,
+    val pass: List<String>,
         val ratioEnable: Boolean) {
 }
 

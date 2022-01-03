@@ -148,7 +148,7 @@ object QuestBookBuildManager {
         builderFrame.noteComponent[innerID] = NoteComponent(fork.note.copy(), fork.condition(player).copy())
         builderFrame.noteComponent.values.forEach {
             val note = it.note
-            for (i in 0 until note.size) {
+            for (i in note.indices) {
                 note[i] = note[i].replaceWithOrder(innerModule.innerQuestName, innerID)
             }
         }
@@ -251,7 +251,7 @@ object QuestBookBuildManager {
         return desc
     }
 
-    private fun getDescMap(questID: String, innerID: String, sign: String): MutableList<String>? {
+    private fun getDescMap(questID: String, innerID: String, sign: String): List<String>? {
         if (innerID.isNotEmpty()) {
             val innerModule = QuestManager.getInnerQuestModule(questID, innerID)?: return null
             return innerModule.description

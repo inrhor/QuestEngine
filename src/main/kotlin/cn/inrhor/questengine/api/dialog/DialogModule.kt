@@ -1,29 +1,29 @@
 package cn.inrhor.questengine.api.dialog
 
-import cn.inrhor.questengine.common.dialog.animation.item.ItemDialogPlay
-import cn.inrhor.questengine.common.dialog.animation.text.TextDialogPlay
+import cn.inrhor.questengine.common.dialog.DialogManager
 
 /**
- * 对话属性模块
- *
+ * 对话模块
  */
-class DialogModule(val dialogID: String,
-                   var npcIDs: MutableList<String>,
-                   var condition: MutableList<String>,
-                   var type: String,
-                   var dialog: MutableList<String>,
-                   var playText: MutableList<TextDialogPlay>,
-                   var playItem: MutableList<ItemDialogPlay>,
-                   var spaceModule: SpaceModule) {
+data class DialogModule(
+    val dialog: List<String>,
+    val reply: MutableList<ReplyModule>) {
 
-    var replyModuleList: MutableList<ReplyModule> = mutableListOf()
+    lateinit var dialogID: String
+
+    val npcIDs = mutableListOf<String>()
+    val condition = mutableListOf<String>()
+    val space = SpaceDialogModule()
+    val type: String = "holo"
+
+   fun register() {
+       DialogManager.register(dialogID, this)
+   }
 }
 
 /**
- * 对话空间属性模块
- *
+ * 对话空间模块
  */
-class SpaceModule(
-    var enable: Boolean,
-    var condition: MutableList<String>) {
+data class SpaceDialogModule(val enable: Boolean, val condition: List<String>) {
+    constructor(): this(false, mutableListOf())
 }

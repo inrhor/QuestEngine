@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.utlis.location
 
 import org.bukkit.Location
-import taboolib.library.kether.QuestReader
 import taboolib.module.kether.*
 import taboolib.platform.util.toBukkitLocation
 import taboolib.platform.util.toProxyLocation
@@ -14,14 +13,8 @@ object LocationTool {
             .toBukkitLocation()
     }
 
-    fun getReferHoloBoxLoc(yaw: Float, ownLoc: Location, referHoloHitBox: ReferHoloHitBox): Location {
-        return ownLoc.toProxyLocation().referTo(yaw,
-            referHoloHitBox.offset, referHoloHitBox.multiply, referHoloHitBox.height)
-            .toBukkitLocation()
-    }
-
-    fun getOffsetType(q: QuestReader): Float {
-        return when (q.nextToken().lowercase()) {
+    fun getOffsetType(dir: String): Float {
+        return when (dir.lowercase()) {
             "left" -> -90F
             "right" -> 90F
             "behind" -> 180F

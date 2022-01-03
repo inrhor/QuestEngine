@@ -2,12 +2,12 @@ package cn.inrhor.questengine.utlis
 
 import cn.inrhor.questengine.QuestEngine
 import com.google.common.base.Strings
+import taboolib.common.util.VariableReader
 import taboolib.module.chat.colored
-import java.util.*
 
 object UtilString {
 
-    fun updateLang(): MutableList<String> = QuestEngine.config.getStringList("update.lang")
+    fun updateLang(): List<String> = QuestEngine.config.getStringList("update.lang")
 
     val pluginTag by lazy {
         "§7§l[ §c§li §7§l]§7§l[ §3§lQuestEngine §7§l]"
@@ -48,7 +48,7 @@ fun progressBar(
             + Strings.repeat("" + notCompletedColor + symbol, totalBars - progressBars))
 }
 
-fun MutableList<String>.toJsonStr(): String {
+fun List<String>.toJsonStr(): String {
     var content = ""
     this.forEach {
         if (content.isEmpty()) {
@@ -66,4 +66,16 @@ fun MutableList<String>.copy(): MutableList<String> {
         list.add(it)
     }
     return list
+}
+
+fun String.variableReader(): MutableList<String> {
+    val list = mutableListOf<String>()
+    VariableReader(this, '{', '}', repeat = 2).parts.forEach {
+        if (it.isVariable) list.add(it.text)
+    }
+    return list
+}
+
+fun String.spaceSplit(index: Int): String {
+    return this.split(" ")[index]
 }

@@ -1,15 +1,17 @@
 package cn.inrhor.questengine.common.quest
 
+import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.quest.control.*
 import cn.inrhor.questengine.api.quest.QuestInnerModule
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.api.quest.QuestModule
 import cn.inrhor.questengine.common.quest.manager.ControlManager
 import cn.inrhor.questengine.common.quest.manager.TargetManager
+import cn.inrhor.questengine.utlis.UtilString
 import cn.inrhor.questengine.utlis.file.FileUtil
-import taboolib.library.configuration.YamlConfiguration
+import taboolib.common.io.newFile
 import taboolib.common.platform.function.*
-import taboolib.library.configuration.FileConfiguration
+import taboolib.module.configuration.Configuration
 import taboolib.module.lang.sendLang
 import java.io.File
 
@@ -20,7 +22,17 @@ object QuestFile {
      */
     fun loadDialog() {
         val questFolder = FileUtil.getFile("space/quest")
-        val lists = questFolder.listFiles()?: return
+        val lists = questFolder.listFiles()?: return run {
+            console().sendLang("QUEST-NO_FILES", UtilString.pluginTag)
+            val main = "space/quest/cropQuest/"
+            val res = QuestEngine.resource
+            res.releaseResourceFile(main+"setting.yml", true)
+            val inner = "${main}inner/crop_start/"
+            res.releaseResourceFile(inner+"control.yml", true)
+            res.releaseResourceFile(inner+"option.yml", true)
+            res.releaseResourceFile(inner+"reward.yml", true)
+            res.releaseResourceFile(inner+"target.yml", true)
+        }
         for (file in lists) {
             if (!file.isDirectory) continue
             checkRegQuest(file)
@@ -69,8 +81,8 @@ object QuestFile {
             innerQuestList.add(innerModule)
         }
 
-        val descMap = mutableMapOf<String, MutableList<String>>()
-        setting.getConfigurationSection("desc").getKeys(false).forEach {
+        val descMap = mutableMapOf<String, List<String>>()
+        setting.getConfigurationSection("desc")!!.getKeys(false).forEach {
             descMap[it] = setting.getStringList("desc.$it")
         }
 
@@ -111,17 +123,17 @@ object QuestFile {
         return File(file.path + File.separator + path)
     }
 
-    private fun yaml(file: File): YamlConfiguration {
-        return YamlConfiguration.loadConfiguration(file)
+    private fun yaml(file: File): Configuration {
+        return Configuration.loadFromFile(file)
     }
 
     private fun reward(file: File, questID: String, innerQuestID: String): QuestReward {
-        val finishReward = mutableMapOf<String, MutableList<String>>()
-        var failReward = mutableListOf<String>()
+        val finishReward = mutableMapOf<String, List<String>>()
+        var failReward = listOf<String>()
         if (file.exists()) {
             val reward = yaml(file)
             if (reward.contains("finishReward")) {
-                for (rewardID in reward.getConfigurationSection("finishReward").getKeys(false)) {
+                for (rewardID in reward.getConfigurationSection("finishReward")!!.getKeys(false)) {
                     finishReward[rewardID] = reward.getStringList("finishReward.$rewardID")
                 }
             }

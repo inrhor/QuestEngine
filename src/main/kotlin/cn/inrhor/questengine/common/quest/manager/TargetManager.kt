@@ -11,7 +11,7 @@ import cn.inrhor.questengine.utlis.ui.NoteComponent
 import cn.inrhor.questengine.utlis.ui.buildFrame
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import taboolib.library.configuration.YamlConfiguration
+import taboolib.module.configuration.Configuration
 
 object TargetManager {
 
@@ -32,15 +32,15 @@ object TargetManager {
         targetMap["$name-$meta"] = conditionType
     }
 
-    fun getTargetList(yaml: YamlConfiguration): MutableMap<String, QuestTarget> {
+    fun getTargetList(yaml: Configuration): MutableMap<String, QuestTarget> {
         val questTargetList = mutableMapOf<String, QuestTarget>()
-        for (i in yaml.getConfigurationSection("target").getKeys(false)) {
+        for (i in yaml.getConfigurationSection("target")!!.getKeys(false)) {
             val s = "target.$i."
             val name = yaml.getString(s + "name") ?: "null"
             val time = yaml.getString(s + "time") ?: "always"
             val reward = yaml.getString(s + "reward") ?: "null"
             val condition = mutableMapOf<String, String>()
-            val conditionList = mutableMapOf<String, MutableList<String>>()
+            val conditionList = mutableMapOf<String, List<String>>()
 
             val ui = buildFrame()
 
@@ -48,11 +48,11 @@ object TargetManager {
                 val eventName = eventNameMeta.split("-")[0]
                 if (eventName == name) {
                     val path = "target.$i"
-                    for (node in yaml.getConfigurationSection(path).getKeys(true)) {
+                    for (node in yaml.getConfigurationSection(path)!!.getKeys(true)) {
                         val u = "$path.$node"
                         if (node == "ui" || node == "description") {
                             if (node == "description") {
-                                ui.noteComponent[u] = NoteComponent(yaml.getStringList(u))
+                                ui.noteComponent[u] = NoteComponent(yaml.getStringList(u).toMutableList())
                             }else {
                                 ui.sectionAdd(yaml, u, BuilderFrame.Type.CUSTOM)
                             }

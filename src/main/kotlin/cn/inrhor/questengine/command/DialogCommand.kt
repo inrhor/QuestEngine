@@ -15,7 +15,7 @@ internal object DialogCommand {
             }
             dynamic {
                 suggestion<ProxyCommandSender> { _, _ ->
-                    DialogManager.dialogMap.map { it.key }
+                    DialogManager.getMap().map { it.key }
                 }
                 execute<ProxyCommandSender> { sender, context, argument ->
                     val args = argument.split(" ")

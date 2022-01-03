@@ -1,23 +1,24 @@
 package cn.inrhor.questengine.common.database.data
 
-import cn.inrhor.questengine.common.dialog.optional.holo.HoloHitBox
-import cn.inrhor.questengine.common.dialog.optional.holo.core.HoloDialog
-import cn.inrhor.questengine.common.dialog.optional.holo.core.HoloReply
+import cn.inrhor.questengine.api.dialog.theme.DialogTheme
+import cn.inrhor.questengine.api.dialog.theme.ReplyTheme
+import cn.inrhor.questengine.common.dialog.theme.hologram.core.HoloHitBox
 
-class DialogData(var holoDialogMap: MutableMap<String, MutableList<HoloDialog>>,
-                 var holoReplyMap: MutableMap<String, MutableList<HoloReply>>,
-                 var holoBoxMap: MutableMap<String, MutableList<HoloHitBox>>) {
+data class DialogData(
+    val dialogMap: MutableMap<String, MutableList<DialogTheme>>,
+    val replyMap: MutableMap<String, MutableList<ReplyTheme>>,
+    val holoBoxMap: MutableMap<String, MutableList<HoloHitBox>>) {
 
-    fun addHoloDialog(dialogID: String, holoDialog: HoloDialog) {
-        val dialogMap = holoDialogMap[dialogID]?: mutableListOf()
-        dialogMap.add(holoDialog)
-        holoDialogMap[dialogID] = dialogMap
+    fun addDialog(dialogID: String, dialogTheme: DialogTheme) {
+        val map = dialogMap[dialogID]?: mutableListOf()
+        map.add(dialogTheme)
+        dialogMap[dialogID] = map
     }
 
-    fun addHoloReply(dialogID: String, holoReply: HoloReply) {
-        val replyMap = holoReplyMap[dialogID]?: mutableListOf()
-        replyMap.add(holoReply)
-        holoReplyMap[dialogID] = replyMap
+    fun addReply(dialogID: String, replyTheme: ReplyTheme) {
+        val map = replyMap[dialogID]?: mutableListOf()
+        map.add(replyTheme)
+        replyMap[dialogID] = map
     }
 
     fun addHoloBox(dialogID: String, holoHitBox: HoloHitBox) {
@@ -32,20 +33,22 @@ class DialogData(var holoDialogMap: MutableMap<String, MutableList<HoloDialog>>,
      * 交互全息触发终止全息对话
      */
     fun endHoloDialog(dialogID: String) {
-        val holoDialog = holoDialogMap[dialogID]?: return
+        val holoDialog = dialogMap[dialogID]?: return
         holoDialog.forEach {
             it.end()
         }
-        val holoReply = holoReplyMap[dialogID]?: return
+        val holoReply = replyMap[dialogID]?: return
         holoReply.forEach {
             it.end()
         }
         val holoBox = holoBoxMap[dialogID]?: return
         holoBox.forEach {
-            it.end()
+            it.hitBoxList.forEach { b ->
+                b.endHitBox()
+            }
         }
-        holoDialogMap.remove(dialogID)
-        holoReplyMap.remove(dialogID)
+        dialogMap.remove(dialogID)
+        replyMap.remove(dialogID)
         holoBoxMap.remove(dialogID)
     }
 

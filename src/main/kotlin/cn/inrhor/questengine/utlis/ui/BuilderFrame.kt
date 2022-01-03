@@ -3,8 +3,8 @@ package cn.inrhor.questengine.utlis.ui
 import cn.inrhor.questengine.script.kether.evalBoolean
 import cn.inrhor.questengine.utlis.toJsonStr
 import org.bukkit.entity.Player
-import taboolib.library.configuration.YamlConfiguration
 import taboolib.module.chat.TellrawJson
+import taboolib.module.configuration.Configuration
 
 /**
  * 高度自定义 JSON 内容
@@ -102,7 +102,7 @@ class BuilderFrame {
     /**
      * 组件所需条件
      */
-    fun textCondition(player: Player?, conditions: MutableList<String>): Boolean {
+    fun textCondition(player: Player?, conditions: List<String>): Boolean {
         if (player == null) return true
         return evalBoolean(player, conditions)
     }
@@ -111,18 +111,18 @@ class BuilderFrame {
         SORT, CUSTOM
     }
 
-    fun yamlAddNote(yaml: YamlConfiguration, node: String, fork: Boolean = false) {
+    fun yamlAddNote(yaml: Configuration, node: String, fork: Boolean = false) {
         noteComponent[node] = NoteComponent(
-            yaml.getStringList(node),
-            yaml.getStringList("$node.condition"),
+            yaml.getStringList(node).toMutableList(),
+            yaml.getStringList("$node.condition").toMutableList(),
             fork)
     }
 
     /**
      * 遍历添加组件
      */
-    fun sectionAdd(yaml: YamlConfiguration, path: String, type: Type) {
-        yaml.getConfigurationSection(path).getKeys(false).forEach { sign ->
+    fun sectionAdd(yaml: Configuration, path: String, type: Type) {
+        yaml.getConfigurationSection(path)!!.getKeys(false).forEach { sign ->
             yamlAutoAdd(yaml, type, "$path.$sign", sign)
         }
     }
@@ -130,8 +130,8 @@ class BuilderFrame {
     /**
      * 自动分配组件
      */
-    fun yamlAutoAdd(yaml: YamlConfiguration, type: Type, path: String, child: String = path) {
-        yaml.getConfigurationSection(path).getKeys(false).forEach { sign ->
+    fun yamlAutoAdd(yaml: Configuration, type: Type, path: String, child: String = path) {
+        yaml.getConfigurationSection(path)!!.getKeys(false).forEach { sign ->
             val node = "$path.$sign"
             when (sign) {
                 "note" -> {
@@ -143,9 +143,9 @@ class BuilderFrame {
                 "condition" -> {}
                 else -> {
                     val text = textComponent {
-                        text = yaml.getStringList("$node.text")
-                        hover = yaml.getStringList("$node.hover")
-                        condition = yaml.getStringList("$node.condition")
+                        text = yaml.getStringList("$node.text").toMutableList()
+                        hover = yaml.getStringList("$node.hover").toMutableList()
+                        condition = yaml.getStringList("$node.condition").toMutableList()
                         command = if (type == Type.CUSTOM) {
                             yaml.getString("$node.command")?: ""
                         }else "/qen handbook sort "

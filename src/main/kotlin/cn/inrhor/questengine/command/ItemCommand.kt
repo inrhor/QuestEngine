@@ -5,8 +5,8 @@ import cn.inrhor.questengine.common.item.ItemManager
 import org.bukkit.entity.Player
 import taboolib.common.platform.*
 import taboolib.common.platform.command.*
-import taboolib.library.configuration.YamlConfiguration
 import taboolib.library.xseries.XItemStack
+import taboolib.module.configuration.Configuration
 import taboolib.module.lang.sendLang
 import taboolib.platform.util.isAir
 import java.io.File
@@ -36,10 +36,10 @@ object ItemCommand {
                     if (!file.exists()) {
                         file.createNewFile()
                     }
-                    val yaml = YamlConfiguration.loadConfiguration(file)
+                    val yaml = Configuration.loadFromFile(file)
                     yaml.createSection(itemID)
-                    XItemStack.serialize(item, yaml.getConfigurationSection(itemID))
-                    yaml.save(file)
+                    XItemStack.serialize(item, yaml.getConfigurationSection(itemID)!!)
+                    yaml.saveToFile(file)
                     sender.sendLang("COMMAND-ITEM-SAVE", itemID)
                 }
             }
