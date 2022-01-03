@@ -21,17 +21,18 @@ class AnimationText(val content: String): TextPlay() {
 
     init {
         content.variableReader().forEach {
-            if (it == "write") {
+            val u = it.lowercase()
+            if (u == "write") {
                 writeType = WriteType.WRITE
-            }else if (it == "writeClear") {
+            }else if (u == "writeclear") {
                 writeType = WriteType.WRITECLEAR
-            }else if (it == "out") {
+            }else if (u == "out") {
                 out = true
-            }else if (it.startsWith("delay ")) {
+            }else if (u.startsWith("delay ")) {
                 delay = it.spaceSplit(1).toLong()
-            }else if (it.startsWith("speed ")) {
+            }else if (u.startsWith("speed ")) {
                 speed = it.spaceSplit(1).toLong()
-            }else if (it.startsWith("clearWait ")) {
+            }else if (u.startsWith("clearwait ")) {
                 clearWait = it.spaceSplit(1).toLong()
             }else {
                 text = it.colored()
@@ -47,10 +48,18 @@ class AnimationText(val content: String): TextPlay() {
             if (writeType == WriteType.NORMAL) {
                 viewers.forEach {
                     updateDisplayName(it, holoID, text)
+                    outText(it)
                 }
             } else if (writeType == WriteType.WRITECLEAR || writeType == WriteType.WRITE) {
                 write(holoID, viewers)
             }
+        }
+    }
+
+    private fun outText(viewer: Player) {
+        if (!out) return
+        submit(async = true, delay = clearWait) {
+            if (viewer.isOnline) viewer.sendMessage(text)
         }
     }
 
@@ -64,7 +73,10 @@ class AnimationText(val content: String): TextPlay() {
     }
 
     private fun writeSpeed(viewer: Player, holoID: Int, index: Int, animationList: List<String>) {
-        if (index >= animationList.size) return
+        if (index >= animationList.size) {
+            outText(viewer)
+            return
+        }
         submit(async = true, delay = speed) {
             if (viewer.isOnline) {
                 updateDisplayName(viewer, holoID, animationList[index])

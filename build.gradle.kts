@@ -57,6 +57,6 @@ dependencies {
     compileOnly("public:Citizens:1.0.0")
     compileOnly("ink.ptms:Adyeshach:1.3.19")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
-    compileOnly(kotlin("stdlib"))
+    compileOnly("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
     compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 }

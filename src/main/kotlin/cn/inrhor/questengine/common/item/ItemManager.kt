@@ -28,7 +28,7 @@ object ItemManager {
      * 加载并注册物品文件
      */
     fun loadItem() {
-        val itemFolder = FileUtil.getFile("space/item/", "ITEM.NO_FILES", true)
+        val itemFolder = FileUtil.getFile("space/item/", "ITEM-NO_FILES", true)
         FileUtil.getFileList(itemFolder).forEach{
             checkRegItem(it)
         }

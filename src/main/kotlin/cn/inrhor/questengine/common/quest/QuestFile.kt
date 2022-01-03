@@ -1,12 +1,15 @@
 package cn.inrhor.questengine.common.quest
 
+import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.quest.control.*
 import cn.inrhor.questengine.api.quest.QuestInnerModule
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.api.quest.QuestModule
 import cn.inrhor.questengine.common.quest.manager.ControlManager
 import cn.inrhor.questengine.common.quest.manager.TargetManager
+import cn.inrhor.questengine.utlis.UtilString
 import cn.inrhor.questengine.utlis.file.FileUtil
+import taboolib.common.io.newFile
 import taboolib.common.platform.function.*
 import taboolib.module.configuration.Configuration
 import taboolib.module.lang.sendLang
@@ -19,7 +22,17 @@ object QuestFile {
      */
     fun loadDialog() {
         val questFolder = FileUtil.getFile("space/quest")
-        val lists = questFolder.listFiles()?: return
+        val lists = questFolder.listFiles()?: return run {
+            console().sendLang("QUEST-NO_FILES", UtilString.pluginTag)
+            val main = "space/quest/cropQuest/"
+            val res = QuestEngine.resource
+            res.releaseResourceFile(main+"setting.yml", true)
+            val inner = "${main}inner/crop_start/"
+            res.releaseResourceFile(inner+"control.yml", true)
+            res.releaseResourceFile(inner+"option.yml", true)
+            res.releaseResourceFile(inner+"reward.yml", true)
+            res.releaseResourceFile(inner+"target.yml", true)
+        }
         for (file in lists) {
             if (!file.isDirectory) continue
             checkRegQuest(file)
