@@ -1,13 +1,18 @@
-# 完成任务后触发脚本 Kether
-finishReward:
-  1:
-    - ""
-    - ""
-  2:
-    - ""
-    - ""
+reward:
+  # 完成任务后触发脚本 Kether
+  finishReward:
+    -
+      # 奖励ID
+      rewardID: 1
+      # 脚本
+      script:
+        - ""
+        - ""
+    - rewardID: 2
+      script:
+        - ""
 
-# 任务失败后触发脚本 Kether
-failReward:
-  - ""
-  - ""
+  # 任务失败后触发脚本 Kether
+  failReward:
+    - ""
+    - ""

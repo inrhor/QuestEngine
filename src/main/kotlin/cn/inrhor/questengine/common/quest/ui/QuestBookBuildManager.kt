@@ -1,10 +1,9 @@
 package cn.inrhor.questengine.common.quest.ui
 
-import cn.inrhor.questengine.api.quest.QuestModule
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
 import cn.inrhor.questengine.common.quest.QuestState
-import cn.inrhor.questengine.common.quest.QuestTarget
+import cn.inrhor.questengine.api.quest.module.inner.QuestTarget
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.quest.toUnit
 import cn.inrhor.questengine.utlis.copy

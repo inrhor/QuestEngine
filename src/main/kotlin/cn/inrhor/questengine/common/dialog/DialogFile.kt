@@ -50,9 +50,9 @@ object DialogFile {
     /**
      * 以节点为 DialogID 进行注册对话模块
      */
-    private fun regDialog(questID: String, file: Configuration) {
-        val dialogModule = file.getObject<DialogModule>(questID, ignoreConstructor = true)
-        dialogModule.dialogID = questID
+    private fun regDialog(dialogID: String, file: Configuration) {
+        val dialogModule = file.getObject<DialogModule>(dialogID, ignoreConstructor = true)
+        dialogModule.dialogID = dialogID
         dialogModule.register()
     }
 

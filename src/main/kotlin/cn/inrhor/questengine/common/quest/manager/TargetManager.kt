@@ -5,7 +5,7 @@ import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.quest.ModeType
-import cn.inrhor.questengine.common.quest.QuestTarget
+import cn.inrhor.questengine.api.quest.module.inner.QuestTarget
 import cn.inrhor.questengine.utlis.ui.BuilderFrame
 import cn.inrhor.questengine.utlis.ui.NoteComponent
 import cn.inrhor.questengine.utlis.ui.buildFrame
@@ -85,7 +85,8 @@ object TargetManager {
      */
     fun scheduleUtil(name: String, questData: QuestData, targetData: TargetData): Int {
         val questModule = QuestManager.getQuestModule(questData.questID)?: return 0
-        if (questModule.modeType == ModeType.COLLABORATION && questModule.modeShareData && questData.teamData != null) {
+        val mode = questModule.mode
+        if (mode.modeType() == ModeType.COLLABORATION && mode.shareData && questData.teamData != null) {
             var schedule = 0
             for (mUUID in questData.teamData!!.members) {
                 val m = Bukkit.getPlayer(mUUID)?: continue
@@ -95,7 +96,7 @@ object TargetManager {
             }
             return schedule
         }
-        if (questModule.modeType == ModeType.PERSONAL) {
+        if (questModule.mode.modeType() == ModeType.PERSONAL) {
             return targetData.schedule
         }
         return 0

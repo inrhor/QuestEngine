@@ -2,16 +2,17 @@ package cn.inrhor.questengine.common.quest
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.quest.control.*
-import cn.inrhor.questengine.api.quest.QuestInnerModule
+import cn.inrhor.questengine.api.quest.module.inner.QuestInnerModule
+import cn.inrhor.questengine.api.quest.module.inner.QuestReward
+import cn.inrhor.questengine.api.quest.module.main.QuestModule
 import cn.inrhor.questengine.common.quest.manager.QuestManager
-import cn.inrhor.questengine.api.quest.QuestModule
 import cn.inrhor.questengine.common.quest.manager.ControlManager
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.utlis.UtilString
 import cn.inrhor.questengine.utlis.file.FileUtil
-import taboolib.common.io.newFile
 import taboolib.common.platform.function.*
 import taboolib.module.configuration.Configuration
+import taboolib.module.configuration.Configuration.Companion.getObject
 import taboolib.module.lang.sendLang
 import java.io.File
 
@@ -43,7 +44,10 @@ object QuestFile {
         val settingFile = file(file, "setting.yml")
         if (!settingFile.exists()) return
         val setting = yaml(settingFile)
-        val questID = setting.getString("questID")?: return run {
+        val questModule = setting.getObject<QuestModule>("quest", true)
+        val questID = questModule.questID
+
+        /*val questID = setting.getString("questID")?: return run {
             console().sendLang("QUEST-ERROR_FILE")
         }
         val name = setting.getString("name")?: "test"
@@ -91,32 +95,45 @@ object QuestFile {
             acceptWay, maxQuantity,
             acceptCheck, acceptCondition,
             failCheck, failCondition, failKether,
-            innerQuestList, sort, descMap)
+            innerQuestList, sort, descMap)*/
 
-        QuestManager.register(questID, questModule, sort)
+        val innerQuestList = mutableListOf<QuestInnerModule>()
+
+        val innerFolder = FileUtil.getFile("space/quest/"+file.name+"/inner")
+        val lists = innerFolder.listFiles()?: return run {
+            console().sendLang("QUEST-ERROR_FILE", questID)
+        }
+        for (it in lists) {
+            val optionFile = file(it, "option.yml")
+            if (!optionFile.exists()) return run {
+                console().sendLang("QUEST-ERROR_FILE", questID)
+            }
+            val innerModule = innerQuest(
+                it, questID, yaml(optionFile).getObject("inner", true))
+
+            innerQuestList.add(innerModule)
+        }
+
+        QuestManager.register(questID, questModule, questModule.sort)
     }
 
-    private fun innerQuest(innerFile: File, questID: String): QuestInnerModule? {
-        val optionFile = file(innerFile, "option.yml")
-        val option = yaml(optionFile)
-        val innerQuestID = option.getString("innerQuestID")?: return null
-        val innerQuestName = option.getString("innerQuestName")?: "无名内部任务"
-        val nextInnerQuestID = option.getString("nextInnerQuestID")?: ""
-
-        val description = option.getStringList("description")
-
+    private fun innerQuest(innerFile: File, questID: String, innerModule: QuestInnerModule): QuestInnerModule {
+        val innerQuestID = innerModule.id
         val controlFile = file(innerFile, "control.yml")
         val questControls = if (controlFile.exists()) control(controlFile, questID, innerQuestID) else mutableListOf()
 
         val rewardFile = file(innerFile, "reward.yml")
-        val questReward = reward(rewardFile, questID, innerQuestID)
+        val questReward = yaml(rewardFile).getObject<QuestReward>("reward", true)
 
         val targetFile = file(innerFile, "target.yml")
         val target = yaml(targetFile)
         val questTarget = TargetManager.getTargetList(target)
 
-        return QuestInnerModule(innerQuestID, innerQuestName, nextInnerQuestID,
-            questControls, questReward, questTarget, description)
+        innerModule.questControls = questControls
+        innerModule.questReward = questReward
+        innerModule.questTargetList = questTarget
+
+        return innerModule
     }
 
     private fun file(file: File, path: String): File {
@@ -125,21 +142,6 @@ object QuestFile {
 
     private fun yaml(file: File): Configuration {
         return Configuration.loadFromFile(file)
-    }
-
-    private fun reward(file: File, questID: String, innerQuestID: String): QuestReward {
-        val finishReward = mutableMapOf<String, List<String>>()
-        var failReward = listOf<String>()
-        if (file.exists()) {
-            val reward = yaml(file)
-            if (reward.contains("finishReward")) {
-                for (rewardID in reward.getConfigurationSection("finishReward")!!.getKeys(false)) {
-                    finishReward[rewardID] = reward.getStringList("finishReward.$rewardID")
-                }
-            }
-            failReward = reward.getStringList("failReward")
-        }
-        return QuestReward(questID, innerQuestID, finishReward, failReward)
     }
 
     private fun control(file: File, questID: String, innerQuestID: String): MutableList<QuestControlOpen> {
