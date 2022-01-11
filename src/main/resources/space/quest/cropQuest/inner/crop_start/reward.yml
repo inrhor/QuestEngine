@@ -3,12 +3,12 @@ reward:
   finishReward:
     -
       # 奖励ID
-      rewardID: 1
+      rewardID: "1"
       # 脚本
       script:
         - ""
         - ""
-    - rewardID: 2
+    - rewardID: "2"
       script:
         - ""
 

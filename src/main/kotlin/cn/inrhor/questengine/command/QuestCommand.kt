@@ -6,9 +6,6 @@ import taboolib.common.platform.command.CommandBody
 internal object QuestCommand {
 
     @CommandBody
-    val info = QuestInfo.info
-
-    @CommandBody
     val accept = QuestAccept.accept
 
     @CommandBody

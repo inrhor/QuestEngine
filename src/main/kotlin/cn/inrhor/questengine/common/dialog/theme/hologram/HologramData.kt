@@ -5,6 +5,7 @@ import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.api.packet.destroyEntity
 import cn.inrhor.questengine.api.packet.spawnAS
 import org.bukkit.entity.Player
+import taboolib.common.platform.function.info
 
 /**
  * 全息数据
@@ -37,6 +38,7 @@ class HologramData {
 
     fun remove(viewers: MutableSet<Player>) {
         packetIDs.forEach {
+            info("id $it")
             destroyEntity(viewers, it)
         }
     }

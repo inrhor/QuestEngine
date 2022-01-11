@@ -121,5 +121,6 @@ data class HitBoxSpawner(
             DataStorage.getPlayerData(it).dialogData.holoBoxMap.
             remove(dialogHolo.dialogModule.dialogID)
         }
+        viewers.clear()
     }
 }

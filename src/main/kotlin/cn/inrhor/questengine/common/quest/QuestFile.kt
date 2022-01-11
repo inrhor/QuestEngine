@@ -21,7 +21,7 @@ object QuestFile {
     /**
      * 加载并注册任务
      */
-    fun loadDialog() {
+    fun loadQuest() {
         val questFolder = FileUtil.getFile("space/quest")
         val lists = questFolder.listFiles()?: return run {
             console().sendLang("QUEST-NO_FILES", UtilString.pluginTag)
@@ -33,6 +33,7 @@ object QuestFile {
             res.releaseResourceFile(inner+"option.yml", true)
             res.releaseResourceFile(inner+"reward.yml", true)
             res.releaseResourceFile(inner+"target.yml", true)
+            loadQuest()
         }
         for (file in lists) {
             if (!file.isDirectory) continue
@@ -69,7 +70,7 @@ object QuestFile {
 
             innerQuestList.add(innerModule)
         }
-
+        questModule.innerQuestList = innerQuestList
         QuestManager.register(questID, questModule, questModule.sort)
     }
 
