@@ -134,7 +134,7 @@ class DatabaseLocal: Database() {
         val innerModule = QuestManager.getInnerQuestModule(questID, innerQuestID)?: return null
         val innerTargetDataMap = returnTargets(
             player, questUUID,
-            data, node, QuestManager.getInnerModuleTargetMap(questUUID, questModule.modeType, innerModule))
+            data, node, QuestManager.getInnerModuleTargetMap(questUUID, questModule.mode.modeType(), innerModule))
         return QuestInnerData(questID, innerQuestID, innerTargetDataMap, innerState, rewardInner)
     }
 

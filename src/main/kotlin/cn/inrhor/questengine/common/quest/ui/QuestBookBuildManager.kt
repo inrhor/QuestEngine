@@ -4,6 +4,7 @@ import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.api.quest.module.inner.QuestTarget
+import cn.inrhor.questengine.api.quest.module.main.QuestModule
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.quest.toUnit
 import cn.inrhor.questengine.utlis.copy
@@ -148,7 +149,7 @@ object QuestBookBuildManager {
         builderFrame.noteComponent.values.forEach {
             val note = it.note
             for (i in note.indices) {
-                note[i] = note[i].replaceWithOrder(innerModule.innerQuestName, innerID)
+                note[i] = note[i].replaceWithOrder(innerModule.name, innerID)
             }
         }
         textComponent.command = "/qen handbook inner $questUUID $innerID"
@@ -176,7 +177,7 @@ object QuestBookBuildManager {
         ui.noteComponent.values.forEach {
             val note = it.note
             for (i in 0 until note.size) {
-                note[i] = note[i].replaceWithOrder(innerModule.innerQuestName, innerData.state.toUnit(player))
+                note[i] = note[i].replaceWithOrder(innerModule.name, innerData.state.toUnit(player))
             }
             it.note = descSet(it.note, "", questID, innerID)
         }

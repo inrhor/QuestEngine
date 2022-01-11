@@ -47,55 +47,11 @@ object QuestFile {
         val questModule = setting.getObject<QuestModule>("quest", true)
         val questID = questModule.questID
 
-        /*val questID = setting.getString("questID")?: return run {
-            console().sendLang("QUEST-ERROR_FILE")
-        }
-        val name = setting.getString("name")?: "test"
-        val startID = setting.getString("startInnerQuestID")?: "test"
-        val sort = setting.getString("sort")?: ""
-        var modeType = ModeType.PERSONAL
-        val modeTypeStr = setting.getString("mode.type")?: "personal"
-        var modeAmount = -1
-        var modeShareData = false
-        if (modeTypeStr == "collaboration") {
-            modeType = ModeType.COLLABORATION
-            modeAmount = setting.getInt("mode.amount")
-            modeShareData = setting.getBoolean("mode.shareData")
-        }
-        val acceptWay = setting.getString("accept.way")?: ""
-        val maxQuantity = if (setting.contains("accept.maxQuantity")) setting.getInt("accept.maxQuantity") else 1
-        val acceptCheck = setting.getInt("accept.check")
-        val acceptCondition = setting.getStringList("accept.condition")
-        val failCheck = setting.getInt("failure.check")
-        val failCondition = setting.getStringList("failure.condition")
-        val failKether = setting.getStringList("failure.kether")
-
-        val innerQuestList = mutableListOf<QuestInnerModule>()
-
-        val innerFolder = FileUtil.getFile("space/quest/"+file.name+"/inner")
-        val lists = innerFolder.listFiles()?: return run {
-            console().sendLang("QUEST-ERROR_FILE", questID)
-        }
-        lists.forEach {
-            val optionFile = file(it, "option.yml")
-            if (!optionFile.exists()) return run {
-                console().sendLang("QUEST-ERROR_FILE", questID)
-            }
-            val innerModule = innerQuest(it, questID)?: return@forEach
-            innerQuestList.add(innerModule)
-        }
-
         val descMap = mutableMapOf<String, List<String>>()
         setting.getConfigurationSection("desc")!!.getKeys(false).forEach {
             descMap[it] = setting.getStringList("desc.$it")
         }
-
-        val questModule = QuestModule(questID, name, startID,
-            modeType, modeAmount, modeShareData,
-            acceptWay, maxQuantity,
-            acceptCheck, acceptCondition,
-            failCheck, failCondition, failKether,
-            innerQuestList, sort, descMap)*/
+        questModule.descMap = descMap
 
         val innerQuestList = mutableListOf<QuestInnerModule>()
 
