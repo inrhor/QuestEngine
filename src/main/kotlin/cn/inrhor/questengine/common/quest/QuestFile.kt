@@ -45,7 +45,7 @@ object QuestFile {
         val settingFile = file(file, "setting.yml")
         if (!settingFile.exists()) return
         val setting = yaml(settingFile)
-        val questModule = setting.getObject<QuestModule>("quest", true)
+        val questModule = setting.getObject<QuestModule>("quest", false)
         val questID = questModule.questID
 
         val descMap = mutableMapOf<String, List<String>>()
@@ -66,7 +66,7 @@ object QuestFile {
                 console().sendLang("QUEST-ERROR_FILE", questID)
             }
             val innerModule = innerQuest(
-                it, questID, yaml(optionFile).getObject("inner", true))
+                it, questID, yaml(optionFile).getObject("inner", false))
 
             innerQuestList.add(innerModule)
         }
@@ -80,7 +80,7 @@ object QuestFile {
         val questControls = if (controlFile.exists()) control(controlFile, questID, innerQuestID) else mutableListOf()
 
         val rewardFile = file(innerFile, "reward.yml")
-        val questReward = yaml(rewardFile).getObject<QuestReward>("reward", true)
+        val questReward = yaml(rewardFile).getObject<QuestReward>("reward", false)
 
         val targetFile = file(innerFile, "target.yml")
         val target = yaml(targetFile)

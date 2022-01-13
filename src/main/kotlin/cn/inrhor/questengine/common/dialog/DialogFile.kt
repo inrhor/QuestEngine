@@ -1,9 +1,12 @@
 package cn.inrhor.questengine.common.dialog
 
 import cn.inrhor.questengine.api.dialog.DialogModule
+import cn.inrhor.questengine.api.dialog.SpaceDialogModule
 import cn.inrhor.questengine.utlis.UtilString
 import cn.inrhor.questengine.utlis.file.FileUtil
 import taboolib.common.platform.function.console
+import taboolib.common.platform.function.info
+import taboolib.library.configuration.ConfigurationSection
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.Configuration.Companion.getObject
 import taboolib.module.configuration.Type
@@ -38,11 +41,12 @@ object DialogFile {
                     val hook = Configuration.loadFromFile(it)
                     val ifs = hook.getConfigurationSection(id)
                     if (ifs != null) {
-                        regDialog(dialogID, hook)
+                        regDialog(dialogID, yaml, ifs, id)
+                        return@forEach
                     }
                 }
             }else {
-                regDialog(dialogID, yaml)
+                regDialog(dialogID, yaml, cfs)
             }
         }
     }
@@ -50,10 +54,21 @@ object DialogFile {
     /**
      * 以节点为 DialogID 进行注册对话模块
      */
-    private fun regDialog(dialogID: String, file: Configuration) {
-        val dialogModule = file.getObject<DialogModule>(dialogID, ignoreConstructor = true)
-        dialogModule.dialogID = dialogID
-        dialogModule.register()
+    private fun regDialog(dialogID: String, file: Configuration, hookSection: ConfigurationSection, hookID: String = dialogID) {
+        try {
+            val dialogModule = file.getObject<DialogModule>(dialogID, false)
+            dialogModule.dialogID = dialogID
+            /*if (dialogID != hookID) {
+            if (!file.contains("$dialogID.dialog")) dialogModule.dialog = hookSection.getStringList("dialog")
+            if (!file.contains("$dialogID.npcIDs")) dialogModule.npcIDs = hookSection.getStringList("npcIDs")
+            if (!file.contains("$dialogID.condition")) dialogModule.condition = hookSection.getStringList("condition")
+            if (!file.contains("$dialogID.space")) dialogModule.space = if (hookSection.contains("space")) hookSection.getObject("space") else SpaceDialogModule()
+            if (!file.contains("$dialogID.reply")) dialogModule.reply = if (hookSection.contains("reply")) hookSection.getObject("reply") else mutableListOf()
+        }*/
+            dialogModule.register()
+        } catch (ex: Exception) {
+            info(ex)
+        }
     }
 
 }

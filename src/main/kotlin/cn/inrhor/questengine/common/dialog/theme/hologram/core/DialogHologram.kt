@@ -26,6 +26,8 @@ class DialogHologram(
     val replyHoloList = mutableListOf<ReplyHologram>()
     val holoData = HologramData()
 
+    var end = false
+
     override fun play() {
         parserContent()
         viewers.forEach {
@@ -35,6 +37,7 @@ class DialogHologram(
     }
 
     override fun end() {
+        end = true
         holoData.remove(viewers)
     }
 
@@ -87,7 +90,7 @@ class DialogHologram(
             dialogModule.dialogID, holoData.size(), type)
         holoData.create(holoID, viewers, origin, type)
         val animation = AnimationText(text)
-        animation.sendViewers(holoID, viewers)
+        animation.sendViewers(holoID, this)
     }
 
     /**
@@ -103,7 +106,7 @@ class DialogHologram(
             dialogID, index+1, HoloIDManager.Type.ITEMSTACK)
         holoData.create(itemHoloID, viewers, origin, type)
         val animation = AnimationItem(content, holoData)
-        animation.sendViewers(viewers, origin, itemHoloID, stackHoloID)
+        animation.sendViewers(this, origin, itemHoloID, stackHoloID)
     }
 
 }

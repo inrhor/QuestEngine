@@ -16,7 +16,7 @@ import taboolib.common.platform.function.submit
  */
 class ReplyHologram(
     val dialogHolo: DialogHologram,
-    val reply: MutableList<ReplyModule>,
+    val reply: List<ReplyModule>,
     val delay: Long,
     val holoHitBox: HoloHitBox = HoloHitBox()
 ): ReplyTheme {
@@ -81,7 +81,7 @@ class ReplyHologram(
             dialogID, replyID, index+1, HoloIDManager.Type.ITEMSTACK)
         holoData.create(itemHoloID, dialogHolo.viewers, origin, type)
         val animation = AnimationItem(content, holoData)
-        animation.sendViewers(dialogHolo.viewers, origin, itemHoloID, stackHoloID)
+        animation.sendViewers(dialogHolo, origin, itemHoloID, stackHoloID)
     }
 
     private fun hitBox(replyModule: ReplyModule, content: String): HitBoxSpawner {

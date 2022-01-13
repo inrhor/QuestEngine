@@ -4,6 +4,7 @@ import cn.inrhor.questengine.api.dialog.theme.ItemPlay
 import cn.inrhor.questengine.api.hologram.HoloDisplay
 import cn.inrhor.questengine.common.dialog.theme.hologram.HologramData
 import cn.inrhor.questengine.common.dialog.theme.hologram.OriginLocation
+import cn.inrhor.questengine.common.dialog.theme.hologram.core.DialogHologram
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.utlis.spaceSplit
 import cn.inrhor.questengine.utlis.variableReader
@@ -28,9 +29,10 @@ class AnimationItem(val content: String, val holoData: HologramData): ItemPlay()
         }
     }
 
-    fun sendViewers(viewers: MutableSet<Player>, origin: OriginLocation, vararg holoID: Int) {
+    fun sendViewers(dialogHolo: DialogHologram, origin: OriginLocation, vararg holoID: Int) {
         submit(async = true, delay = this.delay) {
-            if (viewers.isEmpty()) {
+            val viewers = dialogHolo.viewers
+            if (viewers.isEmpty() || dialogHolo.end) {
                 cancel(); return@submit
             }
             val itemHoloID = holoID[0]

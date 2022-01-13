@@ -48,7 +48,7 @@ dialog1:
         - item {{item item_1}} {{use suspend}}
       # 支持 Kether 语句
       script:
-        - dialog end dialog_1
+        - dialog end dialog1
 
 
 # 对话ID
@@ -69,7 +69,7 @@ dialog2:
         - initLoc {{dir left}} {{add 2.0 1.5}}
         - item {{item item_2}} {{use fixed}}
       script:
-        - dialog end dialog_2
+        - dialog end dialog2
 
 # 对话ID
 dialog3:
