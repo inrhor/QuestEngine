@@ -5,7 +5,6 @@ import cn.inrhor.questengine.api.dialog.SpaceDialogModule
 import cn.inrhor.questengine.utlis.UtilString
 import cn.inrhor.questengine.utlis.file.FileUtil
 import taboolib.common.platform.function.console
-import taboolib.common.platform.function.info
 import taboolib.library.configuration.ConfigurationSection
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.Configuration.Companion.getObject
@@ -20,6 +19,12 @@ object DialogFile {
 
         FileUtil.getFileList(dialogFolder).forEach{
             checkRegDialog(it, dialogFolder)
+        }
+
+        waitMap.forEach { (t, u) ->
+            if (DialogManager.exist(u) && DialogManager.exist(t)) {
+                DialogManager.get(t)!!.reply = DialogManager.get(u)!!.reply
+            }
         }
     }
 
@@ -55,20 +60,19 @@ object DialogFile {
      * 以节点为 DialogID 进行注册对话模块
      */
     private fun regDialog(dialogID: String, file: Configuration, hookSection: ConfigurationSection, hookID: String = dialogID) {
-        try {
-            val dialogModule = file.getObject<DialogModule>(dialogID, false)
-            dialogModule.dialogID = dialogID
-            /*if (dialogID != hookID) {
+        val dialogModule = file.getObject<DialogModule>(dialogID, false)
+        dialogModule.dialogID = dialogID
+        if (dialogID != hookID) {
             if (!file.contains("$dialogID.dialog")) dialogModule.dialog = hookSection.getStringList("dialog")
             if (!file.contains("$dialogID.npcIDs")) dialogModule.npcIDs = hookSection.getStringList("npcIDs")
             if (!file.contains("$dialogID.condition")) dialogModule.condition = hookSection.getStringList("condition")
-            if (!file.contains("$dialogID.space")) dialogModule.space = if (hookSection.contains("space")) hookSection.getObject("space") else SpaceDialogModule()
-            if (!file.contains("$dialogID.reply")) dialogModule.reply = if (hookSection.contains("reply")) hookSection.getObject("reply") else mutableListOf()
-        }*/
-            dialogModule.register()
-        } catch (ex: Exception) {
-            info(ex)
+            if (!file.contains("$dialogID.space")) dialogModule.space = if (hookSection.contains("space")) hookSection.getObject("space", false) else SpaceDialogModule()
+            if (!file.contains("$dialogID.reply")) {
+                if (hookSection.contains("reply")) waitMap[dialogID] = hookID else dialogModule.reply = mutableListOf()
+            }
         }
+        dialogModule.register()
     }
 
+    private val waitMap = mutableMapOf<String, String>()
 }
