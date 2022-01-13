@@ -1,3 +1,8 @@
 package cn.inrhor.questengine.api.quest.module.main
 
-class QuestFailure(val check: Int = -1, val condition: List<String> = listOf(), val kether: List<String> = listOf())
+import taboolib.library.configuration.PreserveNotNull
+
+@PreserveNotNull
+class QuestFailure(val check: Int, val condition: List<String>, val script: List<String>) {
+    constructor(): this(-1, listOf(), listOf())
+}

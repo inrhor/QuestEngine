@@ -1,3 +1,8 @@
 package cn.inrhor.questengine.api.quest.module.main
 
-class QuestAccept(val way: String = "auto", val maxQuantity: Int = 1, val check: Int = -1, val condition: List<String> = listOf())
+import taboolib.library.configuration.PreserveNotNull
+
+@PreserveNotNull
+class QuestAccept(val way: String, val maxQuantity: Int, val check: Int, val condition: List<String>) {
+    constructor(): this("auto", 1, -1, listOf())
+}

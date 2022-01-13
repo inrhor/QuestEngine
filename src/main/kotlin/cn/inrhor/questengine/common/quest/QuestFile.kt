@@ -3,7 +3,6 @@ package cn.inrhor.questengine.common.quest
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.quest.control.*
 import cn.inrhor.questengine.api.quest.module.inner.QuestInnerModule
-import cn.inrhor.questengine.api.quest.module.inner.QuestReward
 import cn.inrhor.questengine.api.quest.module.main.QuestModule
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.quest.manager.ControlManager
@@ -28,11 +27,7 @@ object QuestFile {
             val main = "space/quest/cropQuest/"
             val res = QuestEngine.resource
             res.releaseResourceFile(main+"setting.yml", true)
-            val inner = "${main}inner/crop_start/"
-            res.releaseResourceFile(inner+"control.yml", true)
-            res.releaseResourceFile(inner+"option.yml", true)
-            res.releaseResourceFile(inner+"reward.yml", true)
-            res.releaseResourceFile(inner+"target.yml", true)
+            res.releaseResourceFile(main+"inner_1.yml", true)
             loadQuest()
         }
         for (file in lists) {
@@ -56,38 +51,29 @@ object QuestFile {
 
         val innerQuestList = mutableListOf<QuestInnerModule>()
 
-        val innerFolder = FileUtil.getFile("space/quest/"+file.name+"/inner")
+        val innerFolder = FileUtil.getFile("space/quest/"+file.name)
         val lists = innerFolder.listFiles()?: return run {
             console().sendLang("QUEST-ERROR_FILE", questID)
         }
         for (it in lists) {
-            val optionFile = file(it, "option.yml")
-            if (!optionFile.exists()) return run {
-                console().sendLang("QUEST-ERROR_FILE", questID)
+            val innerYaml = yaml(it)
+            if (it.name == "setting.yml" && !innerYaml.contains("inner")) {
+                continue
             }
-            val innerModule = innerQuest(
-                it, questID, yaml(optionFile).getObject("inner", false))
-
+            val innerModule = innerQuest(innerYaml, questID,  innerYaml.getObject("inner", false))
             innerQuestList.add(innerModule)
         }
         questModule.innerQuestList = innerQuestList
         QuestManager.register(questID, questModule, questModule.sort)
     }
 
-    private fun innerQuest(innerFile: File, questID: String, innerModule: QuestInnerModule): QuestInnerModule {
+    private fun innerQuest(innerYaml: Configuration, questID: String, innerModule: QuestInnerModule): QuestInnerModule {
         val innerQuestID = innerModule.id
-        val controlFile = file(innerFile, "control.yml")
-        val questControls = if (controlFile.exists()) control(controlFile, questID, innerQuestID) else mutableListOf()
+        val questControls = if (innerYaml.contains("inner.control")) control(innerYaml, questID, innerQuestID) else mutableListOf()
 
-        val rewardFile = file(innerFile, "reward.yml")
-        val questReward = yaml(rewardFile).getObject<QuestReward>("reward", false)
+        val questTarget = TargetManager.getTargetList(innerYaml)
 
-        val targetFile = file(innerFile, "target.yml")
-        val target = yaml(targetFile)
-        val questTarget = TargetManager.getTargetList(target)
-
-        innerModule.questControls = questControls
-        innerModule.questReward = questReward
+        innerModule.questControl = questControls
         innerModule.questTargetList = questTarget
 
         return innerModule
@@ -101,21 +87,20 @@ object QuestFile {
         return Configuration.loadFromFile(file)
     }
 
-    private fun control(file: File, questID: String, innerQuestID: String): MutableList<QuestControlOpen> {
-        val control = yaml(file)
-
-        val hNode = "highest.log."
+    private fun control(control: Configuration, questID: String, innerQuestID: String): MutableList<QuestControlOpen> {
+        val node = "inner.control"
+        val hNode = "$node.highest.log."
         val hLogEnable = control.getBoolean(hNode+"enable")
         val hLogType = control.getString(hNode+"type")?: "null"
-        val hLogShell = control.getStringList(hNode+"reKether")
+        val hLogShell = control.getStringList(hNode+"recall")
 
-        val nNode = "normal.log."
+        val nNode = "$node.normal.log."
         val nLogEnable = control.getBoolean(nNode+"enable")
         val nLogType = control.getString(nNode+"type")?: "null"
-        val nLogShell = control.getStringList(nNode+"reKether")
+        val nLogShell = control.getStringList(nNode+"script")
 
-        val hControl = control.getStringList("highest.kether")
-        val nControl = control.getStringList("normal.kether")
+        val hControl = control.getStringList("highest.script")
+        val nControl = control.getStringList("normal.script")
         val highestID = ControlManager.generateControlID(questID, innerQuestID, "highest")
         val normalID = ControlManager.generateControlID(questID, innerQuestID, "normal")
 

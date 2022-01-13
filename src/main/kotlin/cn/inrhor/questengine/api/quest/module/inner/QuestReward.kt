@@ -1,9 +1,13 @@
 package cn.inrhor.questengine.api.quest.module.inner
 
+import taboolib.library.configuration.PreserveNotNull
+
+@PreserveNotNull
 class QuestReward(
-    var questID: String, var innerQuestID: String,
     var finishReward: List<FinishReward>,
     var failReward: List<String>) {
+
+    constructor(): this(listOf(), listOf())
 
     fun getFinishReward(rewardID: String): List<String> {
         finishReward.forEach {

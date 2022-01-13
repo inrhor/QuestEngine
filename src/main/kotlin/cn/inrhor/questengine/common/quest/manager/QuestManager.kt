@@ -198,7 +198,7 @@ object QuestManager {
         val list = mutableListOf<String>()
         val fail = questModule.failure
         val check = fail.check
-        val c = fail.kether
+        val c = fail.script
         var i = 0
         val questData = getQuestData(player, questUUID)?: return
         val innerData = questData.questInnerData
@@ -233,7 +233,7 @@ object QuestManager {
             if (!evalBoolean(player, list)) {
                 val modeType = questModule.mode.modeType()
                 endQuest(player, modeType, questUUID, QuestState.FAILURE, false)
-                runFailTime(player, modeType, questModule.failure.kether)
+                runFailTime(player, modeType, questModule.failure.script)
                 cancel()
                 return@submit
             }
@@ -545,8 +545,8 @@ object QuestManager {
         for (m in questModule.innerQuestList) {
             if (m.id == innerQuestID) {
                 return if (type == QuestState.FINISH) {
-                    m.questReward.getFinishReward(rewardID)
-                }else m.questReward.failReward
+                    m.reward.getFinishReward(rewardID)
+                }else m.reward.failReward
             }
         }
         return null

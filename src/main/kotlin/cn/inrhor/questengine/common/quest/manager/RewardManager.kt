@@ -42,7 +42,7 @@ object RewardManager {
         val mainID = questInnerData.innerQuestID
         val questID = questInnerData.questID
         val innerModule = QuestManager.getInnerQuestModule(questID, mainID)?: return
-        finishReward(player, questInnerData, innerModule.questReward, targetData.questTarget.reward)
+        finishReward(player, questInnerData, innerModule.reward, targetData.questTarget.reward)
     }
 
     private fun finishReward(player: Player, questInnerData: QuestInnerData, questReward: QuestReward, content: String) {

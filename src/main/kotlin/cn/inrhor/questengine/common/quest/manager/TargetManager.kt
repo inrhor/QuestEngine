@@ -34,7 +34,7 @@ object TargetManager {
 
     fun getTargetList(yaml: Configuration): MutableMap<String, QuestTarget> {
         val questTargetList = mutableMapOf<String, QuestTarget>()
-        for (i in yaml.getConfigurationSection("target")!!.getKeys(false)) {
+        for (i in yaml.getConfigurationSection("inner.target")!!.getKeys(false)) {
             val s = "target.$i."
             val name = yaml.getString(s + "name") ?: "null"
             val time = yaml.getString(s + "time") ?: "always"

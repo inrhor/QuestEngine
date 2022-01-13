@@ -1,0 +1,88 @@
+inner:
+  # 内部任务ID
+  id: "mainQuest1"
+  # 内部任务名称
+  name: "收集家"
+  # 下一个内部任务ID，空则无
+  nextInnerQuestID: ""
+  # 内部任务描述
+  # 显示于内部任务信息任务手册
+  description:
+    - "&a这是一个关于农业的任务主线之一"
+    - "&r   收集家"
+  target:
+    2:
+      name: break block
+      block: stone 10
+      time: minute 5
+      reward: all false
+      ui:
+        desc:
+          note:
+            - "&8挖掘石块 &a3 &8个"
+            - "    &8进度 &6{0}"
+            - "    &8剩余时间 &c{1}"
+            - ""
+    3:
+      name: player death
+      cause:
+        - DROWNING
+        - SUFFOCATION
+      number: 1
+      time: minute 1
+      reward: 2 true
+      description:
+        - "&8体验舒适的天堂"
+        - "    &8进度 &6{0}"
+        - ""
+  reward:
+    # 完成任务后触发脚本
+    finish:
+      - # 奖励ID
+        id: "1"
+        # 脚本支持 Kether
+        script:
+          - ""
+          - ""
+      - id: "2"
+        script:
+          - ""
+    # 任务失败后触发脚本
+    fail:
+      - ""
+      - ""
+  control:
+    # 最高级控制
+    highest:
+      # 记录控制运行索引，以防意外可选择调用
+      log:
+        # 是否启用
+        enable: false
+        # restart [重启]
+        # memory [记忆]
+        # index int [索引]
+        type: memory
+      script:
+        - waitTime s 5 to @quest the highest
+        - subtitle color *"&f这是田园农庄场"
+        - waitTime s 3 to @quest the highest
+        - title color *"&6农民" subtitle color *"&f现在赋予你一个职位"
+        - waitTime s 3 to @quest the highest
+        - subtitle color *"&f请你采集这一片农作物"
+        - waitTime s 3 to @quest the highest
+        - subtitle color *"&a完成后我将会给予你丰厚奖励"
+        - player loaction to location *world *96 *73 *-206
+        - player gamemode to *survival
+    # 普通控制
+    normal:
+      log:
+        # 是否启用
+        enable: false
+        type: memory
+        # 重新时的调用
+        recall:
+          - control @this index 1
+      script:
+        - title color *"&a已接受新任务" subtitle color *"&f采集农作物任务"
+        - waitTime minute 5 to @quest the normal
+        - subtitle color *"&c任务即将结束，请注意"
