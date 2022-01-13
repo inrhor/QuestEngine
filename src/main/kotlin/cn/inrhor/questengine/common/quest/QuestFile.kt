@@ -37,7 +37,7 @@ object QuestFile {
     }
 
     private fun checkRegQuest(file: File) {
-        val settingFile = file(file, "setting.yml")
+        val settingFile = File(file.path + File.separator + "setting.yml")
         if (!settingFile.exists()) return
         val setting = yaml(settingFile)
         val questModule = setting.getObject<QuestModule>("quest", false)
@@ -52,9 +52,7 @@ object QuestFile {
         val innerQuestList = mutableListOf<QuestInnerModule>()
 
         val innerFolder = FileUtil.getFile("space/quest/"+file.name)
-        val lists = innerFolder.listFiles()?: return run {
-            console().sendLang("QUEST-ERROR_FILE", questID)
-        }
+        val lists = FileUtil.getFileList(innerFolder)
         for (it in lists) {
             val innerYaml = yaml(it)
             if (it.name == "setting.yml" && !innerYaml.contains("inner")) {
@@ -77,10 +75,6 @@ object QuestFile {
         innerModule.questTargetList = questTarget
 
         return innerModule
-    }
-
-    private fun file(file: File, path: String): File {
-        return File(file.path + File.separator + path)
     }
 
     private fun yaml(file: File): Configuration {

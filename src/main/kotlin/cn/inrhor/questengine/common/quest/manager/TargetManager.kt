@@ -35,7 +35,7 @@ object TargetManager {
     fun getTargetList(yaml: Configuration): MutableMap<String, QuestTarget> {
         val questTargetList = mutableMapOf<String, QuestTarget>()
         for (i in yaml.getConfigurationSection("inner.target")!!.getKeys(false)) {
-            val s = "target.$i."
+            val s = "inner.target.$i."
             val name = yaml.getString(s + "name") ?: "null"
             val time = yaml.getString(s + "time") ?: "always"
             val reward = yaml.getString(s + "reward") ?: "null"
@@ -47,7 +47,7 @@ object TargetManager {
             targetMap.forEach { (eventNameMeta, conditionType) ->
                 val eventName = eventNameMeta.split("-")[0]
                 if (eventName == name) {
-                    val path = "target.$i"
+                    val path = "inner.target.$i"
                     for (node in yaml.getConfigurationSection(path)!!.getKeys(true)) {
                         val u = "$path.$node"
                         if (node == "ui" || node == "description") {
