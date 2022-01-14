@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.dialog.theme.hologram.content
 
 import cn.inrhor.questengine.api.dialog.theme.TextPlay
 import cn.inrhor.questengine.api.packet.updateDisplayName
+import cn.inrhor.questengine.common.dialog.theme.hologram.core.DialogHologram
 import cn.inrhor.questengine.utlis.spaceSplit
 import cn.inrhor.questengine.utlis.variableReader
 import org.bukkit.entity.Player
@@ -40,9 +41,10 @@ class AnimationText(val content: String): TextPlay() {
         }
     }
 
-    fun sendViewers(holoID: Int, viewers: MutableSet<Player>) {
+    fun sendViewers(holoID: Int, dialogHolo: DialogHologram) {
         submit(async = true, delay = this.delay) {
-            if (viewers.isEmpty()) {
+            val viewers = dialogHolo.viewers
+            if (viewers.isEmpty() || dialogHolo.end) {
                 cancel(); return@submit
             }
             if (writeType == WriteType.NORMAL) {

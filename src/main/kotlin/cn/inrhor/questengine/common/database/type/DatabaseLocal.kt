@@ -45,7 +45,7 @@ class DatabaseLocal: Database() {
     override fun removeControl(player: Player, controlID: String) {
         val uuid = player.uniqueId
         val data = getLocal(uuid)
-        data.set("control.$controlID", null)
+        data["control.$controlID"] = null
         val file = File(QuestEngine.plugin.dataFolder, "data/$uuid.yml")
         data.saveToFile(file)
     }
@@ -134,7 +134,7 @@ class DatabaseLocal: Database() {
         val innerModule = QuestManager.getInnerQuestModule(questID, innerQuestID)?: return null
         val innerTargetDataMap = returnTargets(
             player, questUUID,
-            data, node, QuestManager.getInnerModuleTargetMap(questUUID, questModule.modeType, innerModule))
+            data, node, QuestManager.getInnerModuleTargetMap(questUUID, questModule.mode.modeType(), innerModule))
         return QuestInnerData(questID, innerQuestID, innerTargetDataMap, innerState, rewardInner)
     }
 
@@ -176,12 +176,12 @@ class DatabaseLocal: Database() {
             val node = "quest.$questUUID."
             val innerData = questData.questInnerData
             val innerID = innerData.innerQuestID
-            data.set(node+"questID", questData.questID)
-            data.set(node+"state", state)
+            data[node+"questID"] = questData.questID
+            data[node+"state"] = state
             val finishedMain = questData.finishedList
-            data.set(node+"finishedMainQuest", finishedMain)
+            data[node+"finishedMainQuest"] = finishedMain
             val innerNode = node+"innerQuest."
-            data.set(innerNode+"innerQuestID", innerID)
+            data[innerNode+"innerQuestID"] = innerID
             pushData(data, innerNode, innerData)
         }
         pData.controlData.highestControls.forEach { (cID, cData) ->
@@ -190,7 +190,7 @@ class DatabaseLocal: Database() {
         pData.controlData.controls.forEach { (cID, cData) ->
             pushControl(data, cID, cData)
         }
-        data.set("tags", pData.tagsData.getList())
+        data["tags"] = pData.tagsData.getList()
         data.saveToFile(file)
     }
 
@@ -198,28 +198,28 @@ class DatabaseLocal: Database() {
         val logType = ControlManager.runLogType(controlID)
         if (logType == RunLogType.DISABLE) return
         val node = "control.$controlID."
-        data.set(node+"priority", cData.controlPriority.toStr())
+        data[node+"priority"] = cData.controlPriority.toStr()
         when (logType) {
             RunLogType.RESTART -> {
-                data.set(node+"line", 0)
-                data.set(node+"waitTime", 0)
+                data[node+"line"] = 0
+                data[node+"waitTime"] = 0
             }
             else -> {
-                data.set(node+"line", cData.line)
-                data.set(node+"waitTime", cData.waitTime)
+                data[node+"line"] = cData.line
+                data[node+"waitTime"] = cData.waitTime
             }
         }
     }
 
     private fun pushData(data: Configuration, node: String, questInnerData: QuestInnerData) {
         val state = questInnerData.state.toStr()
-        data.set(node+"state", state)
+        data[node+"state"] = state
         questInnerData.rewardState.forEach { (rewardID, has) ->
-            data.set(node+"rewards.$rewardID.has", has)
+            data[node+"rewards.$rewardID.has"] = has
         }
         questInnerData.targetsData.forEach { (name, targetData) ->
             val schedule = targetData.schedule
-            data.set(node+"targets.$name.schedule", schedule)
+            data[node+"targets.$name.schedule"] = schedule
             setTimeDate(data, node+"targets.$name.timeDate", targetData.timeDate)
             val endTimeDate = targetData.endTimeDate?: return@forEach
             setTimeDate(data, node + "targets.$name.endTimeDate", endTimeDate)
@@ -229,7 +229,7 @@ class DatabaseLocal: Database() {
     private fun setTimeDate(data: Configuration, timeNode: String, date: Date) {
         if (!data.contains(timeNode)) {
             val dateStr = date.toStr()
-            data.set(timeNode, dateStr)
+            data[timeNode] = dateStr
         }
     }
 }

@@ -4,6 +4,7 @@ import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.api.dialog.theme.DialogTheme
 import cn.inrhor.questengine.api.dialog.ReplyModule
 import cn.inrhor.questengine.api.hologram.HoloIDManager
+import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.dialog.theme.hologram.HologramData
 import cn.inrhor.questengine.common.dialog.theme.hologram.OriginLocation
 import cn.inrhor.questengine.common.dialog.theme.hologram.content.AnimationItem
@@ -25,11 +26,18 @@ class DialogHologram(
     val replyHoloList = mutableListOf<ReplyHologram>()
     val holoData = HologramData()
 
+    var end = false
+
     override fun play() {
         parserContent()
+        viewers.forEach {
+            val pData = DataStorage.getPlayerData(it)
+            pData.dialogData.addDialog(dialogModule.dialogID, this)
+        }
     }
 
     override fun end() {
+        end = true
         holoData.remove(viewers)
     }
 
@@ -82,7 +90,7 @@ class DialogHologram(
             dialogModule.dialogID, holoData.size(), type)
         holoData.create(holoID, viewers, origin, type)
         val animation = AnimationText(text)
-        animation.sendViewers(holoID, viewers)
+        animation.sendViewers(holoID, this)
     }
 
     /**
@@ -98,7 +106,7 @@ class DialogHologram(
             dialogID, index+1, HoloIDManager.Type.ITEMSTACK)
         holoData.create(itemHoloID, viewers, origin, type)
         val animation = AnimationItem(content, holoData)
-        animation.sendViewers(viewers, origin, itemHoloID, stackHoloID)
+        animation.sendViewers(this, origin, itemHoloID, stackHoloID)
     }
 
 }

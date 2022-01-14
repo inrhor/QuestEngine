@@ -3,7 +3,7 @@ package cn.inrhor.questengine.common.database.data.quest
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestState
-import cn.inrhor.questengine.common.quest.QuestTarget
+import cn.inrhor.questengine.api.quest.module.inner.QuestTarget
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.quest.manager.RewardManager
 import cn.inrhor.questengine.script.kether.evalBoolean

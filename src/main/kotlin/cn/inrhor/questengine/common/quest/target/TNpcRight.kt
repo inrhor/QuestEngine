@@ -5,7 +5,7 @@ import cn.inrhor.questengine.common.quest.manager.TargetManager
 import net.citizensnpcs.api.event.NPCRightClickEvent
 import org.bukkit.Bukkit
 
-object TargetNpcRight: TargetExtend<NPCRightClickEvent>() {
+object TNpcRight: TargetExtend<NPCRightClickEvent>() {
 
     override val name = "right npc"
 
@@ -14,12 +14,13 @@ object TargetNpcRight: TargetExtend<NPCRightClickEvent>() {
             event = NPCRightClickEvent::class
             tasker {
                 val player = clicker
-                TargetNpcLeft.match(player, npc.id.toString())
+                TNpcLeft.match(player, npc.id.toString(), name)
                 player
             }
             // 注册
-            TargetManager.register(name, "id", mutableListOf("id"))
-            TargetManager.register(name, "need", mutableListOf("need"))
+            TargetManager
+                .register(name, "id", mutableListOf("id"))
+                .register(name, "need", mutableListOf("need"))
         }
     }
 

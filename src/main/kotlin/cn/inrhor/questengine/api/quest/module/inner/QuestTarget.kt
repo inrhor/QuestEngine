@@ -1,6 +1,7 @@
-package cn.inrhor.questengine.common.quest
+package cn.inrhor.questengine.api.quest.module.inner
 
 import cn.inrhor.questengine.utlis.ui.BuilderFrame
+
 
 class QuestTarget(val name: String, var time: String, val reward: String,
                   var period: Int, var async: Boolean, var conditions: List<String>,

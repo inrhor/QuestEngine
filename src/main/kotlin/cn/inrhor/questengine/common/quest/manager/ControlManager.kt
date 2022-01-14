@@ -22,7 +22,7 @@ object ControlManager {
         val questID = questInnerData.questID
         val innerQuestID = questInnerData.innerQuestID
         val mModule = QuestManager.getInnerQuestModule(questID, innerQuestID) ?: return
-        val cModule = mModule.questControls
+        val cModule = mModule.questControl
 
         cModule.forEach {
             val pri = it.priority
@@ -71,7 +71,7 @@ object ControlManager {
         val questID = sp[0]
         val innerQuestID = sp[1]
         val mModule = QuestManager.getInnerQuestModule(questID, innerQuestID) ?: return null
-        mModule.questControls.forEach {
+        mModule.questControl.forEach {
             if (it.controlID == controlID) return it
         }
         return null

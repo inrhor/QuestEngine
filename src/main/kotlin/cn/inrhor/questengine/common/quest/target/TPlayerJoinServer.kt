@@ -8,28 +8,24 @@ import cn.inrhor.questengine.api.target.util.Schedule
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerJoinEvent
 
-object TargetPlayerJoinServer: TargetExtend<PlayerJoinEvent>() {
+object TPlayerJoinServer: TargetExtend<PlayerJoinEvent>() {
 
     override val name = "player join server"
 
     init {
         event = PlayerJoinEvent::class
         tasker{
-            match(player)
+            match(player, name)
             player
         }
-        TargetManager.register(name, "number", "number")
+        TargetManager.register(name, "number")
     }
 
-    fun match(player: Player) {
-        val questData = QuestManager.getDoingQuest(player)?: return
-        if (!QuestManager.matchQuestMode(questData)) return
-        val innerData = questData.questInnerData
-        val targetData = QuestManager.getDoingTarget(player, name)?: return
-        val innerTarget = targetData.questTarget
+    fun match(player: Player, name: String) {
+        val questData = QuestManager.getDoingQuest(player, true)?: return
         val number = object: ConditionType("number") {
             override fun check(): Boolean {
-                return Schedule.isNumber(player, name, "number", questData, innerData, innerTarget)
+                return Schedule.isNumber(player, name, "number", questData)
             }
         }
         TargetManager.set(name, "number", number)

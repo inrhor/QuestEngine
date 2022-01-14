@@ -5,7 +5,7 @@ import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.quest.ModeType
-import cn.inrhor.questengine.common.quest.QuestTarget
+import cn.inrhor.questengine.api.quest.module.inner.QuestTarget
 import cn.inrhor.questengine.utlis.ui.BuilderFrame
 import cn.inrhor.questengine.utlis.ui.NoteComponent
 import cn.inrhor.questengine.utlis.ui.buildFrame
@@ -20,22 +20,25 @@ object TargetManager {
     /**
      * 规范配置
      */
-    fun register(name: String, meta: String, string: String) {
-        set(name, meta, ConditionType(string))
+    fun register(name: String, meta: String): TargetManager {
+        set(name, meta, ConditionType(meta))
+        return this
     }
 
-    fun register(name: String, meta: String, list: MutableList<String>) {
+    fun register(name: String, meta: String, list: MutableList<String>): TargetManager {
         set(name, meta, ConditionType(list))
+        return this
     }
 
-    fun set(name: String, meta: String, conditionType: ConditionType) {
+    fun set(name: String, meta: String, conditionType: ConditionType): TargetManager {
         targetMap["$name-$meta"] = conditionType
+        return this
     }
 
     fun getTargetList(yaml: Configuration): MutableMap<String, QuestTarget> {
         val questTargetList = mutableMapOf<String, QuestTarget>()
-        for (i in yaml.getConfigurationSection("target")!!.getKeys(false)) {
-            val s = "target.$i."
+        for (i in yaml.getConfigurationSection("inner.target")!!.getKeys(false)) {
+            val s = "inner.target.$i."
             val name = yaml.getString(s + "name") ?: "null"
             val time = yaml.getString(s + "time") ?: "always"
             val reward = yaml.getString(s + "reward") ?: "null"
@@ -47,7 +50,7 @@ object TargetManager {
             targetMap.forEach { (eventNameMeta, conditionType) ->
                 val eventName = eventNameMeta.split("-")[0]
                 if (eventName == name) {
-                    val path = "target.$i"
+                    val path = "inner.target.$i"
                     for (node in yaml.getConfigurationSection(path)!!.getKeys(true)) {
                         val u = "$path.$node"
                         if (node == "ui" || node == "description") {
@@ -85,7 +88,8 @@ object TargetManager {
      */
     fun scheduleUtil(name: String, questData: QuestData, targetData: TargetData): Int {
         val questModule = QuestManager.getQuestModule(questData.questID)?: return 0
-        if (questModule.modeType == ModeType.COLLABORATION && questModule.modeShareData && questData.teamData != null) {
+        val mode = questModule.mode
+        if (mode.modeType() == ModeType.COLLABORATION && mode.shareData && questData.teamData != null) {
             var schedule = 0
             for (mUUID in questData.teamData!!.members) {
                 val m = Bukkit.getPlayer(mUUID)?: continue
@@ -95,7 +99,7 @@ object TargetManager {
             }
             return schedule
         }
-        if (questModule.modeType == ModeType.PERSONAL) {
+        if (questModule.mode.modeType() == ModeType.PERSONAL) {
             return targetData.schedule
         }
         return 0

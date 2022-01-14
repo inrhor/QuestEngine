@@ -10,10 +10,10 @@ class ItemCheck(private val matchers: MutableMap<String, String>) {
 
     companion object {
         fun eval(str: String): ItemCheck {
-            return split(str)
+            return itemCheckSplit(str)
         }
 
-        private fun split(str: String): ItemCheck {
+        fun itemCheckSplit(str: String): ItemCheck {
             val map = mutableMapOf<String, String>()
             val list = str.split(";")
             list.forEach {

@@ -19,7 +19,7 @@ object QuestInnerAccept {
                 }
                 dynamic {
                     suggestion<ProxyCommandSender> { _, context ->
-                        QuestManager.getQuestModule(context.argument(-2))?.innerQuestList?.map { it.innerQuestID }
+                        QuestManager.getQuestModule(context.argument(-2))?.innerQuestList?.map { it.id }
                     }
                     execute<ProxyCommandSender> { sender, context, argument ->
                         val args = argument.split(" ")

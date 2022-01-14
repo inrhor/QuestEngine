@@ -4,7 +4,7 @@ import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.quest.ModeType
-import cn.inrhor.questengine.common.quest.QuestReward
+import cn.inrhor.questengine.api.quest.module.inner.QuestReward
 import cn.inrhor.questengine.script.kether.eval
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -42,7 +42,7 @@ object RewardManager {
         val mainID = questInnerData.innerQuestID
         val questID = questInnerData.questID
         val innerModule = QuestManager.getInnerQuestModule(questID, mainID)?: return
-        finishReward(player, questInnerData, innerModule.questReward, targetData.questTarget.reward)
+        finishReward(player, questInnerData, innerModule.reward, targetData.questTarget.reward)
     }
 
     private fun finishReward(player: Player, questInnerData: QuestInnerData, questReward: QuestReward, content: String) {
@@ -57,13 +57,11 @@ object RewardManager {
     private fun finishReward(player: Player, questReward: QuestReward, rewardID: String, repeatModule: Boolean, repeat: Boolean) {
         if (!repeatModule && repeat) return
         if (rewardID == "all") {
-            questReward.finishReward.values.forEach { list ->
-                list.forEach {
-                    eval(player, it)
-                }
+            questReward.finishReward.forEach {
+                eval(player, it.script)
             }
         }else {
-            val reward = questReward.finishReward[rewardID] ?: return
+            val reward = questReward.getFinishReward(rewardID)
             reward.forEach {
                 eval(player, it)
             }

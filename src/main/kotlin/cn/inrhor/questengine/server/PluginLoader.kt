@@ -51,7 +51,7 @@ object PluginLoader {
                 DialogFile.loadDialog()
                 PacketManager.loadPacket()
                 QuestBookBuildManager.init()
-                QuestFile.loadDialog()
+                QuestFile.loadQuest()
                 releaseFile("team/chat.yml")
             }
             console().sendLang("LOADER-TIME_COST", UtilString.pluginTag, timeCost)
