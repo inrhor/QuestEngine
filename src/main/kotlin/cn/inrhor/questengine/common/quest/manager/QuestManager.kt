@@ -555,7 +555,7 @@ object QuestManager {
     /**
      * 获得触发的内部任务目标数据
      */
-    fun getDoingTarget(player: Player, name: String): TargetData? {
+    /*fun getDoingTarget(player: Player, name: String): TargetData? {
         val pData = DataStorage.getPlayerData(player)
         pData.questDataList.values.forEach { q ->
             if (q.state == QuestState.DOING) {
@@ -563,6 +563,15 @@ object QuestManager {
                     if (name == n) return t
                 }
             }
+        }
+        return null
+    }*/
+    /**
+     * 获得内部任务目标数据
+     */
+    fun getDoingTarget(questData: QuestData, name: String): TargetData? {
+        questData.questInnerData.targetsData.forEach { (n, t) ->
+            if (name == n) return t
         }
         return null
     }
@@ -586,11 +595,12 @@ object QuestManager {
     /**
      * 获得正在进行中的任务
      */
-    fun getDoingQuest(player: Player): QuestData? {
+    fun getDoingQuest(player: Player, checkMode: Boolean = false): QuestData? {
         val pData = DataStorage.getPlayerData(player)
         if (pData.questDataList.isEmpty()) return null
         pData.questDataList.values.forEach {
             if (it.state == QuestState.DOING) {
+                if (checkMode && !matchQuestMode(it)) return null
                 return it
             }
         }

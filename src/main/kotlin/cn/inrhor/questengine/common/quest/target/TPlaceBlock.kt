@@ -4,18 +4,18 @@ import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import org.bukkit.event.block.BlockPlaceEvent
 
-object TargetPlaceBlock: TargetExtend<BlockPlaceEvent>() {
+object TPlaceBlock: TargetExtend<BlockPlaceEvent>() {
 
     override val name = "place block"
 
     init {
         event = BlockPlaceEvent::class
         tasker{
-            val block = TargetBreakBlock.block(player, name, blockPlaced.type)
+            val block = TBreakBlock.block(player, name, blockPlaced.type)
             TargetManager.set(name, "block", block)
             player
         }
-        TargetManager.register(name, "block", "block")
+        TargetManager.register(name, "block")
     }
 
 }

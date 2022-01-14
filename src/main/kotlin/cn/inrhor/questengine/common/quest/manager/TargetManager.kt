@@ -20,16 +20,19 @@ object TargetManager {
     /**
      * 规范配置
      */
-    fun register(name: String, meta: String, string: String) {
-        set(name, meta, ConditionType(string))
+    fun register(name: String, meta: String): TargetManager {
+        set(name, meta, ConditionType(meta))
+        return this
     }
 
-    fun register(name: String, meta: String, list: MutableList<String>) {
+    fun register(name: String, meta: String, list: MutableList<String>): TargetManager {
         set(name, meta, ConditionType(list))
+        return this
     }
 
-    fun set(name: String, meta: String, conditionType: ConditionType) {
+    fun set(name: String, meta: String, conditionType: ConditionType): TargetManager {
         targetMap["$name-$meta"] = conditionType
+        return this
     }
 
     fun getTargetList(yaml: Configuration): MutableMap<String, QuestTarget> {
