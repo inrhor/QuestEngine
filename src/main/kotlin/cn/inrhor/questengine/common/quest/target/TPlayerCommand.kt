@@ -12,8 +12,6 @@ object TPlayerCommand: TargetExtend<PlayerCommandSendEvent>() {
 
     override val name = "player send command"
 
-    override val isAsync = true
-
     init {
         event = PlayerCommandSendEvent::class
         tasker{
