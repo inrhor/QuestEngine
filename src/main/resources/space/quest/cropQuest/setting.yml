@@ -1,0 +1,48 @@
+quest:
+  # 任务ID，不要用有下划线符号
+  questID: "quest1"
+  # 任务名称
+  name: "采集农作物任务"
+  # 从哪个内部任务开始，此为内部任务ID
+  startInnerQuestID: "mainQuest1"
+  # 任务手册分类
+  sort: "new"
+  # 任务成员模式
+  mode:
+    # 可选如下
+    #   personal  单人
+    #   collaboration  协作
+    type: "personal"
+    amount: -1
+    # 共享任务数据
+    shareData: true
+  # 关于接受任务设置
+  accept:
+    # 若想自动领取任务，则填写 auto
+    way: ""
+    # 接受任务上限
+    # 除非数据里不存在此任务数据
+    maxQuantity: 1
+    # 需要满足条件数
+    #   -1 为全部条件
+    #   2 为两个条件
+    #   无 则 0 或 condition 留空
+    check: -1
+    # 条件 Kether
+    condition:
+      - permission *quest.crop.1
+  # 关于任务失败设置，满足条件自动放弃x
+  failure:
+    check: 1
+    condition:
+      - permission *quest.test
+    # 脚本 Kether
+    script:
+      - title color *"&c任务失败" subtitle color *"&f采集农作物任务"
+
+
+desc:
+  info:
+    - "&6&l显示在任务手册分类中"
+  note:
+    - "&8&l显示在任务手册信息中，可自定义内容"

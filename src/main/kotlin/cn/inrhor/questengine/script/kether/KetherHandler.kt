@@ -1,0 +1,61 @@
+package cn.inrhor.questengine.script.kether
+
+import cn.inrhor.questengine.common.dialog.theme.hologram.core.HitBoxSpawner
+import cn.inrhor.questengine.utlis.location.ReferLocation
+import org.bukkit.entity.Player
+import taboolib.common.platform.function.*
+import taboolib.module.chat.colored
+import taboolib.module.kether.KetherShell
+import java.util.concurrent.TimeUnit
+
+fun eval(player: Player, script: String): Any? {
+    return eval(player, mutableListOf(script))
+}
+
+fun eval(player: Player, script: List<String>): Any? {
+    return try {
+        KetherShell.eval(script, namespace = listOf("QuestEngine")) {
+            sender = adaptPlayer(player)
+        }.get(1, TimeUnit.SECONDS)
+    }catch (ex: Exception) {
+        console().sendMessage("&cError Kether: &r$script".colored())
+    }
+}
+
+fun eval(script: String): Any? {
+    return eval(mutableListOf(script))
+}
+
+fun eval(script: List<String>): Any? {
+    return try {
+        KetherShell.eval(script, namespace = listOf("QuestEngine"))
+            .get(1, TimeUnit.SECONDS)
+    }catch (ex: Exception) {
+        console().sendMessage("&cError Kether: &r$script".colored())
+    }
+}
+
+fun evalBoolean(player: Player, script: String): Boolean {
+    return evalBoolean(player, mutableListOf(script))
+}
+
+fun evalBoolean(player: Player, script: List<String>): Boolean {
+    if (script.isEmpty()) return true
+    return eval(player, script) as Boolean
+}
+
+fun evalBooleanSet(players: MutableSet<Player>, script: List<String>): Boolean {
+    if (script.isEmpty()) return true
+    players.forEach{
+        if (!(eval(it, script) as Boolean)) return false
+    }
+    return true
+}
+
+fun evalReferLoc(script: String): ReferLocation {
+    return eval(script) as ReferLocation
+}
+
+fun evalHoloHitBox(script: String): HitBoxSpawner {
+    return eval(script) as HitBoxSpawner
+}

@@ -1,0 +1,25 @@
+head:
+  - "     &7&l< &8&l任务列表 &7&l>"
+  - ""
+  - "&8&l&m                       "
+
+for:
+  # 内容物
+  fork:
+    - ""
+    - "&7&l< &8&l{0} &7&l>"
+    - "     @{1};"
+    - ""
+  # JSON标签
+  noClick:
+    condition: []
+    text:
+      - "&7&l[ &c&l尚未接受 &7&l]"
+    hover:
+      - "#quest-desc-info"
+  click:
+    condition: []
+    text:
+      - "&7&l[ &6&l点击阅览 &7&l]"
+    hover:
+      - "&7&l[ &a&l点击 &7&l]"
