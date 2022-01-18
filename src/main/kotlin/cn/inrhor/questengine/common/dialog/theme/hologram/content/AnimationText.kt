@@ -44,7 +44,7 @@ class AnimationText(val content: String): TextPlay() {
     fun sendViewers(holoID: Int, dialogHolo: DialogHologram) {
         submit(async = true, delay = this.delay) {
             val viewers = dialogHolo.viewers
-            if (viewers.isEmpty() || dialogHolo.end) {
+            if (viewers.isEmpty() || dialogHolo.endTalk) {
                 cancel(); return@submit
             }
             if (writeType == WriteType.NORMAL) {

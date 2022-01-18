@@ -1,4 +1,5 @@
 package cn.inrhor.questengine.common.edit
 
-class Editor {
+abstract class Editor {
+
 }

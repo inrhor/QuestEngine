@@ -1,7 +1,7 @@
 LOADER-INFO:
-  - "&7&l[ &c&li &7&l]&r  ┝  &3正在加载插件  &f{0}"
-  - "&7&l[ &c&li &7&l]&r  ┝  &3当前插件版本  &f{1}"
-  - "&7&l[ &c&li &7&l]&r  ┝  &3支持游戏版本  &f1.12-1.17 {2}"
+  - "&7[ &ci &7]&r  ┝  &3正在加载插件  &f{0}"
+  - "&7[ &ci &7]&r  ┝  &3当前插件版本  &f{1}"
+  - "&7[ &ci &7]&r  ┝  &3支持游戏版本  &f1.12-1.17 {2}"
 LOADER-TIME_COST: "{0}&r 所有配置载入完成，耗时 &8{1}ms"
 LOADER-NOT_INSTALLED-PLIB: "{0}&c 启用外部数据包模式，但未安装插件： &rProtocolLib"
 
@@ -63,3 +63,13 @@ TAGS-LIST-FORMAT: "&f     - &7{0}"
 
 COMMAND-SUCCESSFUL_RELOAD: "&7&l[ &c&li &7&l]&f 已重载 &3&lQuestEngine &f配置文件"
 COMMAND-ITEM-SAVE: "&7&l[ &c&li &7&l]&f 保存了物品配置： &8{0}"
+
+
+EDITOR-HOME: "&3&l可视化模式 &7- &f主页"
+EDITOR-HOME-LIST: "&7任务列表："
+EDITOR-HOME-LIST-META: "&7&l[ &b&l= &7&l]"
+EDITOR-HOME-LIST-HOVER: "&b查看已注册的任务列表"
+EDITOR-HOME-ADD: "&7添加任务："
+EDITOR-HOME-ADD-META: "&7&l[ &a&l+ &7&l]"
+EDITOR-HOME-ADD-HOVER: "&a点击添加任务"
+EDITOR-PLEASE-QUEST-ID: "第一行输入任务ID"

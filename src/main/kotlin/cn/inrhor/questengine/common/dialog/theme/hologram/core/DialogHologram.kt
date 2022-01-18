@@ -26,8 +26,6 @@ class DialogHologram(
     val replyHoloList = mutableListOf<ReplyHologram>()
     val holoData = HologramData()
 
-    var end = false
-
     override fun play() {
         parserContent()
         viewers.forEach {
@@ -37,7 +35,7 @@ class DialogHologram(
     }
 
     override fun end() {
-        end = true
+        endTalk = true
         holoData.remove(viewers)
     }
 
