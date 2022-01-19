@@ -5,24 +5,26 @@ import taboolib.common.platform.function.adaptPlayer
 import taboolib.module.chat.TellrawJson
 import taboolib.platform.util.asLangText
 
-/**
- * 可视化 - 主页
- */
-fun Player.editorHome() {
-    TellrawJson()
-        .newLine()
-        .append("   "+this.asLangText("EDITOR-HOME"))
-        .newLine()
-        .newLine()
-        .append("      "+this.asLangText("EDITOR-HOME-LIST"))
-        .append("  "+this.asLangText("EDITOR-HOME-LIST-META"))
-        .hoverText(this.asLangText("EDITOR-HOME-LIST-HOVER"))
-        .runCommand("/qen editor list")
-        .newLine()
-        .append("      "+this.asLangText("EDITOR-HOME-ADD"))
-        .append("  "+this.asLangText("EDITOR-HOME-ADD-META"))
-        .hoverText(this.asLangText("EDITOR-HOME-ADD-HOVER"))
-        .runCommand("/qen editor add quest")
-        .newLine()
-        .sendTo(adaptPlayer(this))
+object EditorHome {
+    /**
+     * 可视化 - 主页
+     */
+    fun Player.editorHome() {
+        TellrawJson()
+            .newLine()
+            .append("   "+this.asLangText("EDITOR-HOME"))
+            .newLine()
+            .newLine()
+            .append("      "+this.asLangText("EDITOR-HOME-LIST"))
+            .append("  "+this.asLangText("EDITOR-HOME-LIST-META"))
+            .hoverText(this.asLangText("EDITOR-HOME-LIST-HOVER"))
+            .runCommand("/qen editor list 0")
+            .newLine()
+            .append("      "+this.asLangText("EDITOR-HOME-ADD"))
+            .append("  "+this.asLangText("EDITOR-HOME-ADD-META"))
+            .hoverText(this.asLangText("EDITOR-HOME-ADD-HOVER"))
+            .runCommand("/qen editor add quest")
+            .newLine()
+            .sendTo(adaptPlayer(this))
+    }
 }
