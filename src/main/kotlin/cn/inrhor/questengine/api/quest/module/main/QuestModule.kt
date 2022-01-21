@@ -17,7 +17,7 @@ class QuestModule(
     @PreserveNotNull val accept: QuestAccept = QuestAccept(), @PreserveNotNull val failure: QuestFailure = QuestFailure(),
     @PreserveNotNull var innerQuestList: MutableList<QuestInnerModule> = mutableListOf(),
     @PreserveNotNull val sort: String = "",
-    @PreserveNotNull var descMap: MutableMap<String, List<String>> = mutableMapOf()) {
+    @Transient var descMap: MutableMap<String, List<String>> = mutableMapOf()) {
 
     fun getStartInnerQuest(): QuestInnerModule? {
         innerQuestList.forEach {

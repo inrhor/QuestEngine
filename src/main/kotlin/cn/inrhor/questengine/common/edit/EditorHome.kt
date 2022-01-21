@@ -18,7 +18,7 @@ object EditorHome {
             .append("      "+this.asLangText("EDITOR-HOME-LIST"))
             .append("  "+this.asLangText("EDITOR-HOME-LIST-META"))
             .hoverText(this.asLangText("EDITOR-HOME-LIST-HOVER"))
-            .runCommand("/qen editor list 0")
+            .runCommand("/qen editor list")
             .newLine()
             .append("      "+this.asLangText("EDITOR-HOME-ADD"))
             .append("  "+this.asLangText("EDITOR-HOME-ADD-META"))

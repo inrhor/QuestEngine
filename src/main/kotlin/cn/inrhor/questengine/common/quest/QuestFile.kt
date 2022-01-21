@@ -44,10 +44,12 @@ object QuestFile {
         val questID = questModule.questID
 
         val descMap = mutableMapOf<String, List<String>>()
-        setting.getConfigurationSection("desc")!!.getKeys(false).forEach {
-            descMap[it] = setting.getStringList("desc.$it")
+        if (setting.contains("desc")) {
+            setting.getConfigurationSection("desc")!!.getKeys(false).forEach {
+                descMap[it] = setting.getStringList("desc.$it")
+            }
+            questModule.descMap = descMap
         }
-        questModule.descMap = descMap
 
         val innerQuestList = mutableListOf<QuestInnerModule>()
 
