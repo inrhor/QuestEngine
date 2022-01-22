@@ -14,10 +14,14 @@ import cn.inrhor.questengine.common.quest.ui.QuestBookBuildManager
 import cn.inrhor.questengine.script.kether.eval
 import cn.inrhor.questengine.script.kether.evalBoolean
 import cn.inrhor.questengine.script.kether.evalBooleanSet
+import cn.inrhor.questengine.utlis.file.FileUtil
 import cn.inrhor.questengine.utlis.time.*
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import taboolib.common.io.deepDelete
+import taboolib.common.io.newFile
 import taboolib.common.platform.function.*
+import taboolib.module.configuration.Configuration
 import taboolib.platform.util.sendLang
 import java.util.*
 
@@ -671,6 +675,27 @@ object QuestManager {
             if (it.controlID.startsWith("$questID-")) {
                 Database.database.removeControl(player, it.controlID)
                 controlData.controls.remove(it.controlID)
+            }
+        }
+    }
+
+    /**
+     * 删除任务模块和文件
+     */
+    fun delQuest(questID: String) {
+        if (!questMap.containsKey(questID)) return
+        questMap.remove(questID)
+        val file = FileUtil.getFileList(FileUtil.getFile("space/quest"))
+        val list = file.iterator()
+        while (list.hasNext()) {
+            val f = list.next()
+            val yaml = Configuration.loadFromFile(f)
+            if (yaml.contains("quest.questID")) {
+                if (yaml.getString("quest.questID") == questID) {
+                    val e = newFile(f.path.replace("\\setting.yml", ""), create = false, folder = true)
+                    e.deepDelete()
+                    return
+                }
             }
         }
     }

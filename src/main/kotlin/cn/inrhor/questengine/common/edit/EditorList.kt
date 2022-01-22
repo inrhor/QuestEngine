@@ -26,11 +26,11 @@ object EditorList {
                 .append("   "+this.asLangText("EDITOR-LIST-QUEST-EDIT"))
                 .append(" "+this.asLangText("EDITOR-LIST-QUEST-EDIT-META"))
                 .hoverText(this.asLangText("EDITOR-LIST-QUEST-EDIT-HOVER", it.questID))
-                .runCommand("/qen editor quest edit quest "+it.questID)
+                .runCommand("/qen editor quest edit "+it.questID)
                 .append("  "+this.asLangText("EDITOR-LIST-QUEST-DEL"))
                 .append(" "+this.asLangText("EDITOR-LIST-QUEST-DEL-META"))
                 .hoverText(this.asLangText("EDITOR-LIST-QUEST-DEL-HOVER", it.questID))
-                .runCommand("/qen editor quest del quest "+it.questID)
+                .runCommand("/qen editor quest del "+it.questID)
                 .newLine()
         }
         if (page > 0) {

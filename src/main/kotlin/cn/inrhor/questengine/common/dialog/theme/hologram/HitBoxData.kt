@@ -10,5 +10,6 @@ class HitBoxData(
     var itemStack: ItemStack = ItemStack(Material.STONE),
     var type: ItemPlay.Type = ItemPlay.Type.FIXED,
     var boxY: Double = 0.0,
+    var viewEffect: Boolean = false,
     var hitBox: BoundingBox = BoundingBox.initHitBox()
 )

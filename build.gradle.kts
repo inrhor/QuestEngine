@@ -1,6 +1,7 @@
 plugins {
-    java
-    id("io.izzel.taboolib") version "1.33"
+    `java-library`
+    `maven-publish`
+    id("io.izzel.taboolib") version "1.34"
     id("org.jetbrains.kotlin.jvm") version "1.5.31"
 }
 
@@ -38,7 +39,6 @@ taboolib {
 
 repositories {
     mavenCentral()
-    maven("https://repo.tabooproject.org/storages/public/releases")
     maven("https://repo.dmulloy2.net/repository/public/") // ProtocolLib
 }
 
@@ -59,4 +59,34 @@ dependencies {
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
     compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+}
+
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+}
+
+configure<JavaPluginConvention> {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+publishing {
+    repositories {
+        maven {
+            url = uri("https://repo.tabooproject.org/repository/releases")
+            credentials {
+                username = project.findProperty("taboolibUsername").toString()
+                password = project.findProperty("taboolibPassword").toString()
+            }
+            authentication {
+                create<BasicAuthentication>("basic")
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("library") {
+            from(components["java"])
+            groupId = project.group.toString()
+        }
+    }
 }

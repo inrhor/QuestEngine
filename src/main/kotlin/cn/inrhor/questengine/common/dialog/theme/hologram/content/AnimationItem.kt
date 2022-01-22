@@ -8,6 +8,7 @@ import cn.inrhor.questengine.common.dialog.theme.hologram.core.DialogHologram
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.utlis.spaceSplit
 import cn.inrhor.questengine.utlis.variableReader
+import org.bukkit.entity.Player
 import taboolib.common.platform.function.submit
 
 /**
@@ -31,7 +32,7 @@ class AnimationItem(val content: String, val holoData: HologramData): ItemPlay()
     fun sendViewers(dialogHolo: DialogHologram, origin: OriginLocation, vararg holoID: Int) {
         submit(async = true, delay = this.delay) {
             val viewers = dialogHolo.viewers
-            if (viewers.isEmpty() || dialogHolo.endTalk) {
+            if (viewers.isEmpty() || dialogHolo.end) {
                 cancel(); return@submit
             }
             val itemHoloID = holoID[0]

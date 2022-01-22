@@ -11,10 +11,13 @@ import cn.inrhor.questengine.common.dialog.theme.hologram.HologramData
 import cn.inrhor.questengine.common.dialog.theme.hologram.OriginLocation
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.utlis.variableReader
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.submit
+import taboolib.module.effect.Cube
+import taboolib.platform.util.toProxyLocation
 
 /**
  * @param long 距离
@@ -55,6 +58,8 @@ data class HitBoxSpawner(
                 hitBoxData.type = ItemPlay.Type.valueOf(sp[1].uppercase())
             }else if (u.startsWith("boxy ")) {
                 hitBoxData.boxY = sp[1].toDouble()
+            }else if (u == "view") {
+                hitBoxData.viewEffect = true
             }
         }
         return this
@@ -66,6 +71,9 @@ data class HitBoxSpawner(
                 cancel(); return@submit
             }
             viewers.forEach {
+                if (hitBoxData.viewEffect) {
+                    boxEffect(it, origin)
+                }
                 if (isBox(it)) {
                     if (!looking) {
                         sendViewItem(it, origin, holoData)
@@ -77,6 +85,13 @@ data class HitBoxSpawner(
                 }
             }
         }
+    }
+
+    fun boxEffect(viewer: Player, origin: OriginLocation) {
+        val box = hitBoxData.hitBox
+        val min = Location(origin.origin.world, box.minX, box.minY, box.minZ)
+        val max = Location(origin.origin.world, box.maxX, box.maxY, box.maxZ)
+        Cube(min.toProxyLocation(), max.toProxyLocation(), EffectSpawner(viewer)).show()
     }
 
     fun isBox(viewer: Player): Boolean {
@@ -93,7 +108,7 @@ data class HitBoxSpawner(
     fun sendViewItem(viewer: Player, origin: OriginLocation, holoData: HologramData) {
         val p = mutableSetOf(viewer)
         if (!initItem) {
-            holoData.create(hitBoxID, p, origin, HoloIDManager.Type.HITBOX)
+            holoData.create(hitBoxID, p, origin.origin.clone().add(0.0, hitBoxData.boxY, 0.0), HoloIDManager.Type.HITBOX)
             initItem = true
         }
         val itemStack = hitBoxData.itemStack
