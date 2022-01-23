@@ -12,12 +12,15 @@ import taboolib.library.configuration.PreserveNotNull
  * @param sort 任务手册分类
  */
 class QuestModule(
-    @PreserveNotNull val questID: String = "", @PreserveNotNull val name: String = "null name", @PreserveNotNull val startInnerQuestID: String = "",
-    @PreserveNotNull val mode: QuestMode = QuestMode(),
-    @PreserveNotNull val accept: QuestAccept = QuestAccept(), @PreserveNotNull val failure: QuestFailure = QuestFailure(),
-    @PreserveNotNull var innerQuestList: MutableList<QuestInnerModule> = mutableListOf(),
-    @PreserveNotNull val sort: String = "",
-    @Transient var descMap: MutableMap<String, List<String>> = mutableMapOf()) {
+    var questID: String, var name: String, var startInnerQuestID: String,
+    val mode: QuestMode,
+    val accept: QuestAccept, val failure: QuestFailure,
+    var innerQuestList: MutableList<QuestInnerModule>,
+    val sort: String) {
+
+    constructor(): this("null", "nullName", "", QuestMode(), QuestAccept(), QuestFailure(), mutableListOf(), "")
+
+    @Transient var descMap: MutableMap<String, List<String>> = mutableMapOf()
 
     fun getStartInnerQuest(): QuestInnerModule? {
         innerQuestList.forEach {

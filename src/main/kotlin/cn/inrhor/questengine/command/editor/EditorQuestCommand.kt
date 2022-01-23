@@ -4,6 +4,7 @@ import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.quest.module.main.QuestModule
 import cn.inrhor.questengine.common.edit.EditorHome.editorHomeQuest
 import cn.inrhor.questengine.common.edit.EditorList.editorListQuest
+import cn.inrhor.questengine.common.edit.EditorQuest.editorQuest
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player
 import taboolib.common.io.newFile
@@ -48,7 +49,8 @@ internal object EditorQuestCommand {
                     return@inputSign
                 }
                 val file = newFile(File(QuestEngine.plugin.dataFolder, "/space/quest/$questID"), folder = true)
-                val questModule = QuestModule(questID = questID)
+                val questModule = QuestModule()
+                questModule.questID = questID
                 val setting = newFile(file.path+"/setting.yml")
                 val yaml = Configuration.loadFromFile(setting)
                 yaml.setObject("quest", questModule)
@@ -61,10 +63,51 @@ internal object EditorQuestCommand {
     @CommandBody
     val del = subCommand {
         dynamic {
-            execute<Player> { _, _, argument ->
+            execute<Player> { sender, _, argument ->
                 val args = argument.split(" ")
                 val questID = args[0]
                 QuestManager.delQuest(questID)
+                sender.editorListQuest()
+            }
+        }
+    }
+
+    @CommandBody
+    val edit = subCommand {
+        literal("name") {
+            execute<Player> { sender, _, argument ->
+                val questID = argument.split(" ")[0]
+            }
+        }
+        literal("start") {
+            execute<Player> { sender, _, argument ->
+                val questID = argument.split(" ")[0]
+            }
+        }
+        literal("sort") {
+            execute<Player> { sender, _, argument ->
+                val questID = argument.split(" ")[0]
+            }
+        }
+        literal("modetype") {
+            execute<Player> { sender, _, argument ->
+                val questID = argument.split(" ")[0]
+            }
+        }
+        literal("modeamount") {
+            execute<Player> { sender, _, argument ->
+                val questID = argument.split(" ")[0]
+            }
+        }
+        literal("sharedata") {
+            execute<Player> { sender, _, argument ->
+                val questID = argument.split(" ")[0]
+            }
+        }
+        dynamic {
+            execute<Player> { sender, _, argument ->
+                val questID = argument.split(" ")[0]
+                sender.editorQuest(questID)
             }
         }
     }

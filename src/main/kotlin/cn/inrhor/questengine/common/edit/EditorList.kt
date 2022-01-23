@@ -11,7 +11,7 @@ object EditorList {
      * 可视化 - 任务列表
      */
     fun Player.editorListQuest(page: Int = 0) {
-        val json = TellrawJson().newLine().append("   "+this.asLangText("EDITOR-LIST-QUEST")).newLine()
+        val json = TellrawJson().newLine().append("   "+asLangText("EDITOR-LIST-QUEST")).newLine()
         val list = QuestManager.questMap.values.toMutableList()
         val a = page*7
         val b = if (a < list.size) a else list.size-1
@@ -22,29 +22,29 @@ object EditorList {
             val it = list[i]
             json
                 .newLine()
-                .append("      "+this.asLangText("EDITOR-LIST-QUEST-INFO", it.questID, it.name))
-                .append("   "+this.asLangText("EDITOR-LIST-QUEST-EDIT"))
-                .append(" "+this.asLangText("EDITOR-LIST-QUEST-EDIT-META"))
-                .hoverText(this.asLangText("EDITOR-LIST-QUEST-EDIT-HOVER", it.questID))
+                .append("      "+asLangText("EDITOR-LIST-QUEST-INFO", it.questID, it.name))
+                .append("   "+asLangText("EDITOR-LIST-QUEST-EDIT"))
+                .append(" "+asLangText("EDITOR-LIST-QUEST-EDIT-META"))
+                .hoverText(asLangText("EDITOR-LIST-QUEST-EDIT-HOVER", it.questID))
                 .runCommand("/qen editor quest edit "+it.questID)
-                .append("  "+this.asLangText("EDITOR-LIST-QUEST-DEL"))
-                .append(" "+this.asLangText("EDITOR-LIST-QUEST-DEL-META"))
-                .hoverText(this.asLangText("EDITOR-LIST-QUEST-DEL-HOVER", it.questID))
+                .append("  "+asLangText("EDITOR-LIST-QUEST-DEL"))
+                .append(" "+asLangText("EDITOR-LIST-QUEST-DEL-META"))
+                .hoverText(asLangText("EDITOR-LIST-QUEST-DEL-HOVER", it.questID))
                 .runCommand("/qen editor quest del "+it.questID)
                 .newLine()
         }
         if (page > 0) {
             json
                 .newLine()
-                .append("   "+this.asLangText("EDITOR-PREVIOUS-PAGE"))
-                .hoverText(this.asLangText("EDITOR-PREVIOUS-PAGE-HOVER"))
+                .append("   "+asLangText("EDITOR-PREVIOUS-PAGE"))
+                .hoverText(asLangText("EDITOR-PREVIOUS-PAGE-HOVER"))
                 .runCommand("/qen editor quest list "+(page-1))
         }
         if ((page+1)*7 <= list.size-1) {
             json
                 .newLine()
-                .append("   "+this.asLangText("EDITOR-NEXT-PAGE"))
-                .hoverText(this.asLangText("EDITOR-NEXT-PAGE-HOVER"))
+                .append("   "+asLangText("EDITOR-NEXT-PAGE"))
+                .hoverText(asLangText("EDITOR-NEXT-PAGE-HOVER"))
                 .runCommand("/qen editor quest list "+(page+1))
         }
         json.newLine().sendTo(adaptPlayer(this))
