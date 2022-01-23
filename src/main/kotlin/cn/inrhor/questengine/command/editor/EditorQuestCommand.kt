@@ -5,11 +5,13 @@ import cn.inrhor.questengine.api.quest.module.main.QuestModule
 import cn.inrhor.questengine.common.edit.EditorHome.editorHomeQuest
 import cn.inrhor.questengine.common.edit.EditorList.editorListQuest
 import cn.inrhor.questengine.common.edit.EditorQuest.editorQuest
+import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player
 import taboolib.common.io.newFile
 import taboolib.common.platform.command.CommandBody
 import taboolib.common.platform.command.subCommand
+import taboolib.common.platform.function.info
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.Configuration.Companion.setObject
 import taboolib.module.nms.inputSign
@@ -56,6 +58,7 @@ internal object EditorQuestCommand {
                 yaml.setObject("quest", questModule)
                 yaml.saveToFile(setting)
                 QuestManager.register(questID, questModule)
+                sender.editorQuest(questID)
             }
         }
     }
@@ -75,33 +78,118 @@ internal object EditorQuestCommand {
     @CommandBody
     val edit = subCommand {
         literal("name") {
-            execute<Player> { sender, _, argument ->
-                val questID = argument.split(" ")[0]
+            dynamic {
+                execute<Player> { sender, _, argument ->
+                    val questID = argument.split(" ")[0]
+                    info("id $questID")
+                    val questModule = QuestManager.getQuestModule(questID)?: return@execute
+                    sender.inputSign(arrayOf(sender.asLangText("EDITOR-EDIT-QUEST-NAME-INPUT"))) {
+                        questModule.name = it[1]
+                        sender.editorQuest(questID)
+                    }
+                }
             }
         }
         literal("start") {
-            execute<Player> { sender, _, argument ->
-                val questID = argument.split(" ")[0]
+            dynamic {
+                execute<Player> { sender, _, argument ->
+                    val questID = argument.split(" ")[0]
+                    val questModule = QuestManager.getQuestModule(questID)
+                }
             }
         }
         literal("sort") {
-            execute<Player> { sender, _, argument ->
-                val questID = argument.split(" ")[0]
+            dynamic {
+                execute<Player> { sender, _, argument ->
+                    val questID = argument.split(" ")[0]
+                    val questModule = QuestManager.getQuestModule(questID)
+                }
             }
         }
         literal("modetype") {
-            execute<Player> { sender, _, argument ->
-                val questID = argument.split(" ")[0]
+            dynamic {
+                execute<Player> { sender, _, argument ->
+                    val questID = argument.split(" ")[0]
+                    val questModule = QuestManager.getQuestModule(questID)?: return@execute
+                    val mode = questModule.mode
+                    mode.type = if (mode.modeType() == ModeType.PERSONAL) "COLLABORATION" else "PERSONAL"
+                    sender.editorQuest(questID)
+                }
             }
         }
         literal("modeamount") {
-            execute<Player> { sender, _, argument ->
-                val questID = argument.split(" ")[0]
+            dynamic {
+                execute<Player> { sender, _, argument ->
+                    val questID = argument.split(" ")[0]
+                    val questModule = QuestManager.getQuestModule(questID)?: return@execute
+                    sender.inputSign(arrayOf(sender.asLangText("NUMBER-INPUT"))) {
+                        try {
+                            questModule.mode.amount = it[1].toInt()
+                        } catch (ex: Exception) {
+                            questModule.mode.amount = -1
+                        }
+                        sender.editorQuest(questID)
+                    }
+                }
             }
         }
         literal("sharedata") {
-            execute<Player> { sender, _, argument ->
-                val questID = argument.split(" ")[0]
+            dynamic {
+                execute<Player> { sender, _, argument ->
+                    val questID = argument.split(" ")[0]
+                    val questModule = QuestManager.getQuestModule(questID)?: return@execute
+                    val mode = questModule.mode
+                    mode.shareData = !mode.shareData
+                    sender.editorQuest(questID)
+                }
+            }
+        }
+        literal("acceptway") {
+            dynamic {
+                execute<Player> { sender, _, argument ->
+                    val questID = argument.split(" ")[0]
+                    val questModule = QuestManager.getQuestModule(questID)?: return@execute
+                    val accept = questModule.accept
+                    accept.way = if (accept.way == "auto") "" else "auto"
+                    sender.editorQuest(questID)
+                }
+            }
+        }
+        literal("maxquantity") {
+            dynamic {
+                execute<Player> { sender, _, argument ->
+                    val questID = argument.split(" ")[0]
+                    val questModule = QuestManager.getQuestModule(questID)?: return@execute
+                    sender.inputSign(arrayOf(sender.asLangText("NUMBER-INPUT"))) {
+                        try {
+                            questModule.accept.maxQuantity = it[1].toInt()
+                        } catch (ex: Exception) {
+                            questModule.accept.maxQuantity = 1
+                        }
+                        sender.editorQuest(questID)
+                    }
+                }
+            }
+        }
+        literal("acceptcondition") {
+            dynamic {
+                execute<Player> { sender, _, argument ->
+                    val questID = argument.split(" ")[0]
+                }
+            }
+        }
+        literal("failurecondition") {
+            dynamic {
+                execute<Player> { sender, _, argument ->
+                    val questID = argument.split(" ")[0]
+                }
+            }
+        }
+        literal("failurescript") {
+            dynamic {
+                execute<Player> { sender, _, argument ->
+                    val questID = argument.split(" ")[0]
+                }
             }
         }
         dynamic {

@@ -6,7 +6,7 @@ import taboolib.library.configuration.PreserveNotNull
 import taboolib.platform.util.asLangText
 
 @PreserveNotNull
-class QuestMode(val type: String, val amount: Int, val shareData: Boolean) {
+class QuestMode(var type: String, var amount: Int, var shareData: Boolean) {
 
     constructor(): this("PERSONAL", -1, false)
 
