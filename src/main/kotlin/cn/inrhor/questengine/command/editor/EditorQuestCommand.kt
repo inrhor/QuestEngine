@@ -3,6 +3,7 @@ package cn.inrhor.questengine.command.editor
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.quest.module.main.QuestModule
 import cn.inrhor.questengine.common.edit.EditorHome.editorHomeQuest
+import cn.inrhor.questengine.common.edit.EditorList.editorListInner
 import cn.inrhor.questengine.common.edit.EditorList.editorListQuest
 import cn.inrhor.questengine.common.edit.EditorQuest.editorQuest
 import cn.inrhor.questengine.common.quest.ModeType
@@ -94,7 +95,7 @@ internal object EditorQuestCommand {
             dynamic {
                 execute<Player> { sender, _, argument ->
                     val questID = argument.split(" ")[0]
-                    val questModule = QuestManager.getQuestModule(questID)
+                    sender.editorListInner(questID)
                 }
             }
         }
