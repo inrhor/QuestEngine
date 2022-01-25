@@ -1,3 +1,5 @@
 package cn.inrhor.questengine.api.quest.module.inner
 
-class FinishReward(val rewardID: String, val script: List<String>)
+class FinishReward(val id: String, val script: List<String>) {
+    constructor(): this("nullRewardID", listOf())
+}
