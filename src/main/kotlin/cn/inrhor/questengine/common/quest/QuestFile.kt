@@ -95,8 +95,8 @@ object QuestFile {
         val nLogType = control.getString(nNode+"type")?: "null"
         val nLogShell = control.getStringList(nNode+"script")
 
-        val hControl = control.getStringList("highest.script")
-        val nControl = control.getStringList("normal.script")
+        val hControl = control.getStringList("$node.highest.script")
+        val nControl = control.getStringList("$node.normal.script")
         val highestID = ControlManager.generateControlID(questID, innerQuestID, "highest")
         val normalID = ControlManager.generateControlID(questID, innerQuestID, "normal")
 

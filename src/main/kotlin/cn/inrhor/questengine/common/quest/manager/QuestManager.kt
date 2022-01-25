@@ -550,7 +550,7 @@ object QuestManager {
             if (m.id == innerQuestID) {
                 return if (type == QuestState.FINISH) {
                     m.reward.getFinishReward(rewardID)
-                }else m.reward.failReward
+                }else m.reward.fail
             }
         }
         return null

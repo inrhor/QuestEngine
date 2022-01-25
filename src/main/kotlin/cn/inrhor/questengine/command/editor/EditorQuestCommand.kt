@@ -12,7 +12,6 @@ import org.bukkit.entity.Player
 import taboolib.common.io.newFile
 import taboolib.common.platform.command.CommandBody
 import taboolib.common.platform.command.subCommand
-import taboolib.common.platform.function.info
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.Configuration.Companion.setObject
 import taboolib.module.nms.inputSign
@@ -82,7 +81,6 @@ internal object EditorQuestCommand {
             dynamic {
                 execute<Player> { sender, _, argument ->
                     val questID = argument.split(" ")[0]
-                    info("id $questID")
                     val questModule = QuestManager.getQuestModule(questID)?: return@execute
                     sender.inputSign(arrayOf(sender.asLangText("EDITOR-EDIT-QUEST-NAME-INPUT"))) {
                         questModule.name = it[1]

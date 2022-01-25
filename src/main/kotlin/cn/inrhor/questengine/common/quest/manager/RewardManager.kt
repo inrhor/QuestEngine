@@ -57,7 +57,7 @@ object RewardManager {
     private fun finishReward(player: Player, questReward: QuestReward, rewardID: String, repeatModule: Boolean, repeat: Boolean) {
         if (!repeatModule && repeat) return
         if (rewardID == "all") {
-            questReward.finishReward.forEach {
+            questReward.finish.forEach {
                 eval(player, it.script)
             }
         }else {
