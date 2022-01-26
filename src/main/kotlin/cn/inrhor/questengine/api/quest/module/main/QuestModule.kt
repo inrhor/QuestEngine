@@ -16,7 +16,7 @@ class QuestModule(
     @PreserveNotNull val mode: QuestMode = QuestMode(),
     @PreserveNotNull val accept: QuestAccept = QuestAccept(), @PreserveNotNull val failure: QuestFailure = QuestFailure(),
     var innerQuestList: MutableList<QuestInnerModule>,
-    val sort: String) {
+    var sort: String) {
 
     constructor(): this("null", "nullName", "", QuestMode(), QuestAccept(), QuestFailure(), mutableListOf(), "")
 

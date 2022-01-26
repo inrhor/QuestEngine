@@ -1,6 +1,9 @@
 package cn.inrhor.questengine.command.editor
 
 import cn.inrhor.questengine.common.edit.EditorHome.editorHomeQuest
+import cn.inrhor.questengine.common.edit.EditorList.editorAcceptCondition
+import cn.inrhor.questengine.common.edit.EditorList.editorFailCondition
+import cn.inrhor.questengine.common.edit.EditorList.editorFailScript
 import cn.inrhor.questengine.common.edit.EditorList.editorStartInner
 import cn.inrhor.questengine.common.edit.EditorList.editorListQuest
 import cn.inrhor.questengine.common.edit.EditorQuest.editorQuest
@@ -71,6 +74,7 @@ internal object EditorQuestCommand {
                     val questModule = QuestManager.getQuestModule(questID)?: return@execute
                     sender.inputSign(arrayOf(sender.asLangText("EDITOR-EDIT-QUEST-NAME-INPUT"))) {
                         questModule.name = it[1]
+                        QuestManager.saveFile(questID)
                         sender.editorQuest(questID)
                     }
                 }
@@ -88,7 +92,12 @@ internal object EditorQuestCommand {
             dynamic {
                 execute<Player> { sender, _, argument ->
                     val questID = argument.split(" ")[0]
-                    val questModule = QuestManager.getQuestModule(questID)
+                    val questModule = QuestManager.getQuestModule(questID)?: return@execute
+                    sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-SORT"))) {
+                        questModule.sort = it[1]
+                        QuestManager.saveFile(questID)
+                        sender.editorQuest(questID)
+                    }
                 }
             }
         }
@@ -99,6 +108,7 @@ internal object EditorQuestCommand {
                     val questModule = QuestManager.getQuestModule(questID)?: return@execute
                     val mode = questModule.mode
                     mode.type = if (mode.modeType() == ModeType.PERSONAL) "COLLABORATION" else "PERSONAL"
+                    QuestManager.saveFile(questID)
                     sender.editorQuest(questID)
                 }
             }
@@ -114,6 +124,7 @@ internal object EditorQuestCommand {
                         } catch (ex: Exception) {
                             questModule.mode.amount = -1
                         }
+                        QuestManager.saveFile(questID)
                         sender.editorQuest(questID)
                     }
                 }
@@ -126,6 +137,7 @@ internal object EditorQuestCommand {
                     val questModule = QuestManager.getQuestModule(questID)?: return@execute
                     val mode = questModule.mode
                     mode.shareData = !mode.shareData
+                    QuestManager.saveFile(questID)
                     sender.editorQuest(questID)
                 }
             }
@@ -137,6 +149,7 @@ internal object EditorQuestCommand {
                     val questModule = QuestManager.getQuestModule(questID)?: return@execute
                     val accept = questModule.accept
                     accept.way = if (accept.way == "auto") "" else "auto"
+                    QuestManager.saveFile(questID)
                     sender.editorQuest(questID)
                 }
             }
@@ -152,6 +165,7 @@ internal object EditorQuestCommand {
                         } catch (ex: Exception) {
                             questModule.accept.maxQuantity = 1
                         }
+                        QuestManager.saveFile(questID)
                         sender.editorQuest(questID)
                     }
                 }
@@ -161,6 +175,7 @@ internal object EditorQuestCommand {
             dynamic {
                 execute<Player> { sender, _, argument ->
                     val questID = argument.split(" ")[0]
+                    sender.editorAcceptCondition(questID)
                 }
             }
         }
@@ -168,6 +183,7 @@ internal object EditorQuestCommand {
             dynamic {
                 execute<Player> { sender, _, argument ->
                     val questID = argument.split(" ")[0]
+                    sender.editorFailCondition(questID)
                 }
             }
         }
@@ -175,6 +191,7 @@ internal object EditorQuestCommand {
             dynamic {
                 execute<Player> { sender, _, argument ->
                     val questID = argument.split(" ")[0]
+                    sender.editorFailScript(questID)
                 }
             }
         }

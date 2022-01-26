@@ -1,7 +1,9 @@
 package cn.inrhor.questengine.common.edit
 
+import cn.inrhor.questengine.common.edit.EditorList.editorAcceptCondition
 import cn.inrhor.questengine.common.edit.list.EditorInnerList
 import cn.inrhor.questengine.common.edit.list.EditorListModule
+import cn.inrhor.questengine.common.edit.list.EditorOfList
 import cn.inrhor.questengine.common.edit.list.EditorQuestList
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player
@@ -34,5 +36,34 @@ object EditorList {
             EditorListModule.EditorButton("EDITOR-EDIT-QUEST-START-STATE-META",
             "EDITOR-EDIT-QUEST-START-STATE-HOVER", "/qen editor quest change start $questID"))
             .json.sendTo(adaptPlayer(this))
+    }
+
+    fun Player.editorAcceptCondition(questID: String, page: Int = 0) {
+        val questModule = QuestManager.getQuestModule(questID)?: return
+        listEditDel(this, questID, questModule.accept.condition, "ACCEPT", "CONDITION",
+            "acceptcon", page)
+    }
+
+    fun Player.editorFailCondition(questID: String, page: Int = 0) {
+        val questModule = QuestManager.getQuestModule(questID)?: return
+        listEditDel(this, questID, questModule.failure.condition, "FAIL", "CONDITION",
+            "failcon", page)
+    }
+
+    fun Player.editorFailScript(questID: String, page: Int = 0) {
+        val questModule = QuestManager.getQuestModule(questID)?: return
+        listEditDel(this, questID, questModule.failure.script, "FAIL", "SCRIPT",
+            "failscript", page)
+    }
+
+    fun listEditDel(player: Player, questID: String, list: List<String>, node: String, meta: String, cmd: String, page: Int = 0) {
+        EditorOfList(player, player.asLangText("EDITOR-$node-$meta-LIST"))
+            .list(page, 5, list, true, "EDITOR-$meta-LIST",
+                "qen editor quest $cmd",
+                EditorListModule.EditorButton("EDITOR-$meta-RETURN"),
+                EditorListModule.EditorButton(
+                    "EDITOR-CONDITION-DEL", "EDITOR-$meta-META",
+                    "/qen editor quest change $cmd $questID"))
+            .json.sendTo(adaptPlayer(player))
     }
 }
