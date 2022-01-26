@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.utlis.ui
 
-import cn.inrhor.questengine.script.kether.evalBoolean
+
+import cn.inrhor.questengine.script.kether.runEval
 import cn.inrhor.questengine.utlis.toJsonStr
 import org.bukkit.entity.Player
 import taboolib.module.chat.TellrawJson
@@ -104,7 +105,7 @@ class BuilderFrame {
      */
     fun textCondition(player: Player?, conditions: List<String>): Boolean {
         if (player == null) return true
-        return evalBoolean(player, conditions)
+        return runEval(player, conditions)
     }
 
     enum class Type {

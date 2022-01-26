@@ -13,9 +13,9 @@ import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestFile
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.ui.QuestBookBuildManager
-import cn.inrhor.questengine.script.kether.eval
-import cn.inrhor.questengine.script.kether.evalBoolean
-import cn.inrhor.questengine.script.kether.evalBooleanSet
+import cn.inrhor.questengine.script.kether.runEval
+import cn.inrhor.questengine.script.kether.runEvalSet
+
 import cn.inrhor.questengine.utlis.file.FileUtil
 import cn.inrhor.questengine.utlis.time.*
 import org.bukkit.Bukkit
@@ -173,7 +173,7 @@ object QuestManager {
         val c = accept.condition
         if (c.isEmpty()) return true
         if (check <= 0) {
-            return evalBooleanSet(players, c)
+            return runEvalSet(players, c)
         }
         val list = mutableListOf<String>()
         var i = 0
@@ -182,7 +182,7 @@ object QuestManager {
             i++
             if (i >= check) return@forEach
         }
-        return evalBooleanSet(players, list)
+        return runEvalSet(players, list)
     }
 
     /**
@@ -238,7 +238,7 @@ object QuestManager {
             if (!player.isOnline || innerData.state != QuestState.DOING) {
                 cancel(); return@submit
             }
-            if (!evalBoolean(player, list)) {
+            if (!runEval(player, list)) {
                 val modeType = questModule.mode.modeType()
                 endQuest(player, modeType, questUUID, QuestState.FAILURE, false)
                 runFailTime(player, modeType, questModule.failure.script)
@@ -258,11 +258,11 @@ object QuestManager {
         val tData = pData.teamData
         if (modeType == ModeType.COLLABORATION && tData != null) {
             tData.playerMembers().forEach {
-                eval(it, failKether)
+                runEval(it, failKether)
             }
             return
         }
-        eval(player, failKether)
+        runEval(player, failKether)
     }
 
     /**
@@ -432,7 +432,7 @@ object QuestManager {
         if (state == QuestState.FAILURE && innerFailReward) {
             val innerQuestID = innerData.innerQuestID
             val failReward = getReward(questData.questID, innerQuestID, "", state) ?: return
-            eval(player, failReward)
+            runEval(player, failReward)
         }
     }
 

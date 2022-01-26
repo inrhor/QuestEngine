@@ -2,7 +2,7 @@ package cn.inrhor.questengine.common.database.data.quest
 
 import cn.inrhor.questengine.api.quest.control.ControlPriority
 import cn.inrhor.questengine.common.database.data.ControlData
-import cn.inrhor.questengine.script.kether.eval
+import cn.inrhor.questengine.script.kether.runEval
 import cn.inrhor.questengine.script.kether.expand.control.ControlTaskType
 import cn.inrhor.questengine.script.kether.expand.control.ControlType
 import org.bukkit.entity.Player
@@ -66,7 +66,7 @@ class QuestControlData(
         val qID = sp[0]
         val nID = sp[1]
         val script = content.replace("@quest", "$qID $nID")
-        eval(player, script)
+        runEval(player, script)
         runScript()
     }
 

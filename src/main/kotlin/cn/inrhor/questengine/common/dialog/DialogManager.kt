@@ -3,8 +3,9 @@ package cn.inrhor.questengine.common.dialog
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.dialog.theme.hologram.core.DialogHologram
-import cn.inrhor.questengine.script.kether.evalBoolean
-import cn.inrhor.questengine.script.kether.evalBooleanSet
+import cn.inrhor.questengine.script.kether.runEval
+import cn.inrhor.questengine.script.kether.runEvalSet
+
 import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -76,7 +77,7 @@ object DialogManager {
     fun returnCanDialogHolo(players: MutableSet<Player>, npcID: String): DialogModule? {
         dialogMap.values.forEach {
             if (!it.npcIDs.contains(npcID)) return@forEach
-            if (evalBooleanSet(players, it.condition)) {
+            if (runEvalSet(players, it.condition)) {
                 val dialogID = it.dialogID
                 if (!hasDialog(players, dialogID)) return it
             }
@@ -124,7 +125,7 @@ object DialogManager {
                 val shell = if (cd.lowercase().startsWith("spacerange"))  cd+
                         " where location *"+loc.world?.name+
                         " *"+loc.x+" *"+loc.y+" *"+loc.z else cd
-                if (!evalBoolean(it, shell)) return false
+                if (!runEval(it, shell)) return false
             }
         }
         return true

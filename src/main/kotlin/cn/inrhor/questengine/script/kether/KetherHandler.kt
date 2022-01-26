@@ -1,18 +1,53 @@
+
 package cn.inrhor.questengine.script.kether
 
-import cn.inrhor.questengine.common.dialog.theme.hologram.core.HitBoxSpawner
-import cn.inrhor.questengine.utlis.location.ReferLocation
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.*
+import taboolib.common5.Coerce
 import taboolib.module.chat.colored
 import taboolib.module.kether.KetherShell
-import java.util.concurrent.TimeUnit
 
-fun eval(player: Player, script: String): Any? {
-    return eval(player, mutableListOf(script))
+fun runEval(player: Player, script: String): Boolean {
+    return try {
+        KetherShell.eval(script, namespace = listOf("QuestEngine")) {
+            sender = adaptPlayer(player)
+        }.thenApply {
+            Coerce.toBoolean(it)
+        }.get()
+    } catch (ex: Exception) {
+        console().sendMessage("&cError Script $script".colored())
+        error(ex)
+    }
 }
 
-fun eval(player: Player, script: List<String>): Any? {
+fun runEval(player: Player, script: List<String>): Boolean {
+    if (script.isEmpty()) return true
+    return try {
+        KetherShell.eval(script, namespace = listOf("QuestEngine")) {
+            sender = adaptPlayer(player)
+        }.thenApply {
+            Coerce.toBoolean(it)
+        }.get()
+    } catch (ex: Exception) {
+        console().sendMessage("&cError Script $script".colored())
+        error(ex)
+    }
+}
+
+fun runEvalSet(players: Set<Player>, script: List<String>): Boolean {
+    if (script.isEmpty()) return true
+    players.forEach {
+        if (!runEval(it, script)) return false
+    }
+    return true
+}
+
+/*
+fun runEval(player: Player, script: String): Any? {
+    return runEval(player, mutableListOf(script))
+}
+
+fun runEval(player: Player, script: List<String>): Any? {
     return try {
         KetherShell.eval(script, namespace = listOf("QuestEngine")) {
             sender = adaptPlayer(player)
@@ -22,11 +57,11 @@ fun eval(player: Player, script: List<String>): Any? {
     }
 }
 
-fun eval(script: String): Any? {
-    return eval(mutableListOf(script))
+fun runEval(script: String): Any? {
+    return runEval(mutableListOf(script))
 }
 
-fun eval(script: List<String>): Any? {
+fun runEval(script: List<String>): Any? {
     return try {
         KetherShell.eval(script, namespace = listOf("QuestEngine"))
             .get(1, TimeUnit.SECONDS)
@@ -41,7 +76,7 @@ fun evalBoolean(player: Player, script: String): Boolean {
 
 fun evalBoolean(player: Player, script: List<String>): Boolean {
     if (script.isEmpty()) return true
-    return eval(player, script) as Boolean
+    return runEval(player, script) as Boolean
 }
 
 fun evalBooleanSet(players: MutableSet<Player>, script: List<String>): Boolean {
@@ -50,12 +85,4 @@ fun evalBooleanSet(players: MutableSet<Player>, script: List<String>): Boolean {
         if (!(eval(it, script) as Boolean)) return false
     }
     return true
-}
-
-fun evalReferLoc(script: String): ReferLocation {
-    return eval(script) as ReferLocation
-}
-
-fun evalHoloHitBox(script: String): HitBoxSpawner {
-    return eval(script) as HitBoxSpawner
-}
+}*/

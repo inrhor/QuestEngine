@@ -6,7 +6,8 @@ import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.api.target.util.Schedule
 import cn.inrhor.questengine.common.database.data.quest.QuestData
-import cn.inrhor.questengine.script.kether.evalBoolean
+import cn.inrhor.questengine.script.kether.runEval
+
 import cn.inrhor.questengine.utlis.subAfter
 import org.bukkit.entity.Entity
 import org.bukkit.entity.EntityType
@@ -74,7 +75,7 @@ object TKillEntity: TargetExtend<EntityDeathEvent>() {
                 if (!matchName(player, entity, get)) return false
             }else if (s.startsWith("eval ")) {
                 val get = it.subAfter("@").replace("dropExp", dropExp.toString(), true)
-                if (!evalBoolean(player, get)) return false
+                if (!runEval(player, get)) return false
             }
             i++
         }
@@ -82,8 +83,8 @@ object TKillEntity: TargetExtend<EntityDeathEvent>() {
     }
 
     fun matchName(player: Player, entity: Entity, str: String): Boolean {
-        if (evalBoolean(player, "strMatch type $str *'${entity.name}'")) return true
-        if (evalBoolean(player, "strMatch type $str *'${entity.customName}'")) return true
+        if (runEval(player, "strMatch type $str *'${entity.name}'")) return true
+        if (runEval(player, "strMatch type $str *'${entity.customName}'")) return true
         return false
     }
 

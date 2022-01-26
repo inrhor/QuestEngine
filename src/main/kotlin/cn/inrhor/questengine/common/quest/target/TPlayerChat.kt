@@ -6,7 +6,8 @@ import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.api.target.util.Schedule
 import cn.inrhor.questengine.common.database.data.quest.QuestData
-import cn.inrhor.questengine.script.kether.evalBoolean
+import cn.inrhor.questengine.script.kether.runEval
+
 import org.bukkit.entity.Player
 import org.bukkit.event.player.AsyncPlayerChatEvent
 
@@ -46,7 +47,7 @@ object TPlayerChat: TargetExtend<AsyncPlayerChatEvent>() {
     fun targetTrigger(player: Player, name: String, tag: String, content: String, questData: QuestData): Boolean {
         val target = (QuestManager.getDoingTarget(questData, name)?: return false).questTarget
         val condition = target.condition[tag]?: return false
-        return evalBoolean(player, "strMatch type $condition *'$content'")
+        return runEval(player, "strMatch type $condition *'$content'")
     }
 
 }

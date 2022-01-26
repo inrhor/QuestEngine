@@ -14,7 +14,13 @@ class EditorOfList(player: Player, header: String, json: TellrawJson = TellrawJs
         button.forEach {
             val bl = if (split && (sum%2 == 0)) "  " else " "
             sum++
-            json.append(bl+player.asLangText(it.content))
+            if (it.content.contains("-CONDITION-RETURN")) {
+//                json.append(bl+player.asLangText(it.content))
+            }else if (it.content.contains("-SCRIPT-RETURN")) {
+
+            }else {
+                json.append(bl+player.asLangText(it.content))
+            }
             if (it.hover.isNotEmpty()) json.hoverText(player.asLangText(it.hover))
             if (it.command.isNotEmpty()) json.runCommand(it.command+" $index")
         }

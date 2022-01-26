@@ -1,8 +1,7 @@
 package cn.inrhor.questengine.api.event
 
 import cn.inrhor.questengine.common.database.data.PacketData
-import cn.inrhor.questengine.script.kether.eval
-import cn.inrhor.questengine.script.kether.evalBoolean
+import cn.inrhor.questengine.script.kether.runEval
 import org.bukkit.entity.Player
 import taboolib.platform.type.BukkitProxyEvent
 
@@ -26,14 +25,14 @@ class PacketEntityInteractEvent(val player: Player, val packetData: PacketData, 
         val list = packetData.clickAction.passOnly
         if (list.isEmpty()) return true
         list.forEach {
-            if (evalBoolean(player, "$it to "+packetData.entityID)) return true
+            if (runEval(player, "$it to "+packetData.entityID)) return true
         }
         return false
     }
 
     private fun passAdd() {
         packetData.clickAction.passAdd.forEach {
-            eval(player, "$it to "+packetData.entityID)
+            runEval(player, "$it to "+packetData.entityID)
         }
     }
 
