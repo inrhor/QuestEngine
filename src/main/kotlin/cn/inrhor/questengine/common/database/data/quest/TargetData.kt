@@ -96,7 +96,11 @@ class TargetData(
         val c = questTarget.conditions
         if (c.isEmpty()) return false
         c.forEach {
-            if (!evalBoolean(player, it)) return false
+            try {
+                if (!evalBoolean(player, it)) return false
+            } catch (ex: Exception) {
+                return false
+            }
         }
         return true
     }

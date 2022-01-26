@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.common.edit
 
-import cn.inrhor.questengine.api.quest.module.main.QuestModule
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.utlis.lang
 import org.bukkit.entity.Player

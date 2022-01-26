@@ -1,23 +1,17 @@
 package cn.inrhor.questengine.command.editor
 
-import cn.inrhor.questengine.QuestEngine
-import cn.inrhor.questengine.api.quest.module.main.QuestModule
 import cn.inrhor.questengine.common.edit.EditorHome.editorHomeQuest
-import cn.inrhor.questengine.common.edit.EditorList.editorListInner
+import cn.inrhor.questengine.common.edit.EditorList.editorStartInner
 import cn.inrhor.questengine.common.edit.EditorList.editorListQuest
 import cn.inrhor.questengine.common.edit.EditorQuest.editorQuest
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player
-import taboolib.common.io.newFile
 import taboolib.common.platform.command.CommandBody
 import taboolib.common.platform.command.subCommand
-import taboolib.module.configuration.Configuration
-import taboolib.module.configuration.Configuration.Companion.setObject
 import taboolib.module.nms.inputSign
 import taboolib.platform.util.asLangText
 import taboolib.platform.util.sendLang
-import java.io.File
 
 internal object EditorQuestCommand {
 
@@ -50,14 +44,7 @@ internal object EditorQuestCommand {
                     sender.sendLang("QUEST-ERROR-ID")
                     return@inputSign
                 }
-                val file = newFile(File(QuestEngine.plugin.dataFolder, "/space/quest/$questID"), folder = true)
-                val questModule = QuestModule()
-                questModule.questID = questID
-                val setting = newFile(file.path+"/setting.yml")
-                val yaml = Configuration.loadFromFile(setting)
-                yaml.setObject("quest", questModule)
-                yaml.saveToFile(setting)
-                QuestManager.register(questID, questModule)
+                QuestManager.saveFile(questID, create = true)
                 sender.editorQuest(questID)
             }
         }
@@ -93,7 +80,7 @@ internal object EditorQuestCommand {
             dynamic {
                 execute<Player> { sender, _, argument ->
                     val questID = argument.split(" ")[0]
-                    sender.editorListInner(questID)
+                    sender.editorStartInner(questID)
                 }
             }
         }
@@ -198,5 +185,8 @@ internal object EditorQuestCommand {
             }
         }
     }
+
+    @CommandBody
+    val change = QuestChangeCommand
 
 }

@@ -13,8 +13,8 @@ import taboolib.library.configuration.PreserveNotNull
  */
 class QuestModule(
     var questID: String, var name: String, var startInnerQuestID: String,
-    val mode: QuestMode,
-    val accept: QuestAccept, val failure: QuestFailure,
+    @PreserveNotNull val mode: QuestMode = QuestMode(),
+    @PreserveNotNull val accept: QuestAccept = QuestAccept(), @PreserveNotNull val failure: QuestFailure = QuestFailure(),
     var innerQuestList: MutableList<QuestInnerModule>,
     val sort: String) {
 

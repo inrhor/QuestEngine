@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.quest.manager
 
+import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.quest.module.inner.QuestInnerModule
 import cn.inrhor.questengine.api.quest.module.main.QuestModule
 import cn.inrhor.questengine.common.collaboration.TeamManager
@@ -9,6 +10,7 @@ import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.quest.ModeType
+import cn.inrhor.questengine.common.quest.QuestFile
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.ui.QuestBookBuildManager
 import cn.inrhor.questengine.script.kether.eval
@@ -22,7 +24,9 @@ import taboolib.common.io.deepDelete
 import taboolib.common.io.newFile
 import taboolib.common.platform.function.*
 import taboolib.module.configuration.Configuration
+import taboolib.module.configuration.Configuration.Companion.setObject
 import taboolib.platform.util.sendLang
+import java.io.File
 import java.util.*
 
 object QuestManager {
@@ -694,6 +698,54 @@ object QuestManager {
                 if (yaml.getString("quest.questID") == questID) {
                     val e = newFile(f.path.replace("\\setting.yml", ""), create = false, folder = true)
                     e.deepDelete()
+                    return
+                }
+            }
+        }
+    }
+
+    /**
+     * 保存配置
+     */
+    fun saveFile(questID: String, innerID: String = "", create: Boolean = false) {
+        if (create) {
+            val file = newFile(File(QuestEngine.plugin.dataFolder, "/space/quest/$questID"), folder = true)
+            val questModule = QuestModule()
+            questModule.questID = questID
+            val setting = newFile(file.path+"/setting.yml")
+            val yaml = Configuration.loadFromFile(setting)
+            yaml.setObject("quest", questModule)
+            yaml.saveToFile(setting)
+            register(questID, questModule)
+        }else {
+            val questFolder = FileUtil.getFile("space/quest")
+            val lists = questFolder.listFiles()?: return
+            for (file in lists) {
+                if (!file.isDirectory) continue
+                val settingFile = File(file.path + File.separator + "setting.yml")
+                if (!settingFile.exists()) return
+                val setting = Configuration.loadFromFile(settingFile)
+                if (setting.getString("quest.questID") == questID) {
+                    val questModule = getQuestModule(questID)?: return
+                    setting.setObject("quest", questModule)
+                    setting.saveToFile(settingFile)
+                    if (innerID.isNotEmpty()) {
+                        val innerFolder = FileUtil.getFile("space/quest/"+file.name)
+                        val innerList = FileUtil.getFileList(innerFolder)
+                        for (inner in innerList) {
+                            val innerYaml = Configuration.loadFromFile(inner)
+                            if (inner.name == "setting.yml" && innerYaml.contains("inner.id") &&innerYaml.getString("inner.id") == innerID) {
+                                questModule.innerQuestList.forEach {
+                                    if (it.id == innerID) {
+                                        innerYaml.setObject("inner", it)
+                                        innerYaml.saveToFile(inner)
+                                        return
+                                    }
+                                }
+                                return
+                            }
+                        }
+                    }
                     return
                 }
             }

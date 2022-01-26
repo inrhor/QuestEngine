@@ -1,5 +1,8 @@
 package cn.inrhor.questengine.common.edit
 
+import cn.inrhor.questengine.common.edit.list.EditorInnerList
+import cn.inrhor.questengine.common.edit.list.EditorListModule
+import cn.inrhor.questengine.common.edit.list.EditorQuestList
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.adaptPlayer
@@ -22,11 +25,14 @@ object EditorList {
             .json.sendTo(adaptPlayer(this))
     }
 
-    fun Player.editorListInner(questID: String, page: Int = 0) {
+    fun Player.editorStartInner(questID: String, page: Int = 0) {
         val questModule = QuestManager.getQuestModule(questID)?: return
-        EditorInnerList(this, asLangText("EDITOR-EDIT-QUEST-INNER-START", questID))
-            .list(page, 7, questModule.innerQuestList, true, "EDITOR-EDIT-QUEST-INNER-LIST",
-                "qen editor quest edit innerlist")
+        EditorInnerList(this, questModule, asLangText("EDITOR-EDIT-QUEST-INNER-START", questID))
+            .list(page, 7, questModule.innerQuestList, true, "EDITOR-EDIT-INNER-LIST",
+                "qen editor quest edit innerlist",
+            EditorListModule.EditorButton("EDITOR-EDIT-QUEST-START-STATE"),
+            EditorListModule.EditorButton("EDITOR-EDIT-QUEST-START-STATE-META",
+            "EDITOR-EDIT-QUEST-START-STATE-HOVER", "/qen editor quest change start $questID"))
             .json.sendTo(adaptPlayer(this))
     }
 }
