@@ -5,6 +5,7 @@ import org.bukkit.entity.Player
 import taboolib.library.configuration.PreserveNotNull
 import taboolib.platform.util.asLangText
 
+@PreserveNotNull
 class QuestMode(var type: String, var amount: Int, var shareData: Boolean) {
 
     constructor(): this("PERSONAL", -1, false)

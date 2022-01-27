@@ -16,7 +16,7 @@ fun runEval(player: Player, script: String): Boolean {
         }.get()
     } catch (ex: Exception) {
         console().sendMessage("&cError Script $script".colored())
-        error(ex)
+        false
     }
 }
 
@@ -30,7 +30,7 @@ fun runEval(player: Player, script: List<String>): Boolean {
         }.get()
     } catch (ex: Exception) {
         console().sendMessage("&cError Script $script".colored())
-        error(ex)
+        false
     }
 }
 

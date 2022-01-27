@@ -10,7 +10,7 @@ import java.util.*
  * @param questDataList 任务数据集合
  * @param controlData 控制模块集合
  */
-class PlayerData(
+data class PlayerData(
     val uuid: UUID,
     var teamData: TeamOpen?,
     val dialogData: DialogData,

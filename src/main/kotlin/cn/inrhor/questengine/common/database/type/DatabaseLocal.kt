@@ -93,7 +93,7 @@ class DatabaseLocal: Database() {
                 val innerQuestID = data.getString(nodeInner+"innerQuestID")?: return@forEach
                 val questInnerData = getInnerQuestData(data, nodeInner, player, questUUID, questID, innerQuestID)?: return@forEach
 
-                val finished = data.getStringList(node+"finishedQuest").toMutableList()
+                val finished = data.getStringList(node+"finishedQuest").toMutableSet()
 
                 val state = (data.getString(node+"state")?: "IDLE").toState()
 

@@ -47,7 +47,8 @@ class TargetData(
      */
     fun runTask(player: Player, questData: QuestData, innerData: QuestInnerData) {
         var pass = false
-        submit(period = questTarget.period.toLong(), async = questTarget.async) {
+        val t = questTarget.period.toLong()
+        submit(delay = t, period = t, async = questTarget.async) {
             if (!player.isOnline ||
                 questData.state != QuestState.DOING ||
                 innerData.state != QuestState.DOING) {

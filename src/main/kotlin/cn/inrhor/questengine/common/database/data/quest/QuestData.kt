@@ -10,10 +10,10 @@ import java.util.*
  * @param questID
  * @param questInnerData 正在进行的内部任务
  */
-class QuestData(
+data class QuestData(
     val questUUID: UUID,
     val questID: String,
-    val questInnerData: QuestInnerData,
+    var questInnerData: QuestInnerData,
     var state: QuestState,
     var teamData: TeamOpen?,
-    val finishedList: MutableList<String>)
+    val finishedList: MutableSet<String> = mutableSetOf())
