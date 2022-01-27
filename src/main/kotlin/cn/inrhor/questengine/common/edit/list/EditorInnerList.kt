@@ -9,6 +9,7 @@ import taboolib.platform.util.asLangText
 class EditorInnerList(player: Player, val questModule: QuestModule, header: String, json: TellrawJson = TellrawJson()) : EditorListModule(player, header, json) {
 
     override fun listAppend(content: String, split: Boolean, index: Int, list: List<*>, button: Array<out EditorButton>) {
+        if (list.isEmpty()) return
         val l: MutableList<QuestInnerModule> = list.toMutableList() as MutableList<QuestInnerModule>
         val get = l[index]
         json.append("      "+get(content, get))

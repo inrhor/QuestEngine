@@ -40,25 +40,29 @@ object EditorList {
 
     fun Player.editorAcceptCondition(questID: String, page: Int = 0) {
         val questModule = QuestManager.getQuestModule(questID)?: return
-        listEditDel(this, questID, questModule.accept.condition, "ACCEPT", "CONDITION", "acceptcon", page)
+        listEditDel(this, questID, questModule.accept.condition,
+            "ACCEPT", "CONDITION", "acceptcon", page)
     }
 
     fun Player.editorFailCondition(questID: String, page: Int = 0) {
         val questModule = QuestManager.getQuestModule(questID)?: return
-        listEditDel(this, questID, questModule.failure.condition, "FAIL", "CONDITION","failcon", page)
+        listEditDel(this, questID, questModule.failure.condition,
+            "FAIL", "CONDITION","failcon", page)
     }
 
     fun Player.editorFailScript(questID: String, page: Int = 0) {
         val questModule = QuestManager.getQuestModule(questID)?: return
-        listEditDel(this, questID, questModule.failure.script, "FAIL", "SCRIPT","failscript", page)
+        listEditDel(this, questID, questModule.failure.script,
+            "FAIL", "SCRIPT","failscript", page)
     }
 
     fun listEditDel(player: Player, questID: String, list: List<String>, node: String, meta: String, cmd: String, page: Int = 0) {
-        EditorOfList(player, player.asLangText("EDITOR-$node-$meta-LIST"))
+        EditorOfList(player, player.asLangText("EDITOR-$node-$meta-LIST", questID))
             .list(page, 5, list, true, "EDITOR-$meta-LIST",
                 "qen editor quest $cmd",
                 EditorListModule.EditorButton("EDITOR-$meta-RETURN"),
-                EditorListModule.EditorButton("EDITOR-LIST-DEL", "EDITOR-LIST-META",
+                EditorListModule.EditorButton("EDITOR-LIST-DEL"),
+                 EditorListModule.EditorButton("EDITOR-LIST-META", "EDITOR-LIST-HOVER",
                     "/qen editor quest change $cmd $questID"))
             .json.sendTo(adaptPlayer(player))
     }
