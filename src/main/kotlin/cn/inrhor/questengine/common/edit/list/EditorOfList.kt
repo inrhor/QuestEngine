@@ -19,7 +19,7 @@ class EditorOfList(player: Player, header: String, json: TellrawJson = TellrawJs
         var sum = 0
         button.forEach {
             val bl = if (split && (sum%2 == 0)) "        " else " "
-            if (it.content.contains("-CONDITION-RETURN") || it.content.contains("-SCRIPT-RETURN")) {
+            if (it.content.contains("-CONDITION-RETURN")) {
                 json.newLine().append("        "+player.asLangText(it.content))
                 val type = testEval(player, get)
                 json.append(" "+type.lang(player, it.content))
@@ -27,12 +27,24 @@ class EditorOfList(player: Player, header: String, json: TellrawJson = TellrawJs
                     json.hoverText("&7".colored()+ feedbackEval(player, get))
                 }
                 json.newLine()
-            }else {
+            }else if (it.content.contains("-SCRIPT-RETURN")) {
+                json.newLine().append("        "+player.asLangText(it.content))
+                val type = testEval(player, get)
+                if (type != EvalType.ERROR) {
+                    json.append(" "+player.asLangText(it.content+"-TRUE"))
+                }else {
+                    json
+                        .append(" "+type.lang(player, it.content))
+                        .hoverText("&7".colored()+ feedbackEval(player, get))
+                }
+                json.newLine()
+            } else {
                 sum++
                 json.append(bl+player.asLangText(it.content))
             }
             if (it.hover.isNotEmpty()) json.hoverText(player.asLangText(it.hover))
             if (it.command.isNotEmpty()) json.runCommand(it.command+" $index")
+            if (it.content.contains("EDITOR-LIST-META")) json.newLine()
         }
     }
 }

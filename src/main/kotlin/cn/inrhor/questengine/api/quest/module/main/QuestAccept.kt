@@ -5,8 +5,8 @@ import taboolib.library.configuration.PreserveNotNull
 import taboolib.platform.util.asLangText
 
 @PreserveNotNull
-class QuestAccept(var way: String, var maxQuantity: Int, var check: Int, var condition: List<String>) {
-    constructor(): this("", 1, -1, listOf())
+class QuestAccept(var way: String, var maxQuantity: Int, var check: Int, var condition: MutableList<String>) {
+    constructor(): this("", 1, -1, mutableListOf())
 
     fun wayLang(player: Player) =
         if (way == "auto") player.asLangText("QUEST-ACCEPT-WAY-AUTO")

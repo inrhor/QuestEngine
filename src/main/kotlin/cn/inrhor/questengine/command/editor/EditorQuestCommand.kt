@@ -173,6 +173,13 @@ internal object EditorQuestCommand {
         }
         literal("acceptcondition") {
             dynamic {
+                dynamic {
+                    execute<Player> { sender, content, argument ->
+                        val questID = content.argument(-1)
+                        val page = argument.split(" ")[0].toInt()
+                        sender.editorAcceptCondition(questID, page)
+                    }
+                }
                 execute<Player> { sender, _, argument ->
                     val questID = argument.split(" ")[0]
                     sender.editorAcceptCondition(questID)
@@ -181,6 +188,13 @@ internal object EditorQuestCommand {
         }
         literal("failurecondition") {
             dynamic {
+                dynamic {
+                    execute<Player> { sender, content, argument ->
+                        val questID = content.argument(-1)
+                        val page = argument.split(" ")[0].toInt()
+                        sender.editorFailCondition(questID, page)
+                    }
+                }
                 execute<Player> { sender, _, argument ->
                     val questID = argument.split(" ")[0]
                     sender.editorFailCondition(questID)
@@ -189,6 +203,13 @@ internal object EditorQuestCommand {
         }
         literal("failurescript") {
             dynamic {
+                dynamic {
+                    execute<Player> { sender, content, argument ->
+                        val questID = content.argument(-1)
+                        val page = argument.split(" ")[0].toInt()
+                        sender.editorFailScript(questID, page)
+                    }
+                }
                 execute<Player> { sender, _, argument ->
                     val questID = argument.split(" ")[0]
                     sender.editorFailScript(questID)

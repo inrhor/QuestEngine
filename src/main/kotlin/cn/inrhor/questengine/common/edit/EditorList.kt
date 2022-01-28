@@ -41,13 +41,13 @@ object EditorList {
     fun Player.editorAcceptCondition(questID: String, page: Int = 0) {
         val questModule = QuestManager.getQuestModule(questID)?: return
         listEditDel(this, questID, questModule.accept.condition,
-            "ACCEPT", "CONDITION", "acceptcontion", page)
+            "ACCEPT", "CONDITION", "acceptcondition", page)
     }
 
     fun Player.editorFailCondition(questID: String, page: Int = 0) {
         val questModule = QuestManager.getQuestModule(questID)?: return
         listEditDel(this, questID, questModule.failure.condition,
-            "FAIL", "CONDITION","failcontion", page)
+            "FAIL", "CONDITION","failcondition", page)
     }
 
     fun Player.editorFailScript(questID: String, page: Int = 0) {
@@ -58,8 +58,8 @@ object EditorList {
 
     fun listEditDel(player: Player, questID: String, list: List<String>, node: String, meta: String, cmd: String, page: Int = 0) {
         EditorOfList(player, player.asLangText("EDITOR-$node-$meta-LIST", questID))
-            .list(page, 5, list, true, "EDITOR-$meta-LIST",
-                "qen editor quest $cmd",
+            .list(page, 3, list, true, "EDITOR-$meta-LIST",
+                "qen editor quest edit $cmd $questID",
                 EditorListModule.EditorButton("EDITOR-$meta-RETURN"),
                 EditorListModule.EditorButton("EDITOR-LIST-DEL"),
                  EditorListModule.EditorButton("EDITOR-LIST-META", "EDITOR-LIST-HOVER",

@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.command.editor
 
+import cn.inrhor.questengine.common.edit.EditorList.editorAcceptCondition
 import cn.inrhor.questengine.common.edit.EditorList.editorStartInner
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player
@@ -27,4 +28,20 @@ object QuestChangeCommand {
         }
     }
 
+
+    @CommandBody
+    val acceptcondition = subCommand {
+        dynamic {
+            dynamic {
+                execute<Player> { sender, content, argument ->
+                    val questID = content.argument(-1)
+                    val questModule = QuestManager.getQuestModule(questID) ?: return@execute
+                    val index = argument.split(" ")[0].toInt()
+                    questModule.accept.condition.removeAt(index)
+                    QuestManager.saveFile(questID)
+                    sender.editorAcceptCondition(questID)
+                }
+            }
+        }
+    }
 }
