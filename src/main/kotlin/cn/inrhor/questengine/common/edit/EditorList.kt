@@ -41,13 +41,13 @@ object EditorList {
     fun Player.editorAcceptCondition(questID: String, page: Int = 0) {
         val questModule = QuestManager.getQuestModule(questID)?: return
         listEditDel(this, questID, questModule.accept.condition,
-            "ACCEPT", "CONDITION", "acceptcon", page)
+            "ACCEPT", "CONDITION", "acceptcontion", page)
     }
 
     fun Player.editorFailCondition(questID: String, page: Int = 0) {
         val questModule = QuestManager.getQuestModule(questID)?: return
         listEditDel(this, questID, questModule.failure.condition,
-            "FAIL", "CONDITION","failcon", page)
+            "FAIL", "CONDITION","failcontion", page)
     }
 
     fun Player.editorFailScript(questID: String, page: Int = 0) {

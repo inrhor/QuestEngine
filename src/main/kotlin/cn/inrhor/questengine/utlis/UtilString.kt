@@ -72,7 +72,7 @@ fun MutableList<String>.copy(): MutableList<String> {
 
 fun String.variableReader(): MutableList<String> {
     val list = mutableListOf<String>()
-    VariableReader(this, '{', '}', repeat = 2).parts.forEach {
+    VariableReader().readToFlatten(this).forEach {
         if (it.isVariable) list.add(it.text)
     }
     return list

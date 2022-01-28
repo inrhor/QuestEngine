@@ -1,8 +1,12 @@
 package cn.inrhor.questengine.common.edit.list
 
-import cn.inrhor.questengine.script.kether.runEval
+import cn.inrhor.questengine.script.kether.EvalType
+import cn.inrhor.questengine.script.kether.feedbackEval
+import cn.inrhor.questengine.script.kether.testEval
+import cn.inrhor.questengine.script.kether.lang
 import org.bukkit.entity.Player
 import taboolib.module.chat.TellrawJson
+import taboolib.module.chat.colored
 import taboolib.platform.util.asLangText
 
 class EditorOfList(player: Player, header: String, json: TellrawJson = TellrawJson()) : EditorListModule(player, header, json) {
@@ -15,14 +19,14 @@ class EditorOfList(player: Player, header: String, json: TellrawJson = TellrawJs
         var sum = 0
         button.forEach {
             val bl = if (split && (sum%2 == 0)) "        " else " "
-            if (it.content.contains("-CONDITION-RETURN")) {
+            if (it.content.contains("-CONDITION-RETURN") || it.content.contains("-SCRIPT-RETURN")) {
                 json.newLine().append("        "+player.asLangText(it.content))
-                if (runEval(player, get)) {
-                    json.append(" "+player.asLangText(it.content+"-TRUE"))
-                }else json.append(" "+player.asLangText(it.content+"-FALSE"))
+                val type = testEval(player, get)
+                json.append(" "+type.lang(player, it.content))
+                if (type == EvalType.ERROR) {
+                    json.hoverText("&7".colored()+ feedbackEval(player, get))
+                }
                 json.newLine()
-            }else if (it.content.contains("-SCRIPT-RETURN")) {
-
             }else {
                 sum++
                 json.append(bl+player.asLangText(it.content))

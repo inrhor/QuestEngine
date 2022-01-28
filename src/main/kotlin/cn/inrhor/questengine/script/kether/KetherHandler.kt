@@ -6,6 +6,7 @@ import taboolib.common.platform.function.*
 import taboolib.common5.Coerce
 import taboolib.module.chat.colored
 import taboolib.module.kether.KetherShell
+import taboolib.platform.util.asLangText
 
 fun runEval(player: Player, script: String): Boolean {
     return try {
@@ -42,47 +43,35 @@ fun runEvalSet(players: Set<Player>, script: List<String>): Boolean {
     return true
 }
 
-/*
-fun runEval(player: Player, script: String): Any? {
-    return runEval(player, mutableListOf(script))
-}
-
-fun runEval(player: Player, script: List<String>): Any? {
+fun testEval(player: Player, script: String): EvalType {
+    if (script.isEmpty()) return EvalType.TRUE
     return try {
         KetherShell.eval(script, namespace = listOf("QuestEngine")) {
             sender = adaptPlayer(player)
-        }.get(1, TimeUnit.SECONDS)
-    }catch (ex: Exception) {
-        console().sendMessage("&cError Kether: &r$script".colored())
+        }.thenApply {
+            Coerce.toBoolean(it).evalType()
+        }.getNow(null)
+    } catch (ex: Exception) {
+        EvalType.ERROR
     }
 }
 
-fun runEval(script: String): Any? {
-    return runEval(mutableListOf(script))
-}
-
-fun runEval(script: List<String>): Any? {
+fun feedbackEval(player: Player, script: String): String {
     return try {
-        KetherShell.eval(script, namespace = listOf("QuestEngine"))
-            .get(1, TimeUnit.SECONDS)
-    }catch (ex: Exception) {
-        console().sendMessage("&cError Kether: &r$script".colored())
+        KetherShell.eval(script, namespace = listOf("QuestEngine")) {
+            sender = adaptPlayer(player)
+        }.thenApply {
+            ""
+        }.getNow(null)
+    } catch (ex: Exception) {
+        ex.localizedMessage
     }
 }
 
-fun evalBoolean(player: Player, script: String): Boolean {
-    return evalBoolean(player, mutableListOf(script))
+enum class EvalType {
+    TRUE, FALSE, ERROR
 }
-
-fun evalBoolean(player: Player, script: List<String>): Boolean {
-    if (script.isEmpty()) return true
-    return runEval(player, script) as Boolean
+fun Boolean.evalType() = if (this) EvalType.TRUE else EvalType.FALSE
+fun EvalType.lang(player: Player, content: String): String {
+    return player.asLangText("$content-$this")
 }
-
-fun evalBooleanSet(players: MutableSet<Player>, script: List<String>): Boolean {
-    if (script.isEmpty()) return true
-    players.forEach{
-        if (!(eval(it, script) as Boolean)) return false
-    }
-    return true
-}*/
