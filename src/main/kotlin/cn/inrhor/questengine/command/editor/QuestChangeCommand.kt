@@ -44,4 +44,36 @@ object QuestChangeCommand {
             }
         }
     }
+
+    @CommandBody
+    val failcondition = subCommand {
+        dynamic {
+            dynamic {
+                execute<Player> { sender, content, argument ->
+                    val questID = content.argument(-1)
+                    val questModule = QuestManager.getQuestModule(questID) ?: return@execute
+                    val index = argument.split(" ")[0].toInt()
+                    questModule.failure.condition.removeAt(index)
+                    QuestManager.saveFile(questID)
+                    sender.editorAcceptCondition(questID)
+                }
+            }
+        }
+    }
+
+    @CommandBody
+    val failscript = subCommand {
+        dynamic {
+            dynamic {
+                execute<Player> { sender, content, argument ->
+                    val questID = content.argument(-1)
+                    val questModule = QuestManager.getQuestModule(questID) ?: return@execute
+                    val index = argument.split(" ")[0].toInt()
+                    questModule.failure.script.removeAt(index)
+                    QuestManager.saveFile(questID)
+                    sender.editorAcceptCondition(questID)
+                }
+            }
+        }
+    }
 }

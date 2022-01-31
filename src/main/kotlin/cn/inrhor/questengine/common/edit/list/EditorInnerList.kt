@@ -35,6 +35,6 @@ class EditorInnerList(player: Player, val questModule: QuestModule, header: Stri
     }
 
     fun get(node: String, inner: QuestInnerModule): String {
-        return player.asLangText(node, inner.id, inner.name)
+        return player.asLangText(node, inner.id, inner.name, inner.id+"§7(${questModule.questID})")
     }
 }

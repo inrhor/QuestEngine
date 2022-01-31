@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.edit
 
 import cn.inrhor.questengine.common.edit.EditorList.editorAcceptCondition
+import cn.inrhor.questengine.common.edit.EditorList.editorListQuest
 import cn.inrhor.questengine.common.edit.list.EditorInnerList
 import cn.inrhor.questengine.common.edit.list.EditorListModule
 import cn.inrhor.questengine.common.edit.list.EditorOfList
@@ -24,6 +25,19 @@ object EditorList {
                 EditorListModule.EditorButton("EDITOR-LIST-QUEST-DEL"),
                 EditorListModule.EditorButton("EDITOR-LIST-QUEST-DEL-META",
                     "EDITOR-LIST-QUEST-DEL-HOVER", "/qen editor quest del"))
+            .json.sendTo(adaptPlayer(this))
+    }
+
+    fun Player.editorListInner(questID: String, page: Int = 0) {
+        val questModule = QuestManager.getQuestModule(questID)?: return
+        EditorInnerList(this, questModule, asLangText("EDITOR-LIST-INNER", questID))
+            .list(page, 7, questModule.innerQuestList, true, "EDITOR-LIST-INNER-INFO", "qen editor quest list",
+                EditorListModule.EditorButton("EDITOR-LIST-INNER-EDIT"),
+                EditorListModule.EditorButton("EDITOR-LIST-INNER-EDIT-META",
+                    "EDITOR-LIST-INNER-EDIT-HOVER", "/qen editor inner edit"),
+                EditorListModule.EditorButton("EDITOR-LIST-INNER-DEL"),
+                EditorListModule.EditorButton("EDITOR-LIST-INNER-DEL-META",
+                    "EDITOR-LIST-INNER-DEL-HOVER", "/qen editor inner del"))
             .json.sendTo(adaptPlayer(this))
     }
 

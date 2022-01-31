@@ -10,7 +10,7 @@ import taboolib.platform.util.asLangText
 object EditorQuest {
 
     val editQuestMeta = listOf(
-        "NAME", "START", "SORT", "MODETYPE", "MODEAMOUNT", "SHAREDATA",
+        "NAME", "INNER", "START", "SORT", "MODETYPE", "MODEAMOUNT", "SHAREDATA",
         "ACCEPTWAY", "MAXQUANTITY", "ACCEPTCONDITION", "FAILURECONDITION", "FAILURESCRIPT")
 
     fun Player.editorQuest(questID: String) {
@@ -28,8 +28,12 @@ object EditorQuest {
                 questModule.accept.maxQuantity))
                 .append("  "+asLangText("EDITOR-EDIT-QUEST-META"))
                 .hoverText(asLangText("EDITOR-EDIT-QUEST-META-HOVER"))
-                .runCommand("/qen editor quest edit "+it.lowercase()+" $questID")
-                .newLine()
+            if (it == "INNER") {
+                json.runCommand("/qen editor inner list $questID")
+            }else {
+                json.runCommand("/qen editor quest edit "+it.lowercase()+" $questID")
+            }
+            json.newLine()
         }
         json.newLine().sendTo(adaptPlayer(this))
     }
