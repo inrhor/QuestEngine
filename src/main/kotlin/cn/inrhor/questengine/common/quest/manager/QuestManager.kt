@@ -715,6 +715,41 @@ object QuestManager {
     }
 
     /**
+     * 删除内部任务文件
+     */
+    fun delInner(questID: String, innerID: String) {
+        val questModule = getQuestModule(questID) ?: return
+        val i = questModule.innerQuestList.iterator()
+        while (i.hasNext()) {
+            val inner = i.next()
+            if (inner.id == innerID) {
+                i.remove(); break
+            }
+        }
+        val questFolder = FileUtil.getFile("space/quest")
+        val lists = questFolder.listFiles() ?: return
+        for (file in lists) {
+            if (!file.isDirectory) continue
+            val settingFile = File(file.path + File.separator + "setting.yml")
+            if (!settingFile.exists()) return
+            val setting = Configuration.loadFromFile(settingFile)
+            if (setting.getString("quest.questID") == questID) {
+                if (innerID.isNotEmpty()) {
+                    val innerFolder = FileUtil.getFile("space/quest/" + file.name)
+                    val innerList = FileUtil.getFileList(innerFolder).iterator()
+                    while (innerList.hasNext()) {
+                        val inner = innerList.next()
+                        val innerYaml = Configuration.loadFromFile(inner)
+                        if (innerYaml.contains("inner.id") && innerYaml.getString("inner.id") == innerID) {
+                            inner.deepDelete()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * 保存配置
      */
     fun saveFile(questID: String, innerID: String = "", create: Boolean = false) {
@@ -744,7 +779,7 @@ object QuestManager {
                         val innerList = FileUtil.getFileList(innerFolder)
                         for (inner in innerList) {
                             val innerYaml = Configuration.loadFromFile(inner)
-                            if (inner.name == "setting.yml" && innerYaml.contains("inner.id") &&innerYaml.getString("inner.id") == innerID) {
+                            if (/*inner.name == "setting.yml" && */innerYaml.contains("inner.id") &&innerYaml.getString("inner.id") == innerID) {
                                 questModule.innerQuestList.forEach {
                                     if (it.id == innerID) {
                                         innerYaml.setObject("inner", it)

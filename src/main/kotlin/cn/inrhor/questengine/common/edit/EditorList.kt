@@ -37,7 +37,7 @@ object EditorList {
                     "EDITOR-LIST-INNER-EDIT-HOVER", "/qen editor inner edit"),
                 EditorListModule.EditorButton("EDITOR-LIST-INNER-DEL"),
                 EditorListModule.EditorButton("EDITOR-LIST-INNER-DEL-META",
-                    "EDITOR-LIST-INNER-DEL-HOVER", "/qen editor inner del"))
+                    "EDITOR-LIST-INNER-DEL-HOVER", "/qen editor inner del $questID"))
             .json.sendTo(adaptPlayer(this))
     }
 
