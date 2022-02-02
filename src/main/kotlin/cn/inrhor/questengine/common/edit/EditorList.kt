@@ -1,7 +1,5 @@
 package cn.inrhor.questengine.common.edit
 
-import cn.inrhor.questengine.common.edit.EditorList.editorAcceptCondition
-import cn.inrhor.questengine.common.edit.EditorList.editorListQuest
 import cn.inrhor.questengine.common.edit.list.EditorInnerList
 import cn.inrhor.questengine.common.edit.list.EditorListModule
 import cn.inrhor.questengine.common.edit.list.EditorOfList
@@ -34,7 +32,7 @@ object EditorList {
             .list(page, 7, questModule.innerQuestList, true, "EDITOR-LIST-INNER-INFO", "qen editor quest list",
                 EditorListModule.EditorButton("EDITOR-LIST-INNER-EDIT"),
                 EditorListModule.EditorButton("EDITOR-LIST-INNER-EDIT-META",
-                    "EDITOR-LIST-INNER-EDIT-HOVER", "/qen editor inner edit"),
+                    "EDITOR-LIST-INNER-EDIT-HOVER", "/qen editor inner edit $questID"),
                 EditorListModule.EditorButton("EDITOR-LIST-INNER-DEL"),
                 EditorListModule.EditorButton("EDITOR-LIST-INNER-DEL-META",
                     "EDITOR-LIST-INNER-DEL-HOVER", "/qen editor inner del $questID"))

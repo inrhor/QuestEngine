@@ -10,7 +10,7 @@ import taboolib.common.platform.command.subCommand
 internal object EditorInnerCommand {
 
     @CommandBody
-    val edit = InnerEditCommand
+    val edit = InnerEditCommand.edit
 
     @CommandBody
     val list = subCommand {

@@ -30,7 +30,7 @@ class EditorInnerList(player: Player, val questModule: QuestModule, header: Stri
                 json.append(bl + get(it.content, get))
                 if (it.hover.isNotEmpty()) json.hoverText(get(it.hover, get))
                 if (it.command.isNotEmpty()) {
-                    if (it.content == "EDITOR-LIST-INNER-DEL-META") {
+                    if (it.content == "EDITOR-LIST-INNER-DEL-META" || it.content == "EDITOR-LIST-INNER-EDIT-META") {
                         json.runCommand(it.command + " " + get.id)
                     } else {
                         json.runCommand(it.command)
