@@ -69,7 +69,7 @@ object QuestFile {
 
     private fun innerQuest(innerYaml: Configuration, questID: String, innerModule: QuestInnerModule): QuestInnerModule {
         val innerQuestID = innerModule.id
-        val questControls = if (innerYaml.contains("inner.control")) control(innerYaml, questID, innerQuestID) else mutableListOf()
+        val questControls = if (innerYaml.contains("option.control")) control(innerYaml, questID, innerQuestID) else mutableListOf()
 
         val questTarget = TargetManager.getTargetList(innerYaml)
 
@@ -84,7 +84,7 @@ object QuestFile {
     }
 
     private fun control(control: Configuration, questID: String, innerQuestID: String): MutableList<QuestControlOpen> {
-        val node = "inner.control"
+        val node = "option.control"
         val hNode = "$node.highest.log."
         val hLogEnable = control.getBoolean(hNode+"enable")
         val hLogType = control.getString(hNode+"type")?: "null"

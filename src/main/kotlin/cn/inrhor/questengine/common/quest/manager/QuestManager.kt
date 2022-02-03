@@ -779,7 +779,7 @@ object QuestManager {
                         val innerList = FileUtil.getFileList(innerFolder)
                         for (inner in innerList) {
                             val innerYaml = Configuration.loadFromFile(inner)
-                            if (/*inner.name == "setting.yml" && */innerYaml.contains("inner.id") &&innerYaml.getString("inner.id") == innerID) {
+                            if (innerYaml.contains("inner.id") &&innerYaml.getString("inner.id") == innerID) {
                                 questModule.innerQuestList.forEach {
                                     if (it.id == innerID) {
                                         innerYaml.setObject("inner", it)

@@ -10,6 +10,23 @@ inner:
   description:
     - "&a这是一个关于农业的任务主线之一"
     - "&r   收集家"
+  reward:
+    # 完成任务后触发脚本
+    finish:
+      - # 奖励ID
+        id: "1"
+        # 脚本支持 Kether
+        script:
+          - ""
+          - ""
+      - id: "2"
+        script:
+          - ""
+    # 任务失败后触发脚本
+    fail:
+      - ""
+      - ""
+option:
   target:
     2:
       name: break block
@@ -35,22 +52,6 @@ inner:
         - "&8体验舒适的天堂"
         - "    &8进度 &6{0}"
         - ""
-  reward:
-    # 完成任务后触发脚本
-    finish:
-      - # 奖励ID
-        id: "1"
-        # 脚本支持 Kether
-        script:
-          - ""
-          - ""
-      - id: "2"
-        script:
-          - ""
-    # 任务失败后触发脚本
-    fail:
-      - ""
-      - ""
   control:
     # 最高级控制
     highest:
