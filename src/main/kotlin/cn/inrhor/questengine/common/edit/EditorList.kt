@@ -44,9 +44,9 @@ object EditorList {
         EditorInnerList(this, questModule, asLangText("EDITOR-EDIT-QUEST-INNER-START", questID))
             .list(page, 7, questModule.innerQuestList, true, "EDITOR-EDIT-INNER-LIST",
                 "qen editor quest edit innerlist",
-            EditorListModule.EditorButton("EDITOR-EDIT-QUEST-START-STATE"),
-            EditorListModule.EditorButton("EDITOR-EDIT-QUEST-START-STATE-META",
-            "EDITOR-EDIT-QUEST-START-STATE-HOVER", "/qen editor quest change start $questID"))
+                EditorListModule.EditorButton("EDITOR-EDIT-QUEST-START-STATE"),
+                EditorListModule.EditorButton("EDITOR-EDIT-QUEST-START-STATE-META",
+                    "EDITOR-EDIT-QUEST-START-STATE-HOVER", "/qen editor quest change start $questID"))
             .json.sendTo(adaptPlayer(this))
     }
 
@@ -74,8 +74,35 @@ object EditorList {
                 "qen editor quest edit $cmd $questID",
                 EditorListModule.EditorButton("EDITOR-$meta-RETURN"),
                 EditorListModule.EditorButton("EDITOR-LIST-DEL"),
-                 EditorListModule.EditorButton("EDITOR-LIST-META", "EDITOR-LIST-HOVER",
-                    "/qen editor quest change $cmd $questID"))
+                EditorListModule.EditorButton("EDITOR-LIST-META", "EDITOR-LIST-HOVER",
+                    "/qen editor quest change $cmd $questID [0]"))
             .json.sendTo(adaptPlayer(player))
+    }
+
+    fun Player.editorNextInner(questID: String, innerID: String, page: Int = 0) {
+        val questModule = QuestManager.getQuestModule(questID)?: return
+        EditorInnerList(this, questModule, asLangText("EDITOR-EDIT-INNER-NEXT", questID, innerID))
+            .list(page, 7, questModule.innerQuestList, true, "EDITOR-EDIT-INNER-LIST",
+                "qen editor inner edit nextinner $questID",
+                EditorListModule.EditorButton("EDITOR-EDIT-INNER-NEXT-CHOOSE"),
+                EditorListModule.EditorButton("EDITOR-EDIT-INNER-NEXT-META",
+                    "EDITOR-EDIT-INNER-NEXT-HOVER", "/qen editor inner change nextinner $questID"))
+            .json.sendTo(adaptPlayer(this))
+    }
+
+    fun Player.editorInnerDesc(questID: String, innerID: String, page: Int = 0) {
+        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
+        EditorOfList(this, asLangText("EDITOR-EDIT-INNER-NOTE", questID, innerID), empty = "  ")
+            .add(asLangText("EDITOR-LIST-INNER-DESC-ADD"),
+                EditorListModule.EditorButton(asLangText("EDITOR-LIST-INNER-DESC-ADD-META"),
+                    asLangText("EDITOR-LIST-INNER-DESC-ADD-HOVER"), "/qen editor inner change desc add $questID $innerID [0]"))
+            .list(page, 5, inner.description, true, "EDITOR-LIST-INNER-NOTE-LIST", "qen editor inner edit desc $questID $innerID",
+                EditorListModule.EditorButton("EDITOR-LIST-INNER-NOTE-ADD"),
+                EditorListModule.EditorButton("EDITOR-LIST-INNER-NOTE-ADD-META",
+                    "EDITOR-LIST-INNER-NOTE-ADD-HOVER", "/qen editor inner change desc add $questID $innerID [0]"),
+                EditorListModule.EditorButton("EDITOR-LIST-INNER-NOTE-DEL"),
+                EditorListModule.EditorButton("EDITOR-LIST-INNER-NOTE-DEL-META",
+                    "EDITOR-LIST-INNER-NOTE-DEL-HOVER", "/qen editor inner change desc del $questID $innerID [0]"))
+            .json.sendTo(adaptPlayer(this))
     }
 }

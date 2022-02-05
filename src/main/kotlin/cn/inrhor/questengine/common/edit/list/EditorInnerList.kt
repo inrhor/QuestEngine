@@ -26,6 +26,15 @@ class EditorInnerList(player: Player, val questModule: QuestModule, header: Stri
                         .hoverText(get(it.hover, get))
                         .runCommand(it.command+" "+get.id)
                 }
+            }else if (it.content == "EDITOR-EDIT-INNER-NEXT-META") {
+                if (get.nextInnerQuestID == get.id) {
+                    json.append(bl + player.asLangText(it.content+"_2"))
+                }else {
+                    json
+                        .append(bl + player.asLangText(it.content+"_1"))
+                        .hoverText(get(it.hover, get))
+                        .runCommand(it.command+" "+get.id)
+                }
             }else {
                 json.append(bl + get(it.content, get))
                 if (it.hover.isNotEmpty()) json.hoverText(get(it.hover, get))

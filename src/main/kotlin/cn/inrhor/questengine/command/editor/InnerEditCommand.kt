@@ -1,6 +1,8 @@
 package cn.inrhor.questengine.command.editor
 
 import cn.inrhor.questengine.common.edit.EditorInner.editorInner
+import cn.inrhor.questengine.common.edit.EditorList.editorInnerDesc
+import cn.inrhor.questengine.common.edit.EditorList.editorNextInner
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.CommandBody
@@ -31,9 +33,29 @@ object InnerEditCommand {
         literal("nextinner") {
             dynamic {
                 dynamic {
+                    dynamic {
+                        execute<Player> { sender, content, argument ->
+                            val questID = content.argument(-2)
+                            val innerID = content.argument(-1)
+                            val page = argument.split(" ")[0].toInt()
+                            sender.editorNextInner(questID, innerID, page)
+                        }
+                    }
                     execute<Player> { sender, content, argument ->
                         val questID = content.argument(-1)
                         val innerID = argument.split(" ")[0]
+                        sender.editorNextInner(questID, innerID)
+                    }
+                }
+            }
+        }
+        literal("desc") {
+            dynamic {
+                dynamic {
+                    execute<Player> { sender, content, argument ->
+                        val questID = content.argument(-1)
+                        val innerID = argument.split(" ")[0]
+                        sender.editorInnerDesc(questID, innerID)
                     }
                 }
             }

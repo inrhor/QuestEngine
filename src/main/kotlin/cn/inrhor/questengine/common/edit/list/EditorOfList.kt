@@ -9,7 +9,7 @@ import taboolib.module.chat.TellrawJson
 import taboolib.module.chat.colored
 import taboolib.platform.util.asLangText
 
-class EditorOfList(player: Player, header: String, json: TellrawJson = TellrawJson()) : EditorListModule(player, header, json) {
+class EditorOfList(player: Player, header: String, json: TellrawJson = TellrawJson(), val empty: String = "        ") : EditorListModule(player, header, json) {
 
     override fun listAppend(content: String, split: Boolean, index: Int, list: List<*>, button: Array<out EditorButton>) {
         if (list.isEmpty()) return
@@ -18,7 +18,7 @@ class EditorOfList(player: Player, header: String, json: TellrawJson = TellrawJs
         json.append("      "+player.asLangText(content, get))
         var sum = 0
         button.forEach {
-            val bl = if (split && (sum%2 == 0)) "        " else " "
+            val bl = if (split && (sum%2 == 0)) empty else " "
             if (it.content.contains("-CONDITION-RETURN")) {
                 json.newLine().append("        "+player.asLangText(it.content))
                 val type = testEval(player, get)
@@ -40,10 +40,11 @@ class EditorOfList(player: Player, header: String, json: TellrawJson = TellrawJs
                 json.newLine()
             } else {
                 sum++
+                if (it.content == "EDITOR-LIST-INNER-NOTE-ADD") json.newLine().append("      ")
                 json.append(bl+player.asLangText(it.content))
             }
             if (it.hover.isNotEmpty()) json.hoverText(player.asLangText(it.hover))
-            if (it.command.isNotEmpty()) json.runCommand(it.command+" $index")
+            if (it.command.isNotEmpty()) json.runCommand(it.command.replace("[0]", index.toString()))
             if (it.content.contains("EDITOR-LIST-META")) json.newLine()
         }
     }
