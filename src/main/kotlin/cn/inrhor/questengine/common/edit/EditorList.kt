@@ -1,9 +1,6 @@
 package cn.inrhor.questengine.common.edit
 
-import cn.inrhor.questengine.common.edit.list.EditorInnerList
-import cn.inrhor.questengine.common.edit.list.EditorListModule
-import cn.inrhor.questengine.common.edit.list.EditorOfList
-import cn.inrhor.questengine.common.edit.list.EditorQuestList
+import cn.inrhor.questengine.common.edit.list.*
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.adaptPlayer
@@ -103,6 +100,17 @@ object EditorList {
                 EditorListModule.EditorButton("EDITOR-LIST-INNER-NOTE-DEL"),
                 EditorListModule.EditorButton("EDITOR-LIST-INNER-NOTE-DEL-META",
                     "EDITOR-LIST-INNER-NOTE-DEL-HOVER", "/qen editor inner change desc del $questID $innerID [0]"))
+            .json.sendTo(adaptPlayer(this))
+    }
+
+    fun Player.editorTargetList(questID: String, innerID: String, page: Int = 0) {
+        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
+        EditorTargetList(this, asLangText("EDITOR-TARGET", questID, innerID))
+            .list(page, 7, inner.questTargetList.map { it.value }, true,
+                "EDITOR-TARGET-LIST", "qen editor inner target list $questID $innerID [0]",
+            EditorListModule.EditorButton("EDITOR-TARGET-EDIT"),
+            EditorListModule.EditorButton("EDITOR-TARGET-EDIT-META",
+                "EDITOR-TARGET-EDIT-HOVER", "/qen editor inner target edit $questID $innerID [0]"))
             .json.sendTo(adaptPlayer(this))
     }
 }

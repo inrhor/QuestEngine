@@ -6,13 +6,12 @@ import taboolib.common.platform.function.adaptPlayer
 import taboolib.module.chat.TellrawJson
 import taboolib.platform.util.asLangText
 
-object EditorInner {
+object EditorTarget {
 
-    val editInnerMeta = listOf(
-        "NAME", "NEXTINNER", "DESC"/*, "TARGET", "REWARD"*/)
-
-    fun Player.editorInner(questID: String, innerID: String) {
-        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
+    // 暂停
+    fun Player.editorTarget(questID: String, innerID: String, name: String) {
+        /*val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
+        val target = inner.questTargetList[name]?: return
         val json = TellrawJson()
             .newLine()
             .append("   "+asLangText("EDITOR-EDIT-INNER", questID, innerID))
@@ -25,7 +24,7 @@ object EditorInner {
                 .runCommand("/qen editor inner edit "+it.lowercase()+" $questID $innerID")
                 .newLine()
         }
-        json.newLine().sendTo(adaptPlayer(this))
+        json.newLine().sendTo(adaptPlayer(this))*/
     }
 
 }

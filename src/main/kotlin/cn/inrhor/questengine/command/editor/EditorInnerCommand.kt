@@ -48,4 +48,7 @@ internal object EditorInnerCommand {
         }
     }
 
+    @CommandBody
+    val target = EditorTargetCommand
+
 }
