@@ -2,8 +2,10 @@ package cn.inrhor.questengine.utlis
 
 import cn.inrhor.questengine.QuestEngine
 import com.google.common.base.Strings
+import org.bukkit.entity.Player
 import taboolib.common.util.VariableReader
 import taboolib.module.chat.colored
+import taboolib.platform.util.asLangText
 
 object UtilString {
 
@@ -70,7 +72,7 @@ fun MutableList<String>.copy(): MutableList<String> {
 
 fun String.variableReader(): MutableList<String> {
     val list = mutableListOf<String>()
-    VariableReader(this, '{', '}', repeat = 2).parts.forEach {
+    VariableReader().readToFlatten(this).forEach {
         if (it.isVariable) list.add(it.text)
     }
     return list
@@ -79,3 +81,5 @@ fun String.variableReader(): MutableList<String> {
 fun String.spaceSplit(index: Int): String {
     return this.split(" ")[index]
 }
+
+fun Boolean.lang(player: Player): String = if (this) player.asLangText("OPEN-ON") else player.asLangText("OPEN-OFF")

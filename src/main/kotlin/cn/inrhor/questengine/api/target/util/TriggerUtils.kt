@@ -5,7 +5,8 @@ import cn.inrhor.questengine.api.quest.module.inner.QuestTarget
 import cn.inrhor.questengine.api.target.ConditionType
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.quest.manager.QuestManager
-import cn.inrhor.questengine.script.kether.evalBoolean
+import cn.inrhor.questengine.script.kether.runEval
+
 import cn.inrhor.questengine.utlis.bukkit.ItemCheck
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -27,7 +28,7 @@ object TriggerUtils {
      */
     fun booleanTrigger(player: Player, targetData: TargetData): Boolean {
         val needCondition = targetData.questTarget.conditionList["need"]?: return false
-        return evalBoolean(player, needCondition)
+        return runEval(player, needCondition)
     }
 
     /**

@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.quest.manager
 
+import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.quest.module.inner.QuestInnerModule
 import cn.inrhor.questengine.api.quest.module.main.QuestModule
 import cn.inrhor.questengine.common.collaboration.TeamManager
@@ -11,14 +12,20 @@ import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.ui.QuestBookBuildManager
-import cn.inrhor.questengine.script.kether.eval
-import cn.inrhor.questengine.script.kether.evalBoolean
-import cn.inrhor.questengine.script.kether.evalBooleanSet
+import cn.inrhor.questengine.script.kether.runEval
+import cn.inrhor.questengine.script.kether.runEvalSet
+
+import cn.inrhor.questengine.utlis.file.FileUtil
 import cn.inrhor.questengine.utlis.time.*
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import taboolib.common.io.deepDelete
+import taboolib.common.io.newFile
 import taboolib.common.platform.function.*
+import taboolib.module.configuration.Configuration
+import taboolib.module.configuration.Configuration.Companion.setObject
 import taboolib.platform.util.sendLang
+import java.io.File
 import java.util.*
 
 object QuestManager {
@@ -83,6 +90,14 @@ object QuestManager {
     fun getQuestMode(questID: String): ModeType {
         val questModule = getQuestModule(questID)?: return ModeType.PERSONAL
         return questModule.mode.modeType()
+    }
+
+    fun existQuestData(player: Player, questUUID: UUID): Boolean {
+        val pData = DataStorage.getPlayerData(player)
+        pData.questDataList.values.forEach {
+            if (it.questUUID == questUUID) return true
+        }
+        return false
     }
 
     /**
@@ -165,7 +180,7 @@ object QuestManager {
         val c = accept.condition
         if (c.isEmpty()) return true
         if (check <= 0) {
-            return evalBooleanSet(players, c)
+            return runEvalSet(players, c)
         }
         val list = mutableListOf<String>()
         var i = 0
@@ -174,7 +189,7 @@ object QuestManager {
             i++
             if (i >= check) return@forEach
         }
-        return evalBooleanSet(players, list)
+        return runEvalSet(players, list)
     }
 
     /**
@@ -230,7 +245,7 @@ object QuestManager {
             if (!player.isOnline || innerData.state != QuestState.DOING) {
                 cancel(); return@submit
             }
-            if (!evalBoolean(player, list)) {
+            if (!runEval(player, list)) {
                 val modeType = questModule.mode.modeType()
                 endQuest(player, modeType, questUUID, QuestState.FAILURE, false)
                 runFailTime(player, modeType, questModule.failure.script)
@@ -250,11 +265,11 @@ object QuestManager {
         val tData = pData.teamData
         if (modeType == ModeType.COLLABORATION && tData != null) {
             tData.playerMembers().forEach {
-                eval(it, failKether)
+                runEval(it, failKether)
             }
             return
         }
-        eval(player, failKether)
+        runEval(player, failKether)
     }
 
     /**
@@ -262,26 +277,25 @@ object QuestManager {
      *
      * 前提是已接受任务
      */
-    private fun acceptNextInnerQuest(player: Player, questUUID: UUID, questData: QuestData, innerQuestID: String) {
+    private fun acceptNextInner(player: Player, questData: QuestData, innerQuestID: String) {
         val questID = questData.questID
+        val questUUID = questData.questUUID
         val questModule = getQuestModule(questID) ?: return
         if (questModule.mode.modeType() == ModeType.COLLABORATION) {
             val tData = questData.teamData?: return
             tData.members.forEach {
                 val m = Bukkit.getPlayer(it)?: return@forEach
-                nextInnerQuest(m, questUUID, questData, innerQuestID)
+                nextInnerQuest(m, getQuestData(m, questUUID)!!, innerQuestID)
             }
             return
         }
-        nextInnerQuest(player, questUUID, questData, innerQuestID)
+        nextInnerQuest(player, questData, innerQuestID)
     }
 
-    private fun nextInnerQuest(player: Player, questUUID: UUID, questData: QuestData, innerQuestID: String) {
+    private fun nextInnerQuest(player: Player, questData: QuestData, nextInnerID: String) {
         val questID = questData.questID
-        val questInnerModule = getInnerQuestModule(questID, innerQuestID) ?: return
-        val nextInnerID = questInnerModule.nextInnerQuestID
-        val nextInnerModule = getInnerQuestModule(questID, nextInnerID) ?: return
-        acceptInnerQuest(player, questUUID, questID, nextInnerModule, false)
+        val questInnerModule = getInnerQuestModule(questID, nextInnerID) ?: return
+        acceptInnerQuest(player, questData.questUUID, questID, questInnerModule, false)
     }
 
     /**
@@ -301,14 +315,18 @@ object QuestManager {
 
     private fun acceptInnerQuest(player: Player, questUUID: UUID, questID: String, innerQuestModule: QuestInnerModule, isNewQuest: Boolean) {
         val pData = DataStorage.getPlayerData(player)
-        var state = QuestState.DOING
-        if (isNewQuest && hasDoingInnerQuest(pData)) state = QuestState.IDLE
+        val state = if (isNewQuest && hasDoingInnerQuest(pData)) QuestState.IDLE else QuestState.DOING
         val innerQuestID = innerQuestModule.id
         val innerModule = getInnerQuestModule(questID, innerQuestID)?: return
         val questModule = getQuestModule(questID)?: return
         val targetDataMap = mutableMapOf<String, TargetData>()
         val innerQuestData = QuestInnerData(questID, innerQuestID, targetDataMap, state)
-        val questData = QuestData(questUUID, questID, innerQuestData, state, pData.teamData, mutableListOf())
+        val questData = if (existQuestData(player, questUUID)) getQuestData(player, questUUID) !!
+        else QuestData(questUUID, questID, innerQuestData, state, pData.teamData)
+        if (existQuestData(player, questUUID)) {
+            questData.questInnerData = innerQuestData
+            questData.state = state
+        }
         innerModule.questTargetList.forEach { (name, target) ->
             val timeStr = target.time.lowercase()
             val nowDate = Date()
@@ -424,7 +442,7 @@ object QuestManager {
         if (state == QuestState.FAILURE && innerFailReward) {
             val innerQuestID = innerData.innerQuestID
             val failReward = getReward(questData.questID, innerQuestID, "", state) ?: return
-            eval(player, failReward)
+            runEval(player, failReward)
         }
     }
 
@@ -476,10 +494,10 @@ object QuestManager {
         val questData = getQuestData(player, questUUID) ?: return
         val innerData = questData.questInnerData
         innerData.state = QuestState.FINISH
+        questData.finishedList.add(innerQuestID)
         val questInnerModule = getInnerQuestModule(questID, innerQuestID) ?: return
         val nextInnerID = questInnerModule.nextInnerQuestID
         if (nextInnerID == "") {
-            questData.finishedList.add(innerQuestID)
             questData.state = QuestState.FINISH
             val questModule = getQuestModule(questID)?: return
             if (questModule.mode.modeType() == ModeType.COLLABORATION) {
@@ -492,7 +510,7 @@ object QuestManager {
                 }
             }
         }else {
-            acceptNextInnerQuest(player, questUUID, questData, nextInnerID)
+            acceptNextInner(player, questData, nextInnerID)
         }
     }
 
@@ -546,7 +564,7 @@ object QuestManager {
             if (m.id == innerQuestID) {
                 return if (type == QuestState.FINISH) {
                     m.reward.getFinishReward(rewardID)
-                }else m.reward.failReward
+                }else m.reward.fail
             }
         }
         return null
@@ -671,6 +689,110 @@ object QuestManager {
             if (it.controlID.startsWith("$questID-")) {
                 Database.database.removeControl(player, it.controlID)
                 controlData.controls.remove(it.controlID)
+            }
+        }
+    }
+
+    /**
+     * 删除任务模块和文件
+     */
+    fun delQuest(questID: String) {
+        if (!questMap.containsKey(questID)) return
+        questMap.remove(questID)
+        val file = FileUtil.getFileList(FileUtil.getFile("space/quest"))
+        val list = file.iterator()
+        while (list.hasNext()) {
+            val f = list.next()
+            val yaml = Configuration.loadFromFile(f)
+            if (yaml.contains("quest.questID")) {
+                if (yaml.getString("quest.questID") == questID) {
+                    val e = newFile(f.path.replace("\\setting.yml", ""), create = false, folder = true)
+                    e.deepDelete()
+                    return
+                }
+            }
+        }
+    }
+
+    /**
+     * 删除内部任务文件
+     */
+    fun delInner(questID: String, innerID: String) {
+        val questModule = getQuestModule(questID) ?: return
+        val i = questModule.innerQuestList.iterator()
+        while (i.hasNext()) {
+            val inner = i.next()
+            if (inner.id == innerID) {
+                i.remove(); break
+            }
+        }
+        val questFolder = FileUtil.getFile("space/quest")
+        val lists = questFolder.listFiles() ?: return
+        for (file in lists) {
+            if (!file.isDirectory) continue
+            val settingFile = File(file.path + File.separator + "setting.yml")
+            if (!settingFile.exists()) return
+            val setting = Configuration.loadFromFile(settingFile)
+            if (setting.getString("quest.questID") == questID) {
+                if (innerID.isNotEmpty()) {
+                    val innerFolder = FileUtil.getFile("space/quest/" + file.name)
+                    val innerList = FileUtil.getFileList(innerFolder).iterator()
+                    while (innerList.hasNext()) {
+                        val inner = innerList.next()
+                        val innerYaml = Configuration.loadFromFile(inner)
+                        if (innerYaml.contains("inner.id") && innerYaml.getString("inner.id") == innerID) {
+                            inner.deepDelete()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 保存配置
+     */
+    fun saveFile(questID: String, innerID: String = "", create: Boolean = false) {
+        if (create) {
+            val file = newFile(File(QuestEngine.plugin.dataFolder, "/space/quest/$questID"), folder = true)
+            val questModule = QuestModule()
+            questModule.questID = questID
+            val setting = newFile(file.path+"/setting.yml")
+            val yaml = Configuration.loadFromFile(setting)
+            yaml.setObject("quest", questModule)
+            yaml.saveToFile(setting)
+            register(questID, questModule)
+        }else {
+            val questFolder = FileUtil.getFile("space/quest")
+            val lists = questFolder.listFiles()?: return
+            for (file in lists) {
+                if (!file.isDirectory) continue
+                val settingFile = File(file.path + File.separator + "setting.yml")
+                if (!settingFile.exists()) return
+                val setting = Configuration.loadFromFile(settingFile)
+                if (setting.getString("quest.questID") == questID) {
+                    val questModule = getQuestModule(questID)?: return
+                    setting.setObject("quest", questModule)
+                    setting.saveToFile(settingFile)
+                    if (innerID.isNotEmpty()) {
+                        val innerFolder = FileUtil.getFile("space/quest/"+file.name)
+                        val innerList = FileUtil.getFileList(innerFolder)
+                        for (inner in innerList) {
+                            val innerYaml = Configuration.loadFromFile(inner)
+                            if (innerYaml.contains("inner.id") &&innerYaml.getString("inner.id") == innerID) {
+                                questModule.innerQuestList.forEach {
+                                    if (it.id == innerID) {
+                                        innerYaml.setObject("inner", it)
+                                        innerYaml.saveToFile(inner)
+                                        return
+                                    }
+                                }
+                                return
+                            }
+                        }
+                    }
+                    return
+                }
             }
         }
     }

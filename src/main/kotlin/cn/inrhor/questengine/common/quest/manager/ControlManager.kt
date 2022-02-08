@@ -6,7 +6,7 @@ import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.QuestControlData
 import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
-import cn.inrhor.questengine.script.kether.eval
+import cn.inrhor.questengine.script.kether.runEval
 import org.bukkit.entity.Player
 
 object ControlManager {
@@ -62,7 +62,7 @@ object ControlManager {
             controlID, controlModule.priority, controlModule.controls, runLine, runWaitTime)
         cData.addControl(controlID, controlData)
         if (log.isEnable) {
-            eval(player, log.returnReKether(questID, innerID, priority))
+            runEval(player, log.returnReKether(questID, innerID, priority))
         }
     }
 

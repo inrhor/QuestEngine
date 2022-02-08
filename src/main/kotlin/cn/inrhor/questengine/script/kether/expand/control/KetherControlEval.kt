@@ -2,7 +2,7 @@ package cn.inrhor.questengine.script.kether.expand.control
 
 import cn.inrhor.questengine.common.quest.manager.ControlManager
 import cn.inrhor.questengine.common.quest.manager.RunLogType
-import cn.inrhor.questengine.script.kether.eval
+import cn.inrhor.questengine.script.kether.runEval
 import taboolib.common.platform.ProxyPlayer
 import taboolib.module.kether.*
 import taboolib.module.kether.scriptParser
@@ -18,7 +18,7 @@ class KetherControlEval(val questID: String, val innerID: String, val priority: 
             if (ControlManager.runLogType(controlID) != RunLogType.DISABLE) {
                 val list = cModule.controls
                 if (list.size > index) {
-                    eval(player.cast(), list[index])
+                    runEval(player.cast(), list[index])
                 }
             }
         }

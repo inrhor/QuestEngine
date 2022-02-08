@@ -162,7 +162,7 @@ class DatabaseSQL: Database() {
                 val stateStr = it.first.second
                 val state = stateStr.toState()
                 val fmqJson = it.second
-                val fmq = Gson().fromJson(fmqJson, MutableList::class.java) as MutableList<String>
+                val fmq = Gson().fromJson(fmqJson, MutableList::class.java) as MutableSet<String>
                 val questData = QuestData(questUUID, questID, innerData, state, null, fmq)
                 pData.questDataList[questUUID] = questData
                 QuestManager.checkTimeTask(player, questUUID, questID)

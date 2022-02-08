@@ -93,7 +93,7 @@ class DatabaseLocal: Database() {
                 val innerQuestID = data.getString(nodeInner+"innerQuestID")?: return@forEach
                 val questInnerData = getInnerQuestData(data, nodeInner, player, questUUID, questID, innerQuestID)?: return@forEach
 
-                val finished = data.getStringList(node+"finishedQuest").toMutableList()
+                val finished = data.getStringList(node+"finishedQuest").toMutableSet()
 
                 val state = (data.getString(node+"state")?: "IDLE").toState()
 
@@ -147,8 +147,10 @@ class DatabaseLocal: Database() {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             val timeDate = dateFormat.parse(data.getString(nodeTarget+"timeDate"))
             targetData.timeDate = timeDate
-            val endTimeDate = dateFormat.parse(data.getString(nodeTarget+"endTimeDate"))
-            targetData.endTimeDate = endTimeDate
+            if (data.contains(nodeTarget+"endTimeDate")) {
+                val endTimeDate = dateFormat.parse(data.getString(nodeTarget+"endTimeDate"))
+                targetData.endTimeDate = endTimeDate
+            }
             targetDataMap[name] = targetData
             targetData.runTime(player, questUUID)
         }

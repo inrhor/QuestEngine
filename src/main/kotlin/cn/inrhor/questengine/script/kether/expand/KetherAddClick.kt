@@ -2,7 +2,8 @@ package cn.inrhor.questengine.script.kether.expand
 
 import cn.inrhor.questengine.api.packet.*
 import cn.inrhor.questengine.common.packet.PacketManager
-import cn.inrhor.questengine.script.kether.evalBoolean
+import cn.inrhor.questengine.script.kether.runEval
+
 import taboolib.common.platform.ProxyPlayer
 import taboolib.library.kether.ArgTypes
 import taboolib.library.kether.ParsedAction
@@ -16,7 +17,7 @@ class KetherAddClick(val type: String, val add: Int, val shell: ParsedAction<*>,
         frame.newFrame(shell).run<String>().thenAccept {
             val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
             try {
-                if (evalBoolean(player.cast(), it)) {
+                if (runEval(player.cast(), it)) {
                     val packetData = PacketManager.getPacketData(player.cast(), entityID)?: return@thenAccept
                     val clickAction = packetData.clickAction
                     val need = clickAction.needClickCount

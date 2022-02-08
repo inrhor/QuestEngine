@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack
 /**
  * 对话主题抽象
  */
-abstract class DialogTheme {
+abstract class DialogTheme(var endTalk: Boolean = false) {
 
     abstract val dialogModule: DialogModule
 

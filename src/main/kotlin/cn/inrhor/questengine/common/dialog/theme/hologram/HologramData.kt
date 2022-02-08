@@ -4,6 +4,7 @@ import cn.inrhor.questengine.api.hologram.HoloDisplay
 import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.api.packet.destroyEntity
 import cn.inrhor.questengine.api.packet.spawnAS
+import org.bukkit.Location
 import org.bukkit.entity.Player
 
 /**
@@ -22,8 +23,12 @@ class HologramData {
     }
 
     fun create(packetID: Int, viewers: MutableSet<Player>, originLocation: OriginLocation, type: HoloIDManager.Type) {
+        create(packetID, viewers, originLocation.origin.add(0.0, -originLocation.nextY, 0.0), type)
+    }
+
+    fun create(packetID: Int, viewers: MutableSet<Player>, location: Location, type: HoloIDManager.Type) {
         addID(packetID)
-        spawnAS(viewers, packetID, originLocation.origin.add(0.0, -originLocation.nextY, 0.0))
+        spawnAS(viewers, packetID, location)
         if (type == HoloIDManager.Type.ITEM || type == HoloIDManager.Type.HITBOX) {
             HoloDisplay.initItemAS(packetID, viewers)
         }else {

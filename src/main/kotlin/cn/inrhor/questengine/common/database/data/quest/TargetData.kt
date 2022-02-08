@@ -6,7 +6,8 @@ import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.api.quest.module.inner.QuestTarget
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.quest.manager.RewardManager
-import cn.inrhor.questengine.script.kether.evalBoolean
+import cn.inrhor.questengine.script.kether.runEval
+
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.*
 import java.util.*
@@ -46,7 +47,8 @@ class TargetData(
      */
     fun runTask(player: Player, questData: QuestData, innerData: QuestInnerData) {
         var pass = false
-        submit(period = questTarget.period.toLong(), async = questTarget.async) {
+        val t = questTarget.period.toLong()
+        submit(delay = t, period = t, async = questTarget.async) {
             if (!player.isOnline ||
                 questData.state != QuestState.DOING ||
                 innerData.state != QuestState.DOING) {
@@ -96,7 +98,11 @@ class TargetData(
         val c = questTarget.conditions
         if (c.isEmpty()) return false
         c.forEach {
-            if (!evalBoolean(player, it)) return false
+            try {
+                if (!runEval(player, it)) return false
+            } catch (ex: Exception) {
+                return false
+            }
         }
         return true
     }

@@ -2,11 +2,10 @@
 dialog1:
   # 交互NPC
   npcIDs:
-    - test
+    - "1"
   # 对话需要满足的触发条件
   condition:
     - permission *dialog.prm.1
-    - check player name is *inrhor
   # 对话空间设置
   space:
     # 是否启用
@@ -40,7 +39,7 @@ dialog1:
       # 支持 Kether 布尔值语句
       condition: []
       content:
-        - hitBox {{sizeX 3 3}} {{sizeY 3 3}} {{sizeZ 3 3}} {{long 5}} {{item item_2}} {{use suspend}} {{boxY 2}}
+        - hitBox {{sizeX 3 3}} {{sizeY 3 3}} {{sizeZ 3 3}} {{long 5}} {{item item_2}} {{use suspend}} {{boxY 2}} {{view}}
         - initLoc {{add 2.0 1.5}} {{dir left}}
         - nextY -1.0
         - text {{&c&l你好世界 Hello World}}
@@ -65,7 +64,7 @@ dialog2:
       condition:
         - tags has hello
       content:
-        - hitBox {{sizeX 3 3}} {{sizeY 3 3}} {{sizeZ 3 3}} {{long 5}} {{item item_2}} {{use suspend}} {{boxY 2}}
+        - hitBox {{sizeX 3 3}} {{sizeY 3 3}} {{sizeZ 3 3}} {{long 5}} {{item item_2}} {{use suspend}} {{boxY 2}} {{view}}
         - initLoc {{dir left}} {{add 2.0 1.5}}
         - item {{item item_2}} {{use fixed}}
       script:
@@ -77,5 +76,4 @@ dialog3:
   hook: dialog1
   # 可以直接调用父对象的回复项
   dialog:
-    - reply 20 reply_1 # 释放父dialog_1对象的回复项的 reply_1 回复ID
-    - replyAll 20 # 释放全部回复项（包括父对象的回复项）
+    - reply 20 reply1 # 释放父dialog1对象的回复项的 reply1 回复ID

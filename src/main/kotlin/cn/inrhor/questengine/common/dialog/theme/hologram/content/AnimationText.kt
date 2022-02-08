@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.dialog.theme.hologram.content
 
 import cn.inrhor.questengine.api.dialog.theme.TextPlay
+import cn.inrhor.questengine.api.packet.destroyEntity
 import cn.inrhor.questengine.api.packet.updateDisplayName
 import cn.inrhor.questengine.common.dialog.theme.hologram.core.DialogHologram
 import cn.inrhor.questengine.utlis.spaceSplit
@@ -50,7 +51,7 @@ class AnimationText(val content: String): TextPlay() {
             if (writeType == WriteType.NORMAL) {
                 viewers.forEach {
                     updateDisplayName(it, holoID, text)
-                    outText(it)
+                    outText(it, holoID)
                 }
             } else if (writeType == WriteType.WRITECLEAR || writeType == WriteType.WRITE) {
                 write(holoID, viewers)
@@ -58,10 +59,13 @@ class AnimationText(val content: String): TextPlay() {
         }
     }
 
-    private fun outText(viewer: Player) {
+    private fun outText(viewer: Player, holoID: Int) {
         if (!out) return
         submit(async = true, delay = clearWait) {
-            if (viewer.isOnline) viewer.sendMessage(text)
+            if (viewer.isOnline) {
+                viewer.sendMessage(text)
+                if (writeType == WriteType.WRITECLEAR) destroyEntity(viewer, holoID)
+            }
         }
     }
 
@@ -76,7 +80,7 @@ class AnimationText(val content: String): TextPlay() {
 
     private fun writeSpeed(viewer: Player, holoID: Int, index: Int, animationList: List<String>) {
         if (index >= animationList.size) {
-            outText(viewer)
+            outText(viewer, holoID)
             return
         }
         submit(async = true, delay = speed) {
