@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.edit
 
+import cn.inrhor.questengine.common.edit.EditorList.editorFinishReward
 import cn.inrhor.questengine.common.edit.list.*
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player
@@ -92,7 +93,7 @@ object EditorList {
         EditorOfList(this, asLangText("EDITOR-EDIT-INNER-NOTE", questID, innerID), empty = "  ")
             .add(asLangText("EDITOR-LIST-INNER-DESC-ADD"),
                 EditorListModule.EditorButton(asLangText("EDITOR-LIST-INNER-DESC-ADD-META"),
-                    asLangText("EDITOR-LIST-INNER-DESC-ADD-HOVER"), "/qen editor inner change desc add $questID $innerID [0]"))
+                    asLangText("EDITOR-LIST-INNER-DESC-ADD-HOVER"), "/qen editor inner change desc add $questID $innerID 0"))
             .list(page, 5, inner.description, true, "EDITOR-LIST-INNER-NOTE-LIST", "qen editor inner edit desc $questID $innerID",
                 EditorListModule.EditorButton("EDITOR-LIST-INNER-NOTE-ADD"),
                 EditorListModule.EditorButton("EDITOR-LIST-INNER-NOTE-ADD-META",
@@ -111,6 +112,43 @@ object EditorList {
             EditorListModule.EditorButton("EDITOR-TARGET-EDIT"),
             EditorListModule.EditorButton("EDITOR-TARGET-EDIT-META",
                 "EDITOR-TARGET-EDIT-HOVER", "/qen editor inner target edit $questID $innerID [0]"))
+            .json.sendTo(adaptPlayer(this))
+    }
+
+    fun Player.editorRewardList(questID: String, innerID: String, page: Int = 0) {
+        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
+        EditorRewardList(this, asLangText("EDITOR-FINISH_REWARD", questID, innerID))
+            .list(page, 7, inner.reward.finish, true, "EDITOR-FINISH_REWARD-LIST",
+            "qen editor inner reward list $questID $innerID [0]",
+            EditorListModule.EditorButton("EDITOR-EDIT-FINISH_REWARD-EDIT"),
+            EditorListModule.EditorButton("EDITOR-EDIT-FINISH_REWARD-EDIT-META",
+            "EDITOR-EDIT-FINISH_REWARD-EDIT-HOVER",
+                "/qen editor inner reward edit $questID $innerID [0]"))
+            .json.sendTo(adaptPlayer(this))
+    }
+
+    fun Player.editorFinishReward(questID: String, innerID: String, rewardID: String, page: Int = 0) {
+        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
+        val finish = inner.reward.getFinishReward(rewardID)
+        EditorOfList(this, asLangText("EDITOR-EDIT-FINISH_REWARD", questID, innerID, rewardID))
+            .list(page, 3, finish, true, "EDITOR-EDIT-FINISH_REWARD-LIST",
+                "qen editor inner finish  list $questID $innerID [0]",
+                EditorListModule.EditorButton("EDITOR-SCRIPT-RETURN"),
+                EditorListModule.EditorButton("EDITOR-LIST-DEL"),
+                EditorListModule.EditorButton("EDITOR-LIST-META", "EDITOR-LIST-HOVER",
+                    "/qen editor inner finish change del $questID $innerID [0]"))
+            .json.sendTo(adaptPlayer(this))
+    }
+
+    fun Player.editorFailReward(questID: String, innerID: String, page: Int = 0) {
+        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
+        EditorOfList(this, asLangText("EDITOR-EDIT-FAIL_REWARD", questID, innerID))
+            .list(page, 3, inner.reward.fail, true, "EDITOR-EDIT-FAIL_REWARD-LIST",
+                "qen editor inner fail  list $questID $innerID [0]",
+                EditorListModule.EditorButton("EDITOR-SCRIPT-RETURN"),
+                EditorListModule.EditorButton("EDITOR-LIST-DEL"),
+                EditorListModule.EditorButton("EDITOR-LIST-META", "EDITOR-LIST-HOVER",
+                    "/qen editor inner fail change del $questID $innerID [0]"))
             .json.sendTo(adaptPlayer(this))
     }
 }

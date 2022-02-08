@@ -71,4 +71,7 @@ object InnerEditCommand {
         }
     }
 
+    @CommandBody
+    val change = InnerChangeCommand
+
 }

@@ -8,23 +8,24 @@ import taboolib.platform.util.asLangText
 
 object EditorTarget {
 
-    // 暂停
     fun Player.editorTarget(questID: String, innerID: String, name: String) {
-        /*val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
+        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
         val target = inner.questTargetList[name]?: return
         val json = TellrawJson()
             .newLine()
-            .append("   "+asLangText("EDITOR-EDIT-INNER", questID, innerID))
+            .append("   "+asLangText("EDITOR-EDIT-TARGET", questID, innerID, name))
             .newLine().newLine()
-        editInnerMeta.forEach {
-            json.append("      "+asLangText("EDITOR-EDIT-INNER-$it",
-                inner.name, inner.nextInnerQuestID))
-                .append("  "+asLangText("EDITOR-EDIT-INNER-META"))
-                .hoverText(asLangText("EDITOR-EDIT-INNER-META-HOVER"))
-                .runCommand("/qen editor inner edit "+it.lowercase()+" $questID $innerID")
+        target.condition.forEach { (t, u) ->
+            json.append("      "+asLangText("EDITOR-EDIT-TARGET-VALUE", t, u))
                 .newLine()
         }
-        json.newLine().sendTo(adaptPlayer(this))*/
+        target.conditionList.forEach { (t, u) ->
+            json.append("      "+asLangText("EDITOR-EDIT-TARGET-VALUE", t)).newLine()
+            u.forEach {
+                json.append("        "+asLangText("EDITOR-EDIT-TARGET-VALUE-LIST", it)).newLine()
+            }
+        }
+        json.newLine().sendTo(adaptPlayer(this))
     }
 
 }

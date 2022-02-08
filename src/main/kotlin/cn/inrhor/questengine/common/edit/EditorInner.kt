@@ -9,7 +9,7 @@ import taboolib.platform.util.asLangText
 object EditorInner {
 
     val editInnerMeta = listOf(
-        "NAME", "NEXTINNER", "DESC"/*, "TARGET", "REWARD"*/)
+        "NAME", "NEXTINNER", "DESC", "TARGET", "REWARDFINISH", "REWARDFAIL")
 
     fun Player.editorInner(questID: String, innerID: String) {
         val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
