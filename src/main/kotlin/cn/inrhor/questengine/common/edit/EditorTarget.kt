@@ -20,7 +20,7 @@ object EditorTarget {
                 .newLine()
         }
         target.conditionList.forEach { (t, u) ->
-            json.append("      "+asLangText("EDITOR-EDIT-TARGET-VALUE", t)).newLine()
+            json.append("      "+asLangText("EDITOR-EDIT-TARGET-KEY", t)).newLine()
             u.forEach {
                 json.append("        "+asLangText("EDITOR-EDIT-TARGET-VALUE-LIST", it)).newLine()
             }

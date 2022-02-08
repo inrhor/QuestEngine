@@ -11,18 +11,19 @@ class EditorRewardList(player: Player, header: String, json: TellrawJson = Tellr
         if (list.isEmpty()) return
         val l: MutableList<FinishReward> = list.toMutableList() as MutableList<FinishReward>
         val get = l[index]
-        json.append("      "+get(content, index, get))
+        json.append("      "+get(content, get))
         var sum = 0
         button.forEach {
             val bl = if (split && (sum%2 == 0)) "  " else " "
             sum++
-            json.append(bl+get(it.content, index, get))
-            if (it.hover.isNotEmpty()) json.hoverText(get(it.hover, index, get))
-            if (it.command.isNotEmpty()) json.runCommand(it.command.replace("[0]", index.toString()))
+            json.append(bl+get(it.content, get))
+            if (it.hover.isNotEmpty()) json.hoverText(get(it.hover, get))
+            if (it.command.isNotEmpty()) json.runCommand(
+                it.command.replace("[0]", index.toString()).replace("[1]", get.id))
         }
     }
 
-    fun get(node: String, index: Int, finishReward: FinishReward): String {
+    fun get(node: String, finishReward: FinishReward): String {
         return player.asLangText(node, finishReward.id)
     }
 }

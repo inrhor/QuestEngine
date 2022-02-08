@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.command.editor
 
 import cn.inrhor.questengine.common.edit.EditorList.editorListInner
-import cn.inrhor.questengine.common.edit.EditorList.editorListQuest
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.CommandBody
@@ -50,5 +49,11 @@ internal object EditorInnerCommand {
 
     @CommandBody
     val target = EditorTargetCommand
+
+    @CommandBody
+    val reward = EditorRewardCommand
+
+    @CommandBody
+    val fail = EditorFailCommand
 
 }

@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.common.edit
 
-import cn.inrhor.questengine.common.edit.EditorList.editorFinishReward
 import cn.inrhor.questengine.common.edit.list.*
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player
@@ -123,7 +122,7 @@ object EditorList {
             EditorListModule.EditorButton("EDITOR-EDIT-FINISH_REWARD-EDIT"),
             EditorListModule.EditorButton("EDITOR-EDIT-FINISH_REWARD-EDIT-META",
             "EDITOR-EDIT-FINISH_REWARD-EDIT-HOVER",
-                "/qen editor inner reward edit $questID $innerID [0]"))
+                "/qen editor inner reward edit $questID $innerID [1] 0"))
             .json.sendTo(adaptPlayer(this))
     }
 
@@ -132,11 +131,11 @@ object EditorList {
         val finish = inner.reward.getFinishReward(rewardID)
         EditorOfList(this, asLangText("EDITOR-EDIT-FINISH_REWARD", questID, innerID, rewardID))
             .list(page, 3, finish, true, "EDITOR-EDIT-FINISH_REWARD-LIST",
-                "qen editor inner finish  list $questID $innerID [0]",
+                "qen editor inner reward edit $questID $innerID $rewardID [0]",
                 EditorListModule.EditorButton("EDITOR-SCRIPT-RETURN"),
                 EditorListModule.EditorButton("EDITOR-LIST-DEL"),
                 EditorListModule.EditorButton("EDITOR-LIST-META", "EDITOR-LIST-HOVER",
-                    "/qen editor inner finish change del $questID $innerID [0]"))
+                    "/qen editor inner reward del $questID $innerID $rewardID [0]"))
             .json.sendTo(adaptPlayer(this))
     }
 
@@ -144,11 +143,11 @@ object EditorList {
         val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
         EditorOfList(this, asLangText("EDITOR-EDIT-FAIL_REWARD", questID, innerID))
             .list(page, 3, inner.reward.fail, true, "EDITOR-EDIT-FAIL_REWARD-LIST",
-                "qen editor inner fail  list $questID $innerID [0]",
+                "qen editor inner fail list $questID $innerID [0]",
                 EditorListModule.EditorButton("EDITOR-SCRIPT-RETURN"),
                 EditorListModule.EditorButton("EDITOR-LIST-DEL"),
                 EditorListModule.EditorButton("EDITOR-LIST-META", "EDITOR-LIST-HOVER",
-                    "/qen editor inner fail change del $questID $innerID [0]"))
+                    "/qen editor inner fail del $questID $innerID [0]"))
             .json.sendTo(adaptPlayer(this))
     }
 }
