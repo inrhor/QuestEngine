@@ -69,6 +69,8 @@ dialog2:
         - item {{item item_2}} {{use fixed}}
       script:
         - dialog end dialog2
+      tagDefault: "&7"
+      tagChoose: "&7&l[ &b&l! &7&l] &b"
 
 # 对话ID
 dialog3:

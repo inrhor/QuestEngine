@@ -26,6 +26,6 @@ object ClickAdyNPC {
     private fun sendDialog(player: Player, npc: EntityInstance) {
         val npcLoc = npc.getLocation()
         val npcID = npc.id
-        DialogManager.sendDialogHolo(mutableSetOf(player), npcID, npcLoc)
+        DialogManager.sendDialog(mutableSetOf(player), npcLoc, npcID)
     }
 }

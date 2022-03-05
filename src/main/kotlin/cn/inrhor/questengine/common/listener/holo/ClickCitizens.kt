@@ -28,6 +28,6 @@ object ClickCitizens {
     private fun npc(player: Player, npc: NPC) {
         val npcLoc = npc.entity.location
         val npcID= npc.id.toString()
-        DialogManager.sendDialogHolo(mutableSetOf(player), npcID, npcLoc)
+        DialogManager.sendDialog(mutableSetOf(player), npcLoc, npcID)
     }
 }

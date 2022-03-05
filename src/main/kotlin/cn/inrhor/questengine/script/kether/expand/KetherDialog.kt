@@ -17,7 +17,7 @@ class KetherDialog {
             return frame.newFrame(location).run<Location>().thenAccept {
                 val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
                 val p: Player = player.cast()
-                DialogManager.sendDialogHolo(p, dialogID, it)
+                DialogManager.sendDialog(p, dialogID, it)
             }
         }
     }
