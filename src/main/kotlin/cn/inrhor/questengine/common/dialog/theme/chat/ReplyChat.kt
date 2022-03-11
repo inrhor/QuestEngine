@@ -3,9 +3,7 @@ package cn.inrhor.questengine.common.dialog.theme.chat
 import cn.inrhor.questengine.api.dialog.ReplyModule
 import cn.inrhor.questengine.api.dialog.theme.ReplyTheme
 import cn.inrhor.questengine.common.database.data.DataStorage
-import cn.inrhor.questengine.script.kether.runEval
 import cn.inrhor.questengine.script.kether.runEvalSet
-import org.bukkit.entity.Player
 
 class ReplyChat(val dialogChat: DialogChat, val reply: List<ReplyModule>): ReplyTheme {
 

@@ -1,18 +1,32 @@
 package cn.inrhor.questengine.common.listener.chat
 
 import cn.inrhor.questengine.common.database.data.DataStorage
-import org.bukkit.event.player.AsyncPlayerChatEvent
 import taboolib.common.platform.event.SubscribeEvent
+import taboolib.common5.Coerce
+import taboolib.module.nms.MinecraftVersion
+import taboolib.module.nms.PacketSendEvent
 
 object ChatCacheListener {
 
     @SubscribeEvent
-    fun prevent(ev: AsyncPlayerChatEvent) {
-        val p = ev.player
-        val pData = DataStorage.getPlayerData(p)
-        val cache = pData.chatCache
-        if (!cache.enable) return
-        cache.addMessage(ev.message)
+    fun prevent(ev: PacketSendEvent) {
+        if (ev.packet.name == "PacketPlayOutChat" && ev.packet.read<Any>("b").toString() != "GAME_INFO") {
+            var a = ev.packet.read<Any>("a").toString()
+            if (a == "null") {
+                if (MinecraftVersion.major >= 10 || MinecraftVersion.majorLegacy < 11700) {
+                    kotlin.runCatching {
+                        a = Coerce.toList(ev.packet.read<Any>("components")).toString()
+                    }
+                } else return
+            }
+            val p = ev.player
+            val pData = DataStorage.getPlayerData(p)
+            val cache = pData.chatCache
+            if (!cache.enable) return
+            if (cache.release.contains(a)) return
+            cache.append(ev.packet.source)
+            ev.isCancelled = true
+        }
     }
 
 }

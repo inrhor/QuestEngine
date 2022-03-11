@@ -1,24 +1,36 @@
 package cn.inrhor.questengine.common.dialog.theme.chat
 
 import org.bukkit.entity.Player
+import taboolib.common.reflect.Reflex.Companion.getProperty
+import taboolib.common5.Coerce
+import taboolib.module.nms.MinecraftVersion
+import taboolib.module.nms.sendPacket
 
-class ChatCache(var enable: Boolean = false, val msg: MutableList<String> = mutableListOf()) {
+class ChatCache(var enable: Boolean = false, val cache: MutableList<Any> = mutableListOf(), val release: MutableList<String> = mutableListOf()) {
 
     fun open() {
         enable = true
-        msg.clear()
     }
 
-    fun addMessage(str: String) {
-        if (msg.size > 30) {
-            msg.removeAt(0)
+    fun append(any: Any) {
+        if (cache.size > 99) {
+            cache.removeAt(0)
         }
-        msg.add(str)
+        cache.add(any)
     }
 
     fun close(player: Player) {
         enable = false
-        msg.forEach { player.sendMessage(it) }
+        cache.forEach {
+            var value = it.getProperty<Any>("a").toString()
+            if (value == "null" && MinecraftVersion.majorLegacy < 11700) {
+                kotlin.runCatching { value = Coerce.toList(it.getProperty<Any>("components")).toString() }
+            }
+            release.add(value)
+            player.sendPacket(it)
+        }
+        cache.clear()
+        release.clear()
     }
 
 }
