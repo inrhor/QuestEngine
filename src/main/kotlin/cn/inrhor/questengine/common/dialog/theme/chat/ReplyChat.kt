@@ -23,15 +23,15 @@ class ReplyChat(val dialogChat: DialogChat, val reply: List<ReplyModule>): Reply
         dialogChat.viewers.forEach {
             val list = replyModule.content
             for (i in 0 until list.size) {
-                if (i == 0) {
-                    it.sendMessage(replyModule.tagChoose+list[i])
-                }else it.sendMessage(replyModule.tagDefault+list[i])
+                if (i == dialogChat.scrollIndex) {
+                    it.sendMessage(replyModule.tagChoose+list[i]+"§7§5§4§d§3§e§l§m§f")
+                }else it.sendMessage(replyModule.tagDefault+list[i]+"§7§5§4§d§3§e§l§m§f")
             }
         }
     }
 
     override fun end() {
-
+        // 暂无可操作
     }
 
 }

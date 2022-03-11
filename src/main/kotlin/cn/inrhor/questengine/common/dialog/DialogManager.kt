@@ -65,11 +65,8 @@ object DialogManager {
     }
 
     fun hasDialog(player: Player, dialogID: String): Boolean {
-        val holoDialog = DataStorage.getPlayerData(player).dialogData.dialogMap[dialogID]?: return false
-        holoDialog.forEach {
-            if (it.dialogModule.dialogID == dialogID) return true
-        }
-        return false
+        DataStorage.getPlayerData(player).dialogData.dialogMap[dialogID]?: return false
+        return true
     }
 
     /**

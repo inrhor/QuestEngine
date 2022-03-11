@@ -10,7 +10,7 @@ import taboolib.common5.util.printed
 /**
  * 聊天框对话
  */
-class DialogChat(override val dialogModule: DialogModule, val viewers: MutableSet<Player>): DialogTheme(type = Type.Chat) {
+class DialogChat(override val dialogModule: DialogModule, val viewers: MutableSet<Player>, var scrollIndex: Int = 0): DialogTheme(type = Type.Chat) {
 
     override fun play() {
         parserContent()
@@ -22,14 +22,19 @@ class DialogChat(override val dialogModule: DialogModule, val viewers: MutableSe
     }
 
     fun parserContent() {
-        dialogModule.dialog.forEach {
-            val an = it.printed()
-            an.forEach { i ->
+        val content = dialogModule.dialog
+        for (i in content.indices) {
+            val an = content[i].printed()
+            an.forEach {
                 submit(async = true, delay = 5L) {
                     viewers.forEach { p ->
-                        p.sendMessage(i)
+                        p.sendMessage("$it§7§5§4§d§3§e§l§m§f")
                     }
                 }
+            }
+            if (i >= content.size-1) {
+                val reply = ReplyChat(this, dialogModule.reply)
+                reply.play()
             }
         }
     }
@@ -38,6 +43,7 @@ class DialogChat(override val dialogModule: DialogModule, val viewers: MutableSe
         viewers.forEach {
             val pData = DataStorage.getPlayerData(it)
             pData.chatCache.close(it)
+            pData.dialogData.dialogMap.remove(dialogModule.dialogID)
         }
     }
 
