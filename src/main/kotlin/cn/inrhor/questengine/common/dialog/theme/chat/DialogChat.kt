@@ -4,8 +4,12 @@ import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.api.dialog.theme.DialogTheme
 import cn.inrhor.questengine.common.database.data.DataStorage
 import org.bukkit.entity.Player
+import taboolib.common.platform.function.adaptPlayer
 import taboolib.common.platform.function.submit
 import taboolib.common5.util.printed
+import taboolib.module.chat.TellrawJson
+import taboolib.module.chat.colored
+import taboolib.platform.compat.replacePlaceholder
 
 /**
  * 聊天框对话
@@ -13,30 +17,50 @@ import taboolib.common5.util.printed
 class DialogChat(override val dialogModule: DialogModule, val viewers: MutableSet<Player>, var scrollIndex: Int = 0): DialogTheme(type = Type.Chat) {
 
     override fun play() {
-        parserContent()
         viewers.forEach {
+            textViewer(it)
             val pData = DataStorage.getPlayerData(it)
             pData.dialogData.addDialog(dialogModule.dialogID, this)
             pData.chatCache.open()
         }
     }
 
-    fun parserContent() {
+    fun textViewer(viewer: Player) {
         val content = dialogModule.dialog
-        for (i in content.indices) {
-            val an = content[i].printed()
-            an.forEach {
-                submit(async = true, delay = 5L) {
-                    viewers.forEach { p ->
-                        p.sendMessage("$it§7§5§4§d§3§e§l§m§f")
-                    }
-                }
-            }
-            if (i >= content.size-1) {
-                val reply = ReplyChat(this, dialogModule.reply)
-                reply.play()
+        val list = mutableListOf<List<String>>()
+        content.forEach {
+            list.add(it.replacePlaceholder(viewer).colored().printed())
+        }
+        parserContent(viewer, list)
+    }
+
+    fun parserContent(viewer: Player, list: MutableList<List<String>>, index: Int = 0) {
+        val size = list.size
+        if (size-1 == 0 || size-1 < index) return
+        val json = TellrawJson().refresh()
+        if (index>0) {
+            for (i in 0 until index) {
+                json.append(list[i].last()).newLine()
             }
         }
+        textSend(viewer, list, index, list[index], 0, json)
+    }
+
+    private fun textSend(viewer: Player, element: MutableList<List<String>>, index: Int, list: List<String>, line: Int, json: TellrawJson) {
+        submit(async = true, delay = 3L) {
+            val new = TellrawJson()
+            new.append(json).append(list[line]).newLine().insertion("@d31877bc-b8bc-4355-a4e5-9b055a494e9f").sendTo(adaptPlayer(viewer))
+            if (line != list.size-1) {
+                textSend(viewer, element, index, list, line+1, json)
+            }else {
+                parserContent(viewer, element, index+1)
+            }
+        }
+    }
+
+    fun TellrawJson.refresh(): TellrawJson {
+        for (i in 0..99) this.newLine()
+        return this
     }
 
     override fun end() {

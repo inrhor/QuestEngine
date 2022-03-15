@@ -23,7 +23,7 @@ object ChatCacheListener {
             val pData = DataStorage.getPlayerData(p)
             val cache = pData.chatCache
             if (!cache.enable) return
-            if (cache.release.contains(a) || a.contains("§7§5§4§d§3§e§l§m§f")) return
+            if (cache.release.contains(a) || a.contains("@d31877bc-b8bc-4355-a4e5-9b055a494e9f")) return
             cache.append(ev.packet.source)
             ev.isCancelled = true
         }
