@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.dialog
 
 import cn.inrhor.questengine.api.dialog.DialogModule
+import cn.inrhor.questengine.api.dialog.theme.DialogTheme
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.dialog.theme.chat.DialogChat
 import cn.inrhor.questengine.common.dialog.theme.hologram.core.DialogHologram
@@ -10,10 +11,12 @@ import cn.inrhor.questengine.script.kether.runEvalSet
 import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import taboolib.common.platform.function.adaptPlayer
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.submit
 import taboolib.module.chat.TellrawJson
 import taboolib.module.lang.sendLang
+import taboolib.platform.util.asLangText
 
 
 object DialogManager {
@@ -97,7 +100,7 @@ object DialogManager {
         val dialogModule = returnNpcDialog(players, npcID) ?: return
         if (dialogModule.type == "holo") {
             sendDialogHolo(players, dialogModule, npcLoc)
-        }else sendDialogChat(players, dialogModule)
+        }else sendDialogChat(players, dialogModule, npcLoc)
     }
 
     fun sendDialog(player: Player, dialogID: String, loc: Location = player.location) {
@@ -105,35 +108,47 @@ object DialogManager {
         val dialogModule = get(dialogID)?: return
         if (dialogModule.type == "holo") {
             sendDialogHolo(player, dialogModule, loc)
-        }else sendDialogChat(mutableSetOf(player), dialogModule)
+        }else sendDialogChat(mutableSetOf(player), dialogModule, loc)
     }
 
-    private fun sendDialogChat(players: MutableSet<Player>, dialogModule: DialogModule) {
-        DialogChat(dialogModule, players).play()
+    private fun sendDialogChat(players: MutableSet<Player>, dialogModule: DialogModule, npcLoc: Location) {
+        DialogChat(dialogModule, players, npcLoc).play()
     }
 
     private fun sendDialogHolo(players: MutableSet<Player>, dialogModule: DialogModule, npcLoc: Location) {
         val dialog = DialogHologram(dialogModule, npcLoc, players)
         dialog.play()
-        spaceDialogHolo(dialogModule, dialog)
+        spaceDialog(dialogModule, dialog)
     }
 
     private fun sendDialogHolo(player: Player, dialogModule: DialogModule, location: Location = player.location) {
         val holoDialog = DialogHologram(dialogModule, location, mutableSetOf(player))
         holoDialog.play()
-        spaceDialogHolo(dialogModule, holoDialog)
+        spaceDialog(dialogModule, holoDialog)
     }
 
-    fun spaceDialogHolo(dialogModule: DialogModule, holoDialog: DialogHologram) {
+    fun sendBarHelp(dialogChat: DialogChat) {
+        submit(async = true, period = 20L) {
+            if (dialogChat.viewers.isEmpty()) {
+                cancel()
+                return@submit
+            }
+            dialogChat.viewers.forEach {
+                adaptPlayer(it).sendActionBar(it.asLangText("DIALOG-CHAT-HELP"))
+            }
+        }
+    }
+
+    fun spaceDialog(dialogModule: DialogModule, dialogTheme: DialogTheme) {
         val space = dialogModule.space
         if (!space.enable) return
         val id = dialogModule.dialogID
         submit(async = true, period = 5L) {
-            val viewers = holoDialog.viewers
+            val viewers = dialogTheme.viewers
             if (viewers.isEmpty()) {
                 cancel(); return@submit
             }
-            if (!checkSpace(viewers, space.condition, holoDialog.npcLoc)) {
+            if (!checkSpace(viewers, space.condition, dialogTheme.npcLoc)) {
                 endHoloDialog(viewers.first(), id)
                 cancel()
                 return@submit

@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.common.listener.chat
 
-import cn.inrhor.questengine.api.dialog.theme.DialogTheme
 import cn.inrhor.questengine.common.database.data.DataStorage
 import net.md_5.bungee.api.chat.BaseComponent
 import net.md_5.bungee.api.chat.TextComponent
@@ -39,15 +38,13 @@ object ChatCacheListener {
         if (ev.packet.name == "PacketPlayOutChat" && ev.packet.read<Any>("b").toString() == "GAME_INFO") {
             val p = ev.player
             val pData = DataStorage.getPlayerData(p)
-            pData.dialogData.dialogMap.values.forEach {
-                if (it.type == DialogTheme.Type.Chat) {
-                    val components = ev.packet.read<Array<BaseComponent>>("components") ?: return
-                    val text = TextComponent.toPlainText(*components).uncolored()
-                    if (text != ev.player.asLangText("DIALOG-CHAT-HELP").uncolored()) {
-                        ev.isCancelled = true
-                    }
-                    return
+            if (pData.chatCache.enable) {
+                val components = ev.packet.read<Array<BaseComponent>>("components") ?: return
+                val text = TextComponent.toPlainText(*components).uncolored()
+                if (text != ev.player.asLangText("DIALOG-CHAT-HELP").uncolored()) {
+                    ev.isCancelled = true
                 }
+                return
             }
         }
     }

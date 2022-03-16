@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.api.dialog.theme
 
 import cn.inrhor.questengine.api.dialog.DialogModule
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -15,6 +16,10 @@ abstract class DialogTheme(var type: Type = Type.Holo, var endTalk: Boolean = fa
     }
 
     abstract val dialogModule: DialogModule
+
+    abstract val viewers: MutableSet<Player>
+
+    abstract val npcLoc: Location
 
     /**
      * 播放对话

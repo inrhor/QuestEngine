@@ -5,7 +5,10 @@ import cn.inrhor.questengine.api.dialog.theme.DialogTheme
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.dialog.DialogManager.refresh
 import cn.inrhor.questengine.common.dialog.DialogManager.setId
+import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
 import taboolib.common.platform.function.adaptPlayer
 import taboolib.common.platform.function.submit
 import taboolib.common5.util.printed
@@ -18,7 +21,8 @@ import taboolib.platform.compat.replacePlaceholder
  */
 class DialogChat(
     override val dialogModule: DialogModule,
-    val viewers: MutableSet<Player>,
+    override val viewers: MutableSet<Player>,
+    override val npcLoc: Location,
     var scrollIndex: Int = 0,
     var json: TellrawJson = TellrawJson()
 ): DialogTheme(type = Type.Chat) {
@@ -31,6 +35,8 @@ class DialogChat(
             val pData = DataStorage.getPlayerData(it)
             pData.dialogData.addDialog(dialogModule.dialogID, this)
             pData.chatCache.open()
+            it.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, Int.MAX_VALUE, 1))
+            it.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, Int.MAX_VALUE, 1))
         }
     }
 
@@ -76,7 +82,10 @@ class DialogChat(
             val pData = DataStorage.getPlayerData(it)
             pData.chatCache.close(it)
             pData.dialogData.dialogMap.remove(dialogModule.dialogID)
+            it.removePotionEffect(PotionEffectType.BLINDNESS)
+            it.removePotionEffect(PotionEffectType.INVISIBILITY)
         }
+        viewers.clear()
     }
 
     override fun addViewer(viewer: Player) {
