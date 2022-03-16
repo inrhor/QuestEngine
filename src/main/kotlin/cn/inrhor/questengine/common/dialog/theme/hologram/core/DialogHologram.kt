@@ -19,8 +19,8 @@ import org.bukkit.entity.Player
  */
 class DialogHologram(
     override val dialogModule: DialogModule,
-    val npcLoc: Location,
-    val viewers: MutableSet<Player>): DialogTheme() {
+    override val npcLoc: Location,
+    override val viewers: MutableSet<Player>): DialogTheme() {
 
     val origin = OriginLocation(npcLoc)
     val replyHoloList = mutableListOf<ReplyHologram>()

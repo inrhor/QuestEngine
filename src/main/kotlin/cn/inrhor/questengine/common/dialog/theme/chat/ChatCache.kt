@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.common.dialog.theme.chat
 
 import cn.inrhor.questengine.common.dialog.DialogManager.refresh
-import cn.inrhor.questengine.common.dialog.DialogManager.setId
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.adaptPlayer
 import taboolib.common.reflect.Reflex.Companion.getProperty
