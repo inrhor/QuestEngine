@@ -26,7 +26,7 @@ internal object DialogCommand {
 
                     val dialogID = args[0]
 
-                    DialogManager.sendDialogHolo(player, dialogID)
+                    DialogManager.sendDialog(player, dialogID)
                 }
             }
         }

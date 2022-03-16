@@ -8,6 +8,7 @@ import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.dialog.theme.hologram.OriginLocation
 import cn.inrhor.questengine.common.dialog.theme.hologram.content.AnimationItem
 import cn.inrhor.questengine.common.dialog.theme.hologram.parserOrigin
+import cn.inrhor.questengine.script.kether.runEvalSet
 import cn.inrhor.questengine.utlis.variableReader
 import taboolib.common.platform.function.submit
 
@@ -37,7 +38,9 @@ class ReplyHologram(
                 return@submit
             }
             reply.forEach{
-                parserContent(it)
+                if (runEvalSet(dialogHolo.viewers, it.condition)) {
+                    parserContent(it)
+                }
             }
         }
     }

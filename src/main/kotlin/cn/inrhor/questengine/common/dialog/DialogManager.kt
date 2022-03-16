@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.dialog
 
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.dialog.theme.chat.DialogChat
 import cn.inrhor.questengine.common.dialog.theme.hologram.core.DialogHologram
 import cn.inrhor.questengine.script.kether.runEval
 import cn.inrhor.questengine.script.kether.runEvalSet
@@ -11,6 +12,7 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.submit
+import taboolib.module.chat.TellrawJson
 import taboolib.module.lang.sendLang
 
 
@@ -64,17 +66,23 @@ object DialogManager {
     }
 
     fun hasDialog(player: Player, dialogID: String): Boolean {
-        val holoDialog = DataStorage.getPlayerData(player).dialogData.dialogMap[dialogID]?: return false
-        holoDialog.forEach {
-            if (it.dialogModule.dialogID == dialogID) return true
-        }
-        return false
+        DataStorage.getPlayerData(player).dialogData.dialogMap[dialogID]?: return false
+        return true
+    }
+
+    fun TellrawJson.refresh(): TellrawJson {
+        for (i in 0..99) this.newLine()
+        return this
+    }
+
+    fun TellrawJson.setId(): TellrawJson {
+        return this.insertion("@d31877bc-b8bc-4355-a4e5-9b055a494e9f")
     }
 
     /**
      * 根据NPCID并判断玩家集合是否满足条件，返回dialogModule
      */
-    fun returnCanDialogHolo(players: MutableSet<Player>, npcID: String): DialogModule? {
+    fun returnNpcDialog(players: MutableSet<Player>, npcID: String): DialogModule? {
         dialogMap.values.forEach {
             if (!it.npcIDs.contains(npcID)) return@forEach
             if (runEvalSet(players, it.condition)) {
@@ -85,21 +93,35 @@ object DialogManager {
         return null
     }
 
-    fun sendDialogHolo(players: MutableSet<Player>, npcID: String, npcLoc: Location) {
-        val dialogModule = returnCanDialogHolo(players, npcID)?: return
+    fun sendDialog(players: MutableSet<Player>, npcLoc: Location, npcID: String) {
+        val dialogModule = returnNpcDialog(players, npcID) ?: return
+        if (dialogModule.type == "holo") {
+            sendDialogHolo(players, dialogModule, npcLoc)
+        }else sendDialogChat(players, dialogModule)
+    }
+
+    fun sendDialog(player: Player, dialogID: String, loc: Location = player.location) {
+        if (hasDialog(player, dialogID)) return
+        val dialogModule = get(dialogID)?: return
+        if (dialogModule.type == "holo") {
+            sendDialogHolo(player, dialogModule, loc)
+        }else sendDialogChat(mutableSetOf(player), dialogModule)
+    }
+
+    private fun sendDialogChat(players: MutableSet<Player>, dialogModule: DialogModule) {
+        DialogChat(dialogModule, players).play()
+    }
+
+    private fun sendDialogHolo(players: MutableSet<Player>, dialogModule: DialogModule, npcLoc: Location) {
         val dialog = DialogHologram(dialogModule, npcLoc, players)
         dialog.play()
         spaceDialogHolo(dialogModule, dialog)
     }
 
-    fun sendDialogHolo(player: Player, dialogID: String, location: Location = player.location) {
-        if (hasDialog(player, dialogID)) return
-        if (exist(dialogID)) {
-            val dialogModule = get(dialogID)?: return
-            val holoDialog = DialogHologram(dialogModule, location, mutableSetOf(player))
-            holoDialog.play()
-            spaceDialogHolo(dialogModule, holoDialog)
-        }
+    private fun sendDialogHolo(player: Player, dialogModule: DialogModule, location: Location = player.location) {
+        val holoDialog = DialogHologram(dialogModule, location, mutableSetOf(player))
+        holoDialog.play()
+        spaceDialogHolo(dialogModule, holoDialog)
     }
 
     fun spaceDialogHolo(dialogModule: DialogModule, holoDialog: DialogHologram) {
