@@ -12,6 +12,7 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.submit
+import taboolib.module.chat.TellrawJson
 import taboolib.module.lang.sendLang
 
 
@@ -67,6 +68,15 @@ object DialogManager {
     fun hasDialog(player: Player, dialogID: String): Boolean {
         DataStorage.getPlayerData(player).dialogData.dialogMap[dialogID]?: return false
         return true
+    }
+
+    fun TellrawJson.refresh(): TellrawJson {
+        for (i in 0..99) this.newLine()
+        return this
+    }
+
+    fun TellrawJson.setId(): TellrawJson {
+        return this.insertion("@d31877bc-b8bc-4355-a4e5-9b055a494e9f")
     }
 
     /**

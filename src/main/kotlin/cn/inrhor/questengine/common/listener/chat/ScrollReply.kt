@@ -2,14 +2,16 @@ package cn.inrhor.questengine.common.listener.chat
 
 import cn.inrhor.questengine.api.dialog.theme.DialogTheme
 import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.dialog.DialogManager.setId
 import cn.inrhor.questengine.common.dialog.theme.chat.DialogChat
 import cn.inrhor.questengine.script.kether.runEvalSet
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
+import taboolib.common.platform.function.adaptPlayer
 
-class ScrollReply {
+object ScrollReply {
 
     @SubscribeEvent(EventPriority.HIGHEST, ignoreCancelled = true)
     fun scroll(ev: PlayerItemHeldEvent) {
@@ -32,7 +34,11 @@ class ScrollReply {
                         select = size - 1
                     }
                 }
-                if (select != index) it.scrollIndex = select
+                if (select != index) {
+                    it.scrollIndex = select
+                    it.json.setId().sendTo(adaptPlayer(p))
+                    it.replyChat.sendReply(mutableSetOf(p))
+                }
                 return
             }
         }
@@ -49,6 +55,7 @@ class ScrollReply {
                 val reply = it.dialogModule.reply[chat.scrollIndex]
                 runEvalSet(it.viewers, reply.script)
                 it.end()
+                ev.isCancelled = true
                 return
             }
         }
