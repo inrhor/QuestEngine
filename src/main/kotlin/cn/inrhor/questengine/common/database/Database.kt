@@ -33,7 +33,7 @@ abstract class Database {
     /**
      * 得到玩家已存储的内部任务
      */
-    abstract fun getInnerQuestData(player: Player, questUUID: UUID, questID: String, innerQuestID: String): QuestInnerData?
+    abstract fun getInnerQuestData(player: Player, questUUID: UUID, innerQuestID: String): QuestInnerData?
 
     /**
      * 清除任务数据，并清除内部任务和目标任务

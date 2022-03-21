@@ -21,6 +21,16 @@ fun String.toState(): QuestState {
     }
 }
 
+fun Int.toState(): QuestState {
+    return when (this) {
+        0 -> QuestState.NOT_ACCEPT
+        1 -> QuestState.DOING
+        2 -> QuestState.IDLE
+        3 -> QuestState.FINISH
+        else -> QuestState.FAILURE
+    }
+}
+
 fun QuestState.toStr(): String {
     return when (this) {
         QuestState.NOT_ACCEPT -> "NOT_ACCEPT"
@@ -28,6 +38,16 @@ fun QuestState.toStr(): String {
         QuestState.IDLE -> "IDLE"
         QuestState.FINISH -> "FINISH"
         else -> "FAILURE"
+    }
+}
+
+fun QuestState.toInt(): Int {
+    return when (this) {
+        QuestState.NOT_ACCEPT -> 0
+        QuestState.DOING -> 1
+        QuestState.IDLE -> 2
+        QuestState.FINISH -> 3
+        else -> 4
     }
 }
 

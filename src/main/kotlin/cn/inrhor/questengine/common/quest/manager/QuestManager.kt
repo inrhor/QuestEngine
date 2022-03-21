@@ -550,8 +550,7 @@ object QuestManager {
      * 获得玩家内部任务数据
      */
     fun getInnerQuestData(player: Player, questUUID: UUID, innerQuestID: String): QuestInnerData? {
-        val questData = getQuestData(player, questUUID) ?: return null
-        return Database.database.getInnerQuestData(player, questUUID, questData.questID, innerQuestID)
+        return Database.database.getInnerQuestData(player, questUUID, innerQuestID)
     }
 
     /**

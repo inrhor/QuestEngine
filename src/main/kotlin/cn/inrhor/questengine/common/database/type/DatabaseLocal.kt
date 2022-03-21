@@ -91,7 +91,7 @@ class DatabaseLocal: Database() {
                 val nodeInner = node+"innerQuest."
 
                 val innerQuestID = data.getString(nodeInner+"innerQuestID")?: return@forEach
-                val questInnerData = getInnerQuestData(data, nodeInner, player, questUUID, questID, innerQuestID)?: return@forEach
+                val questInnerData = getInnerQuestData(data, nodeInner, player, questUUID, innerQuestID)?: return@forEach
 
                 val finished = data.getStringList(node+"finishedQuest").toMutableSet()
 
@@ -120,16 +120,17 @@ class DatabaseLocal: Database() {
         }
     }
 
-    override fun getInnerQuestData(player: Player, questUUID: UUID, questID: String, innerQuestID: String): QuestInnerData? {
+    override fun getInnerQuestData(player: Player, questUUID: UUID, innerQuestID: String): QuestInnerData? {
         val uuid = player.uniqueId
         val data = getLocal(uuid)
         val node = "quest.$questUUID.innerQuest."
-        return getInnerQuestData(data, node, player, questUUID, questID, innerQuestID)
+        return getInnerQuestData(data, node, player, questUUID, innerQuestID)
     }
 
-    private fun getInnerQuestData(data: Configuration, node: String, player: Player, questUUID: UUID, questID: String, innerQuestID: String): QuestInnerData? {
+    private fun getInnerQuestData(data: Configuration, node: String, player: Player, questUUID: UUID, innerQuestID: String): QuestInnerData? {
         val rewardInner = returnRewardData(data, node)
         val innerState = (data.getString(node+"state")?: "IDLE").toState()
+        val questID = data.getString(node+"questID")?: return null
         val questModule = QuestManager.getQuestModule(questID)?: return null
         val innerModule = QuestManager.getInnerQuestModule(questID, innerQuestID)?: return null
         val innerTargetDataMap = returnTargets(

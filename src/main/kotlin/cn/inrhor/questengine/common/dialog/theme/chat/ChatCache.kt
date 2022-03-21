@@ -16,7 +16,7 @@ class ChatCache(var enable: Boolean = false, val cache: MutableList<Any> = mutab
     }
 
     fun append(any: Any) {
-        if (cache.size > 99) {
+        if (cache.size > 32) {
             cache.removeAt(0)
         }
         cache.add(any)
