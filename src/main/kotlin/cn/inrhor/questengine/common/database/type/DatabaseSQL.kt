@@ -1,6 +1,8 @@
 package cn.inrhor.questengine.common.database.type
 
 import cn.inrhor.questengine.QuestEngine
+import cn.inrhor.questengine.api.quest.control.toControlPriority
+import cn.inrhor.questengine.api.quest.control.toInt
 import cn.inrhor.questengine.api.quest.control.toStr
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.database.Database
@@ -13,14 +15,12 @@ import cn.inrhor.questengine.common.quest.toInt
 import cn.inrhor.questengine.common.quest.toState
 import cn.inrhor.questengine.common.quest.toStr
 import cn.inrhor.questengine.utlis.time.toDate
-import com.google.gson.Gson
 import org.bukkit.entity.Player
 import taboolib.module.database.ColumnOptionSQL
 import taboolib.module.database.ColumnTypeSQL
 import taboolib.module.database.HostSQL
 import taboolib.module.database.Table
 import java.util.*
-import java.text.SimpleDateFormat
 
 
 class DatabaseSQL: Database() {
@@ -229,13 +229,13 @@ class DatabaseSQL: Database() {
             where { "user" eq uId }
             rows("c_id", "priority", "line", "wait")
         }.map {
-            getString("c_id") to getString("priority") to getInt("line") to getInt("wait")
+            getString("c_id") to getInt("priority") to getInt("line") to getInt("wait")
         }.forEach {
             val controlID = it.first.first.first
             val priority = it.first.first.second
             val line = it.first.second
             val wait = it.second
-            ControlManager.pullControl(player, controlID, priority, line, wait)
+            ControlManager.pullControl(player, controlID, priority.toControlPriority().toStr(), line, wait)
         }
         TargetManager.runTask(pData, player)
         tableTags.select(source) {
@@ -315,27 +315,26 @@ class DatabaseSQL: Database() {
 
     private fun returnTargets(player: Player, questUUID: UUID, innerQuestID: String,
                               targetDataMap: MutableMap<String, TargetData>): MutableMap<String, TargetData> {
-        val uuid = player.uniqueId
-        tableTarget.workspace(source) {
-            select {
-                where {
-                    and {
-                        "uuid" eq uuid.toString()
-                        "questUUID" eq questUUID.toString()
-                        "innerQuestID" eq innerQuestID
-                    }
+        val uId = userId(player)
+        val qId = findQuest(uId, questUUID)
+        tableTarget.select(source) {
+            rows("name", "schedule", "time", "end")
+            where {
+                and {
+                    tableInner.name+".quest" eq qId
+                    tableInner.name+".n_id" eq innerQuestID
+                    "inner" eq tableInner.name+".inner"
                 }
-                rows("name", "schedule", "timeDate", "endDate")
             }
         }.map {
-            getString("name") to getInt("schedule") to getString("timeDate") to getString("endDate")
+            getString("name") to getInt("schedule") to getDate("time") to getDate("end")
         }.forEach {
             val name = it.first.first.first
             val targetData = targetDataMap[name]?: return@forEach
             targetData.schedule = it.first.first.second
-            val timeDate = it.first.second.toDate()
+            val timeDate = it.first.second
             targetData.timeDate = timeDate
-            val endTimeDate = it.second.toDate()
+            val endTimeDate = it.second?: null
             targetData.endTimeDate = endTimeDate
             targetDataMap[name] = targetData
             targetData.runTime(player, questUUID)
@@ -435,11 +434,9 @@ class DatabaseSQL: Database() {
                 set("wait", waitTime)
             }
         }else {
-            tableControl.workspace(source) {
-                insert("user", "c_id", "priority", "line", "waitTime") {
-                    value(uId, controlID, cData.controlPriority.toStr(), line, waitTime)
-                }
-            }.run()
+            tableControl.insert(source, "user", "c_id", "priority", "line", "wait") {
+                value(uId, controlID, cData.controlPriority.toInt(), line, waitTime)
+            }
         }
     }
 
@@ -458,45 +455,64 @@ class DatabaseSQL: Database() {
     }
 
     override fun createQuest(player: Player, questUUID: UUID, questData: QuestData) {
-        val uuid = player.uniqueId
         val questID = questData.questID
         val innerData = questData.questInnerData
         val innerQuestID = innerData.innerQuestID
-        val state = questData.state.toStr()
+        val state = questData.state.toInt()
         val fmq = questData.finishedList
-        val fmqJson = Gson().toJson(fmq)
-        tableQuest.workspace(source) {
-            insert("uuid", "questUUID", "questID", "innerQuestID", "state", "finishedQuest") {
-                value(uuid.toString(), questUUID.toString(), questID, innerQuestID, state, fmqJson)
+        val uId = userId(player)
+        tableQuest.insert(source, "user", "uuid", "q_id", "inner", "state") {
+            value(uId, questUUID.toString(), questID, -1, state)
+        }
+        val qId = tableQuest.select(source) {
+            rows("id")
+            where {
+                and {
+                    "user" eq uId
+                    "uuid" eq questUUID.toString()
+                }
             }
-        }.run()
-        createInner(uuid, questUUID, innerData, innerQuestID)
+            limit(1)
+        }.first { getLong("id") }
+        createInner(uId, qId, innerData)
     }
 
-    private fun createInner(uuid: UUID, questUUID: UUID, questInnerData: QuestInnerData, innerID: String) {
-        val state = questInnerData.state.toStr()
-        val rewards = Gson().toJson(questInnerData.rewardState)
-        tableInner.workspace(source) {
-            insert("uuid", "questUUID", "innerQuestID", "state", "rewards") {
-                value(uuid.toString(), questUUID.toString(), innerID, state, rewards)
+    private fun createInner(uId: Long, qId: Long, questInnerData: QuestInnerData) {
+        val state = questInnerData.state.toInt()
+        tableInner.insert(source, "quest", "n_id", "state") {
+            value(qId, questInnerData.innerQuestID, state)
+        }
+        val nId = tableInner.select(source) {
+            rows("id")
+            where {
+                and {
+                    "quest" eq qId
+                    "n_id" eq questInnerData.innerQuestID
+                    "state" eq state
+                }
             }
-        }.run()
-        createTarget(uuid, questUUID, questInnerData)
+            limit(1)
+        }.first { getLong("id") }
+        createTarget(nId, questInnerData)
     }
 
-    private fun createTarget(uuid: UUID, questUUID: UUID, questInnerData: QuestInnerData) {
+    private fun createTarget(nId: Long, questInnerData: QuestInnerData) {
         var index = 0
         questInnerData.targetsData.forEach { (name, targetData) ->
-            val innerID = questInnerData.innerQuestID
             val schedule = targetData.schedule
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-            val dateStr = dateFormat.format(targetData.timeDate)
-            val endDateStr = dateFormat.format(targetData.endTimeDate)
-            tableTarget.workspace(source) {
-                insert("uuid", "questUUID", "innerQuestID", "index", "name", "schedule", "timeDate", "endDate") {
-                    value(uuid.toString(), questUUID.toString(), innerID, index, name, schedule, dateStr, endDateStr)
+            tableTarget.insert(source, "inner", "index", "name", "schedule", "time") {
+                value(nId, index, name, schedule, targetData.timeDate)
+            }
+            tableTarget.update(source) {
+                where {
+                    and {
+                        "inner" eq nId
+                        "index" eq index
+                        "name" eq name
+                    }
                 }
-            }.run()
+                set("end", targetData.endTimeDate)
+            }
             index++
         }
     }
@@ -523,61 +539,58 @@ class DatabaseSQL: Database() {
     }
 
     override fun removeQuest(player: Player, questData: QuestData) {
-        val uuid = player.uniqueId.toString()
         val questUUID = questData.questUUID
-        tableQuest.workspace(source) {
-            delete {
-                where {
-                    and {
-                        "uuid" eq uuid
-                        "questUUID" eq questUUID.toString()
-                    }
+        val uId = userId(player)
+        delete(uId, questUUID)
+        tableQuest.delete(source) {
+            where {
+                and {
+                    "user" eq uId
+                    "uuid" eq questUUID.toString()
                 }
             }
-        }.run()
-        delete(uuid, questUUID)
+        }
     }
 
     override fun removeControl(player: Player, controlID: String) {
-        val uuid = player.uniqueId.toString()
-        tableControl.workspace(source) {
-            delete {
-                where {
-                    and {
-                        "uuid" eq uuid
-                        "controlID" eq controlID
-                    }
-                }
-            }
-        }.run()
+        tableControl.delete(source) {
+            where { "user" eq userId(player) }
+        }
     }
 
     override fun removeInnerQuest(player: Player, questUUID: UUID) {
-        val uuid = player.uniqueId.toString()
-        delete(uuid, questUUID)
+        delete(userId(player), questUUID)
     }
 
-    private fun delete(uuid: String, questUUID: UUID) {
-        tableInner.workspace(source) {
-            delete {
-                where {
-                    and {
-                        "uuid" eq uuid
-                        "questUUID" eq questUUID.toString()
-                    }
-                }
+    fun findQuest(uId: Long, questUUID: UUID): Long {
+        return tableQuest.select(source) {
+            where { "user" eq uId and("uuid" eq questUUID.toString()) }
+        }.first { getLong("id") }
+    }
+
+    private fun delete(uId: Long, questUUID: UUID) {
+        val qId = findQuest(uId, questUUID)
+        tableReward.delete(source) {
+            where { "quest" eq qId }
+        }
+        tableInner.select(source) {
+            rows("id")
+            where { "quest" eq qId }
+        }.map {
+            getLong("id")
+        }.forEach {
+            tableTarget.delete(source) {
+                where { "inner" eq it }
             }
-        }.run()
-        tableTarget.workspace(source) {
-            delete {
-                where {
-                    and {
-                        "uuid" eq uuid
-                        "questUUID" eq questUUID.toString()
-                    }
-                }
+            tableReward.delete(source) {
+                where { "inner" eq it }
             }
-        }.run()
+        }
+        tableInner.delete(source) {
+            where {
+                "quest" eq findQuest(uId, questUUID)
+            }
+        }
     }
 
 }
