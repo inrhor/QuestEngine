@@ -13,14 +13,14 @@ import cn.inrhor.questengine.common.quest.manager.RunLogType
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.common.quest.toInt
 import cn.inrhor.questengine.common.quest.toState
-import cn.inrhor.questengine.common.quest.toStr
-import cn.inrhor.questengine.utlis.time.toDate
 import org.bukkit.entity.Player
 import taboolib.module.database.ColumnOptionSQL
 import taboolib.module.database.ColumnTypeSQL
 import taboolib.module.database.HostSQL
 import taboolib.module.database.Table
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
+import javax.sql.DataSource
 
 
 class DatabaseSQL: Database() {
@@ -160,7 +160,7 @@ class DatabaseSQL: Database() {
         }
     }
 
-    val tableTags = Table(table+"tags", host) {
+    val tableTags = Table(table+"_tags", host) {
         add("user") {
             type(ColumnTypeSQL.INT, 16){
                 options(ColumnOptionSQL.KEY)
@@ -171,7 +171,9 @@ class DatabaseSQL: Database() {
         }
     }
 
-    val source = host.createDataSource()
+    val source: DataSource by lazy {
+        host.createDataSource()
+    }
 
     init {
         tableUser.workspace(source) {createTable()}.run()
@@ -185,31 +187,38 @@ class DatabaseSQL: Database() {
     }
 
     fun userId(player: Player): Long {
-        return tableUser.select(source) {
+        if (saveUserId.contains(player.uniqueId)) return saveUserId[player.uniqueId]!!
+        val uId = tableUser.select(source) {
             rows("id")
-            where { "uuid" to player.uniqueId.toString() }
-            limit(1)
-        }.first { getLong("id") }
+            where { "uuid" eq player.uniqueId.toString() }
+        }.map {
+            getLong("id")
+        }.firstOrNull()?: -1L
+        saveUserId[player.uniqueId] = uId
+        return uId
     }
 
     override fun pull(player: Player) {
         val uuid = player.uniqueId
         val pData = DataStorage.getPlayerData(uuid)
+        if (!tableUser.find(source) {where { "uuid" eq uuid.toString() }}) {
+            tableUser.insert(source, "uuid") {
+                value(uuid.toString())
+            }
+        }
         val uId = userId(player)
-        val q = tableQuest.name
-        val n = tableInner.name
         tableQuest.select(source) {
-            rows("uuid", "q_id", "state", "$n.n_id", "$n.state")
-            where { "user" eq uId }
-            innerJoin(n) {
-                where { "$q.id" eq pre("$n.quest") }
+            rows(tableQuest.name+".uuid", tableQuest.name+".q_id", tableQuest.name+".state", tableInner.name+".n_id", tableInner.name+".state")
+            where { "user" eq uId}
+            innerJoin(tableInner.name) {
+                where { tableQuest.name+".id" eq pre(tableInner.name+".quest") }
             }
         }.map {
-            getString("$q.uuid") to
-                    getString("$q.q_id") to
-                    getInt("$q.state") to
-                    getString("$n.n_id") to
-                    getInt("$n.state")
+            getString(tableQuest.name+".uuid") to
+                    getString(tableQuest.name+".q_id") to
+                    getInt(tableQuest.name+".state") to
+                    getString(tableInner.name+".n_id") to
+                    getInt(tableInner.name+".state")
         }.forEach {
             val questUUID = UUID.fromString(it.first.first.first.first)
             val questID = it.first.first.first.second
@@ -254,10 +263,12 @@ class DatabaseSQL: Database() {
             rows(tableInner.name+".n_id")
             where {
                 and {
-                    "user" eq id
-                    "id" eq tableFinish.name+".quest"
-                    "quest" eq tableInner.name+".quest"
+                    tableQuest.name+".user" eq id
+                    tableQuest.name+".id" eq tableFinish.name+".quest"
                 }
+            }
+            innerJoin(tableInner.name) {
+                tableQuest.name+".id" eq pre(tableInner.name+".quest")
             }
         }.map {
             getString(tableInner.name+".n_id")
@@ -291,10 +302,10 @@ class DatabaseSQL: Database() {
         tableQuest.select(source) {
             where {
                 and {
-                    "user" eq uId
-                    "uuid" eq questUUID.toString()
-                    "id" eq tableInner.name+".quest"
-                    "n_id" eq innerQuestID
+                    tableQuest.name+".user" eq uId
+                    tableQuest.name+".uuid" eq questUUID.toString()
+                    tableQuest.name+".id" eq tableInner.name+".quest"
+                    tableQuest.name+".n_id" eq innerQuestID
                 }
             }
             rows(tableQuest.name+".q_id", tableInner.name+".state")
@@ -317,14 +328,11 @@ class DatabaseSQL: Database() {
                               targetDataMap: MutableMap<String, TargetData>): MutableMap<String, TargetData> {
         val uId = userId(player)
         val qId = findQuest(uId, questUUID)
+        val nId = findInner(qId, innerQuestID)
         tableTarget.select(source) {
             rows("name", "schedule", "time", "end")
             where {
-                and {
-                    tableInner.name+".quest" eq qId
-                    tableInner.name+".n_id" eq innerQuestID
-                    "inner" eq tableInner.name+".inner"
-                }
+                "inner" eq nId
             }
         }.map {
             getString("name") to getInt("schedule") to getDate("time") to getDate("end")
@@ -343,22 +351,22 @@ class DatabaseSQL: Database() {
     }
 
     override fun push(player: Player) {
-        val uuid = player.uniqueId
-        val pData = DataStorage.getPlayerData(uuid)
+        val pData = DataStorage.getPlayerData(player.uniqueId)
         val uId = userId(player)
         pData.questDataList.forEach { (questUUID, questData) ->
             val innerData = questData.questInnerData
-            val state = questData.state.toStr()
+            val state = questData.state.toInt()
             val fmq = questData.finishedList
+            val qId = findQuest(uId, questUUID)
+            val nId = tableInner.select(source) {
+                rows(tableInner.name+".id")
+                where { tableInner.name+".quest" eq qId and(tableInner.name+".n_id" eq innerData.innerQuestID) }
+            }.firstOrNull { getLong(tableInner.name+".id") }?: return
             tableQuest.update(source) {
                 where {
-                    and {
-                        uuid.toString() eq tableInner.name+".uuid"
-                        "user" eq tableUser.name+".id"
-                        "uuid" eq questUUID.toString()
-                    }
+                    "id" eq qId
                 }
-                set("inner", innerData)
+                set("inner", nId)
                 set("state", state)
             }
             updateInner(uId, questUUID, innerData)
@@ -367,11 +375,13 @@ class DatabaseSQL: Database() {
                     rows("id")
                     where {
                         and {
+                            "n_id" eq it
                             tableQuest.name+".user" eq uId
                             tableQuest.name+".uuid" eq questUUID
-                            "quest" eq tableQuest.name+".id"
-                            "n_id" eq it
                         }
+                    }
+                    innerJoin(tableQuest.name) {
+                        where { tableQuest.name+".id" eq pre(tableInner.name+".quest") }
                     }
                 }.map {
                     getLong("id") to getLong(tableQuest.name+".id")
@@ -442,24 +452,22 @@ class DatabaseSQL: Database() {
 
     private fun updateInner(id: Long, questUUID: UUID, questInnerData: QuestInnerData) {
         val state = questInnerData.state.toInt()
+        val qId = findQuest(id, questUUID)
         tableInner.update(source) {
             where {
                 and {
-                    tableQuest.name+".user" eq id
-                    tableQuest.name+".id" eq "quest"
+                    "quest" eq qId
                 }
             }
             set("state", state)
         }
-        updateTarget(id, questUUID, questInnerData)
+        updateTarget(qId, questInnerData)
     }
 
     override fun createQuest(player: Player, questUUID: UUID, questData: QuestData) {
         val questID = questData.questID
         val innerData = questData.questInnerData
-        val innerQuestID = innerData.innerQuestID
         val state = questData.state.toInt()
-        val fmq = questData.finishedList
         val uId = userId(player)
         tableQuest.insert(source, "user", "uuid", "q_id", "inner", "state") {
             value(uId, questUUID.toString(), questID, -1, state)
@@ -473,7 +481,7 @@ class DatabaseSQL: Database() {
                 }
             }
             limit(1)
-        }.first { getLong("id") }
+        }.firstOrNull { getLong("id") } ?: -1L
         createInner(uId, qId, innerData)
     }
 
@@ -492,7 +500,7 @@ class DatabaseSQL: Database() {
                 }
             }
             limit(1)
-        }.first { getLong("id") }
+        }.firstOrNull { getLong("id") } ?: -1L
         createTarget(nId, questInnerData)
     }
 
@@ -517,18 +525,21 @@ class DatabaseSQL: Database() {
         }
     }
 
-    private fun updateTarget(id: Long, questUUID: UUID, questInnerData: QuestInnerData) {
+    fun findInner(qId: Long, innerID: String): Long {
+        return tableInner.select(source) {
+            where { "quest" eq qId and("n_id" eq innerID) }
+        }.firstOrNull { getLong("id") }?: -1L
+    }
+
+    private fun updateTarget(qId: Long, questInnerData: QuestInnerData) {
         var index = 0
+        val nId = findInner(qId, questInnerData.innerQuestID)
         questInnerData.targetsData.values.forEach {
-            val innerID = questInnerData.innerQuestID
             val schedule = it.schedule
             tableTarget.update(source) {
                 where {
                     and {
-                        tableQuest.name + ".user" eq id
-                        tableQuest.name + ".uuid" eq questUUID.toString()
-                        "quest" eq tableQuest.name + ".id"
-                        "n_id" eq innerID
+                        "inner" eq nId
                         "index" eq index
                     }
                 }
@@ -565,7 +576,7 @@ class DatabaseSQL: Database() {
     fun findQuest(uId: Long, questUUID: UUID): Long {
         return tableQuest.select(source) {
             where { "user" eq uId and("uuid" eq questUUID.toString()) }
-        }.first { getLong("id") }
+        }.firstOrNull { getLong("id") } ?: -1L
     }
 
     private fun delete(uId: Long, questUUID: UUID) {
@@ -591,6 +602,10 @@ class DatabaseSQL: Database() {
                 "quest" eq findQuest(uId, questUUID)
             }
         }
+    }
+
+    companion object {
+        private val saveUserId = ConcurrentHashMap<UUID, Long>()
     }
 
 }
