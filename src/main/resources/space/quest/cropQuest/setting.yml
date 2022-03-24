@@ -35,7 +35,7 @@ quest:
   failure:
     check: 1
     condition:
-      - permission *quest.test
+      - tags has quit1
     # 脚本 Kether
     script:
       - title color *"&c任务失败" subtitle color *"&f采集农作物任务"

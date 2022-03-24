@@ -134,7 +134,9 @@ class DatabaseSQL: Database() {
             type(ColumnTypeSQL.DATETIME)
         }
         add("end") {
-            type(ColumnTypeSQL.DATETIME)
+            type(ColumnTypeSQL.DATETIME) {
+                def()
+            }
         }
     }
 
@@ -304,9 +306,11 @@ class DatabaseSQL: Database() {
                 and {
                     tableQuest.name+".user" eq uId
                     tableQuest.name+".uuid" eq questUUID.toString()
-                    tableQuest.name+".id" eq tableInner.name+".quest"
-                    tableQuest.name+".n_id" eq innerQuestID
                 }
+            }
+            innerJoin(tableInner.name) {
+                tableInner.name+".n_id" eq innerQuestID
+                tableInner.name+".quest" eq pre(tableQuest.name+".id")
             }
             rows(tableQuest.name+".q_id", tableInner.name+".state")
         }.map {
@@ -461,6 +465,21 @@ class DatabaseSQL: Database() {
             }
             set("state", state)
         }
+        val nId = findInner(qId, questInnerData.innerQuestID)
+        if (!tableReward.find(source) { where { "inner" eq nId } }) {
+            questInnerData.rewardState.forEach { (t, u) ->
+                tableReward.insert(source, "inner", "r_id", "get") {
+                    value(nId, t, u)
+                }
+            }
+        }else {
+            questInnerData.rewardState.forEach { (t, u) ->
+                tableReward.update(source) {
+                    where { "inner" eq nId and("r_id" eq t)}
+                    set("get", u)
+                }
+            }
+        }
         updateTarget(qId, questInnerData)
     }
 
@@ -511,15 +530,17 @@ class DatabaseSQL: Database() {
             tableTarget.insert(source, "inner", "index", "name", "schedule", "time") {
                 value(nId, index, name, schedule, targetData.timeDate)
             }
-            tableTarget.update(source) {
-                where {
-                    and {
-                        "inner" eq nId
-                        "index" eq index
-                        "name" eq name
+            if (targetData.endTimeDate != null) {
+                tableTarget.update(source) {
+                    where {
+                        and {
+                            "inner" eq nId
+                            "index" eq index
+                            "name" eq name
+                        }
                     }
+                    set("end", targetData.endTimeDate)
                 }
-                set("end", targetData.endTimeDate)
             }
             index++
         }
@@ -581,9 +602,6 @@ class DatabaseSQL: Database() {
 
     private fun delete(uId: Long, questUUID: UUID) {
         val qId = findQuest(uId, questUUID)
-        tableReward.delete(source) {
-            where { "quest" eq qId }
-        }
         tableInner.select(source) {
             rows("id")
             where { "quest" eq qId }

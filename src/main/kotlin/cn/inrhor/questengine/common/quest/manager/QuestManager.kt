@@ -242,7 +242,7 @@ object QuestManager {
             if (i >= check) return@forEach
         }
         submit(async = true, period = 10L) {
-            if (!player.isOnline || innerData.state != QuestState.DOING) {
+            if (!player.isOnline || innerData.state != QuestState.DOING || list.isEmpty()) {
                 cancel(); return@submit
             }
             if (!runEval(player, list)) {
