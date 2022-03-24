@@ -213,7 +213,7 @@ object QuestManager {
         val list = mutableListOf<String>()
         val fail = questModule.failure
         val check = fail.check
-        val c = fail.script
+        val c = fail.condition
         var i = 0
         val questData = getQuestData(player, questUUID)?: return
         val innerData = questData.questInnerData
@@ -242,18 +242,17 @@ object QuestManager {
             if (i >= check) return@forEach
         }
         submit(async = true, period = 10L) {
-            if (!player.isOnline || innerData.state != QuestState.DOING) {
+            if (!player.isOnline) {
+                cancel(); return@submit
+            }
+            val qData = getQuestData(player, questUUID)
+            if (qData == null || qData.state != QuestState.DOING || qData.questInnerData.state != QuestState.DOING) {
                 cancel(); return@submit
             }
             if (!runEval(player, list)) {
                 val modeType = questModule.mode.modeType()
                 endQuest(player, modeType, questUUID, QuestState.FAILURE, false)
                 runFailTime(player, modeType, questModule.failure.script)
-                cancel()
-                return@submit
-            }
-            val qData = getQuestData(player, questUUID)
-            if (qData == null || qData.state == QuestState.FAILURE) {
                 cancel()
                 return@submit
             }
@@ -550,8 +549,7 @@ object QuestManager {
      * 获得玩家内部任务数据
      */
     fun getInnerQuestData(player: Player, questUUID: UUID, innerQuestID: String): QuestInnerData? {
-        val questData = getQuestData(player, questUUID) ?: return null
-        return Database.database.getInnerQuestData(player, questUUID, questData.questID, innerQuestID)
+        return Database.database.getInnerQuestData(player, questUUID, innerQuestID)
     }
 
     /**

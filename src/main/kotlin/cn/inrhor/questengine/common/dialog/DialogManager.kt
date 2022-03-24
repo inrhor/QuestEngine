@@ -74,7 +74,7 @@ object DialogManager {
     }
 
     fun TellrawJson.refresh(): TellrawJson {
-        for (i in 0..99) this.newLine()
+        for (i in 0..32) this.newLine()
         return this
     }
 
