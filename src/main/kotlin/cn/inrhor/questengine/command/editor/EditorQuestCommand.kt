@@ -107,7 +107,7 @@ internal object EditorQuestCommand {
                     val questID = argument.split(" ")[0]
                     val questModule = QuestManager.getQuestModule(questID)?: return@execute
                     val mode = questModule.mode
-                    mode.type = if (mode.modeType() == ModeType.PERSONAL) "COLLABORATION" else "PERSONAL"
+                    mode.type = if (mode.type == ModeType.PERSONAL) ModeType.COLLABORATION else ModeType.PERSONAL
                     QuestManager.saveFile(questID)
                     sender.editorQuest(questID)
                 }

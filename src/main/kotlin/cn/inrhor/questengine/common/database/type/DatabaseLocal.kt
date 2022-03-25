@@ -92,7 +92,6 @@ class DatabaseLocal: Database() {
 
                 val innerQuestID = data.getString(nodeInner+"innerQuestID")?: return@forEach
                 val questInnerData = getInnerQuestData(data, nodeInner, player, questUUID, innerQuestID)?: return@forEach
-
                 val finished = data.getStringList(node+"finishedQuest").toMutableSet()
 
                 val state = (data.getString(node+"state")?: "IDLE").toState()
@@ -130,12 +129,12 @@ class DatabaseLocal: Database() {
     private fun getInnerQuestData(data: Configuration, node: String, player: Player, questUUID: UUID, innerQuestID: String): QuestInnerData? {
         val rewardInner = returnRewardData(data, node)
         val innerState = (data.getString(node+"state")?: "IDLE").toState()
-        val questID = data.getString(node+"questID")?: return null
+        val questID = data.getString("quest.$questUUID.questID")?: return null
         val questModule = QuestManager.getQuestModule(questID)?: return null
         val innerModule = QuestManager.getInnerQuestModule(questID, innerQuestID)?: return null
         val innerTargetDataMap = returnTargets(
             player, questUUID,
-            data, node, QuestManager.getInnerModuleTargetMap(questUUID, questModule.mode.modeType(), innerModule))
+            data, node, QuestManager.getInnerModuleTargetMap(questUUID, questModule.mode.type, innerModule))
         return QuestInnerData(questID, innerQuestID, innerTargetDataMap, innerState, rewardInner)
     }
 

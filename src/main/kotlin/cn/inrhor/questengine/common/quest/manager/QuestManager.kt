@@ -76,7 +76,7 @@ object QuestManager {
         val questID = questData.questID
         val questModule = getQuestModule(questID)?: return false
         val mode = questModule.mode
-        if (mode.modeType() == ModeType.PERSONAL) return true
+        if (mode.type == ModeType.PERSONAL) return true
         val amount = mode.amount
         if (amount <= 1) return true
         val tData = questData.teamData?: return false
@@ -89,7 +89,7 @@ object QuestManager {
      */
     fun getQuestMode(questID: String): ModeType {
         val questModule = getQuestModule(questID)?: return ModeType.PERSONAL
-        return questModule.mode.modeType()
+        return questModule.mode.type
     }
 
     fun existQuestData(player: Player, questUUID: UUID): Boolean {
@@ -140,7 +140,7 @@ object QuestManager {
     fun acceptQuest(player: Player, questID: String) {
         val pData = DataStorage.getPlayerData(player)
         val questModule = getQuestModule(questID) ?: return
-        if (questModule.mode.modeType() == ModeType.COLLABORATION) {
+        if (questModule.mode.type == ModeType.COLLABORATION) {
             val tData = pData.teamData ?: return
             if (!acceptCondition(tData.playerMembers(), questID)) return
                 tData.members.forEach {
@@ -250,7 +250,7 @@ object QuestManager {
                 cancel(); return@submit
             }
             if (!runEval(player, list)) {
-                val modeType = questModule.mode.modeType()
+                val modeType = questModule.mode.type
                 endQuest(player, modeType, questUUID, QuestState.FAILURE, false)
                 runFailTime(player, modeType, questModule.failure.script)
                 cancel()
@@ -280,7 +280,7 @@ object QuestManager {
         val questID = questData.questID
         val questUUID = questData.questUUID
         val questModule = getQuestModule(questID) ?: return
-        if (questModule.mode.modeType() == ModeType.COLLABORATION) {
+        if (questModule.mode.type == ModeType.COLLABORATION) {
             val tData = questData.teamData?: return
             tData.members.forEach {
                 val m = Bukkit.getPlayer(it)?: return@forEach
@@ -354,7 +354,7 @@ object QuestManager {
                 }
             }
             val targetData = TargetData(questUUID, innerQuestID, name, timeUnit, 0,
-                target, nowDate, endTime, questModule.mode.modeType())
+                target, nowDate, endTime, questModule.mode.type)
             targetData.runTime(player, questUUID)
             targetDataMap[name] = targetData
             if (name.lowercase().startsWith("task ")) {
@@ -477,7 +477,7 @@ object QuestManager {
             return
         }
 
-        endQuest(player, questModule.mode.modeType(), questData.questUUID, state, innerFailReward)
+        endQuest(player, questModule.mode.type, questData.questUUID, state, innerFailReward)
     }
 
     fun finishInnerQuest(player: Player, questData: QuestData, questInnerData: QuestInnerData) {
@@ -499,7 +499,7 @@ object QuestManager {
         if (nextInnerID == "") {
             questData.state = QuestState.FINISH
             val questModule = getQuestModule(questID)?: return
-            if (questModule.mode.modeType() == ModeType.COLLABORATION) {
+            if (questModule.mode.type == ModeType.COLLABORATION) {
                 val tData = questData.teamData?: return
                 tData.members.forEach {
                     val m = Bukkit.getPlayer(it)?: return@forEach
@@ -631,7 +631,7 @@ object QuestManager {
         val questList = pData.questDataList
         val questID = questData.questID
         val questModule = getQuestModule(questID)?: return
-        if (questModule.mode.modeType() == ModeType.COLLABORATION) {
+        if (questModule.mode.type == ModeType.COLLABORATION) {
             val tData = questData.teamData?: run { questList.remove(questUUID); return }
             tData.members.forEach {
                 if (uuid == it) return@forEach

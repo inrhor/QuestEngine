@@ -230,7 +230,7 @@ class DatabaseSQL: Database() {
             val qModule = QuestManager.getQuestModule(questID)?: return
             val nModule = QuestManager.getInnerQuestModule(questID, innerID)?: return
             val innerData = QuestInnerData(questID, innerID,
-                QuestManager.getInnerModuleTargetMap(questUUID, qModule.mode.modeType(), nModule),
+                QuestManager.getInnerModuleTargetMap(questUUID, qModule.mode.type, nModule),
                 nState.toState())
             val questData = QuestData(questUUID, questID, innerData, qState.toState(), null, finishInner(uId))
             pData.questDataList[questUUID] = questData
@@ -318,7 +318,7 @@ class DatabaseSQL: Database() {
             val questModule = QuestManager.getQuestModule(questID)?: return@forEach
             val innerModule = QuestManager.getInnerQuestModule(questID, innerQuestID)?: return@forEach
             val targets = returnTargets(player, questUUID, innerQuestID,
-                QuestManager.getInnerModuleTargetMap(questUUID, questModule.mode.modeType(), innerModule)
+                QuestManager.getInnerModuleTargetMap(questUUID, questModule.mode.type, innerModule)
             )
             val state = it.second.toState()
             return QuestInnerData(questID, innerQuestID, targets, state, rewardMap(uId, questUUID))
@@ -358,39 +358,37 @@ class DatabaseSQL: Database() {
         pData.questDataList.forEach { (questUUID, questData) ->
             val innerData = questData.questInnerData
             val state = questData.state.toInt()
-            if (state < 4) {
-                val fmq = questData.finishedList
-                val qId = findQuest(uId, questUUID)
-                val nId = tableInner.select(source) {
-                    rows(tableInner.name + ".id")
-                    where { tableInner.name + ".quest" eq qId and (tableInner.name + ".n_id" eq innerData.innerQuestID) }
-                }.firstOrNull { getLong(tableInner.name + ".id") } ?: return
-                tableQuest.update(source) {
-                    where {
-                        "id" eq qId
-                    }
-                    set("inner", nId)
-                    set("state", state)
+            val fmq = questData.finishedList
+            val qId = findQuest(uId, questUUID)
+            val nId = tableInner.select(source) {
+                rows(tableInner.name + ".id")
+                where { tableInner.name + ".quest" eq qId and (tableInner.name + ".n_id" eq innerData.innerQuestID) }
+            }.firstOrNull { getLong(tableInner.name + ".id") } ?: return
+            tableQuest.update(source) {
+                where {
+                    "id" eq qId
                 }
-                updateInner(uId, questUUID, innerData)
-                fmq.forEach {
-                    tableInner.select(source) {
-                        rows("id")
-                        where {
-                            and {
-                                "n_id" eq it
-                                tableQuest.name + ".user" eq uId
-                                tableQuest.name + ".uuid" eq questUUID
-                            }
+                set("inner", nId)
+                set("state", state)
+            }
+            updateInner(uId, questUUID, innerData)
+            fmq.forEach {
+                tableInner.select(source) {
+                    rows("id")
+                    where {
+                        and {
+                            "n_id" eq it
+                            tableQuest.name + ".user" eq uId
+                            tableQuest.name + ".uuid" eq questUUID
                         }
-                        innerJoin(tableQuest.name) {
-                            where { tableQuest.name + ".id" eq pre(tableInner.name + ".quest") }
-                        }
-                    }.map {
-                        getLong("id") to getLong(tableQuest.name + ".id")
-                    }.forEach {
-                        updateFinish(it.second, it.first)
                     }
+                    innerJoin(tableQuest.name) {
+                        where { tableQuest.name + ".id" eq pre(tableInner.name + ".quest") }
+                    }
+                }.map {
+                    getLong("id") to getLong(tableQuest.name + ".id")
+                }.forEach {
+                    updateFinish(it.second, it.first)
                 }
             }
         }
@@ -414,7 +412,7 @@ class DatabaseSQL: Database() {
     fun updateFinish(qId: Long, nId: Long) {
         if (!(tableFinish.find(source) {
                 where { "quest" eq qId and("inner" eq nId) }
-        }))  {
+            }))  {
             tableFinish.insert(source, "quest", "inner") {
                 value(qId, nId)
             }

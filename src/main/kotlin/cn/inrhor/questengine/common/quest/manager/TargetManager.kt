@@ -53,11 +53,11 @@ object TargetManager {
                     val path = "option.target.$i"
                     for (node in yaml.getConfigurationSection(path)!!.getKeys(true)) {
                         val u = "$path.$node"
-                        if (node == "ui" || node == "description") {
+                        if (node.contains("ui.") || node == "description") {
                             if (node == "description") {
                                 ui.noteComponent[u] = NoteComponent(yaml.getStringList(u).toMutableList())
                             }else {
-                                ui.sectionAdd(yaml, u, BuilderFrame.Type.CUSTOM)
+                                ui.sectionAdd(yaml, "$path.ui", BuilderFrame.Type.CUSTOM)
                             }
                         }else {
                             if (conditionType.content != "") {
@@ -89,7 +89,7 @@ object TargetManager {
     fun scheduleUtil(name: String, questData: QuestData, targetData: TargetData): Int {
         val questModule = QuestManager.getQuestModule(questData.questID)?: return 0
         val mode = questModule.mode
-        if (mode.modeType() == ModeType.COLLABORATION && mode.shareData && questData.teamData != null) {
+        if (mode.type == ModeType.COLLABORATION && mode.shareData && questData.teamData != null) {
             var schedule = 0
             for (mUUID in questData.teamData!!.members) {
                 val m = Bukkit.getPlayer(mUUID)?: continue
@@ -99,7 +99,7 @@ object TargetManager {
             }
             return schedule
         }
-        if (questModule.mode.modeType() == ModeType.PERSONAL) {
+        if (questModule.mode.type == ModeType.PERSONAL) {
             return targetData.schedule
         }
         return 0

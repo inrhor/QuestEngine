@@ -206,7 +206,7 @@ object QuestBookBuildManager {
         targetUI.noteComponent.values.forEach {
             val note = it.note
             for (i in 0 until note.size) {
-                note[i] = note[i].replaceWithOrder(time, tData.schedule)
+                note[i] = note[i].replaceWithOrder(tData.schedule, time)
             }
         }
         return targetUI.build(player)

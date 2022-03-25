@@ -2,18 +2,17 @@ package cn.inrhor.questengine.api.quest.module.main
 
 import cn.inrhor.questengine.common.quest.ModeType
 import org.bukkit.entity.Player
-import taboolib.library.configuration.PreserveNotNull
 import taboolib.platform.util.asLangText
 
-@PreserveNotNull
-class QuestMode(var type: String, var amount: Int, var shareData: Boolean) {
+class QuestMode(
+    var type: ModeType,
+    var amount: Int,
+    var shareData: Boolean) {
 
-    constructor(): this("PERSONAL", -1, false)
-
-    fun modeType(): ModeType = ModeType.valueOf(type.uppercase())
+    constructor(): this(ModeType.PERSONAL, -1, false)
 
     fun modeTypeLang(player: Player): String =
-        if (modeType() == ModeType.PERSONAL) player.asLangText("MODE-TYPE-PERSONAL")
+        if (type == ModeType.PERSONAL) player.asLangText("MODE-TYPE-PERSONAL")
         else player.asLangText("MODE-TYPE-COLLABORATION")
 
 }

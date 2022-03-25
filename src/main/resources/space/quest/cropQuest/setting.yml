@@ -10,9 +10,9 @@ quest:
   # 任务成员模式
   mode:
     # 可选如下
-    #   personal  单人
-    #   collaboration  协作
-    type: "personal"
+    #   PERSONAL  单人
+    #   COLLABORATION  协作
+    type: PERSONAL
     amount: -1
     # 共享任务数据
     shareData: true
