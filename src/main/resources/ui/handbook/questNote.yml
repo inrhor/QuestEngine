@@ -40,4 +40,4 @@ already:
         - "&7&l[ &c&l点击放弃任务 &7&l]"
       hover:
         - "&7&l[ &a&l点击 &7&l]"
-      command: "/qen quest quit uuid {2}"
+      command: "/qen quest quit {player} uuid {2}"

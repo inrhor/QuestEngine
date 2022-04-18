@@ -1,7 +1,7 @@
 plugins {
     `java-library`
     `maven-publish`
-    id("io.izzel.taboolib") version "1.34"
+    id("io.izzel.taboolib") version "1.38"
     id("org.jetbrains.kotlin.jvm") version "1.5.31"
 }
 
@@ -34,7 +34,7 @@ taboolib {
         prefix("QuestEngine")
     }
     classifier = null
-    version = "6.0.7-45"
+    version = "6.0.7-54"
 }
 
 repositories {

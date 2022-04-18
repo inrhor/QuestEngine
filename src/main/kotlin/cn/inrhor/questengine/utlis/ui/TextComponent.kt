@@ -48,7 +48,7 @@ data class TextComponent(
 
     fun command(player: Player?): String {
         player?: return command
-        return command.replacePlaceholder(player)
+        return command.replacePlaceholder(player).replace("{player}", player.name)
     }
 
 }
