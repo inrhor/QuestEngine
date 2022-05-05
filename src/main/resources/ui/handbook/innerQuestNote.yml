@@ -1,8 +1,9 @@
 # 内部任务信息手册
 inner:
-  desc:
-    note:
-      - "任务状态： {1}"
-      - ""
-      - "#innerQuest-description"
-      - ""
+  part:
+    - id: desc
+      note:
+        - "任务状态： {1}"
+        - ""
+        - "#innerQuest-description"
+        - ""

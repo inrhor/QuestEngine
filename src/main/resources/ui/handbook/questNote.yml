@@ -1,41 +1,42 @@
-# 首页顶部内容物
-head:
-  - "&7&l[ &8&l{0} &7&l]"
-  - ""
-
 # 已经接受任务时的界面内容物
 # 任务信息手册
 already:
-  desc:
-    note:
-      - "任务状态： {3}"
-      - ""
-      - "#quest-desc-note"
-      - ""
-  target:
-    note:
-      - "@target.click;"
-    click:
+  # 首页顶部内容物
+  head:
+    - "&7&l[ &8&l{0} &7&l]"
+    - ""
+  part:
+    - id: desc
+      note:
+        - "任务状态： {3}"
+        - ""
+        - "#quest-desc-note"
+        - ""
+    - id: target
+      note:
+        - "@target;"
+    - id: inner
+      note:
+        - "@inner;"
+    - id: quest
+      note:
+        - "@quit;"
+      condition:
+        - "{6}"
+  addon:
+    - id: target
       text:
         - "&7&l[ &3&l查看当前任务目标 &7&l]"
       hover:
         - "&7&l[ &a&l点击 &7&l]"
       command: "/qen handbook target {2}"
-  inner:
-    note:
-      - "@inner.click;"
-    click:
-      text:
-        - "&7&l[ &3&l查看内部任务列表 &7&l]"
-      hover:
-        - "&7&l[ &a&l点击 &7&l]"
-      command: "/qen handbook innerList {2}"
-  quit:
-    note:
-      - "@quit.click;"
-    condition:
-      - "{6}"
-    click:
+    - id: inner
+        text:
+          - "&7&l[ &3&l查看内部任务列表 &7&l]"
+        hover:
+          - "&7&l[ &a&l点击 &7&l]"
+        command: "/qen handbook innerList {2}"
+    - id: quit
       text:
         - "&7&l[ &c&l点击放弃任务 &7&l]"
       hover:

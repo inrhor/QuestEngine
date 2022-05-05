@@ -1,9 +1,8 @@
-head:
-  - "     &7&l< &8&l任务列表 &7&l>"
-  - ""
-  - "&8&l&m                       "
-
 for:
+  head:
+    - "     &7&l< &8&l任务列表 &7&l>"
+    - ""
+    - "&8&l&m                       "
   # 内容物
   fork:
     - ""
@@ -11,15 +10,16 @@ for:
     - "     @{1};"
     - ""
   # JSON标签
-  noClick:
-    condition: []
-    text:
-      - "&7&l[ &c&l尚未接受 &7&l]"
-    hover:
-      - "#quest-desc-info"
-  click:
-    condition: []
-    text:
-      - "&7&l[ &6&l点击阅览 &7&l]"
-    hover:
-      - "&7&l[ &a&l点击 &7&l]"
+  addon:
+    - id: noClick
+      condition: []
+      text:
+        - "&7&l[ &c&l尚未接受 &7&l]"
+      hover:
+        - "#quest-desc-info"
+    - id: click
+      condition: []
+      text:
+        - "&7&l[ &6&l点击阅览 &7&l]"
+      hover:
+        - "&7&l[ &a&l点击 &7&l]"

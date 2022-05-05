@@ -26,35 +26,39 @@ inner:
     fail:
       - ""
       - ""
-option:
-  target:
-    2:
-      name: break block
-      block: stone 10
-      time: minute 5
-      reward: all false
-      ui:
-        desc:
-          note:
-            - "&8挖掘石块 &a3 &8个"
-            - "    &8进度 &6{0}"
-            - "    &8剩余时间 &c{1}"
-            - ""
-    3:
-      name: player death
-      cause:
-        - DROWNING
-        - SUFFOCATION
-      number: 1
-      time: minute 1
-      reward: 2 true
-      description:
-        - "&8体验舒适的天堂"
-        - "    &8进度 &6{0}"
-        - ""
+    target:
+      - id: hello
+        name: break block
+        time: always
+        reward: all false
+        node: |
+          {{block
+          stone
+          chest}}
+          {{amount 3}}
+        ui:
+          - id: desc
+            note:
+              - "&8挖掘石块或打破箱子 &a3 &8个"
+              - "    &8进度 &6{0}"
+              - "    &8剩余时间 &c{1}"
+              - ""
+      - id: test
+        name: player death
+        time: minute 5
+        reward: 1 true
+        node: |
+          {{cause
+          DROWNING
+          SUFFOCATION}}
+          {{number 1}}
+        description:
+          - "&8体验舒适的天堂"
+          - "    &8进度 &6{0}"
+          - ""
   control:
-    # 最高级控制
-    highest:
+    - # 最高级控制
+     level: highest
       # 记录控制运行索引，以防意外可选择调用
       log:
         # 是否启用
@@ -74,8 +78,8 @@ option:
         - subtitle color *"&a完成后我将会给予你丰厚奖励"
         - player loaction to location *world *96 *73 *-206
         - player gamemode to *survival
-    # 普通控制
-    normal:
+    - # 普通控制
+      level: normal
       log:
         # 是否启用
         enable: false
