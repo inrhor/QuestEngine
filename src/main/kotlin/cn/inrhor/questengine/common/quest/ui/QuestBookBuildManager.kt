@@ -17,6 +17,7 @@ import cn.inrhor.questengine.utlis.ui.buildFrame
 import org.bukkit.entity.Player
 import taboolib.common.util.replaceWithOrder
 import taboolib.module.chat.TellrawJson
+import taboolib.module.configuration.Configuration.Companion.getObject
 import java.util.*
 
 /**
@@ -70,25 +71,21 @@ object QuestBookBuildManager {
         val sort = releaseFile("ui/handbook/sort.yml", false)
         // 分类界面
         val sortUI = buildFrame {
-            yamlAddNote(sort, "head")
-            sectionAdd(sort, "sort", BuilderFrame.Type.SORT)
+            loadFrame(sort.getObject("sort", false), BuilderFrame.Type.SORT)
         }
         sortHomeUI = sortUI.build()
 
         val sortViewQuest = releaseFile("ui/handbook/sortViewQuest.yml", false)
-        sortViewQuestUI.yamlAddNote(sortViewQuest, "head")
-        sortViewQuestUI.yamlAutoAdd(sortViewQuest, BuilderFrame.Type.CUSTOM, "for")
+        sortViewQuestUI.loadFrame(sortViewQuest.getObject("for"), BuilderFrame.Type.CUSTOM)
 
         val innerQuestList = releaseFile("ui/handbook/innerQuestList.yml", false)
-        innerQuestListUI.yamlAddNote(innerQuestList, "head")
-        innerQuestListUI.yamlAutoAdd(innerQuestList, BuilderFrame.Type.CUSTOM, "for")
+        innerQuestListUI.loadFrame(innerQuestList.getObject("for"), BuilderFrame.Type.CUSTOM)
 
         val qNoteYaml = releaseFile("ui/handbook/questNote.yml", false)
-        questNoteUI.yamlAddNote(qNoteYaml, "head")
-        questNoteUI.sectionAdd(qNoteYaml, "already", BuilderFrame.Type.CUSTOM)
+        questNoteUI.loadFrame(qNoteYaml.getObject("already"), BuilderFrame.Type.CUSTOM)
 
         val iNoteYaml = releaseFile("ui/handbook/innerQuestNote.yml", false)
-        innerQuestNoteUI.sectionAdd(iNoteYaml, "inner", BuilderFrame.Type.CUSTOM)
+        innerQuestNoteUI.loadFrame(iNoteYaml.getObject("inner"), BuilderFrame.Type.CUSTOM)
     }
 
     private fun getTextComp(id: String): TextComponent? {
@@ -103,8 +100,8 @@ object QuestBookBuildManager {
         val qData = pData.questDataList
         val hasDisplay = mutableSetOf<String>()
         val sortView = sortViewQuestUI.copy()
-        val textCompNo = getTextComp("for.noClick")?: return mutableListOf()
-        val textCompClick = getTextComp("for.click")?: return mutableListOf()
+        val textCompNo = getTextComp("noClick")?: return mutableListOf()
+        val textCompClick = getTextComp("click")?: return mutableListOf()
         sortView.textComponent.clear()
 
         qData.values.forEach {
@@ -132,7 +129,7 @@ object QuestBookBuildManager {
     fun innerQuestListBuild(player: Player, questUUID: String): MutableList<TellrawJson> {
         val qData = QuestManager.getQuestData(player, UUID.fromString(questUUID))?: return mutableListOf()
         val ui = innerQuestListUI.copy()
-        val textComponent = innerQuestListUI.textComponent["for.click"]?: return mutableListOf()
+        val textComponent = innerQuestListUI.textComponent["click"]?: return mutableListOf()
         ui.textComponent.clear()
         val qID = qData.questID
         setInnerText(player, qID, questUUID, qData.questInnerData.innerQuestID, ui, textComponent)
@@ -144,7 +141,7 @@ object QuestBookBuildManager {
 
     private fun setInnerText(player: Player, questID: String, questUUID: String, innerID: String, builderFrame: BuilderFrame, textComponent: TextComponent) {
         val innerModule = QuestManager.getInnerQuestModule(questID, innerID)?: return
-        val fork = builderFrame.noteComponent["for.fork"]?: return
+        val fork = builderFrame.noteComponent["fork"]?: return
         builderFrame.noteComponent[innerID] = NoteComponent(fork.note.copy(), fork.condition(player).copy())
         builderFrame.noteComponent.values.forEach {
             val note = it.note
@@ -214,7 +211,7 @@ object QuestBookBuildManager {
 
     private fun setText(player: Player, questID: String, questUUID: String, builderFrame: BuilderFrame, textComponent: TextComponent) {
         if (builderFrame.textComponent.containsKey(questUUID)) return
-        val fork = builderFrame.noteComponent["for.fork"]?: return
+        val fork = builderFrame.noteComponent["fork"]?: return
 
         builderFrame.noteComponent[questID] = NoteComponent(fork.note.copy(), fork.condition(player).copy())
 

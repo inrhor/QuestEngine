@@ -1,11 +1,12 @@
 package cn.inrhor.questengine.utlis.ui
 
 
+import cn.inrhor.questengine.api.ui.PartFrame
+import cn.inrhor.questengine.api.ui.UiFrame
 import cn.inrhor.questengine.script.kether.runEval
 import cn.inrhor.questengine.utlis.toJsonStr
 import org.bukkit.entity.Player
 import taboolib.module.chat.TellrawJson
-import taboolib.module.configuration.Configuration
 
 /**
  * 高度自定义 JSON 内容
@@ -112,50 +113,27 @@ class BuilderFrame {
         SORT, CUSTOM
     }
 
-    fun yamlAddNote(yaml: Configuration, node: String, fork: Boolean = false) {
-        noteComponent[node] = NoteComponent(
-            yaml.getStringList(node).toMutableList(),
-            yaml.getStringList("$node.condition").toMutableList(),
-            fork)
-    }
-
-    /**
-     * 遍历添加组件
-     */
-    fun sectionAdd(yaml: Configuration, path: String, type: Type) {
-        yaml.getConfigurationSection(path)!!.getKeys(false).forEach { sign ->
-            yamlAutoAdd(yaml, type, "$path.$sign", sign)
+    fun loadFrame(ui: UiFrame, uiType: Type = Type.CUSTOM) {
+        if (ui.head.isNotEmpty()) {
+            noteComponent["head"] = NoteComponent(ui.head)
         }
-    }
-
-    /**
-     * 自动分配组件
-     */
-    fun yamlAutoAdd(yaml: Configuration, type: Type, path: String, child: String = path) {
-        yaml.getConfigurationSection(path)!!.getKeys(false).forEach { sign ->
-            val node = "$path.$sign"
-            when (sign) {
-                "note" -> {
-                    yamlAddNote(yaml, node)
-                }
-                "fork" -> {
-                    yamlAddNote(yaml, node, true)
-                }
-                "condition" -> {}
-                else -> {
-                    val text = textComponent {
-                        text = yaml.getStringList("$node.text").toMutableList()
-                        hover = yaml.getStringList("$node.hover").toMutableList()
-                        condition = yaml.getStringList("$node.condition").toMutableList()
-                        command = if (type == Type.CUSTOM) {
-                            yaml.getString("$node.command")?: ""
-                        }else "/qen handbook sort "
-                        this.type = type
-                    }
-                    textComponent["$child.$sign"] = text
-                }
+        if (ui.fork.isNotEmpty()) {
+            noteComponent["fork"] = NoteComponent(ui.fork, fork = true)
+        }
+        ui.part.forEach {
+            addNote(it)
+        }
+        ui.addon.forEach {
+            val text = TextComponent(it, uiType)
+            if (uiType != Type.CUSTOM) {
+                text.command = "/qen handbook sort"
             }
+            textComponent[it.id] = text
         }
+    }
+
+    fun addNote(partFrame: PartFrame) {
+        noteComponent[partFrame.id] = NoteComponent(partFrame.note, partFrame.condition)
     }
 
     fun copy(): BuilderFrame {

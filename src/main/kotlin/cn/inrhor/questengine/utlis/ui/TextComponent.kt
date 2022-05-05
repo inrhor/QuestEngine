@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.utlis.ui
 
+import cn.inrhor.questengine.api.ui.AddonFrame
 import cn.inrhor.questengine.utlis.toJsonStr
 import org.bukkit.entity.Player
 import taboolib.module.chat.TellrawJson
@@ -17,6 +18,8 @@ data class TextComponent(
     var command: String = "",
     var type: BuilderFrame.Type = BuilderFrame.Type.CUSTOM
 ) {
+
+    constructor(addon: AddonFrame, type: BuilderFrame.Type = BuilderFrame.Type.CUSTOM): this(addon.text, addon.hover, addon.condition, addon.command, type)
 
     fun build(player: Player?): TellrawJson {
         val json = TellrawJson().append(text(player).toJsonStr())
