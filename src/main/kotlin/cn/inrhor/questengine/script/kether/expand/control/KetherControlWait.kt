@@ -9,19 +9,19 @@ import taboolib.module.kether.*
 import taboolib.module.kether.scriptParser
 import java.util.concurrent.CompletableFuture
 
-class KetherControlWait(val type: Type, val time: Int, val questID: String, val innerQuestID: String, val priority: String): ScriptAction<Void>() {
+class KetherControlWait(val type: Type, val time: Int, val questID: String, val innerQuestID: String, val id: String): ScriptAction<Void>() {
 
     override fun run(frame: ScriptFrame): CompletableFuture<Void> {
         val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
         val wait = if (type == Type.MINUTE) time*1200 else time*20
-        WaitRun.run(player.cast(), wait, questID, innerQuestID, priority)
+        WaitRun.run(player.cast(), wait, questID, innerQuestID, id)
         return CompletableFuture.completedFuture(null)
     }
 
     object WaitRun {
-        fun run(player: Player, time: Int, questID: String, innerQuestID: String, priority: String) {
+        fun run(player: Player, time: Int, questID: String, innerQuestID: String, id: String) {
             val pData = DataStorage.getPlayerData(player)
-            val controlID = ControlManager.generateControlID(questID, innerQuestID, priority)
+            val controlID = ControlManager.generateControlID(questID, innerQuestID, id)
             val cData = pData.controlData
             if (cData.highestControls.containsKey(controlID)) {
                 highest(controlID, cData, time)
@@ -55,7 +55,7 @@ class KetherControlWait(val type: Type, val time: Int, val questID: String, val 
             val timeUnit = try {
                 when (val type = it.nextToken()) {
                     "s", "second" -> Type.SECOND
-                    "minute" -> Type.MINUTE
+                    "m", "minute" -> Type.MINUTE
                     else -> throw KetherError.CUSTOM.create("未知时间类型: $type")
                 }
             } catch (ignored: Exception) {
@@ -66,8 +66,6 @@ class KetherControlWait(val type: Type, val time: Int, val questID: String, val 
             it.expect("to")
             val questID = it.nextToken()
             val innerID = it.nextToken()
-            it.mark()
-            it.expect("the")
             KetherControlWait(timeUnit, time, questID, innerID, it.nextToken())
         }
     }

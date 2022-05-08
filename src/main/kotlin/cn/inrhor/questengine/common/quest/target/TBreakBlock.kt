@@ -7,7 +7,6 @@ import cn.inrhor.questengine.api.target.util.Schedule
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
-import taboolib.common.platform.function.info
 
 object TBreakBlock: TargetExtend<BlockBreakEvent>() {
 
@@ -16,7 +15,6 @@ object TBreakBlock: TargetExtend<BlockBreakEvent>() {
     init {
         event = BlockBreakEvent::class
         tasker {
-            info("eee")
             block(player, name, block.type)
             player
         }

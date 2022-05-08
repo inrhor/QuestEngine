@@ -16,7 +16,7 @@ class KetherControlEval(val questID: String, val innerID: String, val id: String
         val cModule = ControlManager.getControlModule(controlID)
         if (cModule != null) {
             if (ControlManager.runLogType(controlID) != RunLogType.DISABLE) {
-                val list = cModule.script
+                val list = cModule.control(questID, innerID)
                 if (list.size > index) {
                     runEval(player.cast(), list[index])
                 }
@@ -34,10 +34,10 @@ class KetherControlEval(val questID: String, val innerID: String, val id: String
         fun parser() = scriptParser {
             val questID = it.nextToken()
             val innerID = it.nextToken()
-            val priority = it.nextToken()
+            val id = it.nextToken()
             it.mark()
             it.expect("index")
-            KetherControlEval(questID, innerID, priority, it.nextInt())
+            KetherControlEval(questID, innerID, id, it.nextInt())
         }
     }
 

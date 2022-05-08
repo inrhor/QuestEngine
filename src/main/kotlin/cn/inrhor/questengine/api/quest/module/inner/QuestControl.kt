@@ -22,7 +22,7 @@ class ControlLog(val enable: Boolean, val type: String, val recall: MutableList<
         list.forEach {
             if (it.uppercase().startsWith("WAITTIME ")) {
                 l.add("$it to $questID $innerID $id")
-            }else l.add(it)
+            }else l.add(it.replace("@this", "$questID $innerID"))
         }
         return l
     }
