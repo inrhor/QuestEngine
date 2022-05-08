@@ -2,7 +2,6 @@ package cn.inrhor.questengine.common.quest.target
 
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.api.target.TargetExtend
-import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.api.target.util.Schedule
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.script.kether.runEval
@@ -23,32 +22,11 @@ object TKillEntity: TargetExtend<EntityDeathEvent>() {
         tasker{
             val player = entity.killer?: return@tasker null
             val questData = QuestManager.getDoingQuest(player, true)?: return@tasker player
-            val typeEntity = object: ConditionType("entity") {
-                override fun check(): Boolean {
-                    return checkEntity(questData, entityType)
-                }
+            if (checkEntity(questData, entityType) && checkCondition(player, questData, entity, droppedExp)) {
+                Schedule.isNumber(player, name, "number", questData)
             }
-            val condition = object: ConditionType("condition") {
-                override fun check(): Boolean {
-                    return checkCondition(player, questData, entity, droppedExp)
-                }
-            }
-            val number = object: ConditionType("number") {
-                override fun check(): Boolean {
-                    return Schedule.isNumber(player, name, "number", questData)
-                }
-            }
-            TargetManager
-                .set(name, "entity", typeEntity)
-                .set(name, "condition", condition)
-                .set(name, "number", number)
             player
         }
-        TargetManager
-            .register(name, "entity")
-            .register(name, "check")
-            .register(name, "condition", mutableListOf("condition"))
-            .register(name, "number")
     }
 
     private fun checkEntity(questData: QuestData, type: EntityType): Boolean {

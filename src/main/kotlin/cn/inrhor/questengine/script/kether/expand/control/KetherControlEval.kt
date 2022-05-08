@@ -8,11 +8,11 @@ import taboolib.module.kether.*
 import taboolib.module.kether.scriptParser
 import java.util.concurrent.CompletableFuture
 
-class KetherControlEval(val questID: String, val innerID: String, val priority: String, val index: Int): ScriptAction<Void>() {
+class KetherControlEval(val questID: String, val innerID: String, val id: String, val index: Int): ScriptAction<Void>() {
 
     override fun run(frame: ScriptFrame): CompletableFuture<Void> {
         val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
-        val controlID = ControlManager.generateControlID(questID, innerID, priority)
+        val controlID = ControlManager.generateControlID(questID, innerID, id)
         val cModule = ControlManager.getControlModule(controlID)
         if (cModule != null) {
             if (ControlManager.runLogType(controlID) != RunLogType.DISABLE) {

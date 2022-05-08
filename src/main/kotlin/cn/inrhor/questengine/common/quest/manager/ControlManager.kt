@@ -72,7 +72,7 @@ object ControlManager {
         val innerQuestID = sp[1]
         val mModule = QuestManager.getInnerQuestModule(questID, innerQuestID) ?: return null
         mModule.control.forEach {
-            if (it.id == controlID) return it
+            if (it.id == sp[2]) return it
         }
         return null
     }

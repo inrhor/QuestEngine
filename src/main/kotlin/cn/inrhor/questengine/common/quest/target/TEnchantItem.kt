@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.quest.target
 
 import cn.inrhor.questengine.api.target.TargetExtend
+import cn.inrhor.questengine.api.target.util.Schedule
 import cn.inrhor.questengine.api.target.util.TriggerUtils.itemTrigger
 import cn.inrhor.questengine.api.target.util.TriggerUtils.numberTrigger
 import cn.inrhor.questengine.common.quest.manager.QuestManager
@@ -15,12 +16,12 @@ object TEnchantItem: TargetExtend<EnchantItemEvent>() {
         event = EnchantItemEvent::class
         tasker{
             val questData = QuestManager.getDoingQuest(enchanter, true)?: return@tasker enchanter
-            val itemContent = itemTrigger(questData, name, item)
-            val cost = numberTrigger(questData, name, "cost", expLevelCost.toDouble())
-            TargetManager.set(name, "item", itemContent).set(name, "cost", cost)
+            if (itemTrigger(questData, name, item) &&
+                numberTrigger(questData, name, "cost", expLevelCost.toDouble())) {
+                Schedule.isNumber(enchanter, name, "number", questData)
+            }
             enchanter
         }
-        TargetManager.register(name, "item")
     }
 
 }

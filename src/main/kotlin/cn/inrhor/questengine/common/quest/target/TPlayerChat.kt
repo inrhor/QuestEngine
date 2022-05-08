@@ -2,7 +2,6 @@ package cn.inrhor.questengine.common.quest.target
 
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.api.target.TargetExtend
-import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.api.target.util.Schedule
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.script.kether.runEval
@@ -20,20 +19,11 @@ object TPlayerChat: TargetExtend<AsyncPlayerChatEvent>() {
         event = AsyncPlayerChatEvent::class
         tasker{
             val questData = QuestManager.getDoingQuest(player, true)?: return@tasker player
-            val message = object : ConditionType("message") {
-                override fun check(): Boolean {
-                    return targetTrigger(player, name, "message", message, questData)
-                }
+            if (targetTrigger(player, name, "message", message, questData)) {
+                Schedule.isNumber(player, name, "number", questData)
             }
-            val number = object: ConditionType("number") {
-                override fun check(): Boolean {
-                    return Schedule.isNumber(player, name, "number", questData)
-                }
-            }
-            TargetManager.set(name, "message", message).set(name, "number", number)
             player
         }
-        TargetManager.register(name, "message").register(name, "number")
     }
 
     /**
