@@ -4,7 +4,7 @@ class QuestInnerModule(val id: String, var name: String,
                        var nextInnerQuestID: String,
                        var description: List<String>,
                        var reward: QuestReward,
-                       var control: List<QuestControl>,
-                       var target: List<QuestTarget>) {
-    constructor(): this("innerIDNull", "null inner name", "",listOf(), QuestReward(), listOf(), listOf())
+                       var control: MutableList<QuestControl>,
+                       var target: MutableList<QuestTarget>) {
+    constructor(): this("innerIDNull", "null inner name", "",listOf(), QuestReward(), mutableListOf(), mutableListOf())
 }

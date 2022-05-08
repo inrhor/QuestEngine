@@ -26,9 +26,9 @@ object ControlManager {
 
         cModule.forEach {
             val pri = it.level
-            val controlID = it.id
+            val controlID = generateControlID(questID, innerQuestID, it.id)
             val qcData = QuestControlData(player, controlData,
-                controlID, pri, it.script)
+                controlID, pri, it.control(questID, innerQuestID))
             controlData.addControl(controlID, qcData)
         }
     }
@@ -59,7 +59,7 @@ object ControlManager {
             runWaitTime = 0
         }
         val controlData = QuestControlData(player, cData,
-            controlID, controlModule.level, controlModule.script, runLine, runWaitTime)
+            controlID, controlModule.level, controlModule.control(questID, innerID), runLine, runWaitTime)
         cData.addControl(controlID, controlData)
         if (log.enable) {
             runEval(player, log.returnReCall(questID, innerID, priority))

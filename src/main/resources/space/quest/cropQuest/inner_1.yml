@@ -71,13 +71,13 @@ inner:
         # index int [索引]
         type: memory
       script:
-        - sleep 5s
+        - waitTime s 5
         - subtitle color *"&f这是田园农庄场"
-        - sleep 3s
+        - waitTime s 3
         - title color *"&6农民" subtitle color *"&f现在赋予你一个职位"
-        - sleep 3s
+        - waitTime s 3
         - subtitle color *"&f请你采集这一片农作物"
-        - sleep 3s
+        - waitTime s 3
         - subtitle color *"&a完成后我将会给予你丰厚奖励"
         - player loaction to location *world *96 *73 *-206
         - player gamemode to *survival
@@ -94,5 +94,5 @@ inner:
           - control @this index 1
       script:
         - title color *"&a已接受新任务" subtitle color *"&f采集农作物任务"
-        - sleep 5m
+        - waitTime minute 5
         - subtitle color *"&c任务即将结束，请注意"

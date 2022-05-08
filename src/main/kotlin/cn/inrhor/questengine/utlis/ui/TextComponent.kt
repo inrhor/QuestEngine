@@ -19,7 +19,8 @@ data class TextComponent(
     var type: BuilderFrame.Type = BuilderFrame.Type.CUSTOM
 ) {
 
-    constructor(addon: AddonFrame, type: BuilderFrame.Type = BuilderFrame.Type.CUSTOM): this(addon.text, addon.hover, addon.condition, addon.command, type)
+    constructor(addon: AddonFrame, type: BuilderFrame.Type = BuilderFrame.Type.CUSTOM):
+            this(addon.text.toMutableList(), addon.hover.toMutableList(), addon.condition.toMutableList(), addon.command, type)
 
     fun build(player: Player?): TellrawJson {
         val json = TellrawJson().append(text(player).toJsonStr())

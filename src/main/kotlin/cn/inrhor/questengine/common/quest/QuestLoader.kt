@@ -27,11 +27,11 @@ object QuestLoader {
         val ev = event?: return
         registerBukkitListener(ev.java, priority, ignoreCancelled) { e ->
             if (isAsync) {
-                tasker(e)?.run{  }
-            }else {
                 sync {
-                    tasker(e)?.run {  }
+                    tasker(e)?.run { }
                 }
+            }else {
+                tasker(e)?.run {  }
             }
         }
     }

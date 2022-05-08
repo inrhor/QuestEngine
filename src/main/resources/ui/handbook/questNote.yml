@@ -31,11 +31,11 @@ already:
         - "&7&l[ &a&l点击 &7&l]"
       command: "/qen handbook target {2}"
     - id: inner
-        text:
-          - "&7&l[ &3&l查看内部任务列表 &7&l]"
-        hover:
-          - "&7&l[ &a&l点击 &7&l]"
-        command: "/qen handbook innerList {2}"
+      text:
+        - "&7&l[ &3&l查看内部任务列表 &7&l]"
+      hover:
+        - "&7&l[ &a&l点击 &7&l]"
+      command: "/qen handbook innerList {2}"
     - id: quit
       text:
         - "&7&l[ &c&l点击放弃任务 &7&l]"

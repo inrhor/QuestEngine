@@ -10,10 +10,10 @@ for:
     - "     @{1};"
     - ""
   # JSON标签
-    addon:
-      - id: click
-        condition: []
-        text:
-          - "&7&l[ &6&l点击阅览 &7&l]"
-        hover:
-          - "&7&l[ &a&l点击 &7&l]"
+  addon:
+    - id: click
+      condition: []
+      text:
+        - "&7&l[ &6&l点击阅览 &7&l]"
+      hover:
+        - "&7&l[ &a&l点击 &7&l]"

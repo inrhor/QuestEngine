@@ -115,10 +115,10 @@ class BuilderFrame {
 
     fun loadFrame(ui: UiFrame, uiType: Type = Type.CUSTOM): BuilderFrame {
         if (ui.head.isNotEmpty()) {
-            noteComponent["head"] = NoteComponent(ui.head)
+            noteComponent["head"] = NoteComponent(ui.head.toMutableList())
         }
         if (ui.fork.isNotEmpty()) {
-            noteComponent["fork"] = NoteComponent(ui.fork, fork = true)
+            noteComponent["fork"] = NoteComponent(ui.fork.toMutableList(), fork = true)
         }
         ui.part.forEach {
             addNote(it)
@@ -134,7 +134,7 @@ class BuilderFrame {
     }
 
     fun addNote(partFrame: PartFrame) {
-        noteComponent[partFrame.id] = NoteComponent(partFrame.note, partFrame.condition)
+        noteComponent[partFrame.id] = NoteComponent(partFrame.note.toMutableList(), partFrame.condition.toMutableList())
     }
 
     fun copy(): BuilderFrame {

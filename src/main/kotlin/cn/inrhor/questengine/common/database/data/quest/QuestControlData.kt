@@ -62,11 +62,7 @@ class QuestControlData(
     }
 
     private fun evalShell(content: String) {
-        val sp = controlID.split("-")
-        val qID = sp[0]
-        val nID = sp[1]
-        val script = content.replace("@quest", "$qID $nID")
-        runEval(player, script)
+        runEval(player, content)
         runScript()
     }
 
