@@ -326,8 +326,8 @@ object QuestManager {
             questData.questInnerData = innerQuestData
             questData.state = state
         }
-        innerModule.questTargetList.forEach { (name, target) ->
-            val timeStr = target.time.lowercase()
+        innerModule.target.forEach {
+            val timeStr = it.time.lowercase()
             val nowDate = Date()
             var endTime: Date? = null
             var timeUnit = "s"
@@ -353,11 +353,11 @@ object QuestManager {
                     }
                 }
             }
-            val targetData = TargetData(questUUID, innerQuestID, name, timeUnit, 0,
-                target, nowDate, endTime, questModule.mode.type)
+            val targetData = TargetData(questUUID, innerQuestID, it.name, timeUnit, 0,
+                it, nowDate, endTime, questModule.mode.type)
             targetData.runTime(player, questUUID)
-            targetDataMap[name] = targetData
-            if (name.lowercase().startsWith("task ")) {
+            targetDataMap[it.name] = targetData
+            if (it.name.lowercase().startsWith("task ")) {
                 targetData.runTask(player, questData, innerQuestData)
             }
         }
@@ -600,10 +600,10 @@ object QuestManager {
     fun getInnerModuleTargetMap(questUUID: UUID, modeType: ModeType, innerModule: QuestInnerModule): MutableMap<String, TargetData> {
         val targetDataMap = mutableMapOf<String, TargetData>()
         val date = Date()
-        innerModule.questTargetList.forEach { (name, questTarget) ->
-            val targetData = TargetData(questUUID, innerModule.id, name, questTarget.time.toTimeUnit(), 0,
-                questTarget, date, null, modeType)
-            targetDataMap[name] = targetData
+        innerModule.target.forEach {
+            val targetData = TargetData(questUUID, innerModule.id, it.name, it.time.toTimeUnit(), 0,
+                it, date, null, modeType)
+            targetDataMap[it.name] = targetData
         }
         return targetDataMap
     }

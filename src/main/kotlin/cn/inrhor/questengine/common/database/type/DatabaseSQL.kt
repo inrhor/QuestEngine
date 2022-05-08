@@ -3,7 +3,6 @@ package cn.inrhor.questengine.common.database.type
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.quest.control.toControlPriority
 import cn.inrhor.questengine.api.quest.control.toInt
-import cn.inrhor.questengine.api.quest.control.toStr
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage
@@ -246,7 +245,7 @@ class DatabaseSQL: Database() {
             val priority = it.first.first.second
             val line = it.first.second
             val wait = it.second
-            ControlManager.pullControl(player, controlID, priority.toControlPriority().toStr(), line, wait)
+            ControlManager.pullControl(player, controlID, priority.toControlPriority().toString(), line, wait)
         }
         TargetManager.runTask(pData, player)
         tableTags.select(source) {

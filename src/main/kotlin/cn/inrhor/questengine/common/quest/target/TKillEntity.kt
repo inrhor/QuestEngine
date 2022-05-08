@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.common.quest.target
 
-import cn.inrhor.questengine.api.target.ConditionType
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.common.quest.manager.TargetManager
@@ -54,8 +53,8 @@ object TKillEntity: TargetExtend<EntityDeathEvent>() {
 
     private fun checkEntity(questData: QuestData, type: EntityType): Boolean {
         val target = (QuestManager.getDoingTarget(questData, name)?: return false).questTarget
-        val condition = target.condition["entity"]?: return false
-        return when (condition.uppercase()) {
+        val condition = target.nodeMeta("entity")?: return false
+        return when (condition[0].uppercase()) {
             "PLAYER" -> type == EntityType.PLAYER
             else -> type != EntityType.PLAYER
         }
@@ -63,9 +62,8 @@ object TKillEntity: TargetExtend<EntityDeathEvent>() {
 
     private fun checkCondition(player: Player, questData: QuestData, entity: Entity, dropExp: Int): Boolean {
         val target = (QuestManager.getDoingTarget(questData, name)?: return false).questTarget
-        val condition = target.conditionList["condition"]?: return false
-        val check = target.condition["check"]?: return false
-        val checkNumber = check.toInt()
+        val condition = target.nodeMeta("condition")?: return false
+        val checkNumber = (target.nodeMeta("check")?: listOf("0"))[0].toInt()
         var i = 0
         condition.forEach {
             if (!checkNumber(checkNumber, i)) return true

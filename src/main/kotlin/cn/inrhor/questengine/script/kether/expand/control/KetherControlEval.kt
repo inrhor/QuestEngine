@@ -16,7 +16,7 @@ class KetherControlEval(val questID: String, val innerID: String, val priority: 
         val cModule = ControlManager.getControlModule(controlID)
         if (cModule != null) {
             if (ControlManager.runLogType(controlID) != RunLogType.DISABLE) {
-                val list = cModule.controls
+                val list = cModule.script
                 if (list.size > index) {
                     runEval(player.cast(), list[index])
                 }

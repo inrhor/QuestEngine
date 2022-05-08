@@ -113,7 +113,7 @@ class BuilderFrame {
         SORT, CUSTOM
     }
 
-    fun loadFrame(ui: UiFrame, uiType: Type = Type.CUSTOM) {
+    fun loadFrame(ui: UiFrame, uiType: Type = Type.CUSTOM): BuilderFrame {
         if (ui.head.isNotEmpty()) {
             noteComponent["head"] = NoteComponent(ui.head)
         }
@@ -130,6 +130,7 @@ class BuilderFrame {
             }
             textComponent[it.id] = text
         }
+        return this
     }
 
     fun addNote(partFrame: PartFrame) {

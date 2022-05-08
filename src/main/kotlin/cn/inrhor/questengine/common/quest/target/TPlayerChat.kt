@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.common.quest.target
 
-import cn.inrhor.questengine.api.target.ConditionType
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.common.quest.manager.TargetManager
@@ -46,7 +45,7 @@ object TPlayerChat: TargetExtend<AsyncPlayerChatEvent>() {
      */
     fun targetTrigger(player: Player, name: String, tag: String, content: String, questData: QuestData): Boolean {
         val target = (QuestManager.getDoingTarget(questData, name)?: return false).questTarget
-        val condition = target.condition[tag]?: return false
+        val condition = target.nodeMeta(tag)?: return false
         return runEval(player, "strMatch type $condition *'$content'")
     }
 

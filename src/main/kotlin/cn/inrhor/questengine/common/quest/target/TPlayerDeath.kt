@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.common.quest.target
 
-import cn.inrhor.questengine.api.target.ConditionType
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.common.quest.manager.TargetManager
@@ -39,7 +38,7 @@ object TPlayerDeath: TargetExtend<PlayerDeathEvent>() {
 
     fun isCause(questData: QuestData, death: EntityDamageEvent.DamageCause): Boolean {
         val target = (QuestManager.getDoingTarget(questData, name)?: return false).questTarget
-        val idCondition = target.conditionList["cause"]?: return false
+        val idCondition = target.nodeMeta("cause")?: return false
         return idCondition.contains(death.toString())
     }
 

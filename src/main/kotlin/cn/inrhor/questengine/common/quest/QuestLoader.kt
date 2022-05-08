@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.common.quest
 
 import cn.inrhor.questengine.api.target.TargetExtend
-import cn.inrhor.questengine.common.quest.manager.TargetManager
 import org.bukkit.event.Event
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
@@ -27,22 +26,11 @@ object QuestLoader {
     fun <T : Event> TargetExtend<T>.register() {
         val ev = event?: return
         registerBukkitListener(ev.java, priority, ignoreCancelled) { e ->
-            val event = name
-            tasker(e)?.run {
-                TargetManager.targetMap.forEach { (eventMeta, condition) ->
-                    if (eventMeta.split("-")[0] == event) {
-                        if (isAsync) {
-                            var next = true
-                            sync {
-                                if (!condition.check()) {
-                                    next = false; return@sync
-                                }
-                            }
-                            if (!next) return@run
-                        } else {
-                            if (!condition.check()) return@run
-                        }
-                    }
+            if (isAsync) {
+                tasker(e)?.run{  }
+            }else {
+                sync {
+                    tasker(e)?.run {  }
                 }
             }
         }

@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.common.quest.target
 
-import cn.inrhor.questengine.api.target.ConditionType
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.common.quest.manager.TargetManager

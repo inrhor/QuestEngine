@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.quest.manager
 
-import cn.inrhor.questengine.api.quest.control.*
+import cn.inrhor.questengine.api.quest.module.inner.QuestControl
 import cn.inrhor.questengine.common.database.data.ControlData
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
@@ -22,13 +22,13 @@ object ControlManager {
         val questID = questInnerData.questID
         val innerQuestID = questInnerData.innerQuestID
         val mModule = QuestManager.getInnerQuestModule(questID, innerQuestID) ?: return
-        val cModule = mModule.questControl
+        val cModule = mModule.control
 
         cModule.forEach {
-            val pri = it.priority
-            val controlID = it.controlID
+            val pri = it.level
+            val controlID = it.id
             val qcData = QuestControlData(player, controlData,
-                controlID, pri, it.controls)
+                controlID, pri, it.script)
             controlData.addControl(controlID, qcData)
         }
     }
@@ -42,7 +42,7 @@ object ControlManager {
         val cData = pDate.controlData
 
         val controlModule = getControlModule(controlID)?: return
-        val log = controlModule.logOpen
+        val log = controlModule.log
 
         val sp = controlID.split("-")
         val questID = sp[0]
@@ -51,7 +51,7 @@ object ControlManager {
         var runLine = line
         var runWaitTime = waitTime
 
-        val logType = log.logType.lowercase()
+        val logType = log.type.lowercase()
 
         if (logType.startsWith("index ")) {
             val spt = logType.split(" ")
@@ -59,37 +59,34 @@ object ControlManager {
             runWaitTime = 0
         }
         val controlData = QuestControlData(player, cData,
-            controlID, controlModule.priority, controlModule.controls, runLine, runWaitTime)
+            controlID, controlModule.level, controlModule.script, runLine, runWaitTime)
         cData.addControl(controlID, controlData)
-        if (log.isEnable) {
-            runEval(player, log.returnReKether(questID, innerID, priority))
+        if (log.enable) {
+            runEval(player, log.returnReCall(questID, innerID, priority))
         }
     }
 
-    fun getControlModule(controlID: String): QuestControlOpen? {
+    fun getControlModule(controlID: String): QuestControl? {
         val sp = controlID.split("-")
         val questID = sp[0]
         val innerQuestID = sp[1]
         val mModule = QuestManager.getInnerQuestModule(questID, innerQuestID) ?: return null
-        mModule.questControl.forEach {
-            if (it.controlID == controlID) return it
+        mModule.control.forEach {
+            if (it.id == controlID) return it
         }
         return null
     }
 
-    fun generateControlID(questID: String, innerQuestID: String, priority: String): String {
-        return "$questID-$innerQuestID-$priority"
-    }
-
-    fun generateControlID(questID: String, innerQuestID: String, priority: ControlPriority): String {
-        return "$questID-$innerQuestID-${priority.toStr()}"
+    fun generateControlID(questID: String, innerQuestID: String, id: String): String {
+        return "$questID-$innerQuestID-$id"
     }
 
     fun runLogType(controlID: String): RunLogType {
         val module = getControlModule(controlID) ?: return RunLogType.DISABLE
-        val log = module.logOpen
-        if (!log.isEnable) return RunLogType.DISABLE
-        when (log.logType) {
+        val log = module.log
+        if (!log.enable) return RunLogType.DISABLE
+        val sp = log.type.split(" ")
+        when (sp[0]) {
             "restart", "index" ->  return RunLogType.RESTART
             "memory" ->  return RunLogType.MEMORY
         }

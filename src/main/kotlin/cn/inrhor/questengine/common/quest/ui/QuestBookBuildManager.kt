@@ -199,7 +199,7 @@ object QuestBookBuildManager {
         if (endDate != null) {
             time = TimeUtil.remainDate(player, innerData.state, endDate)
         }
-        val targetUI = target.ui.copy()
+        val targetUI = buildFrame().loadFrame(target.ui).copy()
         targetUI.noteComponent.values.forEach {
             val note = it.note
             for (i in 0 until note.size) {

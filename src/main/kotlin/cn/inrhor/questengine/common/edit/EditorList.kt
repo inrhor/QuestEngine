@@ -104,14 +104,14 @@ object EditorList {
     }
 
     fun Player.editorTargetList(questID: String, innerID: String, page: Int = 0) {
-        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
+        /*val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
         EditorTargetList(this, asLangText("EDITOR-TARGET", questID, innerID))
-            .list(page, 7, inner.questTargetList.map { it.value }, true,
+            .list(page, 7, inner.target.map { it.value }, true,
                 "EDITOR-TARGET-LIST", "qen editor inner target list $questID $innerID [0]",
             EditorListModule.EditorButton("EDITOR-TARGET-EDIT"),
             EditorListModule.EditorButton("EDITOR-TARGET-EDIT-META",
                 "EDITOR-TARGET-EDIT-HOVER", "/qen editor inner target edit $questID $innerID [0]"))
-            .json.sendTo(adaptPlayer(this))
+            .json.sendTo(adaptPlayer(this))*/
     }
 
     fun Player.editorRewardList(questID: String, innerID: String, page: Int = 0) {

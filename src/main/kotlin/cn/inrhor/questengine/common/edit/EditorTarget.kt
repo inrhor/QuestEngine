@@ -8,9 +8,9 @@ import taboolib.platform.util.asLangText
 
 object EditorTarget {
 
-    fun Player.editorTarget(questID: String, innerID: String, name: String) {
+   /* fun Player.editorTarget(questID: String, innerID: String, id: String) {
         val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
-        val target = inner.questTargetList[name]?: return
+        val target = inner.target
         val json = TellrawJson()
             .newLine()
             .append("   "+asLangText("EDITOR-EDIT-TARGET", questID, innerID, name))
@@ -26,6 +26,6 @@ object EditorTarget {
             }
         }
         json.newLine().sendTo(adaptPlayer(this))
-    }
+    }*/
 
 }

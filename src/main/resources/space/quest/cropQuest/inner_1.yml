@@ -37,12 +37,13 @@ inner:
           chest}}
           {{amount 3}}
         ui:
-          - id: desc
-            note:
-              - "&8挖掘石块或打破箱子 &a3 &8个"
-              - "    &8进度 &6{0}"
-              - "    &8剩余时间 &c{1}"
-              - ""
+          part:
+            - id: desc
+              note:
+                - "&8挖掘石块或打破箱子 &a3 &8个"
+                - "    &8进度 &6{0}"
+                - "    &8剩余时间 &c{1}"
+                - ""
       - id: test
         name: player death
         time: minute 5
@@ -57,8 +58,10 @@ inner:
           - "    &8进度 &6{0}"
           - ""
   control:
-    - # 最高级控制
-     level: highest
+    -
+      id: control1
+      # 最高级控制
+      level: HIGHEST
       # 记录控制运行索引，以防意外可选择调用
       log:
         # 是否启用
@@ -68,18 +71,20 @@ inner:
         # index int [索引]
         type: memory
       script:
-        - waitTime s 5 to @quest the highest
+        - sleep 5s
         - subtitle color *"&f这是田园农庄场"
-        - waitTime s 3 to @quest the highest
+        - sleep 3s
         - title color *"&6农民" subtitle color *"&f现在赋予你一个职位"
-        - waitTime s 3 to @quest the highest
+        - sleep 3s
         - subtitle color *"&f请你采集这一片农作物"
-        - waitTime s 3 to @quest the highest
+        - sleep 3s
         - subtitle color *"&a完成后我将会给予你丰厚奖励"
         - player loaction to location *world *96 *73 *-206
         - player gamemode to *survival
-    - # 普通控制
-      level: normal
+    -
+      id: control2
+      # 普通控制
+      level: NORMAL
       log:
         # 是否启用
         enable: false
@@ -89,5 +94,5 @@ inner:
           - control @this index 1
       script:
         - title color *"&a已接受新任务" subtitle color *"&f采集农作物任务"
-        - waitTime minute 5 to @quest the normal
+        - sleep 5m
         - subtitle color *"&c任务即将结束，请注意"

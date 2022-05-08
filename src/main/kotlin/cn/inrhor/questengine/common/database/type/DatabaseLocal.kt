@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.common.database.type
 
 import cn.inrhor.questengine.QuestEngine
-import cn.inrhor.questengine.api.quest.control.toStr
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.Database
@@ -200,7 +199,7 @@ class DatabaseLocal: Database() {
         val logType = ControlManager.runLogType(controlID)
         if (logType == RunLogType.DISABLE) return
         val node = "control.$controlID."
-        data[node+"priority"] = cData.controlPriority.toStr()
+        data[node+"priority"] = cData.controlPriority.toString()
         when (logType) {
             RunLogType.RESTART -> {
                 data[node+"line"] = 0
