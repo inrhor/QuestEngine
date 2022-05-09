@@ -9,7 +9,7 @@ import taboolib.module.nms.type.LightType
 import org.bukkit.Location
 import java.util.concurrent.CompletableFuture
 
-class KetherLight() {
+class KetherLight {
 
     class CreateLight(val level: Int, val location: ParsedAction<*>): ScriptAction<Void>() {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {

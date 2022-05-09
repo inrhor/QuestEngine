@@ -12,6 +12,9 @@ internal object Command {
     @CommandBody(permission = "QuestEngine.admin.quest")
     val quest = QuestCommand
 
+    @CommandBody(permission = "QuestEngine.admin.eval")
+    val eval = EvalCommand.eval
+
     @CommandBody(permission = "QuestEngine.admin.quest")
     val innerQuest = QuestInnerCommand
 

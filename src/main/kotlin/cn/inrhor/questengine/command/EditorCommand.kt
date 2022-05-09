@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.command
 
 import cn.inrhor.questengine.command.editor.EditorInnerCommand
-import cn.inrhor.questengine.command.editor.EditorQuestCommand
 import cn.inrhor.questengine.common.edit.EditorHome.editorHome
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.CommandBody
@@ -15,9 +14,6 @@ internal object EditorCommand {
             sender.editorHome()
         }
     }
-
-    @CommandBody
-    val quest = EditorQuestCommand
 
     @CommandBody
     val inner = EditorInnerCommand
