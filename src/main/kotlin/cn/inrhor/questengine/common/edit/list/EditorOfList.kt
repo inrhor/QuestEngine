@@ -44,7 +44,8 @@ class EditorOfList(player: Player, header: String, json: TellrawJson = TellrawJs
                 json.append(bl+player.asLangText(it.content))
             }
             if (it.hover.isNotEmpty()) json.hoverText(player.asLangText(it.hover))
-            if (it.command.isNotEmpty()) json.runCommand(it.command.replace("[0]", index.toString()))
+            if (it.command.isNotEmpty()) json.runCommand(
+                it.command.replace("{index}", index.toString()))
             if (it.content.contains("EDITOR-LIST-META")) json.newLine()
         }
     }

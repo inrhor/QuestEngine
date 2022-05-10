@@ -17,6 +17,7 @@ class EditorInnerList(player: Player, val questModule: QuestModule, header: Stri
         button.forEach {
             val bl = if (split && (sum%2 == 0)) "  " else " "
             sum++
+            val command = it.command.replace("{innerID}", get.id)
             if (it.content == "EDITOR-EDIT-QUEST-START-STATE-META") {
                 if (questModule.startInnerQuestID == get.id) {
                     json.append(bl + player.asLangText(it.content+"_2"))
@@ -24,7 +25,7 @@ class EditorInnerList(player: Player, val questModule: QuestModule, header: Stri
                     json
                         .append(bl + player.asLangText(it.content+"_1"))
                         .hoverText(get(it.hover, get))
-                        .runCommand(it.command+" "+get.id)
+                        .runCommand(command)
                 }
             }else if (it.content == "EDITOR-EDIT-INNER-NEXT-META") {
                 if (get.nextInnerQuestID == get.id) {
@@ -33,16 +34,16 @@ class EditorInnerList(player: Player, val questModule: QuestModule, header: Stri
                     json
                         .append(bl + player.asLangText(it.content+"_1"))
                         .hoverText(get(it.hover, get))
-                        .runCommand(it.command+" "+get.id)
+                        .runCommand(command)
                 }
             }else {
                 json.append(bl + get(it.content, get))
                 if (it.hover.isNotEmpty()) json.hoverText(get(it.hover, get))
                 if (it.command.isNotEmpty()) {
                     if (it.content == "EDITOR-LIST-INNER-DEL-META" || it.content == "EDITOR-LIST-INNER-EDIT-META") {
-                        json.runCommand(it.command + " " + get.id)
+                        json.runCommand(command)
                     } else {
-                        json.runCommand(it.command)
+                        json.runCommand(command)
                     }
                 }
             }

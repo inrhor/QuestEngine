@@ -39,14 +39,14 @@ open class EditorListModule(val player: Player, header: String, val json: Tellra
                 .newLine()
                 .append("   "+player.asLangText("EDITOR-PREVIOUS-PAGE"))
                 .hoverText(player.asLangText("EDITOR-PREVIOUS-PAGE-HOVER"))
-                .runCommand("/$preNextCmd "+(page-1))
+                .runCommand("/$preNextCmd".replace("{page}", (page-1).toString()))
         }
         if ((page+1)*limit <= listSize-1) {
             json
                 .newLine()
                 .append("   "+player.asLangText("EDITOR-NEXT-PAGE"))
                 .hoverText(player.asLangText("EDITOR-NEXT-PAGE-HOVER"))
-                .runCommand("/$preNextCmd "+(page+1))
+                .runCommand("/$preNextCmd ".replace("{page}", (page+1).toString()))
         }
         json.newLine()
         return this

@@ -19,7 +19,7 @@ class EditorRewardList(player: Player, header: String, json: TellrawJson = Tellr
             json.append(bl+get(it.content, get))
             if (it.hover.isNotEmpty()) json.hoverText(get(it.hover, get))
             if (it.command.isNotEmpty()) json.runCommand(
-                it.command.replace("[0]", index.toString()).replace("[1]", get.id))
+                it.command.replace("[0]", index.toString()).replace("{rewardID}", get.id))
         }
     }
 

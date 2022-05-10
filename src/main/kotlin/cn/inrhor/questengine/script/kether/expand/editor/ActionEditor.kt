@@ -17,7 +17,11 @@ class ActionEditor {
     }
 
     enum class RewardUi {
-        LIST, EDIT,DEL
+        LIST, EDIT, DEL
+    }
+
+    enum class ListUi {
+        LIST, DEL
     }
 
     companion object {
@@ -75,7 +79,7 @@ class ActionEditor {
                  * editor inner in del select [questID] [innerID]
                  * editor inner in edit [meta] select [questID] [innerID]
                  * editor inner in edit [meta] page [page] select [questID] [innerID]
-                 * editor inner in change [meta] to [change] select [questID] [innerID]
+                 * editor inner in change [meta] (desc) to [change] select [questID] [innerID]
                  */
                 case("inner") {
                     it.mark()
@@ -106,11 +110,21 @@ class ActionEditor {
                             }
                         }
                         InnerUi.CHANGE -> {
-                            val meta = it.nextToken()
-                            it.expect("to")
-                            val change = it.nextToken()
-                            it.expect("select")
-                            EditorInner(ui, it.nextToken(), it.nextToken(), meta, change)
+                            when (val meta = it.nextToken()) {
+                                "desc" -> {
+                                    val tag = it.nextToken()
+                                    it.expect("to")
+                                    val change = it.nextToken()
+                                    it.expect("select")
+                                    EditorInner(ui, it.nextToken(), it.nextToken(), meta, tag, change)
+                                }
+                                else -> {
+                                    it.expect("to")
+                                    val change = it.nextToken()
+                                    it.expect("select")
+                                    EditorInner(ui, it.nextToken(), it.nextToken(), meta, change)
+                                }
+                            }
                         }
                         else -> error("unknown ui")
                     }
@@ -133,7 +147,7 @@ class ActionEditor {
                 }
                 /**
                  * editor reward in list page [page] select [questID] [innerID]
-                 * editor reward in edit select [questID] [innerID] [rewardID]
+                 * editor reward in edit page [page] select [questID] [innerID] [rewardID]
                  * editor reward in del [index] select [questID] [innerID] [rewardID]
                  */
                 case("reward") {
@@ -147,10 +161,43 @@ class ActionEditor {
                             EditorReward(ui, it.nextToken(), it.nextToken(), page = page)
                         }
                         RewardUi.EDIT -> {
-                            it.expect("")
+                            it.expect("page")
+                            val page = it.nextInt()
+                            it.expect("select")
+                            EditorReward(ui, it.nextToken(), it.nextToken(), it.nextToken(), page = page)
+                        }
+                        RewardUi.DEL -> {
+                            val index = it.nextToken()
+                            it.expect("select")
+                            EditorReward(ui, it.nextToken(), it.nextToken(), it.nextToken(), change = index)
                         }
                         else -> error("unknown ui")
                     }
+                }
+                /**
+                 * editor innerfail in list page [page] select [questID] [innerID]
+                 * editor innerfail in del [index] select [questID] [innerID]
+                 */
+                case("innerfail") {
+                    it.mark()
+                    it.expect("in")
+                    when (val ui = ListUi.valueOf(it.nextToken().uppercase())) {
+                        ListUi.LIST -> {
+                            it.expect("page")
+                            val page = it.nextInt()
+                            it.expect("select")
+                            EditorInnerFail(ui, it.nextToken(), it.nextToken(), page=page)
+                        }
+                        ListUi.DEL -> {
+                            val index = it.nextToken()
+                            it.expect("select")
+                            EditorInnerFail(ui, it.nextToken(), it.nextToken(), change = index)
+                        }
+                        else -> error("unknown ui")
+                    }
+                }
+                case("dialog") {
+                    EditorDialog()
                 }
             }
         }

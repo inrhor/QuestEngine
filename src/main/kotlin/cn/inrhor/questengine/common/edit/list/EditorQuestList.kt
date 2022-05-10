@@ -18,7 +18,7 @@ class EditorQuestList(player: Player, header: String, json: TellrawJson = Tellra
             sum++
             json.append(bl+get(it.content, get))
             if (it.hover.isNotEmpty()) json.hoverText(get(it.hover, get))
-            if (it.command.isNotEmpty()) json.runCommand(it.command+" "+get.questID)
+            if (it.command.isNotEmpty()) json.runCommand(it.command.replace("{questID}", get.questID))
         }
     }
 

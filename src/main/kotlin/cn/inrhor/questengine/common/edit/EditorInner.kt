@@ -22,7 +22,7 @@ object EditorInner {
                 inner.name, inner.nextInnerQuestID))
                 .append("  "+asLangText("EDITOR-EDIT-INNER-META"))
                 .hoverText(asLangText("EDITOR-EDIT-INNER-META-HOVER"))
-                .runCommand("/qen editor inner edit "+it.lowercase()+" $questID $innerID 0")
+                .runCommand("/qen eval editor inner in edit "+it.lowercase()+" page 0 select $questID $innerID")
                 .newLine()
         }
         listOf("TARGET", "REWARD", "FAIL").forEach {
@@ -30,7 +30,7 @@ object EditorInner {
                 inner.name, inner.nextInnerQuestID))
                 .append("  "+asLangText("EDITOR-EDIT-INNER-META"))
                 .hoverText(asLangText("EDITOR-EDIT-INNER-META-HOVER"))
-                .runCommand("/qen editor inner "+it.lowercase()+" list $questID $innerID 0")
+                .runCommand("/qen eval editor inner in "+it.lowercase()+" page 0 select $questID $innerID")
                 .newLine()
         }
         json.newLine().sendTo(adaptPlayer(this))

@@ -10,13 +10,12 @@ import java.util.concurrent.CompletableFuture
 
 class EditorTarget(val ui: ActionEditor.TargetUi, val questID: String = "", val innerID: String = "", val meta: String = "", val change: String = "", val page: Int = 0) : ScriptAction<Void>() {
     override fun run(frame: ScriptFrame): CompletableFuture<Void> {
-        return frame.run<Void?>().thenAccept {
-            val sender = (frame.script().sender as? ProxyPlayer ?: error("unknown player")).cast<Player>()
-            when (ui) {
-                ActionEditor.TargetUi.LIST -> {
-                    sender.editorTargetList(questID, innerID, page)
-                }
+        val sender = (frame.script().sender as? ProxyPlayer ?: error("unknown player")).cast<Player>()
+        when (ui) {
+            ActionEditor.TargetUi.LIST -> {
+                sender.editorTargetList(questID, innerID, page)
             }
         }
+        return frameVoid()
     }
 }
