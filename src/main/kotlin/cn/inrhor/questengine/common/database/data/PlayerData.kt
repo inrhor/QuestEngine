@@ -3,6 +3,7 @@ package cn.inrhor.questengine.common.database.data
 import cn.inrhor.questengine.api.collaboration.TeamOpen
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.dialog.theme.chat.ChatCache
+import cn.inrhor.questengine.common.nav.NavData
 import java.util.*
 
 /**
@@ -19,7 +20,8 @@ data class PlayerData(
     var controlData: ControlData,
     var dataPacket: MutableMap<String, MutableList<PacketData>>,
     val tagsData: TagsData = TagsData(),
-    val chatCache: ChatCache = ChatCache()) {
+    val chatCache: ChatCache = ChatCache(),
+    val navData: MutableMap<String, NavData> = mutableMapOf()) {
 
     constructor(uuid: UUID):
             this(uuid, null,

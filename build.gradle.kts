@@ -17,6 +17,7 @@ taboolib {
             "module-nms",
             "module-nms-util",
             "module-effect",
+            "module-navigation",
             "module-metrics",
             "platform-bukkit")
     description {

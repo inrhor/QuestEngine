@@ -16,7 +16,8 @@ fun runEval(player: Player, script: String): Boolean {
             Coerce.toBoolean(it)
         }.get()
     } catch (ex: Exception) {
-        console().sendMessage("&cError Script $script".colored())
+        console().sendMessage("&cError Script: $script".colored())
+        info(ex.localizedMessage)
         false
     }
 }
@@ -30,7 +31,8 @@ fun runEval(player: Player, script: List<String>): Boolean {
             Coerce.toBoolean(it)
         }.get()
     } catch (ex: Exception) {
-        console().sendMessage("&cError Script $script".colored())
+        console().sendMessage("&cError Script: $script".colored())
+        info(ex.localizedMessage)
         false
     }
 }

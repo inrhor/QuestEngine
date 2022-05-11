@@ -9,6 +9,7 @@ import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.dialog.theme.hologram.HitBoxData
 import cn.inrhor.questengine.common.dialog.theme.hologram.HologramData
 import cn.inrhor.questengine.common.dialog.theme.hologram.OriginLocation
+import cn.inrhor.questengine.common.effect.EffectSpawner
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.utlis.variableReader
 import org.bukkit.Location
