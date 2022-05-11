@@ -75,7 +75,7 @@ object EditorList {
     fun listEditDel(player: Player, questID: String, list: List<String>, node: String, meta: String, cmd: String, page: Int = 0) {
         EditorOfList(player, player.asLangText("EDITOR-$node-$meta-LIST", questID))
             .list(page, 3, list, true, "EDITOR-$meta-LIST",
-                "qen eval editor quest in edit $cmd select $questID",
+                "qen eval editor quest in edit $cmd page {page} select $questID",
                 EditorListModule.EditorButton("EDITOR-$meta-RETURN"),
                 EditorListModule.EditorButton("EDITOR-LIST-DEL"),
                 EditorListModule.EditorButton("EDITOR-LIST-META", "EDITOR-LIST-HOVER",
@@ -101,7 +101,7 @@ object EditorList {
             .add(asLangText("EDITOR-LIST-INNER-DESC-ADD"),
                 EditorListModule.EditorButton(asLangText("EDITOR-LIST-INNER-DESC-ADD-META"),
                     asLangText("EDITOR-LIST-INNER-DESC-ADD-HOVER"),
-                    "/qen eval editor inner in change desc add to 0 select $questID $innerID"))
+                    "/qen eval editor inner in change desc add to {head} select $questID $innerID"))
             .list(page, 5, inner.description, true, "EDITOR-LIST-INNER-NOTE-LIST",
                 "qen eval editor inner in edit desc page {page} select $questID $innerID",
                 EditorListModule.EditorButton("EDITOR-LIST-INNER-NOTE-ADD"),
@@ -155,11 +155,11 @@ object EditorList {
         val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
         EditorOfList(this, asLangText("EDITOR-EDIT-FAIL_REWARD", questID, innerID))
             .list(page, 3, inner.reward.fail, true, "EDITOR-EDIT-FAIL_REWARD-LIST",
-                "qen eval editor innerfail in list page {page} select $questID $innerID",
+                "qen eval editor fail in list page {page} select $questID $innerID",
                 EditorListModule.EditorButton("EDITOR-SCRIPT-RETURN"),
                 EditorListModule.EditorButton("EDITOR-LIST-DEL"),
                 EditorListModule.EditorButton("EDITOR-LIST-META", "EDITOR-LIST-HOVER",
-                    "/qen eval editor innerfail in del {index} select $questID $innerID"))
+                    "/qen eval editor fail in del {index} select $questID $innerID"))
             .json.sendTo(adaptPlayer(this))
     }
 }

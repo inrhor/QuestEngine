@@ -44,7 +44,7 @@ class ActionEditor {
                             it.expect("page")
                             EditorQuest(ui, page = it.nextInt())
                         }
-                        QuestUi.ADD, QuestUi.DEL -> {
+                        QuestUi.DEL -> {
                             it.expect("select")
                             EditorQuest(ui, it.nextToken())
                         }
@@ -167,18 +167,18 @@ class ActionEditor {
                             EditorReward(ui, it.nextToken(), it.nextToken(), it.nextToken(), page = page)
                         }
                         RewardUi.DEL -> {
-                            val index = it.nextToken()
+                            val index = it.nextInt()
                             it.expect("select")
-                            EditorReward(ui, it.nextToken(), it.nextToken(), it.nextToken(), change = index)
+                            EditorReward(ui, it.nextToken(), it.nextToken(), it.nextToken(), index = index)
                         }
                         else -> error("unknown ui")
                     }
                 }
                 /**
-                 * editor innerfail in list page [page] select [questID] [innerID]
-                 * editor innerfail in del [index] select [questID] [innerID]
+                 * editor fail in list page [page] select [questID] [innerID]
+                 * editor fail in del [index] select [questID] [innerID]
                  */
-                case("innerfail") {
+                case("fail") {
                     it.mark()
                     it.expect("in")
                     when (val ui = ListUi.valueOf(it.nextToken().uppercase())) {

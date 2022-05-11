@@ -29,9 +29,11 @@ object EditorQuest {
                 .append("  "+asLangText("EDITOR-EDIT-QUEST-META"))
                 .hoverText(asLangText("EDITOR-EDIT-QUEST-META-HOVER"))
             if (it == "INNER") {
-                json.runCommand("/qen editor inner list $questID")
+                json.runCommand("/qen eval editor inner in list page 0 select $questID")
+            }else if (listOf("ACCEPTCONDITION", "FAILURECONDITION", "FAILURESCRIPT").contains(it)) {
+                json.runCommand("/qen eval editor quest in edit "+it.lowercase()+" page 0 select $questID")
             }else {
-                json.runCommand("/qen editor quest edit "+it.lowercase()+" $questID")
+                json.runCommand("/qen eval editor quest in edit "+it.lowercase()+" select $questID")
             }
             json.newLine()
         }

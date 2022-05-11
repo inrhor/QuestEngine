@@ -39,7 +39,7 @@ object EditorHome {
             .append("      "+asLangText("EDITOR-HOME-QUEST-LIST"))
             .append("  "+asLangText("EDITOR-HOME-QUEST-LIST-META"))
             .hoverText(asLangText("EDITOR-HOME-QUEST-LIST-HOVER"))
-            .runCommand("/qen eval editor quest in list page")
+            .runCommand("/qen eval editor quest in list page 0")
             .newLine()
             .append("      "+asLangText("EDITOR-HOME-QUEST-ADD"))
             .append("  "+asLangText("EDITOR-HOME-QUEST-ADD-META"))

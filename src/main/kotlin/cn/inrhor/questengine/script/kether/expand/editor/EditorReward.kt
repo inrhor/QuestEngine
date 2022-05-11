@@ -12,7 +12,7 @@ import java.util.concurrent.CompletableFuture
 
 class EditorReward(val ui: ActionEditor.RewardUi,
                    val questID: String = "", val innerID: String = "", val rewardID: String = "",
-                   val meta: String = "", val change: String = "", val page: Int = 0) : ScriptAction<Void>() {
+                   val meta: String = "", val index: Int = 0, val page: Int = 0) : ScriptAction<Void>() {
     override fun run(frame: ScriptFrame): CompletableFuture<Void> {
         val sender = (frame.script().sender as? ProxyPlayer ?: error("unknown player")).cast<Player>()
         when (ui) {
@@ -24,7 +24,7 @@ class EditorReward(val ui: ActionEditor.RewardUi,
             }
             ActionEditor.RewardUi.DEL -> {
                 val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return frameVoid()
-                inner.reward.finish.removeAt(change.toInt())
+                inner.reward.finish.removeAt(index)
                 QuestManager.saveFile(questID, innerID)
                 sender.editorFinishReward(questID, innerID, rewardID)
             }

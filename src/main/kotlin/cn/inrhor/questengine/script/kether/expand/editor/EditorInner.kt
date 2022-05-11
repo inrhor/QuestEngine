@@ -7,6 +7,7 @@ import cn.inrhor.questengine.common.edit.EditorList.editorNextInner
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyPlayer
+import taboolib.common.util.addSafely
 import taboolib.common.util.setSafely
 import taboolib.module.kether.ScriptAction
 import taboolib.module.kether.ScriptFrame
@@ -51,13 +52,16 @@ class EditorInner(val ui: ActionEditor.InnerUi,
             }
             ActionEditor.InnerUi.CHANGE -> {
                 val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return frameVoid()
-                when (tag) {
+                when (meta) {
                     "desc" -> {
-                        when (meta) {
+                        when (tag) {
                             "add" -> {
                                 sender.inputSign {
                                     val list = inner.description.toMutableList()
-                                    list.setSafely(change.toInt(), it[1], "")
+                                    var str = ""
+                                    it.forEach { e -> str+=e }
+                                    val index = if (change=="{head}") 0 else change.toInt()+1
+                                    list.addSafely(index, str, "")
                                     inner.description = list
                                     QuestManager.saveFile(questID, innerID)
                                     sender.editorInnerDesc(questID, innerID)
