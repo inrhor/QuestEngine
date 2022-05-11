@@ -16,7 +16,13 @@ object EditorInner {
         val json = TellrawJson()
             .newLine()
             .append("   "+asLangText("EDITOR-EDIT-INNER", questID, innerID))
-            .newLine().newLine()
+            .newLine()
+            .append("      "+asLangText("EDITOR-BACK"))
+            .append("  "+asLangText("EDITOR-BACK-META"))
+            .hoverText(asLangText("EDITOR-BACK-HOVER"))
+            .runCommand("/qen eval editor inner in list page 0 select $questID $innerID")
+            .newLine()
+            .newLine()
         editInnerMeta.forEach {
             json.append("      "+asLangText("EDITOR-EDIT-INNER-$it",
                 inner.name, inner.nextInnerQuestID))

@@ -750,7 +750,7 @@ object QuestManager {
     /**
      * 保存配置
      */
-    fun saveFile(questID: String, innerID: String = "", create: Boolean = false) {
+    fun saveFile(questID: String, innerID: String = "", create: Boolean = false, innerCreate: Boolean = false) {
         if (create) {
             val file = newFile(File(QuestEngine.plugin.dataFolder, "/space/quest/$questID"), folder = true)
             val questModule = QuestModule()
@@ -760,39 +760,59 @@ object QuestManager {
             yaml.setObject("quest", questModule)
             yaml.saveToFile(setting)
             register(questID, questModule)
+        }else if (innerCreate){
+            val fileData = questFile(questID)?: return
+            val questModule = getQuestModule(questID)?: return
+            val inner = QuestInnerModule()
+            inner.id=innerID
+            questModule.innerQuestList.add(inner)
+            val file = fileData.file
+            val innerFile = newFile(file.path+"/$innerID.yml")
+            val innerYaml = Configuration.loadFromFile(innerFile)
+            innerYaml.setObject("inner", inner)
+            innerYaml.saveToFile(innerFile)
         }else {
-            val questFolder = FileUtil.getFile("space/quest")
-            val lists = questFolder.listFiles()?: return
-            for (file in lists) {
-                if (!file.isDirectory) continue
-                val settingFile = File(file.path + File.separator + "setting.yml")
-                if (!settingFile.exists()) return
-                val setting = Configuration.loadFromFile(settingFile)
-                if (setting.getString("quest.questID") == questID) {
-                    val questModule = getQuestModule(questID)?: return
-                    setting.setObject("quest", questModule)
-                    setting.saveToFile(settingFile)
-                    if (innerID.isNotEmpty()) {
-                        val innerFolder = FileUtil.getFile("space/quest/"+file.name)
-                        val innerList = FileUtil.getFileList(innerFolder)
-                        for (inner in innerList) {
-                            val innerYaml = Configuration.loadFromFile(inner)
-                            if (innerYaml.contains("inner.id") &&innerYaml.getString("inner.id") == innerID) {
-                                questModule.innerQuestList.forEach {
-                                    if (it.id == innerID) {
-                                        innerYaml.setObject("inner", it)
-                                        innerYaml.saveToFile(inner)
-                                        return
-                                    }
-                                }
+            val fileData = questFile(questID)?: return
+            val questModule = getQuestModule(questID)?: return
+            val file = fileData.file
+            val setting = fileData.configuration
+            setting.setObject("quest", questModule)
+            val settingFile = File(file.path + File.separator + "setting.yml")
+            setting.saveToFile(settingFile)
+            if (innerID.isNotEmpty()) {
+                val innerFolder = FileUtil.getFile("space/quest/" + file.name)
+                val innerList = FileUtil.getFileList(innerFolder)
+                for (inner in innerList) {
+                    val innerYaml = Configuration.loadFromFile(inner)
+                    if (innerYaml.contains("inner.id") && innerYaml.getString("inner.id") == innerID) {
+                        questModule.innerQuestList.forEach {
+                            if (it.id == innerID) {
+                                innerYaml.setObject("inner", it)
+                                innerYaml.saveToFile(inner)
                                 return
                             }
                         }
                     }
-                    return
                 }
             }
         }
     }
 
+    fun questFile(questID: String): FileData? {
+        val questFolder = FileUtil.getFile("space/quest")
+        val lists = questFolder.listFiles()?: return null
+        for (file in lists) {
+            if (!file.isDirectory) continue
+            val settingFile = File(file.path + File.separator + "setting.yml")
+            if (!settingFile.exists()) return null
+            val setting = Configuration.loadFromFile(settingFile)
+            if (setting.getString("quest.questID") == questID) {
+                return FileData(file, setting)
+            }
+        }
+        return null
+    }
+
 }
+
+class FileData(val file: File, val configuration: Configuration)

@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.edit
 
+import cn.inrhor.questengine.common.edit.EditorList.editorNextInner
 import cn.inrhor.questengine.common.edit.list.*
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player
@@ -13,6 +14,7 @@ object EditorList {
     fun Player.editorListQuest(page: Int = 0) {
         val list = QuestManager.questMap.values.toMutableList()
         EditorQuestList(this, asLangText("EDITOR-LIST-QUEST"))
+            .editorBack(this, "/qen eval editor quest in home")
             .list(page, 7, list, true, "EDITOR-LIST-QUEST-INFO",
                 "qen eval editor quest in list page {page}",
                 EditorListModule.EditorButton("EDITOR-LIST-QUEST-EDIT"),
@@ -29,6 +31,11 @@ object EditorList {
     fun Player.editorListInner(questID: String, page: Int = 0) {
         val questModule = QuestManager.getQuestModule(questID)?: return
         EditorInnerList(this, questModule, asLangText("EDITOR-LIST-INNER", questID))
+            .editorBack(this, "/qen eval editor quest in edit home select $questID")
+            .add(asLangText("EDITOR-LIST-INNER-ADD"),
+            EditorListModule.EditorButton(asLangText("EDITOR-LIST-INNER-ADD-META"),
+                asLangText("EDITOR-LIST-INNER-ADD-HOVER"),
+            "/qen eval editor inner in add select $questID"))
             .list(page, 7, questModule.innerQuestList, true, "EDITOR-LIST-INNER-INFO",
                 "qen eval editor quest in list page {page}",
                 EditorListModule.EditorButton("EDITOR-LIST-INNER-EDIT"),
@@ -45,6 +52,7 @@ object EditorList {
     fun Player.editorStartInner(questID: String, page: Int = 0) {
         val questModule = QuestManager.getQuestModule(questID)?: return
         EditorInnerList(this, questModule, asLangText("EDITOR-EDIT-QUEST-INNER-START", questID))
+            .editorBack(this, "/qen eval editor quest in edit home select $questID")
             .list(page, 7, questModule.innerQuestList, true, "EDITOR-EDIT-INNER-LIST",
                 "qen eval editor quest in edit page {page} select $questID",
                 EditorListModule.EditorButton("EDITOR-EDIT-QUEST-START-STATE"),
@@ -74,6 +82,7 @@ object EditorList {
 
     fun listEditDel(player: Player, questID: String, list: List<String>, node: String, meta: String, cmd: String, page: Int = 0) {
         EditorOfList(player, player.asLangText("EDITOR-$node-$meta-LIST", questID))
+            .editorBack(player, "/qen eval editor quest in edit home select $questID")
             .list(page, 3, list, true, "EDITOR-$meta-LIST",
                 "qen eval editor quest in edit $cmd page {page} select $questID",
                 EditorListModule.EditorButton("EDITOR-$meta-RETURN"),
@@ -83,9 +92,18 @@ object EditorList {
             .json.sendTo(adaptPlayer(player))
     }
 
+    fun EditorListModule.editorBack(player: Player, command: String): EditorListModule {
+        add(player.asLangText("EDITOR-BACK"),
+            EditorListModule.EditorButton(player.asLangText("EDITOR-BACK-META"),
+                player.asLangText("EDITOR-BACK-HOVER"),
+                command))
+        return this
+    }
+
     fun Player.editorNextInner(questID: String, innerID: String, page: Int = 0) {
         val questModule = QuestManager.getQuestModule(questID)?: return
         EditorInnerList(this, questModule, asLangText("EDITOR-EDIT-INNER-NEXT", questID, innerID))
+            .editorBack(this, "/qen eval editor inner in edit home select $questID $innerID")
             .list(page, 7, questModule.innerQuestList, true, "EDITOR-EDIT-INNER-LIST",
                 "qen eval editor inner in edit nextinner page {page} select $questID $innerID",
                 EditorListModule.EditorButton("EDITOR-EDIT-INNER-NEXT-CHOOSE"),
@@ -98,6 +116,7 @@ object EditorList {
     fun Player.editorInnerDesc(questID: String, innerID: String, page: Int = 0) {
         val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
         EditorOfList(this, asLangText("EDITOR-EDIT-INNER-NOTE", questID, innerID), empty = "  ")
+            .editorBack(this, "/qen eval editor inner in edit home select $questID $innerID")
             .add(asLangText("EDITOR-LIST-INNER-DESC-ADD"),
                 EditorListModule.EditorButton(asLangText("EDITOR-LIST-INNER-DESC-ADD-META"),
                     asLangText("EDITOR-LIST-INNER-DESC-ADD-HOVER"),
@@ -129,6 +148,7 @@ object EditorList {
     fun Player.editorRewardList(questID: String, innerID: String, page: Int = 0) {
         val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
         EditorRewardList(this, asLangText("EDITOR-FINISH_REWARD", questID, innerID))
+            .editorBack(this, "/qen eval editor inner in edit home select $questID $innerID")
             .list(page, 7, inner.reward.finish, true, "EDITOR-FINISH_REWARD-LIST",
             "qen eval editor reward in list page {page} select $questID $innerID",
             EditorListModule.EditorButton("EDITOR-EDIT-FINISH_REWARD-EDIT"),
@@ -142,6 +162,7 @@ object EditorList {
         val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
         val finish = inner.reward.getFinishReward(rewardID)
         EditorOfList(this, asLangText("EDITOR-EDIT-FINISH_REWARD", questID, innerID, rewardID))
+            .editorBack(this, "/qen eval editor inner in edit home select $questID $innerID")
             .list(page, 3, finish, true, "EDITOR-EDIT-FINISH_REWARD-LIST",
                 "qen eval editor reward in edit page {0} select $questID $innerID $rewardID",
                 EditorListModule.EditorButton("EDITOR-SCRIPT-RETURN"),
@@ -154,6 +175,7 @@ object EditorList {
     fun Player.editorFailReward(questID: String, innerID: String, page: Int = 0) {
         val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
         EditorOfList(this, asLangText("EDITOR-EDIT-FAIL_REWARD", questID, innerID))
+            .editorBack(this, "/qen eval editor inner in edit home select $questID $innerID")
             .list(page, 3, inner.reward.fail, true, "EDITOR-EDIT-FAIL_REWARD-LIST",
                 "qen eval editor fail in list page {page} select $questID $innerID",
                 EditorListModule.EditorButton("EDITOR-SCRIPT-RETURN"),

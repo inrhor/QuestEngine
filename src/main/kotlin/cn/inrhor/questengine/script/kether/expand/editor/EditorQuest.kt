@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.script.kether.expand.editor
 
-import cn.inrhor.questengine.common.edit.EditorHome.editorHome
 import cn.inrhor.questengine.common.edit.EditorHome.editorHomeQuest
 import cn.inrhor.questengine.common.edit.EditorList.editorAcceptCondition
 import cn.inrhor.questengine.common.edit.EditorList.editorFailCondition
@@ -25,22 +24,22 @@ class EditorQuest(val ui: ActionEditor.QuestUi, val questID: String = "", val me
         val sender = (frame.script().sender as? ProxyPlayer ?: error("unknown player")).cast<Player>()
         when (ui) {
             ActionEditor.QuestUi.LIST -> sender.editorListQuest(page)
-            ActionEditor.QuestUi.ADD -> run {
+            ActionEditor.QuestUi.ADD -> {
                 sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-QUEST-ID"))) {
                     val questID = it[1].replace(" ", "")
                     if (questID == "" || QuestManager.questMap.containsKey(questID)) {
-                        sender.sendLang("QUEST-ERROR-ID")
+                        sender.sendLang("QUEST-ERROR-ID", questID)
                         return@inputSign
                     }
                     QuestManager.saveFile(questID, create = true)
                     sender.editorQuest(questID)
                 }
             }
-            ActionEditor.QuestUi.DEL -> run {
+            ActionEditor.QuestUi.DEL -> {
                 QuestManager.delQuest(questID)
                 sender.editorListQuest()
             }
-            ActionEditor.QuestUi.EDIT -> run {
+            ActionEditor.QuestUi.EDIT -> {
                 when (meta) {
                     "name" -> {
                         val questModule = QuestManager.getQuestModule(questID) ?: return frameVoid()

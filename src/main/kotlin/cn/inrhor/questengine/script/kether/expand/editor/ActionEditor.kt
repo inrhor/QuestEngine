@@ -9,7 +9,7 @@ class ActionEditor {
     }
 
     enum class InnerUi {
-        LIST, DEL, EDIT, CHANGE
+        LIST, DEL, EDIT, CHANGE, ADD
     }
 
     enum class TargetUi {
@@ -76,6 +76,7 @@ class ActionEditor {
                 }
                 /**
                  * editor inner in list page [page] select [questID]
+                 * editor inner in add select [questID]
                  * editor inner in del select [questID] [innerID]
                  * editor inner in edit [meta] select [questID] [innerID]
                  * editor inner in edit [meta] page [page] select [questID] [innerID]
@@ -90,6 +91,10 @@ class ActionEditor {
                             val page = it.nextInt()
                             it.expect("select")
                             EditorInner(ui, it.nextToken(), page = page)
+                        }
+                        InnerUi.ADD -> {
+                            it.expect("select")
+                            EditorInner(ui, it.nextToken())
                         }
                         InnerUi.DEL -> {
                             it.expect("select")

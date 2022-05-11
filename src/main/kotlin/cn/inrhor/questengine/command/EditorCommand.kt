@@ -8,7 +8,7 @@ import taboolib.common.platform.command.subCommand
 object EditorCommand {
 
     @CommandBody
-    val home = subCommand {
+    val editor = subCommand {
         execute<Player> { sender, _, _ ->
             sender.editorHome()
         }

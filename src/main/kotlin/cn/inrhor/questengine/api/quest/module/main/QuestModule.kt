@@ -31,4 +31,11 @@ class QuestModule(
         return null
     }
 
+    fun existInner(innerID: String): Boolean {
+        innerQuestList.forEach {
+            if (it.id == innerID) return true
+        }
+        return false
+    }
+
 }

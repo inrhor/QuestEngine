@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.api.quest.module.inner
 
-class QuestInnerModule(val id: String, var name: String,
+class QuestInnerModule(var id: String, var name: String,
                        var nextInnerQuestID: String,
                        var description: List<String>,
                        var reward: QuestReward,

@@ -18,7 +18,13 @@ object EditorQuest {
         val json = TellrawJson()
             .newLine()
             .append("   "+asLangText("EDITOR-EDIT-QUEST", questID))
-            .newLine().newLine()
+            .newLine()
+            .append("      "+asLangText("EDITOR-BACK"))
+            .append("  "+asLangText("EDITOR-BACK-META"))
+            .hoverText(asLangText("EDITOR-BACK-HOVER"))
+            .runCommand("/qen eval editor quest in list page 0")
+            .newLine()
+            .newLine()
         editQuestMeta.forEach {
             json.append("      "+asLangText("EDITOR-EDIT-QUEST-$it",
                 questModule.name, questModule.startInnerQuestID, questModule.sort,

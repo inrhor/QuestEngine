@@ -34,5 +34,5 @@ internal object Command {
     val tags = TagsCommand
 
     @CommandBody(permission = "QuestEngine.editor")
-    val editor = EditorCommand
+    val editor = EditorCommand.editor
 }

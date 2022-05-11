@@ -4,6 +4,7 @@ import cn.inrhor.questengine.common.edit.EditorInner.editorInner
 import cn.inrhor.questengine.common.edit.EditorList.editorInnerDesc
 import cn.inrhor.questengine.common.edit.EditorList.editorListInner
 import cn.inrhor.questengine.common.edit.EditorList.editorNextInner
+import cn.inrhor.questengine.common.edit.EditorQuest.editorQuest
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyPlayer
@@ -14,6 +15,7 @@ import taboolib.module.kether.ScriptFrame
 import taboolib.module.kether.script
 import taboolib.module.nms.inputSign
 import taboolib.platform.util.asLangText
+import taboolib.platform.util.sendLang
 import java.util.concurrent.CompletableFuture
 
 class EditorInner(val ui: ActionEditor.InnerUi,
@@ -28,6 +30,18 @@ class EditorInner(val ui: ActionEditor.InnerUi,
             ActionEditor.InnerUi.DEL -> {
                 QuestManager.delInner(questID, innerID)
                 sender.editorListInner(questID)
+            }
+            ActionEditor.InnerUi.ADD -> {
+                val quest = QuestManager.getQuestModule(questID)?: return frameVoid()
+                sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-INNER-ID"))) {
+                    val innerID = it[1].replace(" ", "")
+                    if (innerID == "" || quest.existInner(innerID)) {
+                        sender.sendLang("INNER-ERROR-ID", questID, innerID)
+                        return@inputSign
+                    }
+                    QuestManager.saveFile(questID, innerID, innerCreate = true)
+                    sender.editorListInner(questID)
+                }
             }
             ActionEditor.InnerUi.EDIT -> {
                 when (meta) {
