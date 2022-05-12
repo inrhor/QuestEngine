@@ -95,7 +95,7 @@ class TargetData(
     }
 
     private fun runTaskPass(player: Player): Boolean {
-        val c = questTarget.conditions
+        val c = questTarget.condition
         if (c.isEmpty()) return false
         c.forEach {
             try {

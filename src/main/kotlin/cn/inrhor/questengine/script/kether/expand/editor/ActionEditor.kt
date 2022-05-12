@@ -13,7 +13,7 @@ class ActionEditor {
     }
 
     enum class TargetUi {
-        LIST
+        LIST,EDIT
     }
 
     enum class RewardUi {
@@ -136,6 +136,7 @@ class ActionEditor {
                 }
                 /**
                  * editor target in list page [page] select [questID] [innerID]
+                 * editor target in edit [meta] select [questID] [innerID] [targetID]
                  */
                 case("target") {
                     it.mark()
@@ -146,6 +147,20 @@ class ActionEditor {
                             val page = it.nextInt()
                             it.expect("select")
                             EditorTarget(ui, it.nextToken(), it.nextToken(), page = page)
+                        }
+                        TargetUi.EDIT -> {
+                            when (val meta = it.nextToken()) {
+                                "condition" -> {
+                                    it.expect("page")
+                                    val page = it.nextInt()
+                                    it.expect("select")
+                                    EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), meta, page = page)
+                                }
+                                else -> {
+                                    it.expect("select")
+                                    EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), meta)
+                                }
+                            }
                         }
                         else -> error("unknown ui")
                     }

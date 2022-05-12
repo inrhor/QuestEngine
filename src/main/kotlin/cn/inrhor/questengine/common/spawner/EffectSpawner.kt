@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.effect
+package cn.inrhor.questengine.common.spawner
 
 import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyParticle

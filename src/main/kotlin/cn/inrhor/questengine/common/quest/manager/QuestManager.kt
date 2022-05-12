@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.quest.manager
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.quest.module.inner.QuestInnerModule
+import cn.inrhor.questengine.api.quest.module.inner.QuestTarget
 import cn.inrhor.questengine.api.quest.module.main.QuestModule
 import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.Database
@@ -810,6 +811,12 @@ object QuestManager {
                 return FileData(file, setting)
             }
         }
+        return null
+    }
+
+    fun getTargetModule(questID: String, innerID: String, id: String): QuestTarget? {
+        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return null
+        inner.target.forEach { if (it.id == id) return it }
         return null
     }
 

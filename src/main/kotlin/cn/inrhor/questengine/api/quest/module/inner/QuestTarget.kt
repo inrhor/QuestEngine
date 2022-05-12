@@ -4,12 +4,12 @@ import cn.inrhor.questengine.api.ui.UiFrame
 import cn.inrhor.questengine.utlis.variableReader
 
 
-class QuestTarget(val id: String, val name: String, var time: String, val reward: String,
-                  var period: Int, var async: Boolean, var conditions: List<String>,
+class QuestTarget(val id: String, val name: String, var time: TimeModule, val reward: String,
+                  var period: Int, var async: Boolean, var condition: List<String>,
                   val node: String, val ui: UiFrame
 ) {
     constructor():
-            this("targetId", "targetName", "always", "", 0, false, listOf(), "", UiFrame())
+            this("targetId", "targetName", TimeModule(), "", 0, false, listOf(), "", UiFrame())
 
     fun nodeMeta(meta: String): List<String>? {
         node.variableReader().forEach {

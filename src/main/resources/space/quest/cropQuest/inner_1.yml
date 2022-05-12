@@ -26,10 +26,18 @@ inner:
     fail:
       - ""
       - ""
+    # 任务目标列表
     target:
       - id: hello
+        # 目标器
         name: break block
-        time: always
+        # 时间框架
+        time:
+          # 类型: ALWAYS, WEEKLY, MONTHLY, YEARLY, CUSTOM
+          type: WEEKLY
+          duration: 1,00:00:00>1,23:59:59
+          # monthly  duration: 20,00:00:00>31,15:30:00
+          # yearly  duration: 6,15,16:29:30>11,1,00:00:00
         reward: all false
         node: |
           {{block
@@ -46,7 +54,9 @@ inner:
                 - ""
       - id: test
         name: player death
-        time: minute 5
+        time:
+          type: CUSTOM
+          duration: 5 minute
         reward: 1 true
         node: |
           {{cause

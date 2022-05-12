@@ -8,24 +8,33 @@ import taboolib.platform.util.asLangText
 
 object EditorTarget {
 
-   /* fun Player.editorTarget(questID: String, innerID: String, id: String) {
-        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
-        val target = inner.target
+    val editMeta = listOf(
+        "NAME", "TIME", "REWARD", "ASYNC", "PERIOD", "CONDITION", "NODE")
+
+   fun Player.editorTarget(questID: String, innerID: String, id: String) {
+        val target = QuestManager.getTargetModule(questID, innerID, id)?: return
         val json = TellrawJson()
             .newLine()
             .append("   "+asLangText("EDITOR-EDIT-TARGET", questID, innerID, name))
-            .newLine().newLine()
-        target.condition.forEach { (t, u) ->
-            json.append("      "+asLangText("EDITOR-EDIT-TARGET-VALUE", t, u))
-                .newLine()
-        }
-        target.conditionList.forEach { (t, u) ->
-            json.append("      "+asLangText("EDITOR-EDIT-TARGET-KEY", t)).newLine()
-            u.forEach {
-                json.append("        "+asLangText("EDITOR-EDIT-TARGET-VALUE-LIST", it)).newLine()
-            }
-        }
+            .newLine()
+            .append("      "+asLangText("EDITOR-BACK"))
+            .append("  "+asLangText("EDITOR-BACK-META"))
+            .hoverText(asLangText("EDITOR-BACK-HOVER"))
+            .runCommand("/qen eval editor inner in edit home select $questID $innerID")
+            .newLine()
+            .newLine()
+       editMeta.forEach {
+           json.append("      "+asLangText("EDITOR-EDIT-TARGET-$it",
+               target.name, target.time.lang(), target.reward, target.period, target.async))
+               .append("  "+asLangText("EDITOR-EDIT-TARGET-META"))
+               .hoverText(asLangText("EDITOR-EDIT-TARGET-META-HOVER"))
+           if (it == "CONDITION") {
+               json.runCommand("/qen eval editor target in edit "+it.lowercase()+" page 0 select $questID $innerID ${target.id}")
+           }else {
+               json.runCommand("/qen eval editor quest in edit "+it.lowercase()+" select $questID")
+           }
+       }
         json.newLine().sendTo(adaptPlayer(this))
-    }*/
+    }
 
 }
