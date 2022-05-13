@@ -33,7 +33,7 @@ inner:
         name: break block
         # 时间框架
         time:
-          # 类型: ALWAYS, WEEKLY, MONTHLY, YEARLY, CUSTOM
+          # 类型: ALWAYS, DAY, WEEKLY, MONTHLY, YEARLY, CUSTOM
           type: WEEKLY
           duration: 1,00:00:00>1,23:59:59
           # monthly  duration: 20,00:00:00>31,15:30:00

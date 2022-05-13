@@ -25,7 +25,7 @@ object EditorTarget {
             .newLine()
        editMeta.forEach {
            json.append("      "+asLangText("EDITOR-EDIT-TARGET-$it",
-               target.name, target.time.lang(), target.reward, target.period, target.async))
+               target.name, target.time.lang(this), target.reward, target.period, target.async))
                .append("  "+asLangText("EDITOR-EDIT-TARGET-META"))
                .hoverText(asLangText("EDITOR-EDIT-TARGET-META-HOVER"))
            if (it == "CONDITION") {
