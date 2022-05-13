@@ -43,16 +43,21 @@ class QuestInnerModule(var id: String, var name: String,
      */
     fun timeAccept(player: Player, innerModule: QuestInnerModule, innerData: QuestInnerData) {
         if (time.type != TimeFrame.Type.ALWAYS) {
-            time.updateTime()
+            innerData.updateTime(innerModule.time)
             submit(period = 20L, async = true) {
-                if (time.end == null || !player.isOnline) {
+                if (innerData.end == null || !player.isOnline || time.type == TimeFrame.Type.ALWAYS) {
                     cancel();return@submit
                 }else {
                     val now = Date()
-                    if (time.noTimeout(now, time.start, time.end!!)) {
-
-                    }else {
-                        timeout(player, innerModule, innerData)
+                    if (!time.noTimeout(now, innerData.timeDate, innerData.end!!)) {
+                        innerData.updateTime(innerModule.time)
+                        if (time.noTimeout(now, innerData.timeDate, innerData.end!!)) {
+                            acceptInner(player, innerData)
+                            cancel()
+                            return@submit
+                        }else {
+                            timeout(player, innerModule, innerData)
+                        }
                     }
                 }
             }

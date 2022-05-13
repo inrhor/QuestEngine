@@ -132,26 +132,20 @@ class DatabaseLocal: Database() {
         val questModule = QuestManager.getQuestModule(questID)?: return null
         val innerModule = QuestManager.getInnerQuestModule(questID, innerQuestID)?: return null
         val innerTargetDataMap = returnTargets(
-            player, questUUID,
             data, node, QuestManager.getInnerModuleTargetMap(questUUID, questModule.mode.type, innerModule))
-        return QuestInnerData(questID, innerQuestID, innerTargetDataMap, innerState, rewardInner)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val timeDate = dateFormat.parse(data.getString(node+"timeDate"))
+        val end = if (data.contains(node+"endTimeDate")) dateFormat.parse(data.getString(node+"endTimeDate")) else null
+        return QuestInnerData(questID, innerQuestID, innerTargetDataMap, innerState, timeDate, end, rewardInner)
     }
 
-    private fun returnTargets(player: Player, questUUID: UUID, data: Configuration, node: String, targetDataMap: MutableMap<String, TargetData>): MutableMap<String, TargetData> {
+    private fun returnTargets(data: Configuration, node: String, targetDataMap: MutableMap<String, TargetData>): MutableMap<String, TargetData> {
         if (!data.contains(node+"targets")) return targetDataMap
         for (name in data.getConfigurationSection(node+"targets")!!.getKeys(false)) {
             val nodeTarget = node+"targets.$name."
             val targetData = targetDataMap[name]?: continue
             targetData.schedule  = data.getInt(nodeTarget+"schedule")
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-            val timeDate = dateFormat.parse(data.getString(nodeTarget+"timeDate"))
-            targetData.timeDate = timeDate
-            if (data.contains(nodeTarget+"endTimeDate")) {
-                val endTimeDate = dateFormat.parse(data.getString(nodeTarget+"endTimeDate"))
-                targetData.endTimeDate = endTimeDate
-            }
             targetDataMap[name] = targetData
-            targetData.runTime(player, questUUID)
         }
         return targetDataMap
     }
@@ -221,10 +215,10 @@ class DatabaseLocal: Database() {
         questInnerData.targetsData.forEach { (name, targetData) ->
             val schedule = targetData.schedule
             data[node+"targets.$name.schedule"] = schedule
-            setTimeDate(data, node+"targets.$name.timeDate", targetData.timeDate)
-            val endTimeDate = targetData.endTimeDate?: return@forEach
-            setTimeDate(data, node + "targets.$name.endTimeDate", endTimeDate)
         }
+        setTimeDate(data, node+"timeDate", questInnerData.timeDate)
+        val endTimeDate = questInnerData.end?: return
+        setTimeDate(data, node + "endTimeDate", endTimeDate)
     }
 
     private fun setTimeDate(data: Configuration, timeNode: String, date: Date) {

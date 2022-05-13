@@ -320,8 +320,7 @@ object QuestManager {
         val innerModule = getInnerQuestModule(questID, innerQuestID)?: return
         val questModule = getQuestModule(questID)?: return
         val targetDataMap = mutableMapOf<String, TargetData>()
-        val time = innerModule.time
-        val innerQuestData = QuestInnerData(questID, innerQuestID, targetDataMap, state, time.start, time.end)
+        val innerQuestData = QuestInnerData(questID, innerQuestID, targetDataMap, state)
         val questData = if (existQuestData(player, questUUID)) getQuestData(player, questUUID) !!
         else QuestData(questUUID, questID, innerQuestData, state, pData.teamData)
         if (existQuestData(player, questUUID)) {

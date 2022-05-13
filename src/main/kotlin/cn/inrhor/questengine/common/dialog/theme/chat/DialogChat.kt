@@ -82,8 +82,15 @@ class DialogChat(
             val pData = DataStorage.getPlayerData(it)
             pData.chatCache.close(it)
             pData.dialogData.dialogMap.remove(dialogModule.dialogID)
-            it.removePotionEffect(PotionEffectType.BLINDNESS)
-            it.removePotionEffect(PotionEffectType.INVISIBILITY)
+            /*Bukkit.getScheduler().callSyncMethod(QuestEngine.plugin) {
+                it.removePotionEffect(PotionEffectType.BLINDNESS)
+                it.removePotionEffect(PotionEffectType.INVISIBILITY)
+            }*/
+            // debug
+            submit {
+                it.removePotionEffect(PotionEffectType.BLINDNESS)
+                it.removePotionEffect(PotionEffectType.INVISIBILITY)
+            }
         }
         viewers.clear()
     }
