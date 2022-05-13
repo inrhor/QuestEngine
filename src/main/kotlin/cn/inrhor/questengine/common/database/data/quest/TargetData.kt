@@ -18,34 +18,14 @@ import java.util.*
 class TargetData(
     val questUUID: UUID,
     val innerID: String,
-    val name: String, var timeUnit: String,
-    var schedule: Int, val questTarget: QuestTarget,
-    var timeDate: Date, var endTimeDate: Date?,
-    var modeType: ModeType, var state: QuestState = QuestState.DOING) {
-
-    fun runTime(player: Player, questUUID: UUID) {
-        if (timeUnit == "" || endTimeDate == null) return
-        submit(async = true, period = 20L) {
-            if (!player.isOnline) {
-                cancel(); return@submit
-            }
-            val now = Date()
-            val between = endTimeDate!!.time - now.time
-            if (QuestManager.isStateInnerQuest(player, questUUID, QuestState.FAILURE)) {
-                cancel(); return@submit
-            }
-            if (between <= 0) {
-                QuestManager.endQuest(player, modeType, questUUID, QuestState.FAILURE, true)
-                cancel(); return@submit
-            }
-        }
-    }
+    val name: String,
+    var schedule: Int, val questTarget: QuestTarget, var state: QuestState = QuestState.DOING) {
 
     /**
      * 启用调度类型的任务目标
      * 备注：要求多人完成的，则判断 成员数 <= 进度
      */
-    fun runTask(player: Player, questData: QuestData, innerData: QuestInnerData) {
+    fun runTask(player: Player, questData: QuestData, innerData: QuestInnerData, modeType: ModeType) {
         var pass = false
         val t = questTarget.period.toLong()
         submit(delay = t, period = t, async = questTarget.async) {

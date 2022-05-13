@@ -320,7 +320,8 @@ object QuestManager {
         val innerModule = getInnerQuestModule(questID, innerQuestID)?: return
         val questModule = getQuestModule(questID)?: return
         val targetDataMap = mutableMapOf<String, TargetData>()
-        val innerQuestData = QuestInnerData(questID, innerQuestID, targetDataMap, state)
+        val time = innerModule.time
+        val innerQuestData = QuestInnerData(questID, innerQuestID, targetDataMap, state, time.start, time.end)
         val questData = if (existQuestData(player, questUUID)) getQuestData(player, questUUID) !!
         else QuestData(questUUID, questID, innerQuestData, state, pData.teamData)
         if (existQuestData(player, questUUID)) {
@@ -328,42 +329,15 @@ object QuestManager {
             questData.state = state
         }
         innerModule.target.forEach {
-            val timeStr = it.time.lowercase()
-            val nowDate = Date()
-            var endTime: Date? = null
-            var timeUnit = "s"
-            if (timeStr != "always") {
-                val timeSpit = timeStr.split(" ")
-                timeUnit = timeSpit[0]
-                when (timeUnit) {
-                    "minute" -> {
-                        endTime = nowDate.add(Calendar.MINUTE, timeSpit[1].toInt())
-                    }
-                    "s" -> {
-                        endTime = nowDate.add(Calendar.SECOND, timeSpit[1].toInt())
-                    }
-                    "date" -> endTime = ("${timeSpit[1]} ${timeSpit[2]}").toDate()
-                    "timing" -> {
-                        val unit = timeSpit[1] // day month year
-                        val int = timeSpit[2].toInt()
-                        val dd = timeSpit[3] // dd
-                        val time = timeSpit[4] // HH:mm:ss
-                        val nowStrYearMM = nowDate.toStrYearMM()
-                        val strYmd = "$nowStrYearMM-$dd".checkDate(nowStrYearMM)
-                        endTime = "$strYmd $time".toDate().add(unit, int)
-                    }
-                }
-            }
-            val targetData = TargetData(questUUID, innerQuestID, it.name, timeUnit, 0,
-                it, nowDate, endTime, questModule.mode.type)
-            targetData.runTime(player, questUUID)
+            val targetData = TargetData(questUUID, innerQuestID, it.name, 0, it)
             targetDataMap[it.name] = targetData
             if (it.name.lowercase().startsWith("task ")) {
-                targetData.runTask(player, questData, innerQuestData)
+                targetData.runTask(player, questData, innerQuestData,questModule.mode.type)
             }
         }
         innerQuestData.targetsData = targetDataMap
         pData.questDataList[questUUID] = questData
+        innerModule.timeAccept(player, innerModule,innerQuestData)
         ControlManager.saveControl(player, pData, innerQuestData)
         if (isNewQuest) {
             Database.database.createQuest(player, questUUID, questData)
@@ -600,10 +574,8 @@ object QuestManager {
      */
     fun getInnerModuleTargetMap(questUUID: UUID, modeType: ModeType, innerModule: QuestInnerModule): MutableMap<String, TargetData> {
         val targetDataMap = mutableMapOf<String, TargetData>()
-        val date = Date()
         innerModule.target.forEach {
-            val targetData = TargetData(questUUID, innerModule.id, it.name, it.time.toTimeUnit(), 0,
-                it, date, null, modeType)
+            val targetData = TargetData(questUUID, innerModule.id, it.name, 0, it)
             targetDataMap[it.name] = targetData
         }
         return targetDataMap

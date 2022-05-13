@@ -31,13 +31,6 @@ inner:
       - id: hello
         # 目标器
         name: break block
-        # 时间框架
-        time:
-          # 类型: ALWAYS, DAY, WEEKLY, MONTHLY, YEARLY, CUSTOM
-          type: WEEKLY
-          duration: 1,00:00:00>1,23:59:59
-          # monthly  duration: 20,00:00:00>31,15:30:00
-          # yearly  duration: 6,15,16:29:30>11,1,00:00:00
         reward: all false
         node: |
           {{block
@@ -54,9 +47,6 @@ inner:
                 - ""
       - id: test
         name: player death
-        time:
-          type: CUSTOM
-          duration: 5 minute
         reward: 1 true
         node: |
           {{cause
@@ -67,6 +57,14 @@ inner:
           - "&8体验舒适的天堂"
           - "    &8进度 &6{0}"
           - ""
+  # 时间框架
+  time:
+    # 类型: ALWAYS, DAY, WEEKLY, MONTHLY, YEARLY, CUSTOM
+    type: WEEKLY
+    # monthly  duration: 20,00:00:00>31,15:30:00
+    # yearly  duration: 6,15,16:29:30>11,1,00:00:00
+    # custom  duration: s/m/h 5
+    duration: 2,00:00:00>2,23:59:59
   control:
     -
       id: control1

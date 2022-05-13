@@ -9,7 +9,7 @@ import taboolib.platform.util.asLangText
 object EditorTarget {
 
     val editMeta = listOf(
-        "NAME", "TIME", "REWARD", "ASYNC", "PERIOD", "CONDITION", "NODE")
+        "NAME", "REWARD", "ASYNC", "PERIOD", "CONDITION", "NODE")
 
    fun Player.editorTarget(questID: String, innerID: String, id: String) {
         val target = QuestManager.getTargetModule(questID, innerID, id)?: return
@@ -25,7 +25,7 @@ object EditorTarget {
             .newLine()
        editMeta.forEach {
            json.append("      "+asLangText("EDITOR-EDIT-TARGET-$it",
-               target.name, target.time.lang(this), target.reward, target.period, target.async))
+               target.name, target.reward, target.period, target.async))
                .append("  "+asLangText("EDITOR-EDIT-TARGET-META"))
                .hoverText(asLangText("EDITOR-EDIT-TARGET-META-HOVER"))
            if (it == "CONDITION") {
