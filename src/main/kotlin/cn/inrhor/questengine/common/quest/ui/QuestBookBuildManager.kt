@@ -171,10 +171,15 @@ object QuestBookBuildManager {
         val innerData = QuestManager.getInnerQuestData(player, questUUID, innerID)?: return mutableListOf()
         val questID = innerData.questID
         val innerModule = QuestManager.getInnerQuestModule(questID, innerID)?: return mutableListOf()
+        var time = "null"
+        val endDate = innerData.end
+        if (endDate != null) {
+            time = TimeUtil.remainDate(player, innerData.state, endDate)
+        }
         ui.noteComponent.values.forEach {
             val note = it.note
             for (i in 0 until note.size) {
-                note[i] = note[i].replaceWithOrder(innerModule.name, innerData.state.toUnit(player))
+                note[i] = note[i].replaceWithOrder(innerModule.name, innerData.state.toUnit(player), time)
             }
             it.note = descSet(it.note, "", questID, innerID)
         }
@@ -194,16 +199,11 @@ object QuestBookBuildManager {
 
     private fun allTargetNoteBuild(player: Player, innerData: QuestInnerData, target: QuestTarget): MutableList<TellrawJson> {
         val tData = innerData.targetsData[target.name]?: return mutableListOf()
-        var time = "null"
-        val endDate = tData.endTimeDate
-        if (endDate != null) {
-            time = TimeUtil.remainDate(player, innerData.state, endDate)
-        }
         val targetUI = buildFrame().loadFrame(target.ui).copy()
         targetUI.noteComponent.values.forEach {
             val note = it.note
             for (i in 0 until note.size) {
-                note[i] = note[i].replaceWithOrder(tData.schedule, time)
+                note[i] = note[i].replaceWithOrder(tData.schedule)
             }
         }
         return targetUI.build(player)

@@ -4,6 +4,7 @@ inner:
     - id: desc
       note:
         - "任务状态： {1}"
+        - "任务时间： {2}"
         - ""
         - "#innerQuest-description"
         - ""

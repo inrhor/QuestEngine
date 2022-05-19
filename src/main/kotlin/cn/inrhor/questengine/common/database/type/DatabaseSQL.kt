@@ -79,6 +79,14 @@ class DatabaseSQL: Database() {
         add("state") {
             type(ColumnTypeSQL.INT, 16)
         }
+        add("time") {
+            type(ColumnTypeSQL.DATETIME)
+        }
+        add("end") {
+            type(ColumnTypeSQL.DATETIME) {
+                def()
+            }
+        }
     }
 
     val tableFinish = Table(table+"_finish", host) {
@@ -128,14 +136,6 @@ class DatabaseSQL: Database() {
         }
         add("schedule") {
             type(ColumnTypeSQL.INT)
-        }
-        add("time") {
-            type(ColumnTypeSQL.DATETIME)
-        }
-        add("end") {
-            type(ColumnTypeSQL.DATETIME) {
-                def()
-            }
         }
     }
 
@@ -219,18 +219,22 @@ class DatabaseSQL: Database() {
                     getString(tableQuest.name+".q_id") to
                     getInt(tableQuest.name+".state") to
                     getString(tableInner.name+".n_id") to
-                    getInt(tableInner.name+".state")
+                    getInt(tableInner.name+".state") to
+                    getDate(tableInner.name+".time") to
+                    getDate(tableInner.name+".end")
         }.forEach {
-            val questUUID = UUID.fromString(it.first.first.first.first)
-            val questID = it.first.first.first.second
-            val qState = it.first.first.second
-            val innerID = it.first.second
-            val nState = it.second
+            val questUUID = UUID.fromString(it.first.first.first.first.first.first)
+            val questID = it.first.first.first.first.first.second
+            val qState = it.first.first.first.first.second
+            val innerID = it.first.first.first.second
+            val nState = it.first.first.second
+            val time = it.first.second
+            val end = it.second?: null
             val qModule = QuestManager.getQuestModule(questID)?: return
             val nModule = QuestManager.getInnerQuestModule(questID, innerID)?: return
             val innerData = QuestInnerData(questID, innerID,
                 QuestManager.getInnerModuleTargetMap(questUUID, qModule.mode.type, nModule),
-                nState.toState())
+                nState.toState(), time, end, rewardMap(uId, questUUID))
             val questData = QuestData(questUUID, questID, innerData, qState.toState(), null, finishInner(uId))
             pData.questDataList[questUUID] = questData
             QuestManager.checkTimeTask(player, questUUID, questID)
@@ -311,16 +315,19 @@ class DatabaseSQL: Database() {
             }
             rows(tableQuest.name+".q_id", tableInner.name+".state")
         }.map {
-            getString(tableQuest.name+".q_id") to getInt(tableInner.name+".state")
+            getString(tableQuest.name+".q_id") to getInt(tableInner.name+".state") to
+                    getDate(tableInner.name+".time") to getDate(tableInner.name+".end")
         }.forEach {
-            val questID = it.first
+            val questID = it.first.first.first
             val questModule = QuestManager.getQuestModule(questID)?: return@forEach
             val innerModule = QuestManager.getInnerQuestModule(questID, innerQuestID)?: return@forEach
             val targets = returnTargets(player, questUUID, innerQuestID,
                 QuestManager.getInnerModuleTargetMap(questUUID, questModule.mode.type, innerModule)
             )
-            val state = it.second.toState()
-            return QuestInnerData(questID, innerQuestID, targets, state, rewardMap(uId, questUUID))
+            val state = it.first.first.second.toState()
+            val time = it.first.second
+            val end = it.second?: null
+            return QuestInnerData(questID, innerQuestID, targets, state, time, end, rewardMap(uId, questUUID))
         }
         return null
     }
@@ -336,17 +343,11 @@ class DatabaseSQL: Database() {
                 "inner" eq nId
             }
         }.map {
-            getString("name") to getInt("schedule") to getDate("time") to getDate("end")
+            getString("name") to getInt("schedule")
         }.forEach {
-            val name = it.first.first.first
+            val name = it.first
             val targetData = targetDataMap[name]?: return@forEach
-            targetData.schedule = it.first.first.second
-            val timeDate = it.first.second
-            targetData.timeDate = timeDate
-            val endTimeDate = it.second?: null
-            targetData.endTimeDate = endTimeDate
-            targetDataMap[name] = targetData
-            targetData.runTime(player, questUUID)
+            targetData.schedule = it.second
         }
         return targetDataMap
     }
@@ -461,6 +462,8 @@ class DatabaseSQL: Database() {
                 }
             }
             set("state", state)
+            set("time", questInnerData.timeDate)
+            set("end",questInnerData.end)
         }
         val nId = findInner(qId, questInnerData.innerQuestID)
         if (!tableReward.find(source) { where { "inner" eq nId } }) {
@@ -498,10 +501,10 @@ class DatabaseSQL: Database() {
             }
             limit(1)
         }.firstOrNull { getLong("id") } ?: -1L
-        createInner(uId, qId, innerData)
+        createInner(qId, innerData)
     }
 
-    private fun createInner(uId: Long, qId: Long, questInnerData: QuestInnerData) {
+    private fun createInner(qId: Long, questInnerData: QuestInnerData) {
         val state = questInnerData.state.toInt()
         tableInner.insert(source, "quest", "n_id", "state") {
             value(qId, questInnerData.innerQuestID, state)
@@ -524,10 +527,10 @@ class DatabaseSQL: Database() {
         var index = 0
         questInnerData.targetsData.forEach { (name, targetData) ->
             val schedule = targetData.schedule
-            tableTarget.insert(source, "inner", "index", "name", "schedule", "time") {
-                value(nId, index, name, schedule, targetData.timeDate)
+            tableTarget.insert(source, "inner", "index", "name", "schedule") {
+                value(nId, index, name, schedule)
             }
-            if (targetData.endTimeDate != null) {
+            /*if (targetData.endTimeDate != null) {
                 tableTarget.update(source) {
                     where {
                         and {
@@ -538,7 +541,7 @@ class DatabaseSQL: Database() {
                     }
                     set("end", targetData.endTimeDate)
                 }
-            }
+            }*/
             index++
         }
     }
