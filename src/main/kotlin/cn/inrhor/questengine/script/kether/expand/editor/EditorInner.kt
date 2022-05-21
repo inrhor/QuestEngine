@@ -1,15 +1,14 @@
 package cn.inrhor.questengine.script.kether.expand.editor
 
-import cn.inrhor.questengine.common.edit.EditorInner.editorInner
-import cn.inrhor.questengine.common.edit.EditorList.editorInnerDesc
-import cn.inrhor.questengine.common.edit.EditorList.editorListInner
-import cn.inrhor.questengine.common.edit.EditorList.editorNextInner
-import cn.inrhor.questengine.common.edit.EditorQuest.editorQuest
+import cn.inrhor.questengine.common.editor.EditorInner.editorInner
+import cn.inrhor.questengine.common.editor.EditorList.editorInnerDesc
+import cn.inrhor.questengine.common.editor.EditorList.editorListInner
+import cn.inrhor.questengine.common.editor.EditorList.editorNextInner
+import cn.inrhor.questengine.common.editor.EditorTime.editTime
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyPlayer
 import taboolib.common.util.addSafely
-import taboolib.common.util.setSafely
 import taboolib.module.kether.ScriptAction
 import taboolib.module.kether.ScriptFrame
 import taboolib.module.kether.script
@@ -55,6 +54,9 @@ class EditorInner(val ui: ActionEditor.InnerUi,
                     }
                     "nextinner" -> {
                         sender.editorNextInner(questID, innerID, page)
+                    }
+                    "time" -> {
+                        sender.editTime(questID, innerID)
                     }
                     "desc" -> {
                         sender.editorInnerDesc(questID, innerID)

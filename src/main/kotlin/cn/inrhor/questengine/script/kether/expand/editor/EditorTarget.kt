@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.script.kether.expand.editor
 
-import cn.inrhor.questengine.common.edit.EditorList.editorTargetList
-import cn.inrhor.questengine.common.edit.EditorTarget.editorTarget
+import cn.inrhor.questengine.common.editor.EditorList.editorTargetList
+import cn.inrhor.questengine.common.editor.EditorTarget.editorTarget
 import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyPlayer
 import taboolib.module.kether.ScriptAction

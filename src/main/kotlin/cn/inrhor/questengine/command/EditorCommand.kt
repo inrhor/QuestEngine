@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.command
 
-import cn.inrhor.questengine.common.edit.EditorHome.editorHome
+import cn.inrhor.questengine.common.editor.EditorHome.editorHome
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.CommandBody
 import taboolib.common.platform.command.subCommand

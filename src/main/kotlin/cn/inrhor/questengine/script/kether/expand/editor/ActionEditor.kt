@@ -24,6 +24,10 @@ class ActionEditor {
         LIST, DEL
     }
 
+    enum class TimeUi {
+        EDIT
+    }
+
     companion object {
         @KetherParser(["editor"], namespace = "QuestEngine", shared = true)
         fun parser() = scriptParser {
@@ -218,6 +222,17 @@ class ActionEditor {
                 }
                 case("dialog") {
                     EditorDialog()
+                }
+                case("time") {
+                    it.mark()
+                    it.expect("in")
+                    when (val ui = TimeUi.valueOf(it.nextToken().uppercase())) {
+                        TimeUi.EDIT -> {
+                            val meta = it.nextToken()
+                            it.expect("select")
+                            EditorTime(ui, it.nextToken(), it.nextToken(), meta)
+                        }
+                    }
                 }
             }
         }

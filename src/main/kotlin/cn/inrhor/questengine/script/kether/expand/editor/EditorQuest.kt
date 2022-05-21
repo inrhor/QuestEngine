@@ -1,12 +1,12 @@
 package cn.inrhor.questengine.script.kether.expand.editor
 
-import cn.inrhor.questengine.common.edit.EditorHome.editorHomeQuest
-import cn.inrhor.questengine.common.edit.EditorList.editorAcceptCondition
-import cn.inrhor.questengine.common.edit.EditorList.editorFailCondition
-import cn.inrhor.questengine.common.edit.EditorList.editorFailScript
-import cn.inrhor.questengine.common.edit.EditorList.editorListQuest
-import cn.inrhor.questengine.common.edit.EditorList.editorStartInner
-import cn.inrhor.questengine.common.edit.EditorQuest.editorQuest
+import cn.inrhor.questengine.common.editor.EditorHome.editorHomeQuest
+import cn.inrhor.questengine.common.editor.EditorList.editorAcceptCondition
+import cn.inrhor.questengine.common.editor.EditorList.editorFailCondition
+import cn.inrhor.questengine.common.editor.EditorList.editorFailScript
+import cn.inrhor.questengine.common.editor.EditorList.editorListQuest
+import cn.inrhor.questengine.common.editor.EditorList.editorStartInner
+import cn.inrhor.questengine.common.editor.EditorQuest.editorQuest
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player

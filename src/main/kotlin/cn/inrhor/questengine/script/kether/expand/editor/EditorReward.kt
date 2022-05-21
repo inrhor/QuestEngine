@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.script.kether.expand.editor
 
-import cn.inrhor.questengine.common.edit.EditorList.editorFinishReward
-import cn.inrhor.questengine.common.edit.EditorList.editorRewardList
+import cn.inrhor.questengine.common.editor.EditorList.editorFinishReward
+import cn.inrhor.questengine.common.editor.EditorList.editorRewardList
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyPlayer

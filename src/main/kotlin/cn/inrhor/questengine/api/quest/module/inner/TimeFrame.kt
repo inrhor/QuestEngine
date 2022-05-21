@@ -13,7 +13,7 @@ class TimeFrame(var type: Type, var duration: String) {
         ALWAYS, DAY, WEEKLY, MONTHLY, YEARLY, CUSTOM
     }
 
-    fun lang(player: Player): String {
+    fun langTime(player: Player): String {
         val sp = duration.split(">")
         val a = sp[0].split(",")
         val b = sp[1].split(",")
