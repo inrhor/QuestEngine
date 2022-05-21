@@ -33,6 +33,7 @@ class EditorTime(val ui: ActionEditor.TimeUi,
                             sender.inputSign(sender.asLangTextList("EDITOR-PLEASE-TIME",
                                 sender.asLangText("EDITOR-TIME-END"),).toTypedArray()) { a ->
                                 inner.time.duration = "${it[3]}>${a[3]}"
+                                QuestManager.saveFile(questID, innerID)
                                 sender.editTime(questID, innerID)
                             }
                         }
@@ -53,6 +54,7 @@ class EditorTime(val ui: ActionEditor.TimeUi,
                                             sender.asLangText("EDITOR-TIME-END")
                                         ).toTypedArray()) { c ->
                                         inner.time.duration = "$week1,${a[3]}>$week2,${c[3]}"
+                                        QuestManager.saveFile(questID, innerID)
                                         sender.editTime(questID, innerID)
                                     }
                                 }
@@ -70,6 +72,7 @@ class EditorTime(val ui: ActionEditor.TimeUi,
                                     sender.inputSign(sender.asLangTextList("EDITOR-PLEASE-TIME",
                                         sender.asLangText("EDITOR-TIME-END")).toTypedArray()) { c ->
                                         inner.time.duration = "${it[3]},${a[3]}>${b[3]},${c[3]}"
+                                        QuestManager.saveFile(questID, innerID)
                                         sender.editTime(questID, innerID)
                                     }
                                 }
@@ -102,6 +105,7 @@ class EditorTime(val ui: ActionEditor.TimeUi,
                                                     sender.asLangText("EDITOR-TIME-END")
                                                 ).toTypedArray()) { e ->
                                                 inner.time.duration = "$m1,${a[3]},${b[3]}>$m2,${d[3]},${e[3]}"
+                                                QuestManager.saveFile(questID, innerID)
                                                 sender.editTime(questID, innerID)
                                             }
                                         }
@@ -113,7 +117,8 @@ class EditorTime(val ui: ActionEditor.TimeUi,
                     "custom" -> {
                         val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return frameVoid()
                         sender.inputSign(sender.asLangTextList("EDITOR-PLEASE-TIME-CUSTOM").toTypedArray()) {
-                            inner.time.duration = it[3]
+                            inner.time.duration = it[2]
+                            QuestManager.saveFile(questID, innerID)
                             sender.editTime(questID, innerID)
                         }
                     }
@@ -128,8 +133,10 @@ class EditorTime(val ui: ActionEditor.TimeUi,
                 time.type = TimeFrame.Type.valueOf(change.uppercase())
                 time.duration = ""
                 if (time.type != TimeFrame.Type.ALWAYS) {
-                    runEval(sender, "/qen eval editor time in edit $change select $questID $inner")
+                    runEval(sender, "editor time in edit $change select $questID $innerID")
                 }
+                QuestManager.saveFile(questID, innerID)
+                sender.selectTimeType(questID, innerID)
             }
         }
         return frameVoid()

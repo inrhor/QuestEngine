@@ -28,7 +28,7 @@ object EditorTime {
             .append("  "+asLangText("EDITOR-EDIT-TIME-META"))
             .hoverText(asLangText("EDITOR-EDIT-TIME-META-HOVER"))
             .runCommand("/qen eval editor time in edit type select $questID $innerID").newLine()
-            .append("      "+asLangText("EDITOR-EDIT-TIME-${time.type}", time.langTime(this)))
+            .append("      "+asLangText("EDITOR-EDIT-TIME-DUR", time.langTime(this)))
             if (time.type != TimeFrame.Type.ALWAYS) {
                 json.append("  "+asLangText("EDITOR-EDIT-TIME-META"))
                     .hoverText(asLangText("EDITOR-EDIT-TIME-META-HOVER"))
@@ -41,7 +41,7 @@ object EditorTime {
         val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
         val json = TellrawJson()
             .newLine()
-            .append("   "+asLangText("EDITOR-EDIT-TIME", questID, innerID))
+            .append("   "+asLangText("EDITOR-EDIT-TIME-SELECT", questID, innerID))
             .newLine()
             .append("      "+asLangText("EDITOR-BACK"))
             .append("  "+asLangText("EDITOR-BACK-META"))
@@ -52,9 +52,10 @@ object EditorTime {
         listOf("ALWAYS", "DAY", "WEEKLY", "MONTHLY", "YEARLY", "CUSTOM").forEach {
             json.append("      "+asLangText("EDITOR-EDIT-TIME-TYPE-$it"))
             if (inner.time.type != TimeFrame.Type.valueOf(it)) {
-                json.append("  "+asLangText("EDITOR-EDIT-TIME-SELECT_1")).newLine()
+                json.append("  "+asLangText("EDITOR-EDIT-TIME-SELECT_1"))
                     .hoverText(asLangText("EDITOR-EDIT-TIME-SELECT-HOVER"))
                     .runCommand("/qen eval editor time in change type to ${it.lowercase()} select $questID $innerID")
+                    .newLine()
             }else {
                 json.append("  "+asLangText("EDITOR-EDIT-TIME-SELECT_2")).newLine()
             }

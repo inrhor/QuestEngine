@@ -2,7 +2,6 @@ package cn.inrhor.questengine.api.quest.module.inner
 
 import org.bukkit.entity.Player
 import taboolib.platform.util.asLangText
-import java.text.SimpleDateFormat
 import java.util.*
 
 class TimeFrame(var type: Type, var duration: String) {
@@ -14,6 +13,7 @@ class TimeFrame(var type: Type, var duration: String) {
     }
 
     fun langTime(player: Player): String {
+        if (type == Type.ALWAYS || duration.isEmpty()) return player.asLangText("QUEST-ALWAYS")
         val sp = duration.split(">")
         val a = sp[0].split(",")
         val b = sp[1].split(",")
@@ -32,8 +32,10 @@ class TimeFrame(var type: Type, var duration: String) {
                     a[0],a[1],b[0],b[1])
             }
             Type.YEARLY -> {
-                player.asLangText("TIME-FRAME-YEARLY",
-                    a[0],a[1],a[2],b[0],b[1],b[2])
+                player.asLangText(
+                    "TIME-FRAME-YEARLY",
+                    a[0], a[1], a[2], b[0], b[1], b[2]
+                )
             }
             else -> player.asLangText("QUEST-ALWAYS")
         }
