@@ -1,7 +1,10 @@
 package cn.inrhor.questengine.script.kether.expand.editor
 
+import cn.inrhor.questengine.api.quest.module.inner.TimeFrame
 import cn.inrhor.questengine.common.editor.EditorTime.editTime
+import cn.inrhor.questengine.common.editor.EditorTime.selectTimeType
 import cn.inrhor.questengine.common.quest.manager.QuestManager
+import cn.inrhor.questengine.script.kether.runEval
 import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyPlayer
 import taboolib.module.kether.ScriptAction
@@ -21,7 +24,7 @@ class EditorTime(val ui: ActionEditor.TimeUi,
             ActionEditor.TimeUi.EDIT -> {
                 when (meta.lowercase()) {
                     "type" -> {
-
+                        sender.selectTimeType(questID, innerID)
                     }
                     "day" -> {
                         val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return frameVoid()
@@ -117,6 +120,15 @@ class EditorTime(val ui: ActionEditor.TimeUi,
                     else -> {
                         sender.editTime(questID, innerID)
                     }
+                }
+            }
+            ActionEditor.TimeUi.CHANGE -> {
+                val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return frameVoid()
+                val time = inner.time
+                time.type = TimeFrame.Type.valueOf(change.uppercase())
+                time.duration = ""
+                if (time.type != TimeFrame.Type.ALWAYS) {
+                    runEval(sender, "/qen eval editor time in edit $change select $questID $inner")
                 }
             }
         }

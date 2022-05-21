@@ -25,7 +25,7 @@ class ActionEditor {
     }
 
     enum class TimeUi {
-        EDIT
+        EDIT,CHANGE
     }
 
     companion object {
@@ -231,6 +231,13 @@ class ActionEditor {
                             val meta = it.nextToken()
                             it.expect("select")
                             EditorTime(ui, it.nextToken(), it.nextToken(), meta)
+                        }
+                        TimeUi.CHANGE -> {
+                            val meta = it.nextToken()
+                            it.expect("to")
+                            val change = it.nextToken()
+                            it.expect("select")
+                            EditorTime(ui, it.nextToken(), it.nextToken(), meta, change)
                         }
                     }
                 }
