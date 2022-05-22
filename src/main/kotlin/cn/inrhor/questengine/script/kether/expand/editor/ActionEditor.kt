@@ -13,7 +13,7 @@ class ActionEditor {
     }
 
     enum class TargetUi {
-        LIST,EDIT,ADD
+        LIST,EDIT,ADD,SEL,CHANGE
     }
 
     enum class RewardUi {
@@ -169,6 +169,19 @@ class ActionEditor {
                         TargetUi.ADD -> {
                             it.expect("select")
                             EditorTarget(ui, it.nextToken(), it.nextToken())
+                        }
+                        TargetUi.SEL -> {
+                            it.expect("page")
+                            val page = it.nextInt()
+                            it.expect("select")
+                            EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), page = page)
+                        }
+                        TargetUi.CHANGE -> {
+                            val meta = it.nextToken()
+                            it.expect("to")
+                            val change = it.nextToken()
+                            it.expect("select")
+                            EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), meta, change)
                         }
                         else -> error("unknown ui")
                     }

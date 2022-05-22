@@ -26,7 +26,7 @@ object TNpcLeft: TargetExtend<NPCLeftClickEvent>() {
         val questData = QuestManager.getDoingQuest(player, true) ?: return
         val targetData = QuestManager.getDoingTarget(questData, name) ?: return
         val innerTarget = targetData.questTarget
-        if (TriggerUtils.idTrigger(innerTarget, npcID) && TriggerUtils.booleanTrigger(player, targetData)) {
+        if (TriggerUtils.idTrigger(innerTarget, npcID)) {
             TriggerUtils.booleanTrigger(player, targetData)
         }
     }

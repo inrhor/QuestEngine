@@ -137,6 +137,7 @@ object EditorList {
     fun Player.editorTargetList(questID: String, innerID: String, page: Int = 0) {
         val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
         EditorTargetList(this, asLangText("EDITOR-TARGET", questID, innerID))
+            .editorBack(this, "/qen eval editor inner in edit home select $questID $innerID")
             .add(asLangText("EDITOR-TARGET-ADD"),
                 EditorListModule.EditorButton(asLangText("EDITOR-TARGET-ADD-META"),
                     asLangText("EDITOR-TARGET-ADD-HOVER"),
@@ -147,7 +148,7 @@ object EditorList {
             EditorListModule.EditorButton("EDITOR-TARGET-EDIT"),
             EditorListModule.EditorButton("EDITOR-TARGET-EDIT-META",
                 "EDITOR-TARGET-EDIT-HOVER",
-                "/qen eval target in edit home select $questID $innerID {targetID}"))
+                "/qen eval editor target in edit home select $questID $innerID {targetID}"))
             .json.sendTo(adaptPlayer(this))
     }
 
@@ -196,10 +197,10 @@ object EditorList {
             .editorBack(this,
                 "/qen eval editor target in edit home select $questID $innerID $targetID")
             .list(page, 7, RegisterTarget.saveTarget.map { it.key }, true, "EDITOR-SELECT",
-                "qen eval editor target in sel page {page} select $questID $innerID",
+                "qen eval editor target in sel page {page} select $questID $innerID $targetID",
                 EditorListModule.EditorButton("EDITOR-SELECT-TARGET-SEL",
                     "EDITOR-SELECT-TARGET-SEL-HOVER",
-                    "/qen eval editor target in change name to {targetName} select $questID $innerID"))
+                    "/qen eval editor target in change name to {targetName} select $questID $innerID $targetID"))
             .json.sendTo(adaptPlayer(this))
     }
 }

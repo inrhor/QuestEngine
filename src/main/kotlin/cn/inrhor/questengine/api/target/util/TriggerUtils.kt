@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack
 object TriggerUtils {
 
     fun idTrigger(target: QuestTarget, id: String): Boolean {
-        val idCon = target.nodeMeta(id)?: return false
+        val idCon = target.nodeMeta("id")?: return false
         idCon.forEach {
             if (id == it) return true
         }

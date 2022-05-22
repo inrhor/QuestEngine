@@ -18,6 +18,16 @@ class QuestInnerModule(var id: String, var name: String,
     constructor(): this("innerIDNull", "null inner name", "",listOf(), QuestReward(),
         TimeFrame(), mutableListOf(), mutableListOf())
 
+    fun existTargetID(id: String): Boolean {
+        target.forEach { if (it.id == id) return true }
+        return false
+    }
+
+    fun existControlID(id: String): Boolean {
+        control.forEach { if (it.id == id) return true }
+        return false
+    }
+
     private fun acceptInner(player: Player, innerData: QuestInnerData) {
         if (innerData.state == QuestState.FAILURE) {
             QuestManager.acceptInnerQuest(player, innerData.questID, id, false)

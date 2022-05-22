@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.api.target
 
-import cn.inrhor.questengine.common.quest.target.TBreakBlock
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 
@@ -8,11 +7,23 @@ object RegisterTarget {
 
     @Awake(LifeCycle.LOAD)
     fun loadNode() {
-        add(
-            TBreakBlock.name,
-            TargetNode("block", TargetNodeType.LIST),
-            TargetNode("amount", TargetNodeType.INT)
-        )
+        val block = TargetNode("block", TargetNodeType.LIST)
+        val amount = TargetNode("amount", TargetNodeType.INT)
+        val number = TargetNode("number", TargetNodeType.INT)
+        val id = TargetNode("id", TargetNodeType.LIST)
+        val need = TargetNode("need", TargetNodeType.BOOLEAN)
+        add("break block", block, amount)
+        add("place block", block, amount)
+        add("pass collection packet", number, TargetNode("packetID", TargetNodeType.STRING))
+        add("enchant item", TargetNode("cost", TargetNodeType.DOUBLE), number)
+        add("player kill entity", number, TargetNode("entity", TargetNodeType.STRING))
+        add("left npc", id, need)
+        add("right npc", id, need)
+        add("player chat", TargetNode("message", TargetNodeType.STRING), number)
+        add("player send command", TargetNode("content", TargetNodeType.STRING), number)
+        add("player death", TargetNode("cause", TargetNodeType.LIST), number)
+        add("player join server", number)
+        add("player quit server", number)
         add("TASK")
     }
 
@@ -32,7 +43,7 @@ object RegisterTarget {
 }
 
 enum class TargetNodeType {
-    STRING,INT,BOOLEAN,LIST
+    STRING,INT,DOUBLE,BOOLEAN,LIST
 }
 
 class TargetNode(node: String, nodeType: TargetNodeType)

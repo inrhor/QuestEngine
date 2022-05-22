@@ -1,15 +1,10 @@
 package cn.inrhor.questengine.common.editor.list
 
-import cn.inrhor.questengine.script.kether.EvalType
-import cn.inrhor.questengine.script.kether.feedbackEval
-import cn.inrhor.questengine.script.kether.testEval
-import cn.inrhor.questengine.script.kether.lang
 import org.bukkit.entity.Player
 import taboolib.module.chat.TellrawJson
-import taboolib.module.chat.colored
 import taboolib.platform.util.asLangText
 
-class EditorSelTarget(player: Player, header: String, json: TellrawJson = TellrawJson(), val empty: String = "        ") : EditorListModule(player, header, json) {
+class EditorSelTarget(player: Player, header: String, json: TellrawJson = TellrawJson()) : EditorListModule(player, header, json) {
 
     override fun listAppend(content: String, split: Boolean, index: Int, list: List<*>, button: Array<out EditorButton>) {
         if (list.isEmpty()) return
@@ -17,11 +12,8 @@ class EditorSelTarget(player: Player, header: String, json: TellrawJson = Tellra
         val get = l[index]
         val name = if (get.startsWith("TASK ")) "task xxx" else get.replace(" ", "-").uppercase()
         json.append("      "+player.asLangText("$content-$name", get))
-        var sum = 0
         button.forEach {
-            val bl = if (split && (sum%2 == 0)) empty else " "
-            sum++
-            json.append(bl+player.asLangText(it.content))
+            json.append("  "+player.asLangText(it.content))
             if (it.hover.isNotEmpty()) json.hoverText(player.asLangText(it.hover))
             json.runCommand(it.command.replace("{targetName}", "'$get'")).newLine()
         }

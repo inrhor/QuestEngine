@@ -11,16 +11,16 @@ object EditorTarget {
     val editMeta = listOf(
         "NAME", "REWARD", "ASYNC", "PERIOD", "CONDITION", "NODE")
 
-   fun Player.editorTarget(questID: String, innerID: String, id: String) {
-        val target = QuestManager.getTargetModule(questID, innerID, id)?: return
+   fun Player.editorTarget(questID: String, innerID: String, targetID: String) {
+        val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return
         val json = TellrawJson()
             .newLine()
-            .append("   "+asLangText("EDITOR-EDIT-TARGET", questID, innerID, name))
+            .append("   "+asLangText("EDITOR-EDIT-TARGET", questID, innerID, targetID))
             .newLine()
             .append("      "+asLangText("EDITOR-BACK"))
             .append("  "+asLangText("EDITOR-BACK-META"))
             .hoverText(asLangText("EDITOR-BACK-HOVER"))
-            .runCommand("/qen eval editor inner in edit home select $questID $innerID")
+            .runCommand("/qen eval editor target in list page 0 select $questID $innerID $targetID")
             .newLine()
             .newLine()
        editMeta.forEach {
@@ -29,10 +29,11 @@ object EditorTarget {
                .append("  "+asLangText("EDITOR-EDIT-TARGET-META"))
                .hoverText(asLangText("EDITOR-EDIT-TARGET-META-HOVER"))
            if (it == "CONDITION") {
-               json.runCommand("/qen eval editor target in edit "+it.lowercase()+" page 0 select $questID $innerID ${target.id}")
+               json.runCommand("/qen eval editor target in edit "+it.lowercase()+" page 0 select $questID $innerID $targetID")
            }else {
-               json.runCommand("/qen eval editor quest in edit "+it.lowercase()+" select $questID")
+               json.runCommand("/qen eval editor target in edit "+it.lowercase()+" select $questID $innerID $targetID")
            }
+           json.newLine()
        }
         json.newLine().sendTo(adaptPlayer(this))
     }

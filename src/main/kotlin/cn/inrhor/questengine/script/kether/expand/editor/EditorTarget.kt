@@ -5,6 +5,7 @@ import cn.inrhor.questengine.common.editor.EditorList.editorTargetList
 import cn.inrhor.questengine.common.editor.EditorList.selectTargetList
 import cn.inrhor.questengine.common.editor.EditorTarget.editorTarget
 import cn.inrhor.questengine.common.quest.manager.QuestManager
+import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyPlayer
 import taboolib.module.kether.ScriptAction
@@ -12,6 +13,7 @@ import taboolib.module.kether.ScriptFrame
 import taboolib.module.kether.script
 import taboolib.module.nms.inputSign
 import taboolib.platform.util.asLangText
+import taboolib.platform.util.sendLang
 import java.util.concurrent.CompletableFuture
 
 class EditorTarget(val ui: ActionEditor.TargetUi,
@@ -20,6 +22,17 @@ class EditorTarget(val ui: ActionEditor.TargetUi,
     override fun run(frame: ScriptFrame): CompletableFuture<Void> {
         val sender = (frame.script().sender as? ProxyPlayer ?: error("unknown player")).cast<Player>()
         when (ui) {
+            ActionEditor.TargetUi.CHANGE -> {
+                when (meta) {
+                    "name" -> {
+                        val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return frameVoid()
+                        target.name = change
+                        target.node = ""
+                        QuestManager.saveFile(questID, innerID)
+                        sender.editorTarget(questID, innerID, targetID)
+                    }
+                }
+            }
             ActionEditor.TargetUi.LIST -> {
                 sender.editorTargetList(questID, innerID, page)
             }
@@ -32,14 +45,21 @@ class EditorTarget(val ui: ActionEditor.TargetUi,
             }
             ActionEditor.TargetUi.ADD -> {
                 sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-TARGET-ID"))) {
-                    val target = QuestTarget()
-                    val id = it[1]
-                    target.id = id
                     val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return@inputSign
+                    val id = it[1]
+                    if (inner.existTargetID(id)) {
+                        sender.sendLang("EXIST-TARGET-ID", UtilString.pluginTag, id)
+                        return@inputSign
+                    }
+                    val target = QuestTarget()
+                    target.id = id
                     inner.target.add(target)
                     QuestManager.saveFile(questID, innerID)
                     sender.selectTargetList(questID, innerID, id)
                 }
+            }
+            ActionEditor.TargetUi.SEL -> {
+                sender.selectTargetList(questID, innerID, targetID, page)
             }
         }
         return frameVoid()
