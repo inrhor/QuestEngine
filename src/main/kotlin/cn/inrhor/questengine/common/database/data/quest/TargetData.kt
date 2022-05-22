@@ -68,7 +68,7 @@ class TargetData(
         members.forEach {
             val pData = DataStorage.getPlayerData(it)
             val qData = pData.questDataList[questData.questUUID]?: return false
-            val tData = qData.questInnerData.targetsData[name]?: return false
+            val tData = qData.questInnerData.getTargetData(name)?: return false
             if (tData.schedule >= 1) i++
         }
         return members.size <= i

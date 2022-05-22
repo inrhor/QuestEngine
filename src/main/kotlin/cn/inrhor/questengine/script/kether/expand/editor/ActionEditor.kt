@@ -13,7 +13,7 @@ class ActionEditor {
     }
 
     enum class TargetUi {
-        LIST,EDIT
+        LIST,EDIT,ADD
     }
 
     enum class RewardUi {
@@ -98,7 +98,7 @@ class ActionEditor {
                         }
                         InnerUi.ADD -> {
                             it.expect("select")
-                            EditorInner(ui, it.nextToken())
+                            EditorInner(ui, it.nextToken(), it.nextToken())
                         }
                         InnerUi.DEL -> {
                             it.expect("select")
@@ -165,6 +165,10 @@ class ActionEditor {
                                     EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), meta)
                                 }
                             }
+                        }
+                        TargetUi.ADD -> {
+                            it.expect("select")
+                            EditorTarget(ui, it.nextToken(), it.nextToken())
                         }
                         else -> error("unknown ui")
                     }

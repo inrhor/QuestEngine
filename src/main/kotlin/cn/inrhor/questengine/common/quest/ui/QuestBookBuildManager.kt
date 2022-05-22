@@ -198,7 +198,7 @@ object QuestBookBuildManager {
     }
 
     private fun allTargetNoteBuild(player: Player, innerData: QuestInnerData, target: QuestTarget): MutableList<TellrawJson> {
-        val tData = innerData.targetsData[target.name]?: return mutableListOf()
+        val tData = innerData.getTargetData(target.name)?: return mutableListOf()
         val targetUI = buildFrame().loadFrame(target.ui).copy()
         targetUI.noteComponent.values.forEach {
             val note = it.note

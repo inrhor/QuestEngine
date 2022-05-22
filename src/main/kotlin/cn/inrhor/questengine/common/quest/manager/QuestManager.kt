@@ -329,7 +329,7 @@ object QuestManager {
         }
         innerModule.target.forEach {
             val targetData = TargetData(questUUID, innerQuestID, it.name, 0, it)
-            targetDataMap[it.name] = targetData
+            targetDataMap[it.id] = targetData
             if (it.name.lowercase().startsWith("task ")) {
                 targetData.runTask(player, questData, innerQuestData,questModule.mode.type)
             }
@@ -560,10 +560,7 @@ object QuestManager {
      * 获得内部任务目标数据
      */
     fun getDoingTarget(questData: QuestData, name: String): TargetData? {
-        questData.questInnerData.targetsData.forEach { (n, t) ->
-            if (name == n) return t
-        }
-        return null
+        return questData.questInnerData.getTargetData(name)
     }
 
     /**
@@ -575,7 +572,7 @@ object QuestManager {
         val targetDataMap = mutableMapOf<String, TargetData>()
         innerModule.target.forEach {
             val targetData = TargetData(questUUID, innerModule.id, it.name, 0, it)
-            targetDataMap[it.name] = targetData
+            targetDataMap[it.id] = targetData
         }
         return targetDataMap
     }

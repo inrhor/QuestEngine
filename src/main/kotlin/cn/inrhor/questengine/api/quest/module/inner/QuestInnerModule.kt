@@ -6,7 +6,6 @@ import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.script.kether.runEval
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.submit
-import java.text.SimpleDateFormat
 import java.util.*
 
 class QuestInnerModule(var id: String, var name: String,
@@ -20,21 +19,15 @@ class QuestInnerModule(var id: String, var name: String,
         TimeFrame(), mutableListOf(), mutableListOf())
 
     private fun acceptInner(player: Player, innerData: QuestInnerData) {
-        if (innerData.targetsData.containsKey(id)) {
-            val inD = innerData.targetsData[id]!!
-            if (inD.state == QuestState.FAILURE) {
-                QuestManager.acceptInnerQuest(player, innerData.questID, id, false)
-            }
+        if (innerData.state == QuestState.FAILURE) {
+            QuestManager.acceptInnerQuest(player, innerData.questID, id, false)
         }
     }
 
     private fun timeout(player: Player, innerModule: QuestInnerModule, innerData: QuestInnerData) {
-        if (innerData.targetsData.containsKey(id)) {
-            val inD = innerData.targetsData[id]!!
-            if (inD.state != QuestState.FAILURE) {
-                inD.state = QuestState.FAILURE
-                runEval(player, innerModule.reward.fail)
-            }
+        if (innerData.state != QuestState.FAILURE) {
+            innerData.state = QuestState.FAILURE
+            runEval(player, innerModule.reward.fail)
         }
     }
 

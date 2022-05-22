@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.editor
 
+import cn.inrhor.questengine.api.target.RegisterTarget
 import cn.inrhor.questengine.common.editor.list.*
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player
@@ -136,6 +137,10 @@ object EditorList {
     fun Player.editorTargetList(questID: String, innerID: String, page: Int = 0) {
         val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
         EditorTargetList(this, asLangText("EDITOR-TARGET", questID, innerID))
+            .add(asLangText("EDITOR-TARGET-ADD"),
+                EditorListModule.EditorButton(asLangText("EDITOR-TARGET-ADD-META"),
+                    asLangText("EDITOR-TARGET-ADD-HOVER"),
+                    "/qen eval editor target in add select $questID $innerID"))
             .list(page, 7, inner.target, true,
                 "EDITOR-TARGET-LIST",
                 "qen eval editor target in list page {page} select $questID $innerID",
@@ -183,6 +188,18 @@ object EditorList {
                 EditorListModule.EditorButton("EDITOR-LIST-DEL"),
                 EditorListModule.EditorButton("EDITOR-LIST-META", "EDITOR-LIST-HOVER",
                     "/qen eval editor fail in del {index} select $questID $innerID"))
+            .json.sendTo(adaptPlayer(this))
+    }
+
+    fun Player.selectTargetList(questID: String, innerID: String, targetID: String, page: Int = 0) {
+        EditorSelTarget(this, asLangText("EDITOR-SELECT-TARGET", questID, innerID, targetID))
+            .editorBack(this,
+                "/qen eval editor target in edit home select $questID $innerID $targetID")
+            .list(page, 7, RegisterTarget.saveTarget.map { it.key }, true, "EDITOR-SELECT",
+                "qen eval editor target in sel page {page} select $questID $innerID",
+                EditorListModule.EditorButton("EDITOR-SELECT-TARGET-SEL",
+                    "EDITOR-SELECT-TARGET-SEL-HOVER",
+                    "/qen eval editor target in change name to {targetName} select $questID $innerID"))
             .json.sendTo(adaptPlayer(this))
     }
 }

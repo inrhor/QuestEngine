@@ -23,7 +23,7 @@ taboolib {
     description {
         contributors {
             name("inrhor")
-            desc("Minecraft Quest Engine System")
+            desc("Minecraft Quest Engine Core")
         }
         dependencies {
             name("Adyeshach").optional(true)
@@ -35,7 +35,7 @@ taboolib {
         prefix("QuestEngine")
     }
     classifier = null
-    version = "6.0.7-64"
+    version = "6.0.8-3"
 }
 
 repositories {

@@ -23,7 +23,7 @@ object Schedule {
         val target = (QuestManager.getDoingTarget(questData, name)?: return false).questTarget
         val con = target.nodeMeta(meta)?: return false
         val questInnerData = questData.questInnerData
-        val targetData = questInnerData.targetsData[name]?: return false
+        val targetData = questInnerData.getTargetData(name)?: return false
         return run(player, name, questData, targetData, con[0].toInt())
     }
 

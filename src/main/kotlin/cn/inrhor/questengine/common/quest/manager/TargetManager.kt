@@ -20,7 +20,7 @@ object TargetManager {
             for (mUUID in questData.teamData!!.members) {
                 val m = Bukkit.getPlayer(mUUID)?: continue
                 val innerData = QuestManager.getInnerQuestData(m, questData.questUUID)?: continue
-                val tgData = innerData.targetsData[name]?: continue
+                val tgData = innerData.getTargetData(name)?: continue
                 schedule += tgData.schedule
             }
             return schedule

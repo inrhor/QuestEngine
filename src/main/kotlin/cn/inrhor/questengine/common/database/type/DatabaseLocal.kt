@@ -90,7 +90,7 @@ class DatabaseLocal: Database() {
                 val nodeInner = node+"innerQuest."
 
                 val innerQuestID = data.getString(nodeInner+"innerQuestID")?: return@forEach
-                val questInnerData = getInnerQuestData(data, nodeInner, player, questUUID, innerQuestID)?: return@forEach
+                val questInnerData = getInnerQuestData(data, nodeInner, questUUID, innerQuestID)?: return@forEach
                 val finished = data.getStringList(node+"finishedQuest").toMutableSet()
 
                 val state = (data.getString(node+"state")?: "IDLE").toState()
@@ -122,10 +122,10 @@ class DatabaseLocal: Database() {
         val uuid = player.uniqueId
         val data = getLocal(uuid)
         val node = "quest.$questUUID.innerQuest."
-        return getInnerQuestData(data, node, player, questUUID, innerQuestID)
+        return getInnerQuestData(data, node, questUUID, innerQuestID)
     }
 
-    private fun getInnerQuestData(data: Configuration, node: String, player: Player, questUUID: UUID, innerQuestID: String): QuestInnerData? {
+    private fun getInnerQuestData(data: Configuration, node: String, questUUID: UUID, innerQuestID: String): QuestInnerData? {
         val rewardInner = returnRewardData(data, node)
         val innerState = (data.getString(node+"state")?: "IDLE").toState()
         val questID = data.getString("quest.$questUUID.questID")?: return null
@@ -141,11 +141,11 @@ class DatabaseLocal: Database() {
 
     private fun returnTargets(data: Configuration, node: String, targetDataMap: MutableMap<String, TargetData>): MutableMap<String, TargetData> {
         if (!data.contains(node+"targets")) return targetDataMap
-        for (name in data.getConfigurationSection(node+"targets")!!.getKeys(false)) {
-            val nodeTarget = node+"targets.$name."
-            val targetData = targetDataMap[name]?: continue
+        for (id in data.getConfigurationSection(node+"targets")!!.getKeys(false)) {
+            val nodeTarget = node+"targets.$id."
+            val targetData = targetDataMap[id]?: continue
             targetData.schedule  = data.getInt(nodeTarget+"schedule")
-            targetDataMap[name] = targetData
+            targetDataMap[id] = targetData
         }
         return targetDataMap
     }
@@ -212,9 +212,9 @@ class DatabaseLocal: Database() {
         questInnerData.rewardState.forEach { (rewardID, has) ->
             data[node+"rewards.$rewardID.has"] = has
         }
-        questInnerData.targetsData.forEach { (name, targetData) ->
+        questInnerData.targetsData.forEach { (id, targetData) ->
             val schedule = targetData.schedule
-            data[node+"targets.$name.schedule"] = schedule
+            data[node+"targets.$id.schedule"] = schedule
         }
         setTimeDate(data, node+"timeDate", questInnerData.timeDate)
         val endTimeDate = questInnerData.end?: return

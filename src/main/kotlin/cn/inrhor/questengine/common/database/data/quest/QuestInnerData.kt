@@ -12,6 +12,15 @@ class QuestInnerData(
     var state: QuestState, var timeDate: Date = Date(), var end: Date? = null,
     var rewardState: MutableMap<String, Boolean> = mutableMapOf()) {
 
+    fun getTargetData(name: String, finish: Boolean = false): TargetData? {
+        targetsData.values.forEach {
+            if (it.name == name) {
+                if (finish && it.state == QuestState.FINISH) return it
+            }
+        }
+        return null
+    }
+
     fun updateTime(timeFrame: TimeFrame) {
         timeDate = Date()
         val type = timeFrame.type

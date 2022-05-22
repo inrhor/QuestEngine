@@ -124,8 +124,8 @@ class DatabaseSQL: Database() {
                 options(ColumnOptionSQL.KEY)
             }
         }
-        add("index") {
-            type(ColumnTypeSQL.INT) {
+        add("id") {
+            type(ColumnTypeSQL.VARCHAR, 64) {
                 options(ColumnOptionSQL.KEY)
             }
         }
@@ -338,15 +338,15 @@ class DatabaseSQL: Database() {
         val qId = findQuest(uId, questUUID)
         val nId = findInner(qId, innerQuestID)
         tableTarget.select(source) {
-            rows("name", "schedule", "time", "end")
+            rows("id", "schedule")
             where {
                 "inner" eq nId
             }
         }.map {
-            getString("name") to getInt("schedule")
+            getString("id") to getInt("schedule")
         }.forEach {
-            val name = it.first
-            val targetData = targetDataMap[name]?: return@forEach
+            val id = it.first
+            val targetData = targetDataMap[id]?: return@forEach
             targetData.schedule = it.second
         }
         return targetDataMap
@@ -524,25 +524,11 @@ class DatabaseSQL: Database() {
     }
 
     private fun createTarget(nId: Long, questInnerData: QuestInnerData) {
-        var index = 0
-        questInnerData.targetsData.forEach { (name, targetData) ->
+        questInnerData.targetsData.forEach { (id, targetData) ->
             val schedule = targetData.schedule
-            tableTarget.insert(source, "inner", "index", "name", "schedule") {
-                value(nId, index, name, schedule)
+            tableTarget.insert(source, "inner", "id", "name", "schedule") {
+                value(nId, id, targetData.name, schedule)
             }
-            /*if (targetData.endTimeDate != null) {
-                tableTarget.update(source) {
-                    where {
-                        and {
-                            "inner" eq nId
-                            "index" eq index
-                            "name" eq name
-                        }
-                    }
-                    set("end", targetData.endTimeDate)
-                }
-            }*/
-            index++
         }
     }
 
@@ -553,20 +539,18 @@ class DatabaseSQL: Database() {
     }
 
     private fun updateTarget(qId: Long, questInnerData: QuestInnerData) {
-        var index = 0
         val nId = findInner(qId, questInnerData.innerQuestID)
-        questInnerData.targetsData.values.forEach {
-            val schedule = it.schedule
+        questInnerData.targetsData.forEach { (t, u) ->
+            val schedule = u.schedule
             tableTarget.update(source) {
                 where {
                     and {
                         "inner" eq nId
-                        "index" eq index
+                        "id" eq t
                     }
                 }
                 set("schedule", schedule)
             }
-            index++
         }
     }
 

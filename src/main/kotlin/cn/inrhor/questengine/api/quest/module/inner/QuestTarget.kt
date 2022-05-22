@@ -4,7 +4,7 @@ import cn.inrhor.questengine.api.ui.UiFrame
 import cn.inrhor.questengine.utlis.variableReader
 
 
-class QuestTarget(val id: String, val name: String, val reward: String,
+class QuestTarget(var id: String, var name: String, val reward: String,
                   var period: Int, var async: Boolean, var condition: List<String>,
                   val node: String, val ui: UiFrame
 ) {

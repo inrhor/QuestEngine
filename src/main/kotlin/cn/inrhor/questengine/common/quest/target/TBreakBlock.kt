@@ -28,10 +28,11 @@ object TBreakBlock: TargetExtend<BlockBreakEvent>() {
     private fun blockMatch(player: Player, name: String, questData: QuestData, blockMaterial: Material): Boolean {
         val targetData = QuestManager.getDoingTarget(questData, name)?: return false
         val target = targetData.questTarget
-        val blockCondition = target.nodeMeta("block")?: return false
-        val material = blockCondition[0].uppercase()
-        val amount = blockCondition[1].toInt()
-        if (material == blockMaterial.name) {
+        val block = target.nodeMeta("block")?: return false
+        val material = block.toList()
+        val am = target.nodeMeta("amount")?: return false
+        val amount = am[1].toInt()
+        if (material.contains(blockMaterial.name)) {
             return Schedule.run(player, name, questData, targetData, amount)
         }
         return true
