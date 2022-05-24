@@ -2,6 +2,7 @@ package cn.inrhor.questengine.script.kether.expand.editor
 
 import cn.inrhor.questengine.api.quest.module.inner.QuestTarget
 import cn.inrhor.questengine.common.editor.EditorList.editorTargetList
+import cn.inrhor.questengine.common.editor.EditorList.selectReward
 import cn.inrhor.questengine.common.editor.EditorList.selectTargetList
 import cn.inrhor.questengine.common.editor.EditorTarget.editorTarget
 import cn.inrhor.questengine.common.quest.manager.QuestManager
@@ -38,6 +39,29 @@ class EditorTarget(val ui: ActionEditor.TargetUi,
             }
             ActionEditor.TargetUi.EDIT -> {
                 when (meta) {
+                    "name" -> {
+                        sender.selectTargetList(questID, innerID, targetID)
+                    }
+                    "reward_boolean" -> {
+                        val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return frameVoid()
+                        val r = target.reward
+                        if (r.isEmpty()) return frameVoid()
+                        val sp = r.split(" ")
+                        val b = sp[1].toBoolean()
+                        target.reward = sp[0]+(!b)
+                        sender.editorTarget(questID, innerID, targetID)
+                        QuestManager.saveFile(questID, innerID)
+                    }
+                    "async" -> {
+                        val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return frameVoid()
+                        val a = target.async
+                        target.async = !a
+                        sender.editorTarget(questID, innerID, targetID)
+                        QuestManager.saveFile(questID, innerID)
+                    }
+                    "condition" -> {
+
+                    }
                     else -> {
                         sender.editorTarget(questID,innerID,targetID)
                     }
@@ -59,7 +83,14 @@ class EditorTarget(val ui: ActionEditor.TargetUi,
                 }
             }
             ActionEditor.TargetUi.SEL -> {
-                sender.selectTargetList(questID, innerID, targetID, page)
+                when (meta) {
+                    "list" -> {
+                        sender.selectTargetList(questID, innerID, targetID, page)
+                    }
+                    "reward" -> {
+                        sender.selectReward(questID, innerID, targetID, page)
+                    }
+                }
             }
         }
         return frameVoid()

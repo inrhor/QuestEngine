@@ -535,7 +535,7 @@ object QuestManager {
         for (m in questModule.innerQuestList) {
             if (m.id == innerQuestID) {
                 return if (type == QuestState.FINISH) {
-                    m.reward.getFinishReward(rewardID)
+                    m.reward.getFinishScript(rewardID)
                 }else m.reward.fail
             }
         }

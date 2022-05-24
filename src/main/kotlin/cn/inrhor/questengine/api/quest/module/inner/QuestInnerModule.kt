@@ -25,6 +25,7 @@ class QuestInnerModule(var id: String, var name: String,
 
     fun existControlID(id: String): Boolean {
         control.forEach { if (it.id == id) return true }
+
         return false
     }
 

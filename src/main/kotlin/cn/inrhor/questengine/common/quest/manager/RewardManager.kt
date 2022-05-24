@@ -61,7 +61,7 @@ object RewardManager {
                 runEval(player, it.script)
             }
         }else {
-            val reward = questReward.getFinishReward(rewardID)
+            val reward = questReward.getFinishScript(rewardID)
             reward.forEach {
                 runEval(player, it)
             }

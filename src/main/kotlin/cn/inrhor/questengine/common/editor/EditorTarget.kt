@@ -8,8 +8,8 @@ import taboolib.platform.util.asLangText
 
 object EditorTarget {
 
-    val editMeta = listOf(
-        "NAME", "REWARD", "ASYNC", "PERIOD", "CONDITION", "NODE")
+    val editMeta = mutableListOf(
+        "NAME", "REWARD", "REWARD_BOOLEAN", "ASYNC", "CONDITION")
 
    fun Player.editorTarget(questID: String, innerID: String, targetID: String) {
         val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return
@@ -23,17 +23,36 @@ object EditorTarget {
             .runCommand("/qen eval editor target in list page 0 select $questID $innerID $targetID")
             .newLine()
             .newLine()
+       if (target.name == "TASK") editMeta.add("PERIOD")
        editMeta.forEach {
-           json.append("      "+asLangText("EDITOR-EDIT-TARGET-$it",
-               target.name, target.reward, target.period, target.async))
-               .append("  "+asLangText("EDITOR-EDIT-TARGET-META"))
-               .hoverText(asLangText("EDITOR-EDIT-TARGET-META-HOVER"))
-           if (it == "CONDITION") {
-               json.runCommand("/qen eval editor target in edit "+it.lowercase()+" page 0 select $questID $innerID $targetID")
+           val r = target.reward
+           val rewardID = if (r.isEmpty()) " " else r.split(" ")[0]
+           val b = if (r.isEmpty()) "NULL" else r.split(" ")[1].uppercase()
+           if (it == "REWARD_BOOLEAN") {
+               json.append("  "+asLangText("EDITOR-EDIT-TARGET-$it", asLangText("REWARD-BOOLEAN-META-$b")))
+                   .hoverText(asLangText("EDITOR-EDIT-TARGET-BOOLEAN-META-HOVER"))
            }else {
-               json.runCommand("/qen eval editor target in edit "+it.lowercase()+" select $questID $innerID $targetID")
+               val t = "${target.async}".uppercase()
+               json.append("      " + asLangText("EDITOR-EDIT-TARGET-$it",
+                       target.name, rewardID, target.period, asLangText("ASYNC-BOOLEAN-META-$t")))
+                   .append("  " + asLangText("EDITOR-EDIT-TARGET-META"))
+               if (it == "ASYNC") {
+                   json.hoverText(asLangText("EDITOR-EDIT-TARGET-BOOLEAN-META-HOVER"))
+               }else {
+                   json.hoverText(asLangText("EDITOR-EDIT-TARGET-META-HOVER"))
+               }
            }
-           json.newLine()
+           when (it) {
+               "CONDITION" -> {
+                   json.runCommand("/qen eval editor target in edit "+it.lowercase()+" page 0 select $questID $innerID $targetID").newLine()
+               }
+               "REWARD" -> {
+                   json.runCommand("/qen eval editor target in sel "+it.lowercase()+" page 0 select $questID $innerID $targetID")
+               }
+               else -> {
+                   json.runCommand("/qen eval editor target in edit "+it.lowercase()+" select $questID $innerID $targetID").newLine()
+               }
+           }
        }
         json.newLine().sendTo(adaptPlayer(this))
     }

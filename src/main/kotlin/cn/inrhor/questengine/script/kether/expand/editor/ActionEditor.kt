@@ -171,10 +171,11 @@ class ActionEditor {
                             EditorTarget(ui, it.nextToken(), it.nextToken())
                         }
                         TargetUi.SEL -> {
+                            val to = it.nextToken()
                             it.expect("page")
                             val page = it.nextInt()
                             it.expect("select")
-                            EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), page = page)
+                            EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), to, page = page)
                         }
                         TargetUi.CHANGE -> {
                             val meta = it.nextToken()
