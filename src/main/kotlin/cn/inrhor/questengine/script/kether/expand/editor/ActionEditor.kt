@@ -13,7 +13,7 @@ class ActionEditor {
     }
 
     enum class TargetUi {
-        LIST,EDIT,ADD,SEL,CHANGE
+        LIST,EDIT,ADD,DEL,SEL,CHANGE
     }
 
     enum class RewardUi {
@@ -160,6 +160,12 @@ class ActionEditor {
                                     it.expect("select")
                                     EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), meta, page = page)
                                 }
+                                "node" -> {
+                                    it.expect("to")
+                                    val to = it.nextToken()
+                                    it.expect("select")
+                                    EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), meta, to)
+                                }
                                 else -> {
                                     it.expect("select")
                                     EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), meta)
@@ -169,6 +175,10 @@ class ActionEditor {
                         TargetUi.ADD -> {
                             it.expect("select")
                             EditorTarget(ui, it.nextToken(), it.nextToken())
+                        }
+                        TargetUi.DEL -> {
+                            it.expect("select")
+                            EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken())
                         }
                         TargetUi.SEL -> {
                             val to = it.nextToken()

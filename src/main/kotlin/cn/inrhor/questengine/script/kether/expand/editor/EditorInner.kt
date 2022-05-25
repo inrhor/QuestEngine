@@ -93,7 +93,7 @@ class EditorInner(val ui: ActionEditor.InnerUi,
                         }
                     }
                     else -> {
-                        inner.nextInnerQuestID = change
+                        inner.nextInnerQuestID = tag
                         QuestManager.saveFile(questID, innerID)
                         sender.editorInner(questID, innerID)
                     }

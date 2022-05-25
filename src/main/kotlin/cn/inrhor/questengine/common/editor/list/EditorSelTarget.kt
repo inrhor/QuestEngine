@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.common.editor.list
 
 import org.bukkit.entity.Player
-import taboolib.common.util.random
 import taboolib.module.chat.TellrawJson
 import taboolib.platform.util.asLangText
 
@@ -12,7 +11,7 @@ class EditorSelTarget(player: Player, header: String, json: TellrawJson = Tellra
         val l: MutableList<String> = list.toMutableList() as MutableList<String>
         val get = l[index]
         val g = get.replace(" ", "-").uppercase()
-        val name = if (get =="TASK") "task xxx_${random()}" else get
+        val name = if (get =="TASK") "task xxx_${System.currentTimeMillis()}" else get
         json.append("      "+player.asLangText("$content-$g", name))
         button.forEach {
             json.append("  "+player.asLangText(it.content))

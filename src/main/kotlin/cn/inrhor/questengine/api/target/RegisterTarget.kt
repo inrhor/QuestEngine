@@ -38,6 +38,17 @@ object RegisterTarget {
         }
     }
 
+    fun getNodeList(name: String): MutableList<TargetNode> {
+        return saveTarget[name]?: mutableListOf()
+    }
+
+    fun getNode(name: String, node: String): TargetNode? {
+        getNodeList(name).forEach {
+            if (it.node == node) return it
+        }
+        return null
+    }
+
     val saveTarget: MutableMap<String, MutableList<TargetNode>> = mutableMapOf()
 
 }
@@ -46,4 +57,4 @@ enum class TargetNodeType {
     STRING,INT,DOUBLE,BOOLEAN,LIST
 }
 
-class TargetNode(node: String, nodeType: TargetNodeType)
+class TargetNode(val node: String, val nodeType: TargetNodeType)

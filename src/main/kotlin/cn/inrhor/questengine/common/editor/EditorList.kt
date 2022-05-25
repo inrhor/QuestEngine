@@ -87,22 +87,24 @@ object EditorList {
                 "qen eval editor quest in edit $cmd page {page} select $questID",
                 EditorListModule.EditorButton("EDITOR-$meta-RETURN"),
                 EditorListModule.EditorButton("EDITOR-LIST-DEL"),
-                EditorListModule.EditorButton("EDITOR-LIST-META", "EDITOR-LIST-HOVER",
+                EditorListModule.EditorButton("EDITOR-LIST-DEL-META", "EDITOR-LIST-DEL-HOVER",
                     "/qen eval editor quest in change $cmd to {index} select $questID"))
             .json.sendTo(adaptPlayer(player))
     }
 
-    /*fun Player.editorTargetCondition(questID: String, innerID: String, targetID: String, page: Int = 0) {
+    fun Player.editorTargetCondition(questID: String, innerID: String, targetID: String, page: Int = 0) {
+        val t = QuestManager.getTargetModule(questID, innerID, targetID)?: return
+        val list = t.condition
         EditorOfList(this, asLangText("EDITOR-TARGET-CONDITION-LIST", questID, innerID, targetID))
-            .editorBack(this, "/qen eval editor quest in edit home select $questID")
-            .list(page, 3, list, true, "EDITOR-$meta-LIST",
-                "qen eval editor quest in edit $cmd page {page} select $questID",
-                EditorListModule.EditorButton("EDITOR-$meta-RETURN"),
+            .editorBack(this, "/qen eval editor target in edit home select $questID $innerID $targetID")
+            .list(page, 3, list, true, "EDITOR-TARGET-CONDITION-LIST",
+                "qen eval editor target in edit condition page {page} select $questID $innerID $targetID",
+                EditorListModule.EditorButton("EDITOR-TARGET-CONDITION-RETURN"),
                 EditorListModule.EditorButton("EDITOR-LIST-DEL"),
-                EditorListModule.EditorButton("EDITOR-LIST-META", "EDITOR-LIST-HOVER",
-                    "/qen eval editor quest in change $cmd to {index} select $questID"))
+                EditorListModule.EditorButton("EDITOR-LIST-DEL-META", "EDITOR-LIST-DEL-HOVER",
+                    "/qen eval editor target in change condition to {index} select $questID $innerID $targetID"))
             .json.sendTo(adaptPlayer(this))
-    }*/
+    }
 
     fun EditorListModule.editorBack(player: Player, command: String): EditorListModule {
         add(player.asLangText("EDITOR-BACK"),
@@ -121,7 +123,7 @@ object EditorList {
                 EditorListModule.EditorButton("EDITOR-EDIT-INNER-NEXT-CHOOSE"),
                 EditorListModule.EditorButton("EDITOR-EDIT-INNER-NEXT-META",
                     "EDITOR-EDIT-INNER-NEXT-HOVER",
-                    "/qen eval editor inner in change nextinner to {innerID} $questID $innerID"))
+                    "/qen eval editor inner in change nextinner to {innerID} select $questID $innerID"))
             .json.sendTo(adaptPlayer(this))
     }
 
@@ -160,7 +162,11 @@ object EditorList {
             EditorListModule.EditorButton("EDITOR-TARGET-EDIT"),
             EditorListModule.EditorButton("EDITOR-TARGET-EDIT-META",
                 "EDITOR-TARGET-EDIT-HOVER",
-                "/qen eval editor target in edit home select $questID $innerID {targetID}"))
+                "/qen eval editor target in edit home select $questID $innerID {targetID}"),
+                EditorListModule.EditorButton("EDITOR-TARGET-DEL"),
+                EditorListModule.EditorButton("EDITOR-TARGET-DEL-META",
+                    asLangText("EDITOR-TARGET-DEL-HOVER"),
+                    "/qen eval editor target in del select $questID $innerID {targetID}"))
             .json.sendTo(adaptPlayer(this))
     }
 
@@ -186,7 +192,7 @@ object EditorList {
                 "qen eval editor reward in edit page {0} select $questID $innerID $rewardID",
                 EditorListModule.EditorButton("EDITOR-SCRIPT-RETURN"),
                 EditorListModule.EditorButton("EDITOR-LIST-DEL"),
-                EditorListModule.EditorButton("EDITOR-LIST-META", "EDITOR-LIST-HOVER",
+                EditorListModule.EditorButton("EDITOR-LIST-DEL-META", "EDITOR-LIST-DEL-HOVER",
                     "/qen eval editor reward in del {index} select $questID $innerID $rewardID"))
             .json.sendTo(adaptPlayer(this))
     }
@@ -199,7 +205,7 @@ object EditorList {
                 "qen eval editor fail in list page {page} select $questID $innerID",
                 EditorListModule.EditorButton("EDITOR-SCRIPT-RETURN"),
                 EditorListModule.EditorButton("EDITOR-LIST-DEL"),
-                EditorListModule.EditorButton("EDITOR-LIST-META", "EDITOR-LIST-HOVER",
+                EditorListModule.EditorButton("EDITOR-LIST-DEL-META", "EDITOR-LIST-DEL-HOVER",
                     "/qen eval editor fail in del {index} select $questID $innerID"))
             .json.sendTo(adaptPlayer(this))
     }

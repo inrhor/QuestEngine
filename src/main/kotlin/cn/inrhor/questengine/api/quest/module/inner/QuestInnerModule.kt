@@ -23,6 +23,17 @@ class QuestInnerModule(var id: String, var name: String,
         return false
     }
 
+    fun delTarget(id: String) {
+        val i = target.iterator()
+        while (i.hasNext()) {
+            val n = i.next()
+            if (n.id== id) {
+                i.remove()
+                break
+            }
+        }
+    }
+
     fun existControlID(id: String): Boolean {
         control.forEach { if (it.id == id) return true }
 
