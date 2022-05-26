@@ -15,8 +15,9 @@ class QuestTarget(var id: String, var name: String, var reward: String,
     @Transient
     val nodeMap: MutableMap<String, MutableList<String>> = mutableMapOf()
 
-    init {
+    fun loadNode() {
         node.variableReader().forEach {
+            info("reader $it")
             if (it.isEmpty()) return@forEach
             val sp = it.split(" ")
             val l = sp.toMutableList()

@@ -46,6 +46,11 @@ object QuestManager {
      */
     fun register(questID: String, questModule: QuestModule, sort: String = "") {
         questMap[questID] = questModule
+        questModule.innerQuestList.forEach {
+            it.target.forEach { e->
+                e.loadNode()
+            }
+        }
         if (questModule.accept.way.lowercase() == "auto") {
             autoQuestMap[questID] = questModule
         }

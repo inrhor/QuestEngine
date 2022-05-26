@@ -15,7 +15,7 @@ class EditorOfList(player: Player, header: String, json: TellrawJson = TellrawJs
     override fun listAppend(content: String, split: Boolean, index: Int, list: List<*>, button: Array<out EditorButton>) {
         if (list.isEmpty()) return
         val l: MutableList<String> = list.toMutableList() as MutableList<String>
-        l.addSafely(0, "all", "")
+        if (content == "EDITOR-SELECT-REWARD-LIST") l.addSafely(0, "all", "")
         val get = l[index]
         json.append("      "+player.asLangText(content, get))
         var sum = 0

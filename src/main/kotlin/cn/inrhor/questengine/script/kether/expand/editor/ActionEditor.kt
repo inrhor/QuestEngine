@@ -181,18 +181,38 @@ class ActionEditor {
                             EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken())
                         }
                         TargetUi.SEL -> {
-                            val to = it.nextToken()
-                            it.expect("page")
-                            val page = it.nextInt()
-                            it.expect("select")
-                            EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), to, page = page)
+                            when (val meta = it.nextToken()) {
+                                "node" -> {
+                                    it.expect("to")
+                                    val o = it.nextToken()
+                                    it.expect("page")
+                                    val page = it.nextInt()
+                                    it.expect("select")
+                                    EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), meta, o, page = page)
+                                }
+                                else -> {
+                                    it.expect("page")
+                                    val page = it.nextInt()
+                                    it.expect("select")
+                                    EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), meta, page = page)
+                                }
+                            }
                         }
                         TargetUi.CHANGE -> {
                             val meta = it.nextToken()
                             it.expect("to")
                             val change = it.nextToken()
-                            it.expect("select")
-                            EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), meta, change)
+                            when (meta) {
+                                "node" -> {
+                                    val index = it.nextToken()
+                                    it.expect("select")
+                                    EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), meta, change, index)
+                                }
+                                else -> {
+                                    it.expect("select")
+                                    EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), meta, change)
+                                }
+                            }
                         }
                         else -> error("unknown ui")
                     }

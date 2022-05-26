@@ -237,14 +237,14 @@ object EditorList {
     }
 
     fun Player.editorNodeList(questID: String, innerID: String, target: QuestTarget, node: String, page: Int = 0) {
-        val meta = target.nodeMeta(node)?: return
+        val list = target.nodeMeta(node)?: mutableListOf()
         val id = target.id
         EditorOfList(this, asLangText("EDITOR-TARGET-LIST-UI-NODE",
             questID, innerID, id, asLangText("EDITOR-TARGET-LIST-NODE-${node.uppercase()}")))
             .editorBack(this, "/qen eval editor target in edit home select $questID $innerID $id")
-            .list(page, 7, meta, true, "EDITOR-TARGET-LIST-FOR-NODE",
-                "/qen eval editor target in edit node to '$node' page {page} select $questID $innerID $id",
-                EditorListModule.EditorButton("EDITOR-$meta-RETURN"),
+            .list(page, 7, list, true, "EDITOR-TARGET-LIST-FOR-NODE",
+                "/qen eval editor target in sel node page {page} to '$node' select $questID $innerID $id",
+                EditorListModule.EditorButton("EDITOR-CONDITION-RETURN"),
                 EditorListModule.EditorButton("EDITOR-LIST-DEL"),
                 EditorListModule.EditorButton("EDITOR-LIST-DEL-META", "EDITOR-LIST-DEL-HOVER",
                     "/qen eval editor target in change node to '$node' {index} select $questID $innerID $id"))

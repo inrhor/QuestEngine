@@ -3,6 +3,7 @@ package cn.inrhor.questengine.script.kether.expand.editor
 import cn.inrhor.questengine.api.quest.module.inner.QuestTarget
 import cn.inrhor.questengine.api.target.RegisterTarget
 import cn.inrhor.questengine.api.target.TargetNodeType
+import cn.inrhor.questengine.common.editor.EditorList.editorNodeList
 import cn.inrhor.questengine.common.editor.EditorList.editorTargetCondition
 import cn.inrhor.questengine.common.editor.EditorList.editorTargetList
 import cn.inrhor.questengine.common.editor.EditorList.selectReward
@@ -13,6 +14,7 @@ import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyPlayer
+import taboolib.common.platform.function.info
 import taboolib.module.kether.ScriptAction
 import taboolib.module.kether.ScriptFrame
 import taboolib.module.kether.script
@@ -23,12 +25,20 @@ import java.util.concurrent.CompletableFuture
 
 class EditorTarget(val ui: ActionEditor.TargetUi,
                    val questID: String = "", val innerID: String = "", val targetID: String = "",
-                   val meta: String = "", val change: String = "", val page: Int = 0) : ScriptAction<Void>() {
+                   val meta: String = "", val change: String = "", val other: String = "", val page: Int = 0) : ScriptAction<Void>() {
     override fun run(frame: ScriptFrame): CompletableFuture<Void> {
         val sender = (frame.script().sender as? ProxyPlayer ?: error("unknown player")).cast<Player>()
         when (ui) {
             ActionEditor.TargetUi.CHANGE -> {
                 when (meta) {
+                    "node" -> {
+                        val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return frameVoid()
+                        val meta = target.nodeMeta(change)?: mutableListOf()
+                        meta.removeAt(other.toInt())
+                        target.reloadNode(change, meta)
+                        QuestManager.saveFile(questID, innerID)
+                        sender.editorNodeList(questID, innerID, target, change)
+                    }
                     "name" -> {
                         val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return frameVoid()
                         target.name = change
@@ -76,7 +86,9 @@ class EditorTarget(val ui: ActionEditor.TargetUi,
                     }
                     "node" -> {
                         val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return frameVoid()
+                        info("change $change  meta $meta")
                         val node = RegisterTarget.getNode(target.name, change)?: return frameVoid()
+                        info("???")
                         sender.editorTargetNode(questID, innerID, target, node)
                     }
                     else -> {
@@ -107,6 +119,12 @@ class EditorTarget(val ui: ActionEditor.TargetUi,
             }
             ActionEditor.TargetUi.SEL -> {
                 when (meta) {
+                    "node" -> {
+                        info("node sel list $meta")
+                        val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return frameVoid()
+                        val node = RegisterTarget.getNode(target.name, change)?: return frameVoid()
+                        sender.editorTargetNode(questID, innerID, target, node)
+                    }
                     "list" -> {
                         sender.selectTargetList(questID, innerID, targetID, page)
                     }

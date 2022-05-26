@@ -4,6 +4,7 @@ import cn.inrhor.questengine.api.quest.module.inner.QuestTarget
 import cn.inrhor.questengine.api.target.RegisterTarget
 import cn.inrhor.questengine.api.target.TargetNode
 import cn.inrhor.questengine.api.target.TargetNodeType
+import cn.inrhor.questengine.common.editor.EditorList.editorNodeList
 import cn.inrhor.questengine.common.editor.EditorTarget.editorTarget
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player
@@ -68,7 +69,7 @@ object EditorTarget {
                    asLangText("EDITOR-TARGET-LIST-NODE-${node.uppercase()}")))
                    .append("  "+asLangText("EDITOR-TARGET-NODE-META"))
                    .hoverText(asLangText("EDITOR-TARGET-NODE-META-HOVER"))
-                   .runCommand("/qen eval editor target in edit node to '$node' page 0 select $questID $innerID $targetID")
+                   .runCommand("/qen eval editor target in sel node to '$node' page 0 select $questID $innerID $targetID")
                    .newLine()
            }else {
                val nodeMeta = target.nodeMeta(node)
@@ -115,7 +116,7 @@ object EditorTarget {
                 }
             }
             else -> {
-
+                editorNodeList(questID, innerID, target, node)
             }
         }
     }
