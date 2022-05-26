@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.editor
 
+import cn.inrhor.questengine.api.quest.module.inner.QuestTarget
 import cn.inrhor.questengine.api.target.RegisterTarget
 import cn.inrhor.questengine.common.editor.list.*
 import cn.inrhor.questengine.common.quest.manager.QuestManager
@@ -232,6 +233,21 @@ object EditorList {
                 EditorListModule.EditorButton("EDITOR-SELECT-REWARD-SEL",
                     "EDITOR-SELECT-REWARD-SEL-HOVER",
                     "/qen eval editor target in edit reward_boolean select $questID $innerID $targetID"))
+            .json.sendTo(adaptPlayer(this))
+    }
+
+    fun Player.editorNodeList(questID: String, innerID: String, target: QuestTarget, node: String, page: Int = 0) {
+        val meta = target.nodeMeta(node)?: return
+        val id = target.id
+        EditorOfList(this, asLangText("EDITOR-TARGET-LIST-UI-NODE",
+            questID, innerID, id, asLangText("EDITOR-TARGET-LIST-NODE-${node.uppercase()}")))
+            .editorBack(this, "/qen eval editor target in edit home select $questID $innerID $id")
+            .list(page, 7, meta, true, "EDITOR-TARGET-LIST-FOR-NODE",
+                "/qen eval editor target in edit node to '$node' page {page} select $questID $innerID $id",
+                EditorListModule.EditorButton("EDITOR-$meta-RETURN"),
+                EditorListModule.EditorButton("EDITOR-LIST-DEL"),
+                EditorListModule.EditorButton("EDITOR-LIST-DEL-META", "EDITOR-LIST-DEL-HOVER",
+                    "/qen eval editor target in change node to '$node' {index} select $questID $innerID $id"))
             .json.sendTo(adaptPlayer(this))
     }
 }

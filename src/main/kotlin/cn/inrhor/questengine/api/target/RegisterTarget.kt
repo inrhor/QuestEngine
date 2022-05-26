@@ -11,7 +11,7 @@ object RegisterTarget {
         val amount = TargetNode("amount", TargetNodeType.INT)
         val number = TargetNode("number", TargetNodeType.INT)
         val id = TargetNode("id", TargetNodeType.LIST)
-        val need = TargetNode("need", TargetNodeType.BOOLEAN)
+        val need = TargetNode("need", TargetNodeType.LIST)
         add("break block", block, amount)
         add("place block", block, amount)
         add("pass collection packet", number, TargetNode("packetID", TargetNodeType.STRING))
