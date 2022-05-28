@@ -16,6 +16,7 @@ import taboolib.module.nms.inputSign
 import taboolib.platform.util.asLangText
 import taboolib.platform.util.sendLang
 import java.util.concurrent.CompletableFuture
+import cn.inrhor.questengine.script.kether.frameVoid
 
 class EditorInner(val ui: ActionEditor.InnerUi,
                   val questID: String = "", val innerID: String = "",

@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.script.kether.expand.editor
 
+import cn.inrhor.questengine.script.kether.frameVoid
 import cn.inrhor.questengine.common.editor.EditorList.editorFinishReward
 import cn.inrhor.questengine.common.editor.EditorList.editorRewardList
 import cn.inrhor.questengine.common.quest.manager.QuestManager

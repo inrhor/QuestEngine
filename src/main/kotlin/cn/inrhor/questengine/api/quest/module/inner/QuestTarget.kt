@@ -2,7 +2,6 @@ package cn.inrhor.questengine.api.quest.module.inner
 
 import cn.inrhor.questengine.api.ui.UiFrame
 import cn.inrhor.questengine.utlis.variableReader
-import taboolib.common.platform.function.info
 
 
 class QuestTarget(var id: String, var name: String, var reward: String,
@@ -17,7 +16,6 @@ class QuestTarget(var id: String, var name: String, var reward: String,
 
     fun loadNode() {
         node.variableReader().forEach {
-            info("reader $it")
             if (it.isEmpty()) return@forEach
             val sp = it.split(" ")
             val l = sp.toMutableList()
@@ -34,7 +32,6 @@ class QuestTarget(var id: String, var name: String, var reward: String,
         }
         nodeMap[newNode] = newList
         node +="{{$newNode ${newList.joinToString(" ")}}}"
-        info("node $node")
     }
 
     fun nodeMeta(meta: String): MutableList<String>? {

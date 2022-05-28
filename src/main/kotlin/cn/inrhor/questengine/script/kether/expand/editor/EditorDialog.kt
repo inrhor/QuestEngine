@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.script.kether.expand.editor
 
+import cn.inrhor.questengine.script.kether.frameVoid
 import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyPlayer
 import taboolib.module.kether.ScriptAction

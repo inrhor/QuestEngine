@@ -1,8 +1,8 @@
 package cn.inrhor.questengine.script.kether.expand.editor
 
+import cn.inrhor.questengine.script.kether.frameVoid
 import cn.inrhor.questengine.api.quest.module.inner.QuestTarget
 import cn.inrhor.questengine.api.target.RegisterTarget
-import cn.inrhor.questengine.api.target.TargetNodeType
 import cn.inrhor.questengine.common.editor.EditorList.editorNodeList
 import cn.inrhor.questengine.common.editor.EditorList.editorTargetCondition
 import cn.inrhor.questengine.common.editor.EditorList.editorTargetList
@@ -14,7 +14,6 @@ import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyPlayer
-import taboolib.common.platform.function.info
 import taboolib.module.kether.ScriptAction
 import taboolib.module.kether.ScriptFrame
 import taboolib.module.kether.script
@@ -86,9 +85,7 @@ class EditorTarget(val ui: ActionEditor.TargetUi,
                     }
                     "node" -> {
                         val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return frameVoid()
-                        info("change $change  meta $meta")
                         val node = RegisterTarget.getNode(target.name, change)?: return frameVoid()
-                        info("???")
                         sender.editorTargetNode(questID, innerID, target, node)
                     }
                     else -> {
@@ -120,7 +117,6 @@ class EditorTarget(val ui: ActionEditor.TargetUi,
             ActionEditor.TargetUi.SEL -> {
                 when (meta) {
                     "node" -> {
-                        info("node sel list $meta")
                         val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return frameVoid()
                         val node = RegisterTarget.getNode(target.name, change)?: return frameVoid()
                         sender.editorTargetNode(questID, innerID, target, node)

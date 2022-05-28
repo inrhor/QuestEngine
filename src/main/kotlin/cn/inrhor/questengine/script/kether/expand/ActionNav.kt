@@ -2,7 +2,7 @@ package cn.inrhor.questengine.script.kether.expand
 
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.nav.NavData
-import cn.inrhor.questengine.script.kether.expand.editor.frameVoid
+import cn.inrhor.questengine.script.kether.frameVoid
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import taboolib.common.platform.ProxyParticle

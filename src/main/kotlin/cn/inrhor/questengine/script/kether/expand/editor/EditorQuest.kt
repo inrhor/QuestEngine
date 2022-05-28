@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.script.kether.expand.editor
 
+import cn.inrhor.questengine.script.kether.frameVoid
 import cn.inrhor.questengine.common.editor.EditorHome.editorHomeQuest
 import cn.inrhor.questengine.common.editor.EditorList.editorAcceptCondition
 import cn.inrhor.questengine.common.editor.EditorList.editorFailCondition
@@ -150,4 +151,3 @@ class EditorQuest(val ui: ActionEditor.QuestUi, val questID: String = "", val me
         return frameVoid()
     }
 }
-fun frameVoid(): CompletableFuture<Void> = CompletableFuture.completedFuture(null)
