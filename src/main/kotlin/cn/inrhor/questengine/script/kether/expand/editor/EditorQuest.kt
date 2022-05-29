@@ -10,19 +10,18 @@ import cn.inrhor.questengine.common.editor.EditorList.editorStartInner
 import cn.inrhor.questengine.common.editor.EditorQuest.editorQuest
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.manager.QuestManager
-import org.bukkit.entity.Player
-import taboolib.common.platform.ProxyPlayer
+import cn.inrhor.questengine.script.kether.player
+import cn.inrhor.questengine.script.kether.selectQuestID
 import taboolib.module.kether.ScriptAction
 import taboolib.module.kether.ScriptFrame
-import taboolib.module.kether.script
 import taboolib.module.nms.inputSign
 import taboolib.platform.util.asLangText
 import taboolib.platform.util.sendLang
 import java.util.concurrent.CompletableFuture
 
-class EditorQuest(val ui: ActionEditor.QuestUi, val questID: String = "", val meta: String = "", val change: String = "", val page: Int = 0) : ScriptAction<Void>() {
+class EditorQuest(val ui: ActionEditor.QuestUi, vararg val variable: String, val page: Int = 0) : ScriptAction<Void>() {
     override fun run(frame: ScriptFrame): CompletableFuture<Void> {
-        val sender = (frame.script().sender as? ProxyPlayer ?: error("unknown player")).cast<Player>()
+        val sender = frame.player()
         when (ui) {
             ActionEditor.QuestUi.LIST -> sender.editorListQuest(page)
             ActionEditor.QuestUi.ADD -> {
@@ -37,12 +36,13 @@ class EditorQuest(val ui: ActionEditor.QuestUi, val questID: String = "", val me
                 }
             }
             ActionEditor.QuestUi.DEL -> {
-                QuestManager.delQuest(questID)
+                QuestManager.delQuest(frame.selectQuestID())
                 sender.editorListQuest()
             }
             ActionEditor.QuestUi.EDIT -> {
-                when (meta) {
+                when (variable[0]) {
                     "name" -> {
+                        val questID = frame.selectQuestID()
                         val questModule = QuestManager.getQuestModule(questID) ?: return frameVoid()
                         sender.inputSign(arrayOf(sender.asLangText("EDITOR-EDIT-QUEST-NAME-INPUT"))) {
                             questModule.name = it[1]
@@ -51,9 +51,10 @@ class EditorQuest(val ui: ActionEditor.QuestUi, val questID: String = "", val me
                         }
                     }
                     "start" -> {
-                        sender.editorStartInner(questID)
+                        sender.editorStartInner(frame.selectQuestID())
                     }
                     "sort" -> {
+                        val questID = frame.selectQuestID()
                         val questModule = QuestManager.getQuestModule(questID) ?: return frameVoid()
                         sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-SORT"))) {
                             questModule.sort = it[1]
@@ -62,6 +63,7 @@ class EditorQuest(val ui: ActionEditor.QuestUi, val questID: String = "", val me
                         }
                     }
                     "modetype" -> {
+                        val questID = frame.selectQuestID()
                         val questModule = QuestManager.getQuestModule(questID) ?: return frameVoid()
                         val mode = questModule.mode
                         mode.type =
@@ -70,6 +72,7 @@ class EditorQuest(val ui: ActionEditor.QuestUi, val questID: String = "", val me
                         sender.editorQuest(questID)
                     }
                     "modeamount" -> {
+                        val questID = frame.selectQuestID()
                         val questModule = QuestManager.getQuestModule(questID) ?: return frameVoid()
                         sender.inputSign(arrayOf(sender.asLangText("NUMBER-INPUT"))) {
                             try {
@@ -82,6 +85,7 @@ class EditorQuest(val ui: ActionEditor.QuestUi, val questID: String = "", val me
                         }
                     }
                     "sharedata" -> {
+                        val questID = frame.selectQuestID()
                         val questModule = QuestManager.getQuestModule(questID) ?: return frameVoid()
                         val mode = questModule.mode
                         mode.shareData = !mode.shareData
@@ -89,6 +93,7 @@ class EditorQuest(val ui: ActionEditor.QuestUi, val questID: String = "", val me
                         sender.editorQuest(questID)
                     }
                     "acceptway" -> {
+                        val questID = frame.selectQuestID()
                         val questModule = QuestManager.getQuestModule(questID) ?: return frameVoid()
                         val accept = questModule.accept
                         accept.way = if (accept.way == "auto") "" else "auto"
@@ -96,6 +101,7 @@ class EditorQuest(val ui: ActionEditor.QuestUi, val questID: String = "", val me
                         sender.editorQuest(questID)
                     }
                     "maxquantity" -> {
+                        val questID = frame.selectQuestID()
                         val questModule = QuestManager.getQuestModule(questID) ?: return frameVoid()
                         sender.inputSign(arrayOf(sender.asLangText("NUMBER-INPUT"))) {
                             try {
@@ -108,22 +114,24 @@ class EditorQuest(val ui: ActionEditor.QuestUi, val questID: String = "", val me
                         }
                     }
                     "acceptcondition" -> {
-                        sender.editorAcceptCondition(questID, page)
+                        sender.editorAcceptCondition(frame.selectQuestID(), page)
                     }
                     "failurecondition" -> {
-                        sender.editorFailCondition(questID, page)
+                        sender.editorFailCondition(frame.selectQuestID(), page)
                     }
                     "failurescript" -> {
-                        sender.editorFailScript(questID, page)
+                        sender.editorFailScript(frame.selectQuestID(), page)
                     }
                     else -> {
-                        sender.editorQuest(questID)
+                        sender.editorQuest(frame.selectQuestID())
                     }
                 }
             }
             ActionEditor.QuestUi.CHANGE -> {
+                val questID = frame.selectQuestID()
                 val questModule = QuestManager.getQuestModule(questID)?: return frameVoid()
-                when (meta) {
+                val change = variable[1]
+                when (variable[0]) {
                     "start" -> {
                         questModule.startInnerQuestID = change
                         sender.editorStartInner(questID)

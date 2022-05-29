@@ -1,29 +1,25 @@
 package cn.inrhor.questengine.script.kether.expand.editor
 
-import cn.inrhor.questengine.script.kether.frameVoid
 import cn.inrhor.questengine.api.quest.module.inner.TimeFrame
 import cn.inrhor.questengine.common.editor.EditorTime.editTime
 import cn.inrhor.questengine.common.editor.EditorTime.selectTimeType
 import cn.inrhor.questengine.common.quest.manager.QuestManager
-import cn.inrhor.questengine.script.kether.runEval
-import org.bukkit.entity.Player
-import taboolib.common.platform.ProxyPlayer
+import cn.inrhor.questengine.script.kether.*
 import taboolib.module.kether.ScriptAction
 import taboolib.module.kether.ScriptFrame
-import taboolib.module.kether.script
 import taboolib.module.nms.inputSign
 import taboolib.platform.util.asLangText
 import taboolib.platform.util.asLangTextList
 import java.util.concurrent.CompletableFuture
 
-class EditorTime(val ui: ActionEditor.TimeUi,
-                 val questID: String = "", val innerID: String = "",
-                 val meta: String = "", val change: String = "") : ScriptAction<Void>() {
+class EditorTime(val ui: ActionEditor.TimeUi, vararg val variable: String) : ScriptAction<Void>() {
     override fun run(frame: ScriptFrame): CompletableFuture<Void> {
-        val sender = (frame.script().sender as? ProxyPlayer ?: error("unknown player")).cast<Player>()
+        val sender = frame.player()
+        val questID = frame.selectQuestID()
+        val innerID = frame.selectInnerID()
         when (ui) {
             ActionEditor.TimeUi.EDIT -> {
-                when (meta.lowercase()) {
+                when (variable[0].lowercase()) {
                     "type" -> {
                         sender.selectTimeType(questID, innerID)
                     }
@@ -131,10 +127,10 @@ class EditorTime(val ui: ActionEditor.TimeUi,
             ActionEditor.TimeUi.CHANGE -> {
                 val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return frameVoid()
                 val time = inner.time
-                time.type = TimeFrame.Type.valueOf(change.uppercase())
+                time.type = TimeFrame.Type.valueOf(variable[0].uppercase())
                 time.duration = ""
                 if (time.type != TimeFrame.Type.ALWAYS) {
-                    runEval(sender, "editor time in edit $change select $questID $innerID")
+                    runEval(sender, "editor time in edit ${variable[0]} select $questID $innerID")
                 }
                 QuestManager.saveFile(questID, innerID)
                 sender.selectTimeType(questID, innerID)

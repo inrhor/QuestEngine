@@ -35,10 +35,10 @@ class ActionEditor {
                 /**
                  * editor quest in home
                  * editor quest in list page [page]
-                 * editor quest in add/del select [questID]
-                 * editor quest in edit [meta] select [questID]
-                 * editor quest in edit [meta] page [page] select [questID]
-                 * editor quest in change [meta] to [change] select [questID]
+                 * editor quest in add/del
+                 * editor quest in edit [meta]
+                 * editor quest in edit [meta] page [page]
+                 * editor quest in change [meta] to [change]
                  */
                 case("quest") {
                     it.mark()
@@ -48,30 +48,21 @@ class ActionEditor {
                             it.expect("page")
                             EditorQuest(ui, page = it.nextInt())
                         }
-                        QuestUi.DEL -> {
-                            it.expect("select")
-                            EditorQuest(ui, it.nextToken())
-                        }
                         QuestUi.EDIT -> {
                             when (val meta = it.nextToken()) {
                                 "acceptcondition", "failurecondition", "failurescript" -> {
                                     it.expect("page")
-                                    val page = it.nextInt()
-                                    it.expect("select")
-                                    EditorQuest(ui, it.nextToken(), meta, page = page)
+                                    EditorQuest(ui, it.nextToken(), meta, page = it.nextInt())
                                 }
                                 else -> {
-                                    it.expect("select")
-                                    EditorQuest(ui, it.nextToken(), meta)
+                                    EditorQuest(ui, meta)
                                 }
                             }
                         }
                         QuestUi.CHANGE -> {
                             val meta = it.nextToken()
                             it.expect("to")
-                            val change = it.nextToken()
-                            it.expect("select")
-                            EditorQuest(ui, it.nextToken(), meta, change)
+                            EditorQuest(ui, meta, it.nextToken())
                         }
                         else -> {
                             EditorQuest(ui)
@@ -79,12 +70,12 @@ class ActionEditor {
                     }
                 }
                 /**
-                 * editor inner in list page [page] select [questID]
-                 * editor inner in add select [questID]
-                 * editor inner in del select [questID] [innerID]
-                 * editor inner in edit [meta] select [questID] [innerID]
-                 * editor inner in edit [meta] page [page] select [questID] [innerID]
-                 * editor inner in change [meta] (desc) to [change] select [questID] [innerID]
+                 * editor inner in list page [page]
+                 * editor inner in add
+                 * editor inner in del
+                 * editor inner in edit [meta]
+                 * editor inner in edit [meta] page [page]
+                 * editor inner in change [meta] (desc) to [change]
                  */
                 case("inner") {
                     it.mark()
@@ -92,29 +83,20 @@ class ActionEditor {
                     when (val ui = InnerUi.valueOf(it.nextToken().uppercase())) {
                         InnerUi.LIST -> {
                             it.expect("page")
-                            val page = it.nextInt()
-                            it.expect("select")
-                            EditorInner(ui, it.nextToken(), page = page)
+                            EditorInner(ui, page = it.nextInt())
                         }
-                        InnerUi.ADD -> {
-                            it.expect("select")
-                            EditorInner(ui, it.nextToken(), it.nextToken())
-                        }
-                        InnerUi.DEL -> {
-                            it.expect("select")
-                            EditorInner(ui, it.nextToken(), it.nextToken())
+                        InnerUi.ADD, InnerUi.DEL -> {
+                            EditorInner(ui)
                         }
                         InnerUi.EDIT -> {
                             when (val meta = it.nextToken()) {
                                 "nextinner" -> {
                                     it.expect("page")
                                     val page = it.nextInt()
-                                    it.expect("select")
-                                    EditorInner(ui, it.nextToken(), it.nextToken(), meta, page = page)
+                                    EditorInner(ui, meta, page = page)
                                 }
                                 else -> {
-                                    it.expect("select")
-                                    EditorInner(ui, it.nextToken(), it.nextToken(), meta)
+                                    EditorInner(ui, meta)
                                 }
                             }
                         }
@@ -124,14 +106,12 @@ class ActionEditor {
                                     val tag = it.nextToken()
                                     it.expect("to")
                                     val change = it.nextToken()
-                                    it.expect("select")
-                                    EditorInner(ui, it.nextToken(), it.nextToken(), meta, tag, change)
+                                    EditorInner(ui, meta, tag, change)
                                 }
                                 else -> {
                                     it.expect("to")
                                     val change = it.nextToken()
-                                    it.expect("select")
-                                    EditorInner(ui, it.nextToken(), it.nextToken(), meta, change)
+                                    EditorInner(ui, meta, change)
                                 }
                             }
                         }
@@ -139,8 +119,8 @@ class ActionEditor {
                     }
                 }
                 /**
-                 * editor target in list page [page] select [questID] [innerID]
-                 * editor target in edit [meta] select [questID] [innerID] [targetID]
+                 * editor target in list page [page]
+                 * editor target in edit [meta]
                  */
                 case("target") {
                     it.mark()
@@ -149,36 +129,27 @@ class ActionEditor {
                         TargetUi.LIST -> {
                             it.expect("page")
                             val page = it.nextInt()
-                            it.expect("select")
-                            EditorTarget(ui, it.nextToken(), it.nextToken(), page = page)
+                            EditorTarget(ui, page = page)
                         }
                         TargetUi.EDIT -> {
                             when (val meta = it.nextToken()) {
                                 "condition" -> {
                                     it.expect("page")
                                     val page = it.nextInt()
-                                    it.expect("select")
-                                    EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), meta, page = page)
+                                    EditorTarget(ui, meta, page = page)
                                 }
                                 "node" -> {
                                     it.expect("to")
                                     val to = it.nextToken()
-                                    it.expect("select")
-                                    EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), meta, to)
+                                    EditorTarget(ui, meta, to)
                                 }
                                 else -> {
-                                    it.expect("select")
-                                    EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), meta)
+                                    EditorTarget(ui, meta)
                                 }
                             }
                         }
-                        TargetUi.ADD -> {
-                            it.expect("select")
-                            EditorTarget(ui, it.nextToken(), it.nextToken())
-                        }
-                        TargetUi.DEL -> {
-                            it.expect("select")
-                            EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken())
+                        TargetUi.ADD, TargetUi.DEL -> {
+                            EditorTarget(ui)
                         }
                         TargetUi.SEL -> {
                             when (val meta = it.nextToken()) {
@@ -187,14 +158,12 @@ class ActionEditor {
                                     val o = it.nextToken()
                                     it.expect("page")
                                     val page = it.nextInt()
-                                    it.expect("select")
-                                    EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), meta, o, page = page)
+                                    EditorTarget(ui, meta, o, page = page)
                                 }
                                 else -> {
                                     it.expect("page")
                                     val page = it.nextInt()
-                                    it.expect("select")
-                                    EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), meta, page = page)
+                                    EditorTarget(ui, meta, page = page)
                                 }
                             }
                         }
@@ -205,12 +174,10 @@ class ActionEditor {
                             when (meta) {
                                 "node" -> {
                                     val index = it.nextToken()
-                                    it.expect("select")
-                                    EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), meta, change, index)
+                                    EditorTarget(ui, meta, change, index)
                                 }
                                 else -> {
-                                    it.expect("select")
-                                    EditorTarget(ui, it.nextToken(), it.nextToken(), it.nextToken(), meta, change)
+                                    EditorTarget(ui, meta, change)
                                 }
                             }
                         }
@@ -218,9 +185,9 @@ class ActionEditor {
                     }
                 }
                 /**
-                 * editor reward in list page [page] select [questID] [innerID]
-                 * editor reward in edit page [page] select [questID] [innerID] [rewardID]
-                 * editor reward in del [index] select [questID] [innerID] [rewardID]
+                 * editor reward in list page [page]
+                 * editor reward in edit page [page]
+                 * editor reward in del [index]
                  */
                 case("reward") {
                     it.mark()
@@ -229,26 +196,23 @@ class ActionEditor {
                         RewardUi.LIST -> {
                             it.expect("page")
                             val page = it.nextInt()
-                            it.expect("select")
-                            EditorReward(ui, it.nextToken(), it.nextToken(), page = page)
+                            EditorReward(ui, page = page)
                         }
                         RewardUi.EDIT -> {
                             it.expect("page")
                             val page = it.nextInt()
-                            it.expect("select")
-                            EditorReward(ui, it.nextToken(), it.nextToken(), it.nextToken(), page = page)
+                            EditorReward(ui, page = page)
                         }
                         RewardUi.DEL -> {
                             val index = it.nextInt()
-                            it.expect("select")
-                            EditorReward(ui, it.nextToken(), it.nextToken(), it.nextToken(), index = index)
+                            EditorReward(ui, index = index)
                         }
                         else -> error("unknown ui")
                     }
                 }
                 /**
-                 * editor fail in list page [page] select [questID] [innerID]
-                 * editor fail in del [index] select [questID] [innerID]
+                 * editor fail in list page [page]
+                 * editor fail in del [index]
                  */
                 case("fail") {
                     it.mark()
@@ -257,13 +221,11 @@ class ActionEditor {
                         ListUi.LIST -> {
                             it.expect("page")
                             val page = it.nextInt()
-                            it.expect("select")
-                            EditorInnerFail(ui, it.nextToken(), it.nextToken(), page=page)
+                            EditorInnerFail(ui, page=page)
                         }
                         ListUi.DEL -> {
                             val index = it.nextToken()
-                            it.expect("select")
-                            EditorInnerFail(ui, it.nextToken(), it.nextToken(), change = index)
+                            EditorInnerFail(ui, index)
                         }
                         else -> error("unknown ui")
                     }
@@ -277,15 +239,13 @@ class ActionEditor {
                     when (val ui = TimeUi.valueOf(it.nextToken().uppercase())) {
                         TimeUi.EDIT -> {
                             val meta = it.nextToken()
-                            it.expect("select")
-                            EditorTime(ui, it.nextToken(), it.nextToken(), meta)
+                            EditorTime(ui, meta)
                         }
                         TimeUi.CHANGE -> {
                             val meta = it.nextToken()
                             it.expect("to")
                             val change = it.nextToken()
-                            it.expect("select")
-                            EditorTime(ui, it.nextToken(), it.nextToken(), meta, change)
+                            EditorTime(ui, meta, change)
                         }
                     }
                 }
