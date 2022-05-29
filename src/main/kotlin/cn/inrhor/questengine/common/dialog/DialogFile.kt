@@ -65,7 +65,7 @@ object DialogFile {
         if (dialogID != hookID) {
             if (!file.contains("$dialogID.dialog")) dialogModule.dialog = hookSection.getStringList("dialog")
             if (!file.contains("$dialogID.npcIDs")) dialogModule.npcIDs = hookSection.getStringList("npcIDs")
-            if (!file.contains("$dialogID.condition")) dialogModule.condition = hookSection.getStringList("condition")
+            if (!file.contains("$dialogID.condition")) dialogModule.condition = hookSection.getString("condition")?: ""
             if (!file.contains("$dialogID.space")) dialogModule.space = if (hookSection.contains("space")) hookSection.getObject("space", false) else SpaceDialogModule()
             if (!file.contains("$dialogID.reply")) {
                 if (hookSection.contains("reply")) waitMap[dialogID] = hookID else dialogModule.reply = mutableListOf()

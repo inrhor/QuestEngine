@@ -2,15 +2,15 @@ package cn.inrhor.questengine.api.quest.module.inner
 
 class QuestReward(
     var finish: MutableList<FinishReward>,
-    var fail: List<String>) {
+    var fail: String) {
 
-    constructor(): this(mutableListOf(), listOf())
+    constructor(): this(mutableListOf(), "")
 
-    fun getFinishScript(rewardID: String): List<String> {
+    fun getFinishScript(rewardID: String): String {
         finish.forEach {
             if (it.id == rewardID) return it.script
         }
-        return listOf()
+        return ""
     }
 
     fun getFinishReward(rewardID: String): FinishReward? {

@@ -52,7 +52,7 @@ class ActionEditor {
                             when (val meta = it.nextToken()) {
                                 "acceptcondition", "failurecondition", "failurescript" -> {
                                     it.expect("page")
-                                    EditorQuest(ui, it.nextToken(), meta, page = it.nextInt())
+                                    EditorQuest(ui, meta, page = it.nextInt())
                                 }
                                 else -> {
                                     EditorQuest(ui, meta)

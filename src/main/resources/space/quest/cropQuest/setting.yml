@@ -29,16 +29,16 @@ quest:
     #   无 则 0 或 condition 留空
     check: -1
     # 条件 Kether
-    condition:
-      - permission *quest.crop.1
+    condition: |
+      permission *quest.crop.1
   # 关于任务失败设置，满足条件自动放弃x
   failure:
     check: 1
-    condition:
-      - tags has quit1
+    condition: |
+      tags has quit1
     # 脚本 Kether
-    script:
-      - title color *"&c任务失败" subtitle color *"&f采集农作物任务"
+    script: |
+      title color *"&c任务失败" subtitle color *"&f采集农作物任务"
 
 
 desc:

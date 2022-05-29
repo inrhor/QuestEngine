@@ -138,17 +138,17 @@ class EditorQuest(val ui: ActionEditor.QuestUi, vararg val variable: String, val
                         QuestManager.saveFile(questID, change)
                     }
                     "acceptcondition" -> {
-                        questModule.accept.condition.removeAt(change.toInt())
+                        questModule.accept.delCondition(change.toInt())
                         QuestManager.saveFile(questID)
                         sender.editorAcceptCondition(questID)
                     }
                     "failcondition" -> {
-                        questModule.failure.condition.removeAt(change.toInt())
+                        questModule.failure.delCondition(change.toInt())
                         QuestManager.saveFile(questID)
                         sender.editorAcceptCondition(questID)
                     }
                     "failscript" -> {
-                        questModule.failure.script.removeAt(change.toInt())
+                        questModule.failure.delScript(change.toInt())
                         QuestManager.saveFile(questID)
                         sender.editorAcceptCondition(questID)
                     }

@@ -13,7 +13,7 @@ import taboolib.library.kether.ParsedAction
 import taboolib.module.kether.*
 import java.util.concurrent.CompletableFuture
 
-class ActionNavigation() {
+class ActionNavigation {
 
     class Create(val location: ParsedAction<*>): ScriptAction<Void>() {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {

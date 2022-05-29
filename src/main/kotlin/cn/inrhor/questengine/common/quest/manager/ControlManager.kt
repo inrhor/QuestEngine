@@ -27,8 +27,7 @@ object ControlManager {
         cModule.forEach {
             val pri = it.level
             val controlID = generateControlID(questID, innerQuestID, it.id)
-            val qcData = QuestControlData(player, controlData,
-                controlID, pri, it.control(questID, innerQuestID))
+            val qcData = QuestControlData(player, controlID, pri, it.control(questID, innerQuestID))
             controlData.addControl(controlID, qcData)
         }
     }
@@ -36,7 +35,7 @@ object ControlManager {
     /**
      * 拉取数据时存储控制模块，一般情况使用 saveControl 方法
      */
-    fun pullControl(player: Player, controlID: String, priority: String, line: Int, waitTime: Int) {
+    fun pullControl(player: Player, controlID: String, line: Int,) {
         val uuid = player.uniqueId
         val pDate = DataStorage.getPlayerData(uuid)
         val cData = pDate.controlData
@@ -49,20 +48,17 @@ object ControlManager {
         val innerID = sp[1]
 
         var runLine = line
-        var runWaitTime = waitTime
 
         val logType = log.type.lowercase()
 
         if (logType.startsWith("index ")) {
             val spt = logType.split(" ")
             runLine = spt[1].toInt()
-            runWaitTime = 0
         }
-        val controlData = QuestControlData(player, cData,
-            controlID, controlModule.level, controlModule.control(questID, innerID), runLine, runWaitTime)
+        val controlData = QuestControlData(player, controlID, controlModule.level, controlModule.control(questID, innerID), runLine)
         cData.addControl(controlID, controlData)
         if (log.enable) {
-            runEval(player, log.returnReCall(questID, innerID, priority))
+            runEval(player, log.replaceRecall(questID, innerID, controlID))
         }
     }
 

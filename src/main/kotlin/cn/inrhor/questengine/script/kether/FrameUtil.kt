@@ -27,18 +27,25 @@ fun ScriptFrame.selectRewardID() = variables().get<Any?>(ActionSelect.ID.variabl
 fun ScriptFrame.selectNavID() = variables().get<Any?>(ActionSelect.ID.variable[4])
     .orElse(null)?.toString()?: error("unknown nav id")
 
+fun ScriptFrame.selectDialogID() = variables().get<Any?>(ActionSelect.ID.variable[5])
+    .orElse(null)?.toString()?: error("unknown dialog id")
+
+fun ScriptFrame.selectControlID() = variables().get<Any?>(ActionSelect.ID.variable[6])
+    .orElse(null)?.toString()?: error("unknown control id")
+
 fun ScriptFrame.player() = script().sender?.castSafely<Player>()?: error("unknown player")
 
 enum class ActionSelect(vararg val variable: String) {
-    ID("@QenQuestId", "@QenInnerId", "@QenTargetId", "@QenRewardId", "@QenNavID"),
+    ID("@QenQuestId", "@QenInnerId", "@QenTargetId", "@QenRewardId", "@QenNavID",
+        "@QenDialogID", "@QenControlID"),
     UUID("@QenQuestUid")
 }
 
 fun QuestReader.selectType() = try {
     mark()
     expect("useUid")
-    ActionSelect.ID
+    ActionSelect.UUID
 }catch (ex: Exception) {
     reset()
-    ActionSelect.UUID
+    ActionSelect.ID
 }

@@ -37,7 +37,7 @@ fun runEval(player: Player, script: List<String>): Boolean {
     }
 }
 
-fun runEvalSet(players: Set<Player>, script: List<String>): Boolean {
+fun runEvalSet(players: Set<Player>, script: String): Boolean {
     if (script.isEmpty()) return true
     players.forEach {
         if (!runEval(it, script)) return false

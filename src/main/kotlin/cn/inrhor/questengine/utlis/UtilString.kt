@@ -16,6 +16,12 @@ object UtilString {
     }
 }
 
+fun String.removeAt(int: Int): String {
+    val l = this.split("\n").toMutableList()
+    l.removeAt(int)
+    return l.joinToString(" ")
+}
+
 /**
  * 截取特殊字符之后的字符串
  */

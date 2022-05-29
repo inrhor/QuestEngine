@@ -323,4 +323,4 @@ EDITOR-SELECT-REWARD-LIST-ALL: "&f\"&7所有奖励&f\""
 EDITOR-SELECT-REWARD-SEL: "&7&l[ &c➤&7&l ]"
 EDITOR-SELECT-REWARD-SEL-HOVER: "&a点击选择"
 
-EDITOR-TARGET-CONDITION-LIST: "&3&l可视化模式 &7- &f编辑任务 \"&7{1}&f(&7{0}&f)&7 {2}&f\" 目标触发条件"
+EDITOR-TARGET-CONDITION: "&3&l可视化模式 &7- &f编辑任务 \"&7{1}&f(&7{0}&f)&7 {2}&f\" 目标触发条件"

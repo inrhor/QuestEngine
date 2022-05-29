@@ -10,7 +10,7 @@ class DialogModule(
      var dialog: List<String> = listOf(),
      var reply: MutableList<ReplyModule> = mutableListOf(),
      var npcIDs: List<String> = listOf(),
-     var condition: List<String> = listOf(),
+     var condition: String = "",
      var space: SpaceDialogModule = SpaceDialogModule()
 ) {
 
@@ -26,6 +26,6 @@ class DialogModule(
 /**
  * 对话空间模块
  */
-class SpaceDialogModule(val enable: Boolean, val condition: List<String>) {
-    constructor(): this(false, listOf())
+class SpaceDialogModule(val enable: Boolean, val condition: String) {
+    constructor(): this(false, "")
 }

@@ -3,13 +3,12 @@ package cn.inrhor.questengine.api.quest.module.inner
 import cn.inrhor.questengine.api.ui.UiFrame
 import cn.inrhor.questengine.utlis.variableReader
 
-
 class QuestTarget(var id: String, var name: String, var reward: String,
-                  var period: Int, var async: Boolean, var condition: List<String>,
+                  var period: Int, var async: Boolean, var condition: String,
                   var node: String, val ui: UiFrame
 ) {
     constructor():
-            this("targetId", "targetName", "", 0, false, listOf(), "", UiFrame())
+            this("targetId", "targetName", "", 0, false, "", "", UiFrame())
 
     @Transient
     val nodeMap: MutableMap<String, MutableList<String>> = mutableMapOf()

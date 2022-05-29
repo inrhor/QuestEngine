@@ -4,16 +4,16 @@ dialog1:
   npcIDs:
     - "1"
   # 对话需要满足的触发条件
-  condition:
-    - permission *dialog.prm.1
+  condition: |
+    permission *dialog.prm.1
   # 对话空间设置
   space:
     # 是否启用
     enable: true
     # 检查条件，一旦不符合将终止对话
-    condition:
-      - spaceRange 30 30 30
-      - permission *dialog.prm.1
+    condition: |
+      spaceRange 30 30 30 {{location}}
+      permission *dialog.prm.1
   # 可选对话类型
   type: holo
   # 关于对话 如下是全息对话示例
@@ -37,7 +37,7 @@ dialog1:
       replyID: reply1
       # 弹出该回复的条件，空或不填的话必弹出
       # 支持 Kether 布尔值语句
-      condition: []
+      condition: |
       content:
         - hitBox {{sizeX 3 3}} {{sizeY 3 3}} {{sizeZ 3 3}} {{long 5}} {{item item_2}} {{use suspend}} {{boxY 2}} {{view}}
         - initLoc {{add 2.0 1.5}} {{dir left}}
@@ -46,29 +46,29 @@ dialog1:
         - text {{&3&l欢迎使用全息对话系统}}
         - item {{item item_1}} {{use suspend}}
       # 支持 Kether 语句
-      script:
-        - dialog end dialog1
+      script: |
+        dialog end dialog1
 
 
 # 对话ID
 dialog2:
   # 继承了父对象的属性（同时包含父dialog1对话的全部回复项）
   hook: dialog1
-  condition: []
+  condition: |
   dialog:
     - reply 20 rep # 在 20 tick后释放本回复项的 rep 回复ID内容
   # 回复项
   reply:
     -
       replyID: rep
-      condition:
-        - tags has hello
+      condition:  |
+        tags has hello
       content:
         - hitBox {{sizeX 3 3}} {{sizeY 3 3}} {{sizeZ 3 3}} {{long 5}} {{item item_2}} {{use suspend}} {{boxY 2}} {{view}}
         - initLoc {{dir left}} {{add 2.0 1.5}}
         - item {{item item_2}} {{use fixed}}
-      script:
-        - dialog end dialog2
+      script: |
+        dialog end dialog2
       tagDefault: "&7"
       tagChoose: "&7&l[ &b&l! &7&l] &b"
 

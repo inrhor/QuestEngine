@@ -1,9 +1,8 @@
 package cn.inrhor.questengine.script.kether.expand.control
 
+import cn.inrhor.questengine.script.kether.player
 import nl.martenm.servertutorialplus.api.ServerTutorialApi
-import nl.pim16aap2.bigDoors.BigDoors
 import org.bukkit.Bukkit
-import taboolib.common.platform.ProxyPlayer
 import taboolib.module.kether.*
 import java.util.concurrent.CompletableFuture
 
@@ -11,9 +10,9 @@ class KetherTutorial(val id: String): ScriptAction<Void>() {
 
     override fun run(frame: ScriptFrame): CompletableFuture<Void> {
         if (Bukkit.getPluginManager().getPlugin("ServerTutorialPlus") == null) return CompletableFuture.completedFuture(null)
-        val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
+        val player = frame.player()
         val api = ServerTutorialApi.getApi()
-        api.startTutorial(id, player.cast())
+        api.startTutorial(id, player)
         return CompletableFuture.completedFuture(null)
     }
 

@@ -104,10 +104,8 @@ class DatabaseLocal: Database() {
         if (data.contains("control")) {
             data.getConfigurationSection("control")!!.getKeys(false).forEach {
                 val node = "control.$it."
-                val priority = data.getString(node+"priority")?: "normal"
                 val line = data.getInt(node+"line")
-                val waitTime = data.getInt(node+"waitTime")
-                ControlManager.pullControl(player, it, priority, line, waitTime)
+                ControlManager.pullControl(player, it, line)
             }
         }
         val pData = DataStorage.getPlayerData(uuid)
@@ -201,7 +199,6 @@ class DatabaseLocal: Database() {
             }
             else -> {
                 data[node+"line"] = cData.line
-                data[node+"waitTime"] = cData.waitTime
             }
         }
     }

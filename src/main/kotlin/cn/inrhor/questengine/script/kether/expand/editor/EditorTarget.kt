@@ -12,6 +12,7 @@ import cn.inrhor.questengine.common.editor.EditorTarget.editorTargetNode
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.script.kether.*
 import cn.inrhor.questengine.utlis.UtilString
+import cn.inrhor.questengine.utlis.removeAt
 import taboolib.module.kether.ScriptAction
 import taboolib.module.kether.ScriptFrame
 import taboolib.module.nms.inputSign
@@ -46,9 +47,7 @@ class EditorTarget(val ui: ActionEditor.TargetUi, vararg val variable: String, v
                     }
                     "condition" -> {
                         val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return frameVoid()
-                        val l = target.condition.toMutableList()
-                        l.removeAt(variable[1].toInt())
-                        target.condition = l
+                        target.condition = target.condition.removeAt(variable[1].toInt())
                         QuestManager.saveFile(questID, innerID)
                         sender.editorTarget(questID, innerID, targetID)
                     }

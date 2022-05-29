@@ -2,9 +2,8 @@ package cn.inrhor.questengine.script.kether.expand.control
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.script.kether.frameVoid
+import cn.inrhor.questengine.script.kether.player
 import org.bukkit.Bukkit
-import org.bukkit.entity.Player
-import taboolib.common.platform.ProxyPlayer
 import taboolib.module.kether.*
 import taboolib.module.nms.MinecraftVersion
 import java.util.concurrent.CompletableFuture
@@ -12,8 +11,7 @@ import java.util.concurrent.CompletableFuture
 class ActionHide(val hide: Boolean): ScriptAction<Void>() {
 
     override fun run(frame: ScriptFrame): CompletableFuture<Void> {
-        val sender = frame.script().sender as? ProxyPlayer ?: error("unknown player")
-        val player = sender.cast<Player>()
+        val player = frame.player()
         Bukkit.getOnlinePlayers().forEach {
             if (hide) {
                 if (MinecraftVersion.majorLegacy >= 11300) {

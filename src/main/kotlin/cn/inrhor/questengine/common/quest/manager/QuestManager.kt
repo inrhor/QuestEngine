@@ -183,10 +183,11 @@ object QuestManager {
         if (!passMaxQuantity(players, questModule)) return false
         val accept = questModule.accept
         val check = accept.check
-        val c = accept.condition
+        val condition = accept.condition
+        val c = condition.split("\n")
         if (c.isEmpty()) return true
         if (check <= 0) {
-            return runEvalSet(players, c)
+            return runEvalSet(players, condition)
         }
         val list = mutableListOf<String>()
         var i = 0
@@ -195,7 +196,7 @@ object QuestManager {
             i++
             if (i >= check) return@forEach
         }
-        return runEvalSet(players, list)
+        return runEvalSet(players, list.joinToString(" "))
     }
 
     /**
@@ -219,7 +220,8 @@ object QuestManager {
         val list = mutableListOf<String>()
         val fail = questModule.failure
         val check = fail.check
-        val c = fail.condition
+        val condition = fail.condition
+        val c = condition.split("\n")
         var i = 0
         val questData = getQuestData(player, questUUID)?: return
         val innerData = questData.questInnerData
@@ -265,7 +267,7 @@ object QuestManager {
         }
     }
 
-    private fun runFailTime(player: Player, modeType: ModeType, failKether: List<String>) {
+    private fun runFailTime(player: Player, modeType: ModeType, failKether: String) {
         val pData = DataStorage.getPlayerData(player)
         val tData = pData.teamData
         if (modeType == ModeType.COLLABORATION && tData != null) {
@@ -535,7 +537,7 @@ object QuestManager {
      * 得到奖励脚本，成功与否
      * 成功的一般是在目标完成时得到
      */
-    fun getReward(questID: String, innerQuestID: String, rewardID: String, type: QuestState): List<String>? {
+    fun getReward(questID: String, innerQuestID: String, rewardID: String, type: QuestState): String {
         val questModule = questMap[questID]!!
         for (m in questModule.innerQuestList) {
             if (m.id == innerQuestID) {
@@ -544,7 +546,7 @@ object QuestManager {
                 }else m.reward.fail
             }
         }
-        return null
+        return ""
     }
 
     /**

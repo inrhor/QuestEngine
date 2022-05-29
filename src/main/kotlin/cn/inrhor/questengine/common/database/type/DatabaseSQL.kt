@@ -151,12 +151,9 @@ class DatabaseSQL: Database() {
             }
         }
         add("priority") {
-            type(ColumnTypeSQL.TEXT)
-        }
-        add("line") {
             type(ColumnTypeSQL.INT)
         }
-        add("wait") {
+        add("line") {
             type(ColumnTypeSQL.INT)
         }
     }
@@ -241,15 +238,13 @@ class DatabaseSQL: Database() {
         }
         tableControl.select(source) {
             where { "user" eq uId }
-            rows("c_id", "priority", "line", "wait")
+            rows("c_id", "line")
         }.map {
-            getString("c_id") to getInt("priority") to getInt("line") to getInt("wait")
+            getString("c_id") to getInt("line")
         }.forEach {
-            val controlID = it.first.first.first
-            val priority = it.first.first.second
-            val line = it.first.second
-            val wait = it.second
-            ControlManager.pullControl(player, controlID, priority.toControlPriority().toString(), line, wait)
+            val controlID = it.first
+            val line = it.second
+            ControlManager.pullControl(player, controlID, line)
         }
         TargetManager.runTask(pData, player)
         tableTags.select(source) {
@@ -433,7 +428,6 @@ class DatabaseSQL: Database() {
     private fun pushControl(uId: Long, controlID: String, cData: QuestControlData) {
         if (ControlManager.runLogType(controlID) == RunLogType.DISABLE) return
         val line = cData.line
-        val waitTime = cData.waitTime
         if (hasControl(uId, controlID)) {
             tableControl.update(source) {
                 where {
@@ -443,11 +437,10 @@ class DatabaseSQL: Database() {
                     }
                 }
                 set("line", line)
-                set("wait", waitTime)
             }
         }else {
-            tableControl.insert(source, "user", "c_id", "priority", "line", "wait") {
-                value(uId, controlID, cData.controlPriority.toInt(), line, waitTime)
+            tableControl.insert(source, "user", "c_id", "priority", "line") {
+                value(uId, controlID, cData.controlPriority.toInt(), line)
             }
         }
     }

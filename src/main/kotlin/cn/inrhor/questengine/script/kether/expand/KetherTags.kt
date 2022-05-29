@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.script.kether.expand
 
 import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.script.kether.player
 import taboolib.common.platform.ProxyPlayer
 import taboolib.module.kether.*
 import taboolib.module.kether.scriptParser
@@ -10,7 +11,7 @@ class KetherTags {
 
     class DoTag(val type: Type, val tag: String): ScriptAction<Void>() {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {
-            val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
+            val player = frame.player()
             val pData = DataStorage.getPlayerData(player.uniqueId)
             val tags = pData.tagsData
             if (type == Type.ADD) {

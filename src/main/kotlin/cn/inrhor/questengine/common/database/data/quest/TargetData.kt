@@ -77,12 +77,10 @@ class TargetData(
     private fun runTaskPass(player: Player): Boolean {
         val c = questTarget.condition
         if (c.isEmpty()) return false
-        c.forEach {
-            try {
-                if (!runEval(player, it)) return false
-            } catch (ex: Exception) {
-                return false
-            }
+        try {
+            if (!runEval(player, c)) return false
+        } catch (ex: Exception) {
+            return false
         }
         return true
     }

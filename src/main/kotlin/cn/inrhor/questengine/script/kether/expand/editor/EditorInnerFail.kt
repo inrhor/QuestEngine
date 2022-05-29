@@ -6,6 +6,7 @@ import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.script.kether.player
 import cn.inrhor.questengine.script.kether.selectInnerID
 import cn.inrhor.questengine.script.kether.selectQuestID
+import cn.inrhor.questengine.utlis.removeAt
 import taboolib.module.kether.ScriptAction
 import taboolib.module.kether.ScriptFrame
 import java.util.concurrent.CompletableFuture
@@ -21,9 +22,7 @@ class EditorInnerFail(val ui: ActionEditor.ListUi, vararg val variable: String, 
             }
             ActionEditor.ListUi.DEL -> {
                 val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return frameVoid()
-                val list = inner.reward.fail.toMutableList()
-                list.removeAt(variable[0].toInt())
-                inner.reward.fail = list
+                inner.reward.fail = inner.reward.fail.removeAt(variable[0].toInt())
                 QuestManager.saveFile(questID, innerID)
                 sender.editorFailReward(questID, innerID)
             }
