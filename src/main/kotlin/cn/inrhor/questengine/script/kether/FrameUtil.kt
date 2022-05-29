@@ -24,10 +24,13 @@ fun ScriptFrame.selectTargetID() = variables().get<Any?>(ActionSelect.ID.variabl
 fun ScriptFrame.selectRewardID() = variables().get<Any?>(ActionSelect.ID.variable[3])
     .orElse(null)?.toString()?: error("unknown reward id")
 
+fun ScriptFrame.selectNavID() = variables().get<Any?>(ActionSelect.ID.variable[4])
+    .orElse(null)?.toString()?: error("unknown nav id")
+
 fun ScriptFrame.player() = script().sender?.castSafely<Player>()?: error("unknown player")
 
 enum class ActionSelect(vararg val variable: String) {
-    ID("@QenQuestId", "@QenInnerId", "@QenTargetId", "@QenRewardId"),
+    ID("@QenQuestId", "@QenInnerId", "@QenTargetId", "@QenRewardId", "@QenNavID"),
     UUID("@QenQuestUid")
 }
 

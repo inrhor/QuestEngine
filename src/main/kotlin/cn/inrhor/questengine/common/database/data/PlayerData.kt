@@ -18,7 +18,6 @@ data class PlayerData(
     val dialogData: DialogData,
     var questDataList: MutableMap<UUID, QuestData>, /* QuestUUID 对应 QuestData */
     var controlData: ControlData,
-    var dataPacket: MutableMap<String, MutableList<PacketData>>,
     val tagsData: TagsData = TagsData(),
     val chatCache: ChatCache = ChatCache(),
     val navData: MutableMap<String, NavData> = mutableMapOf()) {
@@ -27,16 +26,7 @@ data class PlayerData(
             this(uuid, null,
                 DialogData(mutableMapOf(), mutableMapOf(), mutableMapOf()),
                 mutableMapOf(),
-                ControlData(linkedMapOf(), mutableMapOf()),
-                mutableMapOf()
+                ControlData(linkedMapOf(), mutableMapOf())
             )
-
-    fun addDataPacket(packetID: String, dataPackets: MutableList<PacketData>) {
-        if (dataPacket.containsKey(packetID)) {
-            dataPackets.forEach {
-                dataPacket[packetID]!!.add(it)
-            }
-        }else dataPacket[packetID] = dataPackets
-    }
 
 }
