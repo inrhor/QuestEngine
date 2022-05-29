@@ -20,19 +20,19 @@ object EditorTime {
             .append("      "+asLangText("EDITOR-BACK"))
             .append("  "+asLangText("EDITOR-BACK-META"))
             .hoverText(asLangText("EDITOR-BACK-HOVER"))
-            .runCommand("/qen eval editor inner in edit home select $questID $innerID")
+            .runCommand("/qen eval quest select $questID inner select $innerID editor inner in edit home")
             .newLine()
             .newLine()
             .append("      "+asLangText("EDITOR-EDIT-TIME-TYPE",
                 asLangText("EDITOR-EDIT-TIME-TYPE-${time.type}")))
             .append("  "+asLangText("EDITOR-EDIT-TIME-META"))
             .hoverText(asLangText("EDITOR-EDIT-TIME-META-HOVER"))
-            .runCommand("/qen eval editor time in edit type select $questID $innerID").newLine()
+            .runCommand("/qen eval quest select $questID inner select $innerID editor time in edit type").newLine()
             .append("      "+asLangText("EDITOR-EDIT-TIME-DUR", time.langTime(this)))
             if (time.type != TimeFrame.Type.ALWAYS) {
                 json.append("  "+asLangText("EDITOR-EDIT-TIME-META"))
                     .hoverText(asLangText("EDITOR-EDIT-TIME-META-HOVER"))
-                    .runCommand("/qen eval editor time in edit ${time.type} select $questID $innerID")
+                    .runCommand("/qen eval quest select $questID inner select $innerID editor time in edit ${time.type}")
             }
             json.newLine().sendTo(adaptPlayer(this))
     }
@@ -46,7 +46,7 @@ object EditorTime {
             .append("      "+asLangText("EDITOR-BACK"))
             .append("  "+asLangText("EDITOR-BACK-META"))
             .hoverText(asLangText("EDITOR-BACK-HOVER"))
-            .runCommand("/qen eval editor inner in edit time select $questID $innerID")
+            .runCommand("/qen eval quest select $questID inner select $innerID  editor inner in edit time")
             .newLine()
             .newLine()
         listOf("ALWAYS", "DAY", "WEEKLY", "MONTHLY", "YEARLY", "CUSTOM").forEach {
@@ -54,7 +54,7 @@ object EditorTime {
             if (inner.time.type != TimeFrame.Type.valueOf(it)) {
                 json.append("  "+asLangText("EDITOR-EDIT-TIME-SELECT_1"))
                     .hoverText(asLangText("EDITOR-EDIT-TIME-SELECT-HOVER"))
-                    .runCommand("/qen eval editor time in change type to ${it.lowercase()} select $questID $innerID")
+                    .runCommand("/qen eval quest select $questID inner select $innerID  editor time in change type to ${it.lowercase()}")
                     .newLine()
             }else {
                 json.append("  "+asLangText("EDITOR-EDIT-TIME-SELECT_2")).newLine()

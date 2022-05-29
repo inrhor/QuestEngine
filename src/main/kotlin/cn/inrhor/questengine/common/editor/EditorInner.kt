@@ -20,7 +20,7 @@ object EditorInner {
             .append("      "+asLangText("EDITOR-BACK"))
             .append("  "+asLangText("EDITOR-BACK-META"))
             .hoverText(asLangText("EDITOR-BACK-HOVER"))
-            .runCommand("/qen eval editor inner in list page 0 select $questID $innerID")
+            .runCommand("/qen eval quest select $questID inner select $innerID editor inner in list page 0")
             .newLine()
             .newLine()
         editInnerMeta.forEach {
@@ -29,9 +29,9 @@ object EditorInner {
                 .append("  "+asLangText("EDITOR-EDIT-INNER-META"))
                 .hoverText(asLangText("EDITOR-EDIT-INNER-META-HOVER"))
             if (it == "NEXTINNER") {
-                json.runCommand("/qen eval editor inner in edit "+it.lowercase()+" page 0 select $questID $innerID")
+                json.runCommand("/qen eval quest select $questID inner select $innerID editor inner in edit "+it.lowercase()+" page 0")
             }else {
-                json.runCommand("/qen eval editor inner in edit "+it.lowercase()+" select $questID $innerID")
+                json.runCommand("/qen eval quest select $questID inner select $innerID editor inner in edit "+it.lowercase())
             }
             json.newLine()
         }
@@ -40,7 +40,7 @@ object EditorInner {
                 inner.name, inner.nextInnerQuestID))
                 .append("  "+asLangText("EDITOR-EDIT-INNER-META"))
                 .hoverText(asLangText("EDITOR-EDIT-INNER-META-HOVER"))
-                .runCommand("/qen eval editor ${it.lowercase()} in list page 0 select $questID $innerID")
+                .runCommand("/qen eval quest select $questID inner select $innerID editor ${it.lowercase()} in list page 0")
                 .newLine()
         }
         json.newLine().sendTo(adaptPlayer(this))
