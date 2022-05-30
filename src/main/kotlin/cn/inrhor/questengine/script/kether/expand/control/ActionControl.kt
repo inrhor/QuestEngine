@@ -6,6 +6,7 @@ import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.quest.manager.ControlManager
 import cn.inrhor.questengine.common.quest.manager.RunLogType
 import cn.inrhor.questengine.script.kether.*
+import cn.inrhor.questengine.utlis.newLineList
 import taboolib.library.kether.ArgTypes
 import taboolib.module.kether.*
 import taboolib.module.kether.scriptParser
@@ -36,7 +37,7 @@ object ActionControl {
                         val cModule = ControlManager.getControlModule(controlID)
                         if (cModule != null) {
                             if (ControlManager.runLogType(controlID) != RunLogType.DISABLE) {
-                                val list = cModule.control(questID, innerID).split("\n")
+                                val list = cModule.control(questID, innerID).newLineList()
                                 if (list.size > index) {
                                     runEval(player(), list[index])
                                 }

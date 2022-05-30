@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.utlis
 
 import cn.inrhor.questengine.QuestEngine
-import com.google.common.base.Strings
 import org.bukkit.entity.Player
 import taboolib.common.util.VariableReader
 import taboolib.module.chat.colored
@@ -16,8 +15,14 @@ object UtilString {
     }
 }
 
-fun String.removeAt(int: Int): String {
+fun String.newLineList(): MutableList<String> {
     val l = this.split("\n").toMutableList()
+    l.remove("")
+    return l
+}
+
+fun String.removeAt(int: Int): String {
+    val l = this.newLineList()
     l.removeAt(int)
     return l.joinToString(" ")
 }
@@ -29,32 +34,6 @@ fun String.subAfter(meta: String): String {
     return this.substring(this.indexOf(meta)+1)
 }
 
-/**
- * 截取特殊字符之前的字符串
- */
-fun String.subBefore(meta: String): String {
-    return this.substring(0, this.indexOf(meta))
-}
-
-/**
- * 百分比状态
- * @param current
- * @param max
- * @param totalBars
- * @param symbol
- * @param completedColor
- * @param notCompletedColor
- * @return
- */
-fun progressBar(
-    current: Int, max: Int, totalBars: Int, symbol:
-    String, completedColor: String,
-    notCompletedColor: String): String {
-    val percent = current.toFloat() / max
-    val progressBars = (totalBars * percent).toInt()
-    return (Strings.repeat("" + completedColor + symbol, progressBars)
-            + Strings.repeat("" + notCompletedColor + symbol, totalBars - progressBars))
-}
 
 fun List<String>.toJsonStr(): String {
     var content = ""

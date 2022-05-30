@@ -17,11 +17,11 @@ class ActionEditor {
     }
 
     enum class RewardUi {
-        LIST, EDIT, DEL
+        LIST, EDIT, DEL,ADD
     }
 
     enum class ListUi {
-        LIST, DEL
+        LIST, DEL, ADD
     }
 
     enum class TimeUi {
@@ -38,7 +38,7 @@ class ActionEditor {
                  * editor quest in add/del
                  * editor quest in edit [meta]
                  * editor quest in edit [meta] page [page]
-                 * editor quest in change [meta] to [change]
+                 * editor quest in change [meta] to [change] add/del
                  */
                 case("quest") {
                     it.mark()
@@ -62,11 +62,14 @@ class ActionEditor {
                         QuestUi.CHANGE -> {
                             val meta = it.nextToken()
                             it.expect("to")
-                            EditorQuest(ui, meta, it.nextToken())
+                            when (meta) {
+                                "acceptcondition", "failurecondition", "failurescript" -> {
+                                    EditorQuest(ui, meta, it.nextToken(), it.nextToken())
+                                }
+                                else -> EditorQuest(ui, meta, it.nextToken())
+                            }
                         }
-                        else -> {
-                            EditorQuest(ui)
-                        }
+                        else -> EditorQuest(ui)
                     }
                 }
                 /**
@@ -187,7 +190,7 @@ class ActionEditor {
                 /**
                  * editor reward in list page [page]
                  * editor reward in edit page [page]
-                 * editor reward in del [index]
+                 * editor reward in del/add [index]
                  */
                 case("reward") {
                     it.mark()
@@ -203,16 +206,15 @@ class ActionEditor {
                             val page = it.nextInt()
                             EditorReward(ui, page = page)
                         }
-                        RewardUi.DEL -> {
-                            val index = it.nextInt()
-                            EditorReward(ui, index = index)
+                        RewardUi.DEL, RewardUi.ADD -> {
+                            EditorReward(ui, it.nextToken())
                         }
                         else -> error("unknown ui")
                     }
                 }
                 /**
                  * editor fail in list page [page]
-                 * editor fail in del [index]
+                 * editor fail in del/add [index]
                  */
                 case("fail") {
                     it.mark()
@@ -223,9 +225,8 @@ class ActionEditor {
                             val page = it.nextInt()
                             EditorInnerFail(ui, page=page)
                         }
-                        ListUi.DEL -> {
-                            val index = it.nextToken()
-                            EditorInnerFail(ui, index)
+                        ListUi.DEL, ListUi.ADD -> {
+                            EditorInnerFail(ui, it.nextToken())
                         }
                         else -> error("unknown ui")
                     }

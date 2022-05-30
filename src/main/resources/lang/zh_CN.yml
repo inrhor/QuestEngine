@@ -324,3 +324,11 @@ EDITOR-SELECT-REWARD-SEL: "&7&l[ &c➤&7&l ]"
 EDITOR-SELECT-REWARD-SEL-HOVER: "&a点击选择"
 
 EDITOR-TARGET-CONDITION: "&3&l可视化模式 &7- &f编辑任务 \"&7{1}&f(&7{0}&f)&7 {2}&f\" 目标触发条件"
+
+EDITOR-LIST-ADD: "&7添加"
+EDITOR-LIST-ADD-META: "&7&l[ &e+ &7&l]"
+EDITOR-LIST-ADD-HOVER: "&e点击添加内容到首行"
+EDITOR-LIST-NEXT-ADD: "&7添加"
+EDITOR-LIST-NEXT-ADD-META: "&7&l[ &e+ &7&l]"
+EDITOR-LIST-NEXT-ADD-HOVER: "&e点击添加内容到下一行"
+EDITOR-PLEASE-EVAL: "下一行输入语句"

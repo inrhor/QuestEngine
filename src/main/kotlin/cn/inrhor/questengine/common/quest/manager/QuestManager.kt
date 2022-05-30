@@ -17,6 +17,7 @@ import cn.inrhor.questengine.script.kether.runEval
 import cn.inrhor.questengine.script.kether.runEvalSet
 
 import cn.inrhor.questengine.utlis.file.FileUtil
+import cn.inrhor.questengine.utlis.newLineList
 import cn.inrhor.questengine.utlis.time.*
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -184,7 +185,7 @@ object QuestManager {
         val accept = questModule.accept
         val check = accept.check
         val condition = accept.condition
-        val c = condition.split("\n")
+        val c = condition.newLineList()
         if (c.isEmpty()) return true
         if (check <= 0) {
             return runEvalSet(players, condition)
@@ -221,7 +222,7 @@ object QuestManager {
         val fail = questModule.failure
         val check = fail.check
         val condition = fail.condition
-        val c = condition.split("\n")
+        val c = condition.newLineList()
         var i = 0
         val questData = getQuestData(player, questUUID)?: return
         val innerData = questData.questInnerData
