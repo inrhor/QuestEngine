@@ -17,7 +17,7 @@ class ActionEditor {
     }
 
     enum class RewardUi {
-        LIST, EDIT, DEL,ADD
+        LIST, EDIT, DEL,ADD,CREATE
     }
 
     enum class ListUi {
@@ -143,8 +143,7 @@ class ActionEditor {
                                 }
                                 "node" -> {
                                     it.expect("to")
-                                    val to = it.nextToken()
-                                    EditorTarget(ui, meta, to)
+                                    EditorTarget(ui, meta, it.nextToken())
                                 }
                                 else -> {
                                     EditorTarget(ui, meta)
@@ -176,8 +175,7 @@ class ActionEditor {
                             val change = it.nextToken()
                             when (meta) {
                                 "node" -> {
-                                    val index = it.nextToken()
-                                    EditorTarget(ui, meta, change, index)
+                                    EditorTarget(ui, meta, change, it.nextToken(), it.nextToken())
                                 }
                                 else -> {
                                     EditorTarget(ui, meta, change)
@@ -208,6 +206,9 @@ class ActionEditor {
                         }
                         RewardUi.DEL, RewardUi.ADD -> {
                             EditorReward(ui, it.nextToken())
+                        }
+                        RewardUi.CREATE -> {
+                            EditorReward(ui)
                         }
                         else -> error("unknown ui")
                     }

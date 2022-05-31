@@ -13,6 +13,7 @@ import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.script.kether.*
 import cn.inrhor.questengine.utlis.UtilString
 import cn.inrhor.questengine.utlis.removeAt
+import taboolib.common.util.addSafely
 import taboolib.module.kether.ScriptAction
 import taboolib.module.kether.ScriptFrame
 import taboolib.module.nms.inputSign
@@ -31,12 +32,23 @@ class EditorTarget(val ui: ActionEditor.TargetUi, vararg val variable: String, v
                 when (variable[0]) {
                     "node" -> {
                         val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return frameVoid()
-                        val change = variable[1]
-                        val meta = target.nodeMeta(change)?: mutableListOf()
-                        meta.removeAt(variable[2].toInt())
-                        target.reloadNode(change, meta)
-                        QuestManager.saveFile(questID, innerID)
-                        sender.editorNodeList(questID, innerID, target, change)
+                        val node = variable[1]
+                        val i = variable[3]
+                        val meta = target.nodeMeta(node)?: mutableListOf()
+                        if (variable[2]=="del") {
+                            meta.removeAt(i.toInt())
+                            target.reloadNode(node, meta)
+                            QuestManager.saveFile(questID, innerID)
+                            sender.editorNodeList(questID, innerID, target, node)
+                        }else {
+                            sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-NODE-CONTENT"))) {
+                                val index = if (i=="{head}") 0 else i.toInt()+1
+                                meta.addSafely(index, it[1], "")
+                                target.reloadNode(node, meta)
+                                QuestManager.saveFile(questID, innerID)
+                                sender.editorNodeList(questID, innerID, target, node)
+                            }
+                        }
                     }
                     "name" -> {
                         val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return frameVoid()

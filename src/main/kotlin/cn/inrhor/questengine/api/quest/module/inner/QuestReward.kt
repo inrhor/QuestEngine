@@ -6,6 +6,13 @@ class QuestReward(
 
     constructor(): this(mutableListOf(), "")
 
+    fun existRewardID(rewardID: String): Boolean {
+        finish.forEach {
+            if (it.id == rewardID) return true
+        }
+        return false
+    }
+
     fun getFinishScript(rewardID: String): String {
         finish.forEach {
             if (it.id == rewardID) return it.script

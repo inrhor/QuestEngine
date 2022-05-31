@@ -1,5 +1,8 @@
 package cn.inrhor.questengine.api.target
 
+import cn.inrhor.questengine.common.quest.target.node.BlockNode
+import cn.inrhor.questengine.common.quest.target.node.CauseNode
+import cn.inrhor.questengine.common.quest.target.node.IdNode
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 
@@ -7,21 +10,20 @@ object RegisterTarget {
 
     @Awake(LifeCycle.LOAD)
     fun loadNode() {
-        val block = TargetNode("block", TargetNodeType.LIST)
+        val block = BlockNode()
         val amount = TargetNode("amount", TargetNodeType.INT)
         val number = TargetNode("number", TargetNodeType.INT)
-        val id = TargetNode("id", TargetNodeType.LIST)
+        val id = IdNode()
         val need = TargetNode("need", TargetNodeType.LIST)
         add("break block", block, amount)
         add("place block", block, amount)
-        add("pass collection packet", number, TargetNode("packetID", TargetNodeType.STRING))
         add("enchant item", TargetNode("cost", TargetNodeType.DOUBLE), number)
         add("player kill entity", number, TargetNode("entity", TargetNodeType.STRING))
         add("left npc", id, need)
         add("right npc", id, need)
         add("player chat", TargetNode("message", TargetNodeType.STRING), number)
         add("player send command", TargetNode("content", TargetNodeType.STRING), number)
-        add("player death", TargetNode("cause", TargetNodeType.LIST), number)
+        add("player death", CauseNode(), number)
         add("player join server", number)
         add("player quit server", number)
         add("TASK")
@@ -57,4 +59,10 @@ enum class TargetNodeType {
     STRING,INT,DOUBLE,BOOLEAN,LIST
 }
 
-class TargetNode(val node: String, val nodeType: TargetNodeType)
+open class TargetNode(val node: String, val nodeType: TargetNodeType = TargetNodeType.LIST) {
+
+    open fun contains(content: String): Boolean {
+        return true
+    }
+
+}

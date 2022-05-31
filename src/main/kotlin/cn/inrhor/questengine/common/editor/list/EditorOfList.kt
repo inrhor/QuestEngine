@@ -1,16 +1,14 @@
 package cn.inrhor.questengine.common.editor.list
 
-import cn.inrhor.questengine.script.kether.EvalType
-import cn.inrhor.questengine.script.kether.feedbackEval
-import cn.inrhor.questengine.script.kether.testEval
-import cn.inrhor.questengine.script.kether.lang
+import cn.inrhor.questengine.api.target.RegisterTarget
+import cn.inrhor.questengine.script.kether.*
 import org.bukkit.entity.Player
 import taboolib.common.util.addSafely
 import taboolib.module.chat.TellrawJson
 import taboolib.module.chat.colored
 import taboolib.platform.util.asLangText
 
-class EditorOfList(player: Player, header: String, json: TellrawJson = TellrawJson(), val empty: String = "        ") : EditorListModule(player, header, json) {
+class EditorOfList(player: Player, header: String, json: TellrawJson = TellrawJson(), val empty: String = "        ", vararg val other: String) : EditorListModule(player, header, json) {
 
     override fun listAppend(content: String, split: Boolean, index: Int, list: List<*>, button: Array<out EditorButton>) {
         if (list.isEmpty()) return
@@ -23,7 +21,9 @@ class EditorOfList(player: Player, header: String, json: TellrawJson = TellrawJs
             val bl = if (split && (sum%2 == 0)) empty else " "
             if (it.content.contains("-CONDITION-RETURN")) {
                 json.newLine().append("        "+player.asLangText(it.content))
-                val type = testEval(player, get)
+                val type = if (content == "EDITOR-TARGET-LIST-FOR-NODE") backContains(player, content,
+                    RegisterTarget.getNode(other[0], other[1])?.contains(get)?: true
+                ) else backContains(player, get)
                 json.append(" "+type.lang(player, it.content))
                 if (type == EvalType.ERROR) {
                     json.hoverText("&7".colored()+ feedbackEval(player, get))

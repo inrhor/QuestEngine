@@ -24,7 +24,7 @@ fun String.newLineList(): MutableList<String> {
 fun String.removeAt(int: Int): String {
     val l = this.newLineList()
     l.removeAt(int)
-    return l.joinToString(" ")
+    return l.joinToString("\n")
 }
 
 /**

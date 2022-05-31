@@ -13,6 +13,7 @@ import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.script.kether.player
 import cn.inrhor.questengine.script.kether.selectQuestID
 import cn.inrhor.questengine.utlis.newLineList
+import taboolib.common.platform.function.info
 import taboolib.common.util.addSafely
 import taboolib.module.kether.ScriptAction
 import taboolib.module.kether.ScriptFrame
@@ -140,9 +141,9 @@ class EditorQuest(val ui: ActionEditor.QuestUi, vararg val variable: String, val
                         QuestManager.saveFile(questID, change)
                     }
                     "acceptcondition" -> {
-                        when (variable[2]) {
+                        when (change) {
                             "del" -> {
-                                questModule.accept.delCondition(change.toInt())
+                                questModule.accept.delCondition(variable[2].toInt())
                                 QuestManager.saveFile(questID)
                                 sender.editorAcceptCondition(questID)
                             }
@@ -150,19 +151,19 @@ class EditorQuest(val ui: ActionEditor.QuestUi, vararg val variable: String, val
                                 sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-EVAL"))) {
                                     val con = questModule.accept.condition
                                     val list = con.newLineList()
-                                    val index = if (change=="{head}") 0 else change.toInt()+1
+                                    val index = if (variable[2]=="{head}") 0 else variable[2].toInt()+1
                                     list.addSafely(index, it[1], "")
-                                    questModule.accept.condition = list.joinToString(" ")
+                                    questModule.accept.condition = list.joinToString("\n")
                                     QuestManager.saveFile(questID)
                                     sender.editorAcceptCondition(questID)
                                 }
                             }
                         }
                     }
-                    "failcondition" -> {
-                        when (variable[2]) {
+                    "failurecondition" -> {
+                        when (change) {
                             "del" -> {
-                                questModule.failure.delCondition(change.toInt())
+                                questModule.failure.delCondition(variable[2].toInt())
                                 QuestManager.saveFile(questID)
                                 sender.editorFailCondition(questID)
                             }
@@ -170,29 +171,30 @@ class EditorQuest(val ui: ActionEditor.QuestUi, vararg val variable: String, val
                                 sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-EVAL"))) {
                                     val con = questModule.failure.condition
                                     val list = con.newLineList()
-                                    val index = if (change=="{head}") 0 else change.toInt()+1
+                                    val index = if (variable[2]=="{head}") 0 else variable[2].toInt()+1
                                     list.addSafely(index, it[1], "")
-                                    questModule.failure.condition = list.joinToString(" ")
+                                    questModule.failure.condition = list.joinToString("\n")
                                     QuestManager.saveFile(questID)
                                     sender.editorFailCondition(questID)
                                 }
                             }
                         }
                     }
-                    "failscript" -> {
-                        when (variable[2]) {
+                    "failurescript" -> {
+                        when (change) {
                             "del" -> {
-                                questModule.failure.delScript(change.toInt())
+                                questModule.failure.delScript(variable[2].toInt())
                                 QuestManager.saveFile(questID)
                                 sender.editorFailScript(questID)
                             }
                             "add" -> {
+                                info("script fail")
                                 sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-EVAL"))) {
                                     val con = questModule.failure.script
                                     val list = con.newLineList()
-                                    val index = if (change=="{head}") 0 else change.toInt()+1
+                                    val index = if (variable[2]=="{head}") 0 else variable[2].toInt()+1
                                     list.addSafely(index, it[1], "")
-                                    questModule.failure.script = list.joinToString(" ")
+                                    questModule.failure.script = list.joinToString("\n")
                                     QuestManager.saveFile(questID)
                                     sender.editorFailScript(questID)
                                 }

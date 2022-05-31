@@ -45,6 +45,15 @@ fun runEvalSet(players: Set<Player>, script: String): Boolean {
     return true
 }
 
+fun backContains(player: Player, content: String, back: Boolean = true, eval: Boolean = true): EvalType {
+    if (eval) {
+        return testEval(player, content)
+    }else {
+        if (back) return EvalType.TRUE else EvalType.FALSE
+    }
+    return EvalType.FALSE
+}
+
 fun testEval(player: Player, script: String): EvalType {
     if (script.isEmpty()) return EvalType.TRUE
     return try {

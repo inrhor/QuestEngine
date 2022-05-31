@@ -33,7 +33,7 @@ class EditorInnerFail(val ui: ActionEditor.ListUi, vararg val variable: String, 
                     val list = inner.reward.fail.newLineList()
                     val index = if (variable[0]=="{head}") 0 else variable[0].toInt()+1
                     list.addSafely(index, it[1], "")
-                    inner.reward.fail = list.joinToString(" ")
+                    inner.reward.fail = list.joinToString("\n")
                     QuestManager.saveFile(questID, innerID)
                     sender.editorFailReward(questID, innerID)
                 }

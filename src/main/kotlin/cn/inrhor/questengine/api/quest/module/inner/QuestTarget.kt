@@ -24,17 +24,23 @@ class QuestTarget(var id: String, var name: String, var reward: String,
     }
 
     fun reloadNode(newNode: String, newList: MutableList<String>) {
+        newList.remove("\n")
         node = ""
         nodeMap.remove(newNode)
         nodeMap.forEach { (t, u) ->
-            node +="{{$t ${u.joinToString(" ")}}}"
+            node +="{{$t ${u.joinToString("\n")}}}"
         }
         nodeMap[newNode] = newList
-        node +="{{$newNode ${newList.joinToString(" ")}}}"
+        node +="{{$newNode ${newList.joinToString("\n")}}}"
     }
 
     fun nodeMeta(meta: String): MutableList<String>? {
-        if (nodeMap.containsKey(meta)) return nodeMap[meta]
+        if (nodeMap.containsKey(meta)) {
+            val list = nodeMap[meta]!!
+            list.remove("\n")
+            list.remove("")
+            return list
+        }
         return null
     }
 }
