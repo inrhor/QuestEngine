@@ -5,6 +5,9 @@ import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.api.quest.module.inner.QuestReward
+import cn.inrhor.questengine.common.database.data.teamData
+import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestID
+import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestModule
 import cn.inrhor.questengine.script.kether.runEval
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -14,9 +17,9 @@ object RewardManager {
     /**
      * 满足进度触发奖励
      */
-    fun finishReward(player: Player, questData: QuestData, questInnerData: QuestInnerData, targetData: TargetData, amount: Int, schedule: Int): Boolean {
+    fun finishReward(player: Player, targetData: TargetData, amount: Int, schedule: Int): Boolean {
         if (schedule >= amount) {
-            finishReward(player, questData, questInnerData, targetData)
+            finishReward(player, targetData)
         }
         return true
     }
@@ -24,25 +27,24 @@ object RewardManager {
     /**
      * 直接触发奖励
      */
-    fun finishReward(player: Player, questData: QuestData, questInnerData: QuestInnerData, targetData: TargetData): Boolean {
-        val questID = questData.questID
-        if (QuestManager.getQuestMode(questID) == ModeType.COLLABORATION) {
-            val team = questData.teamData ?: return false
-            for (mUUID in team.members) {
-                val m = Bukkit.getPlayer(mUUID)?: continue
-                finishReward(m, questInnerData, targetData)
+    fun finishReward(player: Player, targetData: TargetData) {
+        val q = targetData.questUUID.getQuestModule(player)?: return
+        if (q.mode.type == ModeType.COLLABORATION) {
+            player.teamData()?.playerMembers()?.forEach {
+                sendFinish(it, targetData)
             }
+            sendFinish(player, targetData)
         }else {
-            finishReward(player, questInnerData, targetData)
+            sendFinish(player, targetData)
         }
-        return true
     }
 
-    private fun finishReward(player: Player, questInnerData: QuestInnerData, targetData: TargetData) {
-        val mainID = questInnerData.innerQuestID
-        val questID = questInnerData.questID
-        val innerModule = QuestManager.getInnerQuestModule(questID, mainID)?: return
-        finishReward(player, questInnerData, innerModule.reward, targetData.questTarget.reward)
+    private fun sendFinish(player: Player, targetData: TargetData) {
+        val innerID = targetData.innerID
+        val questID = targetData.questUUID.getQuestID(player)
+        val innerModule = QuestManager.getInnerQuestModule(questID, innerID)?: return
+        val innerData = QuestManager.getInnerQuestData(player, targetData.questUUID, innerID)?: return
+        finishReward(player, innerData, innerModule.reward, targetData.questTarget.reward)
     }
 
     private fun finishReward(player: Player, questInnerData: QuestInnerData, questReward: QuestReward, content: String) {

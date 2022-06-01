@@ -127,10 +127,9 @@ class DatabaseLocal: Database() {
         val rewardInner = returnRewardData(data, node)
         val innerState = (data.getString(node+"state")?: "IDLE").toState()
         val questID = data.getString("quest.$questUUID.questID")?: return null
-        val questModule = QuestManager.getQuestModule(questID)?: return null
         val innerModule = QuestManager.getInnerQuestModule(questID, innerQuestID)?: return null
         val innerTargetDataMap = returnTargets(
-            data, node, QuestManager.getInnerModuleTargetMap(questUUID, questModule.mode.type, innerModule))
+            data, node, QuestManager.getInnerModuleTargetMap(questUUID, innerModule))
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val timeDate = if (data.contains(node+"timeDate")) dateFormat.parse(data.getString(node+"timeDate")) else Date()
         val end = if (data.contains(node+"endTimeDate")) dateFormat.parse(data.getString(node+"endTimeDate")) else null

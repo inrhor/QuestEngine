@@ -4,6 +4,7 @@ import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.api.quest.module.inner.QuestTarget
+import cn.inrhor.questengine.common.database.data.teamData
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.quest.manager.RewardManager
 import cn.inrhor.questengine.script.kether.runEval
@@ -37,7 +38,7 @@ class TargetData(
             if (!pass && runTaskPass(player)) {
                 schedule++
                 if (modeType == ModeType.PERSONAL) {
-                    RewardManager.finishReward(player, questData, innerData, this@TargetData)
+                    RewardManager.finishReward(player, this@TargetData)
                     QuestManager.finishInnerQuest(player, questData, innerData)
                     cancel()
                     return@submit
@@ -49,13 +50,13 @@ class TargetData(
                 return@submit
             }
             if (modeType == ModeType.COLLABORATION) {
-                val teamData = questData.teamData?: run {
+                val teamData = player.teamData()?: run {
                     cancel()
                     return@submit
                 }
                 if (runTaskModePass(questData, teamData.members)) {
                     teamData.playerMembers().forEach {
-                        RewardManager.finishReward(it, questData, innerData, this@TargetData)
+                        RewardManager.finishReward(it, this@TargetData)
                         QuestManager.finishInnerQuest(it, questData, innerData)
                     }
                 }

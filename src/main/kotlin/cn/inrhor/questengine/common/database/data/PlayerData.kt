@@ -4,6 +4,7 @@ import cn.inrhor.questengine.api.collaboration.TeamOpen
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.dialog.theme.chat.ChatCache
 import cn.inrhor.questengine.common.nav.NavData
+import org.bukkit.entity.Player
 import java.util.*
 
 /**
@@ -29,4 +30,11 @@ data class PlayerData(
                 ControlData(linkedMapOf(), mutableMapOf())
             )
 
+}
+
+/**
+ * @return 玩家队伍
+ */
+fun Player.teamData(): TeamOpen? {
+    return DataStorage.getPlayerData(this).teamData
 }

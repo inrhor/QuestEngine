@@ -227,10 +227,9 @@ class DatabaseSQL: Database() {
             val nState = it.first.first.second
             val time = it.first.second
             val end = it.second?: null
-            val qModule = QuestManager.getQuestModule(questID)?: return
             val nModule = QuestManager.getInnerQuestModule(questID, innerID)?: return
             val innerData = QuestInnerData(questID, innerID,
-                QuestManager.getInnerModuleTargetMap(questUUID, qModule.mode.type, nModule),
+                QuestManager.getInnerModuleTargetMap(questUUID, nModule),
                 nState.toState(), time, end, rewardMap(uId, questUUID))
             val questData = QuestData(questUUID, questID, innerData, qState.toState(), null, finishInner(uId))
             pData.questDataList[questUUID] = questData
@@ -314,10 +313,9 @@ class DatabaseSQL: Database() {
                     getDate(tableInner.name+".time") to getDate(tableInner.name+".end")
         }.forEach {
             val questID = it.first.first.first
-            val questModule = QuestManager.getQuestModule(questID)?: return@forEach
             val innerModule = QuestManager.getInnerQuestModule(questID, innerQuestID)?: return@forEach
             val targets = returnTargets(player, questUUID, innerQuestID,
-                QuestManager.getInnerModuleTargetMap(questUUID, questModule.mode.type, innerModule)
+                QuestManager.getInnerModuleTargetMap(questUUID, innerModule)
             )
             val state = it.first.first.second.toState()
             val time = it.first.second

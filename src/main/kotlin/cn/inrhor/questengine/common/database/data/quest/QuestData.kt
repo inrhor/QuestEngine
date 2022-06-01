@@ -15,5 +15,4 @@ data class QuestData(
     val questID: String,
     var questInnerData: QuestInnerData,
     var state: QuestState,
-    var teamData: TeamOpen?,
     val finishedList: MutableSet<String> = mutableSetOf())

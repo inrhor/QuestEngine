@@ -20,22 +20,39 @@ object TBreakBlock: TargetExtend<BlockBreakEvent>() {
         }
     }
 
-    fun block(player: Player, name: String, blockMaterial: Material): Boolean {
-        val questData = QuestManager.getDoingQuest(player, true) ?: return false
-        return blockMatch(player, name, questData, blockMaterial)
+    fun block(player: Player, name: String, blockMaterial: Material) {
+        QuestManager.getDoingTargets(player, name).forEach {
+            val target = it.questTarget
+            val block = target.nodeMeta("block") ?: return
+            val material = block.toList()
+            val am = target.nodeMeta("amount") ?: return
+            val amount = am[1].toInt()
+            if (material.contains(blockMaterial.name)) {
+                Schedule.run(player, name, it, amount)
+            }
+        }
     }
 
-    private fun blockMatch(player: Player, name: String, questData: QuestData, blockMaterial: Material): Boolean {
-        val targetData = QuestManager.getDoingTarget(questData, name)?: return false
-        val target = targetData.questTarget
-        val block = target.nodeMeta("block")?: return false
-        val material = block.toList()
-        val am = target.nodeMeta("amount")?: return false
-        val amount = am[1].toInt()
-        if (material.contains(blockMaterial.name)) {
-            return Schedule.run(player, name, questData, targetData, amount)
+    /*fun block(player: Player, name: String, blockMaterial: Material): Boolean {
+        val list = QuestManager.getDoingQuest(player)
+        if (list.isEmpty()) return false
+        QuestManager.getDoingQuest(player).forEach {
+            blockMatch(player, name, it, blockMaterial)
         }
         return true
     }
+
+    private fun blockMatch(player: Player, name: String, questData: QuestData, blockMaterial: Material) {
+        questData.questInnerData.targetsData.values.forEach { targetData ->
+            val target = targetData.questTarget
+            val block = target.nodeMeta("block") ?: return
+            val material = block.toList()
+            val am = target.nodeMeta("amount") ?: return
+            val amount = am[1].toInt()
+            if (material.contains(blockMaterial.name)) {
+                Schedule.run(player, name, questData, targetData, amount)
+            }
+        }
+    }*/
 
 }
