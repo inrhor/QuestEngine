@@ -22,8 +22,8 @@ class EditorOfList(player: Player, header: String, json: TellrawJson = TellrawJs
             if (it.content.contains("-CONDITION-RETURN")) {
                 json.newLine().append("        "+player.asLangText(it.content))
                 val type = if (content == "EDITOR-TARGET-LIST-FOR-NODE") backContains(player, content,
-                    RegisterTarget.getNode(other[0], other[1])?.contains(get)?: true
-                ) else backContains(player, get)
+                    RegisterTarget.getNode(other[0], other[1])?.contains(get, player)?: true
+                , false) else backContains(player, get)
                 json.append(" "+type.lang(player, it.content))
                 if (type == EvalType.ERROR) {
                     json.hoverText("&7".colored()+ feedbackEval(player, get))

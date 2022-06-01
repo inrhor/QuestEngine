@@ -2,6 +2,7 @@ package cn.inrhor.questengine.api.quest.module.inner
 
 import cn.inrhor.questengine.api.ui.UiFrame
 import cn.inrhor.questengine.utlis.variableReader
+import taboolib.common.platform.function.info
 
 class QuestTarget(var id: String, var name: String, var reward: String,
                   var period: Int, var async: Boolean, var condition: String,
@@ -16,7 +17,7 @@ class QuestTarget(var id: String, var name: String, var reward: String,
     fun loadNode() {
         node.variableReader().forEach {
             if (it.isEmpty()) return@forEach
-            val sp = it.split(" ")
+            val sp = it.split("\n")
             val l = sp.toMutableList()
             l.removeAt(0)
             nodeMap[sp[0]] = l
@@ -24,20 +25,21 @@ class QuestTarget(var id: String, var name: String, var reward: String,
     }
 
     fun reloadNode(newNode: String, newList: MutableList<String>) {
-        newList.remove("\n")
         node = ""
         nodeMap.remove(newNode)
         nodeMap.forEach { (t, u) ->
-            node +="{{$t ${u.joinToString("\n")}}}"
+            node +="{{$t\n${u.joinToString("\n")}}}"
         }
         nodeMap[newNode] = newList
-        node +="{{$newNode ${newList.joinToString("\n")}}}"
+        node +="{{$newNode\n${newList.joinToString("\n")}}}"
     }
 
     fun nodeMeta(meta: String): MutableList<String>? {
         if (nodeMap.containsKey(meta)) {
             val list = nodeMap[meta]!!
-            list.remove("\n")
+            list.forEach {
+                info("eee '$it'")
+            }
             list.remove("")
             return list
         }

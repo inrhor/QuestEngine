@@ -3,6 +3,8 @@ package cn.inrhor.questengine.api.target
 import cn.inrhor.questengine.common.quest.target.node.BlockNode
 import cn.inrhor.questengine.common.quest.target.node.CauseNode
 import cn.inrhor.questengine.common.quest.target.node.IdNode
+import cn.inrhor.questengine.script.kether.runEval
+import org.bukkit.entity.Player
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 
@@ -61,8 +63,8 @@ enum class TargetNodeType {
 
 open class TargetNode(val node: String, val nodeType: TargetNodeType = TargetNodeType.LIST) {
 
-    open fun contains(content: String): Boolean {
-        return true
+    open fun contains(content: String, player: Player): Boolean {
+        return runEval(player, content)
     }
 
 }
