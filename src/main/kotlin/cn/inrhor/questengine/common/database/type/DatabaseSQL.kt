@@ -231,7 +231,7 @@ class DatabaseSQL: Database() {
             val innerData = QuestInnerData(questID, innerID,
                 QuestManager.getInnerModuleTargetMap(questUUID, nModule),
                 nState.toState(), time, end, rewardMap(uId, questUUID))
-            val questData = QuestData(questUUID, questID, innerData, qState.toState(), null, finishInner(uId))
+            val questData = QuestData(questUUID, questID, innerData, qState.toState(), finishInner(uId))
             pData.questDataList[questUUID] = questData
             QuestManager.checkTimeTask(player, questUUID, questID)
         }

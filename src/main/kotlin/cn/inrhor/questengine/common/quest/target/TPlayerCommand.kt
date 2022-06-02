@@ -13,9 +13,10 @@ object TPlayerCommand: TargetExtend<PlayerCommandPreprocessEvent>() {
     init {
         event = PlayerCommandPreprocessEvent::class
         tasker{
-            val questData = QuestManager.getDoingQuest(player, true)?: return@tasker player
-            if (targetTrigger(player, name, "content", message, questData)) {
-                Schedule.isNumber(player, name, "number", questData)
+            QuestManager.getDoingTargets(player, name).forEach {
+                if (targetTrigger(player, name, "content", message, it.questTarget)) {
+                    Schedule.isNumber(player, name, "number", it)
+                }
             }
             player
         }

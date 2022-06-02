@@ -19,8 +19,9 @@ object TPlayerJoinServer: TargetExtend<PlayerJoinEvent>() {
     }
 
     fun match(player: Player, name: String) {
-        val questData = QuestManager.getDoingQuest(player, true)?: return
-        Schedule.isNumber(player, name, "number", questData)
+        QuestManager.getDoingTargets(player, name).forEach {
+            Schedule.isNumber(player, name, "number", it)
+        }
     }
 
 }

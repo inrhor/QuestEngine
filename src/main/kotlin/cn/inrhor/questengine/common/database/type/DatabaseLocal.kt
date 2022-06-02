@@ -96,7 +96,7 @@ class DatabaseLocal: Database() {
                 val state = (data.getString(node+"state")?: "IDLE").toState()
 
                 val questData = QuestData(UUID.fromString(it), questID,
-                    questInnerData, state, TeamManager.getTeamData(uuid), finished)
+                    questInnerData, state, finished)
                 questDataMap[UUID.fromString(it)] = questData
                 QuestManager.checkTimeTask(player, questUUID, questID)
             }

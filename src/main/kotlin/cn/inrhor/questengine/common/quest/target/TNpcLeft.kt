@@ -23,11 +23,10 @@ object TNpcLeft: TargetExtend<NPCLeftClickEvent>() {
     }
 
     fun match(player: Player, npcID: String, name: String) {
-        val questData = QuestManager.getDoingQuest(player, true) ?: return
-        val targetData = QuestManager.getDoingTarget(questData, name) ?: return
-        val innerTarget = targetData.questTarget
-        if (TriggerUtils.idTrigger(innerTarget, npcID)) {
-            TriggerUtils.booleanTrigger(player, targetData)
+        QuestManager.getDoingTargets(player, name).forEach {
+            if (TriggerUtils.idTrigger(it.questTarget, npcID)) {
+                TriggerUtils.booleanTrigger(player, it.questTarget)
+            }
         }
     }
 
