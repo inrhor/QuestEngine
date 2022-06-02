@@ -12,6 +12,7 @@ import cn.inrhor.questengine.common.editor.EditorTarget.editorTargetNode
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.script.kether.*
 import cn.inrhor.questengine.utlis.UtilString
+import cn.inrhor.questengine.utlis.newLineList
 import cn.inrhor.questengine.utlis.removeAt
 import taboolib.common.util.addSafely
 import taboolib.module.kether.ScriptAction
@@ -59,9 +60,21 @@ class EditorTarget(val ui: ActionEditor.TargetUi, vararg val variable: String, v
                     }
                     "condition" -> {
                         val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return frameVoid()
-                        target.condition = target.condition.removeAt(variable[1].toInt())
-                        QuestManager.saveFile(questID, innerID)
-                        sender.editorTarget(questID, innerID, targetID)
+                        val i = variable[2]
+                        if (variable[1]=="del") {
+                            target.condition = target.condition.removeAt(i.toInt())
+                            QuestManager.saveFile(questID, innerID)
+                            sender.editorTargetCondition(questID, innerID, targetID, 0)
+                        }else {
+                            sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-EVAL"))) {
+                                val list = target.condition.newLineList()
+                                val index = if (i=="{head}") 0 else i.toInt()+1
+                                list.addSafely(index, it[1], "")
+                                target.condition = list.joinToString("\n")
+                                QuestManager.saveFile(questID, innerID)
+                                sender.editorTargetCondition(questID, innerID, targetID, 0)
+                            }
+                        }
                     }
                 }
             }

@@ -104,12 +104,17 @@ object EditorList {
         val list = t.condition
         EditorOfList(this, asLangText("EDITOR-TARGET-CONDITION", questID, innerID, targetID))
             .editorBack(this, "/qen eval quest select $questID inner select $innerID innerTarget select $targetID editor target in edit home")
+            .listAdd(this, "/qen eval quest select $questID inner select $innerID innerTarget select $targetID editor target in change condition to add {head}")
             .list(page, 3, list.newLineList(), true, "EDITOR-CONDITION-LIST",
                 "qen eval quest select $questID inner select $innerID innerTarget select $targetID editor target in edit condition page {page}",
                 EditorListModule.EditorButton("EDITOR-CONDITION-RETURN"),
+                EditorListModule.EditorButton("EDITOR-LIST-NEXT-ADD"),
+                EditorListModule.EditorButton("EDITOR-LIST-NEXT-ADD-META",
+                    "EDITOR-LIST-NEXT-ADD-HOVER",
+                    "/qen eval quest select $questID inner select $innerID innerTarget select $targetID editor target in change condition to add {index}"),
                 EditorListModule.EditorButton("EDITOR-LIST-DEL"),
                 EditorListModule.EditorButton("EDITOR-LIST-DEL-META", "EDITOR-LIST-DEL-HOVER",
-                    "/qen eval quest select $questID inner select $innerID innerTarget select $targetID editor target in change condition to {index}"))
+                    "/qen eval quest select $questID inner select $innerID innerTarget select $targetID editor target in change condition to del {index}"))
             .json.sendTo(adaptPlayer(this))
     }
 

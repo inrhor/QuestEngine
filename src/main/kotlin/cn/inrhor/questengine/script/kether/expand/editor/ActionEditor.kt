@@ -177,6 +177,9 @@ class ActionEditor {
                                 "node" -> {
                                     EditorTarget(ui, meta, change, it.nextToken(), it.nextToken())
                                 }
+                                "condition" -> {
+                                    EditorTarget(ui, meta, change, it.nextToken())
+                                }
                                 else -> {
                                     EditorTarget(ui, meta, change)
                                 }
