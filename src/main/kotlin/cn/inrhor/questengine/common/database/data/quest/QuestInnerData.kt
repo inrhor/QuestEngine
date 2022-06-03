@@ -43,7 +43,7 @@ class QuestInnerData(
                     cal1.set(Calendar.DAY_OF_WEEK, a[0].toInt()) // 当前周某一天，1是上周日，2是本周一
                     val cal2 = Calendar.getInstance()
                     cal2.set(Calendar.DAY_OF_WEEK, b[0].toInt())
-                    val c = a[1].split("-") ;val d = b[1].split("-")
+                    val c = a[1].split(":") ;val d = b[1].split(":")
                     cal1.set(Calendar.HOUR, c[0].toInt());cal1.set(Calendar.MINUTE, c[1].toInt());cal1.set(Calendar.SECOND, c[2].toInt())
                     cal2.set(Calendar.HOUR, d[0].toInt());cal2.set(Calendar.MINUTE, d[1].toInt());cal2.set(Calendar.SECOND, d[2].toInt())
                     timeDate = cal1.time
@@ -54,7 +54,7 @@ class QuestInnerData(
                     val cal2 = Calendar.getInstance()
                     cal1.set(Calendar.DAY_OF_MONTH, a[0].toInt()) // 当前月的某一天
                     cal2.set(Calendar.DAY_OF_MONTH, b[0].toInt())
-                    val c = a[1].split("-") ;val d = b[1].split("-")
+                    val c = a[1].split(":") ;val d = b[1].split(":")
                     cal1.set(Calendar.HOUR, c[0].toInt());cal1.set(Calendar.MINUTE, c[1].toInt());cal1.set(Calendar.SECOND, c[2].toInt())
                     cal2.set(Calendar.HOUR, d[0].toInt());cal2.set(Calendar.MINUTE, d[1].toInt());cal2.set(Calendar.SECOND, d[2].toInt())
                     timeDate = cal1.time
@@ -67,7 +67,7 @@ class QuestInnerData(
                     cal2.set(Calendar.MONTH, b[0].toInt())
                     cal1.set(Calendar.DAY_OF_MONTH, a[1].toInt()) // 当前月的某一天
                     cal2.set(Calendar.DAY_OF_MONTH, b[1].toInt())
-                    val c = a[2].split("-") ;val d = b[2].split("-")
+                    val c = a[2].split(":") ;val d = b[2].split(":")
                     cal1.set(Calendar.HOUR, c[0].toInt());cal1.set(Calendar.MINUTE, c[1].toInt());cal1.set(Calendar.SECOND, c[2].toInt())
                     cal2.set(Calendar.HOUR, d[0].toInt());cal2.set(Calendar.MINUTE, d[1].toInt());cal2.set(Calendar.SECOND, d[2].toInt())
                     timeDate = cal1.time

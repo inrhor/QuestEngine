@@ -21,8 +21,9 @@ object ActionDialog {
         fun parser() = scriptParser {
             it.switch {
                 case("select") {
+                    val action = it.next(ArgTypes.ACTION)
                     actionNow {
-                        newFrame(it.next(ArgTypes.ACTION)).run<Any>().thenAccept { a ->
+                        newFrame(action).run<Any>().thenAccept { a ->
                             variables().set(ActionSelect.ID.variable[5], a.toString())
                         }
                     }
@@ -36,12 +37,17 @@ object ActionDialog {
                         reset()
                         false
                     }
-                    actionNow {
-                        if (w) {
-                            newFrame(it.next(ArgTypes.ACTION)).run<Location>().thenAccept { a ->
+                    if (w) {
+                        actionNow {
+                            val action = it.next(ArgTypes.ACTION)
+                            newFrame(action).run<Location>().thenAccept { a ->
                                 DialogManager.sendDialog(player(), selectDialogID(), a)
                             }
-                        }else DialogManager.sendDialog(player(), selectDialogID())
+                        }
+                    }else {
+                        actionNow {
+                            DialogManager.sendDialog(player(), selectDialogID())
+                        }
                     }
                 }
                 case("end") {

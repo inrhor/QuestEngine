@@ -23,8 +23,9 @@ object ActionControl {
         fun parser() = scriptParser {
             it.switch {
                 case("select") {
+                    val action = it.next(ArgTypes.ACTION)
                     actionNow {
-                        newFrame(it.next(ArgTypes.ACTION)).run<Any>().thenAccept { a ->
+                        newFrame(action).run<Any>().thenAccept { a ->
                             variables().set(ActionSelect.ID.variable[6], a.toString())
                         }
                     }

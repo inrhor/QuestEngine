@@ -2,7 +2,6 @@ package cn.inrhor.questengine.api.quest.module.inner
 
 import cn.inrhor.questengine.api.ui.UiFrame
 import cn.inrhor.questengine.utlis.variableReader
-import taboolib.common.platform.function.info
 
 class QuestTarget(var id: String, var name: String, var reward: String,
                   var period: Int, var async: Boolean, var condition: String,
@@ -37,9 +36,6 @@ class QuestTarget(var id: String, var name: String, var reward: String,
     fun nodeMeta(meta: String): MutableList<String>? {
         if (nodeMap.containsKey(meta)) {
             val list = nodeMap[meta]!!
-            list.forEach {
-                info("eee '$it'")
-            }
             list.remove("")
             return list
         }

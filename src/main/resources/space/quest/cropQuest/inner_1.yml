@@ -77,7 +77,6 @@ inner:
         # index int [索引]
         type: memory
       script: |
-        @this
         sleep 2s
         subtitle color *"&f这是田园农庄场"
         sleep 3s
@@ -98,7 +97,6 @@ inner:
         type: memory
         # 重新时的调用
         recall: |
-          @this
           control index 1
       script: |
         title color *"&a已接受新任务" subtitle color *"&f采集农作物任务"

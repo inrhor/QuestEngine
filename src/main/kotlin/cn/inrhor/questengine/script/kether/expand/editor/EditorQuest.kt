@@ -13,7 +13,6 @@ import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.script.kether.player
 import cn.inrhor.questengine.script.kether.selectQuestID
 import cn.inrhor.questengine.utlis.newLineList
-import taboolib.common.platform.function.info
 import taboolib.common.util.addSafely
 import taboolib.module.kether.ScriptAction
 import taboolib.module.kether.ScriptFrame
@@ -188,7 +187,6 @@ class EditorQuest(val ui: ActionEditor.QuestUi, vararg val variable: String, val
                                 sender.editorFailScript(questID)
                             }
                             "add" -> {
-                                info("script fail")
                                 sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-EVAL"))) {
                                     val con = questModule.failure.script
                                     val list = con.newLineList()

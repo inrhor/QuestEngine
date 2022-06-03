@@ -4,13 +4,10 @@ import cn.inrhor.questengine.api.quest.control.ControlPriority
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.quest.QuestControlData
 import org.bukkit.entity.Player
-import java.util.*
 import kotlin.collections.LinkedHashMap
 
 /**
  * 控制模块数据列表
- *
- * ControlID: questID-innerQuestID-priority
  *
  * @param highestControls 最高级控制，排队运行
  * @param controls 普通控制，共存运行
@@ -54,10 +51,10 @@ class ControlData(var highestControls: LinkedHashMap<String, QuestControlData>,
      * 并进行下一个最高级控制模块
      */
     fun highestQueue(player: Player, controlID: String) {
+        if (!player.isOnline) return
         removeHighest(player, controlID)
         highestControls.values.forEach {
             it.runScript()
-            return@forEach
         }
     }
 

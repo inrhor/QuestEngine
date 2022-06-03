@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.database.data.quest
 
 import cn.inrhor.questengine.api.quest.control.ControlPriority
+import cn.inrhor.questengine.api.quest.module.inner.replaceVar
 import cn.inrhor.questengine.script.kether.runEval
 import org.bukkit.entity.Player
 
@@ -18,7 +19,8 @@ class QuestControlData(
             this(player, controlID, controlPriority, controlList, 0)
 
     fun runScript() {
-        runEval(player, controlList)
+        val sp = controlID.split("-")
+        runEval(player, replaceVar(controlList, sp[0], sp[1], sp[2]))
     }
 
 }

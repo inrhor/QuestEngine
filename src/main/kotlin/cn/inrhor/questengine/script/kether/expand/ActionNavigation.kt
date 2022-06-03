@@ -55,11 +55,10 @@ class ActionNavigation {
         fun parser() = scriptParser {
             it.switch {
                 case("select") {
+                    val action = it.next(ArgTypes.ACTION)
                     actionNow {
-                        actionNow {
-                            newFrame(it.next(ArgTypes.ACTION)).run<Any>().thenAccept { a ->
-                                variables().set(ActionSelect.ID.variable[4], a.toString())
-                            }
+                        newFrame(action).run<Any>().thenAccept { a ->
+                            variables().set(ActionSelect.ID.variable[4], a.toString())
                         }
                     }
                 }
