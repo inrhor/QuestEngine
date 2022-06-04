@@ -127,10 +127,10 @@ class EditorTime(val ui: ActionEditor.TimeUi, vararg val variable: String) : Scr
             ActionEditor.TimeUi.CHANGE -> {
                 val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return frameVoid()
                 val time = inner.time
-                time.type = TimeFrame.Type.valueOf(variable[0].uppercase())
+                time.type = TimeFrame.Type.valueOf(variable[1].uppercase())
                 time.duration = ""
                 if (time.type != TimeFrame.Type.ALWAYS) {
-                    runEval(sender, " quest select $questID inner select $innerID editor time in edit ${variable[0]}")
+                    runEval(sender, "quest select $questID inner select $innerID editor time in edit ${variable[0]}")
                 }
                 QuestManager.saveFile(questID, innerID)
                 sender.selectTimeType(questID, innerID)
