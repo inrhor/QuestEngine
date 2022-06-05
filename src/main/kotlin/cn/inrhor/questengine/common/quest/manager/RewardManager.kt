@@ -1,13 +1,14 @@
 package cn.inrhor.questengine.common.quest.manager
 
+import cn.inrhor.questengine.api.quest.module.main.QuestModule
 import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.database.data.teamData
+import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestModule
 import cn.inrhor.questengine.script.kether.runEval
 import org.bukkit.entity.Player
-import java.util.*
 
 object RewardManager {
 
@@ -26,15 +27,12 @@ object RewardManager {
      */
     fun finishReward(player: Player, targetData: TargetData) {
         val q = targetData.questUUID.getQuestModule(player)?: return
-        val questID = q.questID
-        val questUUID = targetData.questUUID
-        val innerID = targetData.innerID
         if (q.mode.type == ModeType.COLLABORATION) {
             player.teamData()?.playerMembers()?.forEach {
-                sendFinish(it, questID, questUUID, innerID)
+                sendFinish(it, q, targetData)
             }
         }
-        sendFinish(player, questID, questUUID, innerID)
+        sendFinish(player, q, targetData)
     }
 
     fun sendFinish(player: Player, innerData: QuestInnerData) {
@@ -44,11 +42,16 @@ object RewardManager {
         }
     }
 
-    fun sendFinish(player: Player, questID: String, questUUID: UUID, innerID: String) {
+    fun sendFinish(player: Player, questModule: QuestModule, targetData: TargetData) {
+        val questID = questModule.questID
+        val questUUID = targetData.questUUID
+        val innerID = targetData.innerID
+        targetData.state = QuestState.FINISH
         val innerModule = QuestManager.getInnerQuestModule(questID, innerID)?: return
         val innerData = QuestManager.getInnerQuestData(player, questUUID, innerID)?: return
+        innerData.targetsData[targetData.questTarget.id] = targetData
         if (innerData.isFinishTarget()) {
-            runEval(player, innerModule.finish)
+            runEval(player, "quest select useUid $questUUID inner select $innerID "+innerModule.finish)
         }
     }
 

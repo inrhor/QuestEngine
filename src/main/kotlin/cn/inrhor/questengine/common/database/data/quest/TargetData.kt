@@ -16,7 +16,7 @@ import java.util.*
 /**
  * 任务目标存储
  */
-class TargetData(
+data class TargetData(
     val questUUID: UUID,
     val innerID: String,
     val name: String,

@@ -102,22 +102,6 @@ class DatabaseSQL: Database() {
         }
     }
 
-    val tableReward = Table(table+"_reward", host) {
-        add("inner") {
-            type(ColumnTypeSQL.INT, 16) {
-                options(ColumnOptionSQL.KEY)
-            }
-        }
-        add("r_id") {
-            type(ColumnTypeSQL.VARCHAR, 36) {
-                options(ColumnOptionSQL.KEY)
-            }
-        }
-        add("get") {
-            type(ColumnTypeSQL.BOOL)
-        }
-    }
-
     val tableTarget = Table(table+"_target", host) {
         add("inner") {
             type(ColumnTypeSQL.INT, 16) {
@@ -179,7 +163,6 @@ class DatabaseSQL: Database() {
         tableTarget.workspace(source) { createTable() }.run()
         tableInner.workspace(source) { createTable() }.run()
         tableFinish.workspace(source) { createTable() }.run()
-        tableReward.workspace(source) { createTable() }.run()
         tableControl.workspace(source) { createTable() }.run()
         tableTags.workspace(source) { createTable() }.run()
     }
@@ -230,7 +213,7 @@ class DatabaseSQL: Database() {
             val nModule = QuestManager.getInnerQuestModule(questID, innerID)?: return
             val innerData = QuestInnerData(questID, innerID,
                 QuestManager.getInnerModuleTargetMap(questUUID, nModule),
-                nState.toState(), time, end, rewardMap(uId, questUUID))
+                nState.toState(), time, end)
             val questData = QuestData(questUUID, questID, innerData, qState.toState(), finishInner(uId))
             pData.questDataList[questUUID] = questData
             QuestManager.checkTimeTask(player, questUUID, questID)
@@ -277,23 +260,6 @@ class DatabaseSQL: Database() {
         return list
     }
 
-    fun rewardMap(uId: Long, questUUID: UUID): MutableMap<String, Boolean> {
-        val map = mutableMapOf<String, Boolean>()
-        val qId = findQuest(uId, questUUID)
-        tableInner.select(source) {
-            rows("n_id")
-            where { tableInner.name+".quest" eq qId }
-            innerJoin(tableReward.name) {
-                where { tableReward.name+".inner" eq tableInner.name+".inner" }
-            }
-        }.map {
-            getString(tableReward.name+".r_id") to getBoolean(tableReward.name+".get")
-        }.forEach {
-            map[it.first] = it.second
-        }
-        return map
-    }
-
     override fun getInnerQuestData(player: Player, questUUID: UUID, innerQuestID: String): QuestInnerData? {
         val uId = userId(player)
         tableQuest.select(source) {
@@ -320,7 +286,7 @@ class DatabaseSQL: Database() {
             val state = it.first.first.second.toState()
             val time = it.first.second
             val end = it.second?: null
-            return QuestInnerData(questID, innerQuestID, targets, state, time, end, rewardMap(uId, questUUID))
+            return QuestInnerData(questID, innerQuestID, targets, state, time, end)
         }
         return null
     }
@@ -456,21 +422,6 @@ class DatabaseSQL: Database() {
             set("time", questInnerData.timeDate)
             set("end",questInnerData.end)
         }
-        val nId = findInner(qId, questInnerData.innerQuestID)
-        if (!tableReward.find(source) { where { "inner" eq nId } }) {
-            questInnerData.rewardState.forEach { (t, u) ->
-                tableReward.insert(source, "inner", "r_id", "get") {
-                    value(nId, t, u)
-                }
-            }
-        }else {
-            questInnerData.rewardState.forEach { (t, u) ->
-                tableReward.update(source) {
-                    where { "inner" eq nId and("r_id" eq t)}
-                    set("get", u)
-                }
-            }
-        }
         updateTarget(qId, questInnerData)
     }
 
@@ -515,10 +466,10 @@ class DatabaseSQL: Database() {
     }
 
     private fun createTarget(nId: Long, questInnerData: QuestInnerData) {
-        questInnerData.targetsData.forEach { (id, targetData) ->
-            val schedule = targetData.schedule
+        questInnerData.targetsData.forEach { (a, e) ->
+            val schedule = e.schedule
             tableTarget.insert(source, "inner", "id", "name", "schedule") {
-                value(nId, id, targetData.name, schedule)
+                value(nId, a, e.name, schedule)
             }
         }
     }
@@ -531,13 +482,13 @@ class DatabaseSQL: Database() {
 
     private fun updateTarget(qId: Long, questInnerData: QuestInnerData) {
         val nId = findInner(qId, questInnerData.innerQuestID)
-        questInnerData.targetsData.forEach { (t, u) ->
-            val schedule = u.schedule
+        questInnerData.targetsData.forEach { (a, e) ->
+            val schedule = e.schedule
             tableTarget.update(source) {
                 where {
                     and {
                         "inner" eq nId
-                        "id" eq t
+                        "id" eq a
                     }
                 }
                 set("schedule", schedule)
@@ -584,9 +535,6 @@ class DatabaseSQL: Database() {
             getLong("id")
         }.forEach {
             tableTarget.delete(source) {
-                where { "inner" eq it }
-            }
-            tableReward.delete(source) {
                 where { "inner" eq it }
             }
         }

@@ -64,9 +64,7 @@ class DatabaseLocal: Database() {
                         name: ""
                         time: -1
                         schedule: 0
-                    rewards:
-                        rewardID:
-                            has: false
+
         control:
             controlID:
                 priority: highest
@@ -124,7 +122,6 @@ class DatabaseLocal: Database() {
     }
 
     private fun getInnerQuestData(data: Configuration, node: String, questUUID: UUID, innerQuestID: String): QuestInnerData? {
-        val rewardInner = returnRewardData(data, node)
         val innerState = (data.getString(node+"state")?: "IDLE").toState()
         val questID = data.getString("quest.$questUUID.questID")?: return null
         val innerModule = QuestManager.getInnerQuestModule(questID, innerQuestID)?: return null
@@ -133,7 +130,7 @@ class DatabaseLocal: Database() {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val timeDate = if (data.contains(node+"timeDate")) dateFormat.parse(data.getString(node+"timeDate")) else Date()
         val end = if (data.contains(node+"endTimeDate")) dateFormat.parse(data.getString(node+"endTimeDate")) else null
-        return QuestInnerData(questID, innerQuestID, innerTargetDataMap, innerState, timeDate, end, rewardInner)
+        return QuestInnerData(questID, innerQuestID, innerTargetDataMap, innerState, timeDate, end)
     }
 
     private fun returnTargets(data: Configuration, node: String, targetDataMap: MutableMap<String, TargetData>): MutableMap<String, TargetData> {
@@ -145,16 +142,6 @@ class DatabaseLocal: Database() {
             targetDataMap[id] = targetData
         }
         return targetDataMap
-    }
-
-    private fun returnRewardData(data: Configuration, node: String): MutableMap<String, Boolean> {
-        val rewardMap = mutableMapOf<String, Boolean>()
-        if (!data.contains(node+"rewards")) return rewardMap
-        for (rewardID in data.getConfigurationSection(node+"rewards")!!.getKeys(false)) {
-            val nodeReward = node+"rewards.$rewardID."
-            rewardMap[rewardID] = data.getBoolean(nodeReward+"has")
-        }
-        return rewardMap
     }
 
     override fun push(player: Player) {
@@ -205,9 +192,6 @@ class DatabaseLocal: Database() {
     private fun pushData(data: Configuration, node: String, questInnerData: QuestInnerData) {
         val state = questInnerData.state.toStr()
         data[node+"state"] = state
-        questInnerData.rewardState.forEach { (rewardID, has) ->
-            data[node+"rewards.$rewardID.has"] = has
-        }
         questInnerData.targetsData.forEach { (id, targetData) ->
             val schedule = targetData.schedule
             data[node+"targets.$id.schedule"] = schedule

@@ -2,24 +2,26 @@ package cn.inrhor.questengine.common.database.data.quest
 
 import cn.inrhor.questengine.api.quest.module.inner.TimeFrame
 import cn.inrhor.questengine.api.quest.module.main.QuestModule
+import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.teamData
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.quest.manager.RewardManager
 import org.bukkit.entity.Player
+import taboolib.common.platform.function.info
 import java.text.SimpleDateFormat
 import java.util.*
 
-class QuestInnerData(
+data class QuestInnerData(
     val questID: String,
     val innerQuestID: String,
     var targetsData: MutableMap<String, TargetData>,
-    var state: QuestState, var timeDate: Date = Date(), var end: Date? = null,
-    var rewardState: MutableMap<String, Boolean> = mutableMapOf()) {
+    var state: QuestState, var timeDate: Date = Date(), var end: Date? = null) {
 
     fun stateToggle(player: Player, questData: QuestData, state: QuestState, questModule: QuestModule, reward: Boolean = false, isTrigger: Boolean = false) {
         this.state = state
+        info("state $state")
         val questUUID = questData.questUUID
         if (questModule.mode.type == ModeType.COLLABORATION && isTrigger) {
             player.teamData()?.playerMembers()?.forEach {
@@ -38,7 +40,9 @@ class QuestInnerData(
     fun getTargetData(name: String, finish: Boolean = false): TargetData? {
         targetsData.values.forEach {
             if (it.name == name) {
-                if (finish && it.state == QuestState.FINISH) return it
+                if (finish) {
+                    if (it.state == QuestState.FINISH) return it
+                }else return it
             }
         }
         return null
@@ -123,9 +127,12 @@ class QuestInnerData(
     fun isFinishTarget(): Boolean {
         var finish = 0
         val targetSize = targetsData.size
+        info("size $targetSize")
         targetsData.values.forEach {
+            info("state ${it.state}  id ${it.questTarget.id}")
             if (it.state == QuestState.FINISH) finish++
         }
+        info("finish $finish")
         return finish >= targetSize
     }
 

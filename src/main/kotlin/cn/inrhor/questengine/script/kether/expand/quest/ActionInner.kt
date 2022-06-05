@@ -1,10 +1,7 @@
 package cn.inrhor.questengine.script.kether.expand.quest
 
 import cn.inrhor.questengine.common.quest.manager.QuestManager
-import cn.inrhor.questengine.script.kether.ActionSelect
-import cn.inrhor.questengine.script.kether.player
-import cn.inrhor.questengine.script.kether.selectInnerID
-import cn.inrhor.questengine.script.kether.selectQuestID
+import cn.inrhor.questengine.script.kether.*
 import taboolib.library.kether.ArgTypes
 import taboolib.module.kether.KetherParser
 import taboolib.module.kether.actionNow
@@ -31,7 +28,9 @@ object ActionInner {
             }
             case("finish") {
                 actionNow {
-                    QuestManager.finishInnerQuest(player(), selectQuestID(), selectInnerID())
+                    if (selectQuestID().contains("-")) {
+                        QuestManager.finishInnerQuest(player(), selectQuestUid(), selectInnerID(), false)
+                    }else QuestManager.finishInnerQuest(player(), selectQuestID(), selectInnerID(), false)
                 }
             }
         }

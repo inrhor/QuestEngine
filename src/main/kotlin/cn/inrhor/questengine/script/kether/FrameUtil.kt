@@ -10,19 +10,16 @@ import java.util.concurrent.CompletableFuture
 fun frameVoid(): CompletableFuture<Void> = CompletableFuture.completedFuture(null)
 
 fun ScriptFrame.selectQuestID() = variables().get<Any?>(ActionSelect.ID.variable[0])
-    .orElse(null)?.toString()?: error("unknown quest id")
+    .orElse(null)?.toString()?: selectQuestUid().toString()
 
 fun ScriptFrame.selectQuestUid() = UUID.fromString(variables().get<Any?>(ActionSelect.UUID.variable[0])
-    .orElse(null)?.toString())?: error("unknown quest uuid")
+    .orElse(null)?.toString())?: error("unknown quest uuid or id")
 
 fun ScriptFrame.selectInnerID() = variables().get<Any?>(ActionSelect.ID.variable[1])
     .orElse(null)?.toString()?: error("unknown inner id")
 
 fun ScriptFrame.selectTargetID() = variables().get<Any?>(ActionSelect.ID.variable[2])
     .orElse(null)?.toString()?: error("unknown target id")
-
-fun ScriptFrame.selectRewardID() = variables().get<Any?>(ActionSelect.ID.variable[3])
-    .orElse(null)?.toString()?: error("unknown reward id")
 
 fun ScriptFrame.selectNavID() = variables().get<Any?>(ActionSelect.ID.variable[4])
     .orElse(null)?.toString()?: error("unknown nav id")

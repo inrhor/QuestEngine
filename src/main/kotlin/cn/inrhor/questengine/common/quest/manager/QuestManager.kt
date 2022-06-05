@@ -84,7 +84,7 @@ object QuestManager {
     }
 
     fun UUID.getQuestModule(player: Player): QuestModule? {
-        return QuestManager.getQuestModule(this.getQuestID(player))
+        return getQuestModule(this.getQuestID(player))
     }
 
     /**
@@ -381,6 +381,10 @@ object QuestManager {
         }
     }
 
+    fun getTargetData(player: Player, questUUID: UUID, innerID: String, targetID: String): TargetData? {
+        return getInnerQuestData(player, questUUID, innerID)?.targetsData?.get(targetID)
+    }
+
     /**
      * 设置任务状态，包括内部任务
      */
@@ -495,22 +499,27 @@ object QuestManager {
     }
 
     fun finishInnerQuest(player: Player, questData: QuestData, questInnerData: QuestInnerData) {
-        finishInnerQuest(player, questData.questUUID, questData.questID, questInnerData.innerQuestID)
+        finishInnerQuest(player, questData.questUUID, questInnerData.innerQuestID)
     }
 
     /**
      * 完成内部任务
      */
-    fun finishInnerQuest(player: Player, questUUID: UUID, questID: String, innerQuestID: String) {
+    fun finishInnerQuest(player: Player, questUUID: UUID, innerQuestID: String, reward: Boolean = true) {
+        info("????finish")
         val questData = getQuestData(player, questUUID) ?: return
+        info("qData")
         val innerData = getInnerQuestData(player, questUUID, innerQuestID)
-        val questModule = getQuestModule(questID)?: return
-        innerData?.stateToggle(player, questData, QuestState.FINISH, questModule, reward = true, isTrigger = true)
+        val questModule = questUUID.getQuestModule(player)?: return
+        info("toggle")
+        innerData?.stateToggle(player, questData, QuestState.FINISH, questModule, reward, isTrigger = true)
     }
 
-    fun finishInnerQuest(player: Player, questID: String, innerQuestID: String) {
+    fun finishInnerQuest(player: Player, questID: String, innerQuestID: String, reward: Boolean = true) {
+        info("finishInner")
         val questData = getQuestData(player.uniqueId, questID) ?: return
-        finishInnerQuest(player, questData.questUUID, questID, innerQuestID)
+        info("inner questdata")
+        finishInnerQuest(player, questData.questUUID, innerQuestID, reward)
     }
 
     /**
