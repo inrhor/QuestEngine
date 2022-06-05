@@ -5,7 +5,6 @@ import cn.inrhor.questengine.api.target.RegisterTarget
 import cn.inrhor.questengine.common.editor.EditorList.editorNodeList
 import cn.inrhor.questengine.common.editor.EditorList.editorTargetCondition
 import cn.inrhor.questengine.common.editor.EditorList.editorTargetList
-import cn.inrhor.questengine.common.editor.EditorList.selectReward
 import cn.inrhor.questengine.common.editor.EditorList.selectTargetList
 import cn.inrhor.questengine.common.editor.EditorTarget.editorTarget
 import cn.inrhor.questengine.common.editor.EditorTarget.editorTargetNode
@@ -87,16 +86,6 @@ class EditorTarget(val ui: ActionEditor.TargetUi, vararg val variable: String, v
                     "name" -> {
                         sender.selectTargetList(questID, innerID, targetID)
                     }
-                    "reward_boolean" -> {
-                        val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return frameVoid()
-                        val r = target.reward
-                        if (r.isEmpty()) return frameVoid()
-                        val sp = r.split(" ")
-                        val b = sp[1].toBoolean()
-                        target.reward = sp[0]+(!b)
-                        sender.editorTarget(questID, innerID, targetID)
-                        QuestManager.saveFile(questID, innerID)
-                    }
                     "async" -> {
                         val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return frameVoid()
                         val a = target.async
@@ -148,9 +137,6 @@ class EditorTarget(val ui: ActionEditor.TargetUi, vararg val variable: String, v
                     }
                     "list" -> {
                         sender.selectTargetList(questID, innerID, targetID, page)
-                    }
-                    "reward" -> {
-                        sender.selectReward(questID, innerID, targetID, page)
                     }
                 }
             }

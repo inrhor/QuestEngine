@@ -1,7 +1,13 @@
 package cn.inrhor.questengine.common.database.data.quest
 
 import cn.inrhor.questengine.api.quest.module.inner.TimeFrame
+import cn.inrhor.questengine.api.quest.module.main.QuestModule
+import cn.inrhor.questengine.common.database.data.teamData
+import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestState
+import cn.inrhor.questengine.common.quest.manager.QuestManager
+import cn.inrhor.questengine.common.quest.manager.RewardManager
+import org.bukkit.entity.Player
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -11,6 +17,23 @@ class QuestInnerData(
     var targetsData: MutableMap<String, TargetData>,
     var state: QuestState, var timeDate: Date = Date(), var end: Date? = null,
     var rewardState: MutableMap<String, Boolean> = mutableMapOf()) {
+
+    fun stateToggle(player: Player, questData: QuestData, state: QuestState, questModule: QuestModule, reward: Boolean = false, isTrigger: Boolean = false) {
+        this.state = state
+        val questUUID = questData.questUUID
+        if (questModule.mode.type == ModeType.COLLABORATION && isTrigger) {
+            player.teamData()?.playerMembers()?.forEach {
+                val mQuest = QuestManager.getQuestData(it, questUUID)
+                val mInner = QuestManager.getInnerQuestData(it, questUUID, innerQuestID)
+                if (mQuest != null && mInner != null) {
+                    mInner.stateToggle(it, mQuest, state, questModule, true)
+                }
+            }
+        }
+        if (reward && state == QuestState.FINISH) {
+            RewardManager.sendFinish(player, this)
+        }
+    }
 
     fun getTargetData(name: String, finish: Boolean = false): TargetData? {
         targetsData.values.forEach {
@@ -92,6 +115,18 @@ class QuestInnerData(
                 }
             }
         }
+    }
+
+    /**
+     * 是否完成了内部任务的所有目标
+      */
+    fun isFinishTarget(): Boolean {
+        var finish = 0
+        val targetSize = targetsData.size
+        targetsData.values.forEach {
+            if (it.state == QuestState.FINISH) finish++
+        }
+        return finish >= targetSize
     }
 
 }

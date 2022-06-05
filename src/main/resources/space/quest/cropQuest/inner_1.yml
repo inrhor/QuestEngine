@@ -10,51 +10,42 @@ inner:
   description:
     - "&a这是一个关于农业的任务主线之一"
     - "&r   收集家"
-  reward:
-    # 完成任务后触发脚本
-    finish:
-      - # 奖励ID
-        id: "1"
-        # 脚本支持 Kether
-        script: |
-          subtitle color "&3奖励ID 1"
-      - id: "2"
-        script: |
-          subtitle color "&3奖励ID 2"
-    # 任务失败后触发脚本
-    fail: |
-      subtitle color "&c内部任务失败"
-    # 任务目标列表
-    target:
-      - id: hello
-        # 目标器
-        name: break block
-        reward: all false
-        node: |
-          {{block
-          stone
-          chest}}
-          {{amount 3}}
-        ui:
-          part:
-            - id: desc
-              note:
-                - "&8挖掘石块或打破箱子 &a3 &8个"
-                - "    &8进度 &6{0}"
-                - "    &8剩余时间 &c{1}"
-                - ""
-      - id: test
-        name: player death
-        reward: 1 true
-        node: |
-          {{cause
-          DROWNING
-          SUFFOCATION}}
-          {{number 1}}
-        description:
-          - "&8体验舒适的天堂"
-          - "    &8进度 &6{0}"
-          - ""
+  finish: |
+    subtitle color "&a内部任务完成"
+    waitTime 3s
+    subtitle color "即将开始下一个内部任务"
+    waitTime 2s
+    inner next mainQuest2
+  fail: |
+    subtitle color "&c内部任务失败"
+  target:
+    - id: hello
+      # 目标器
+      name: break block
+      node: |
+        {{block
+        stone
+        chest}}
+        {{amount 3}}
+      ui:
+        part:
+          - id: desc
+            note:
+              - "&8挖掘石块或打破箱子 &a3 &8个"
+              - "    &8进度 &6{0}"
+              - "    &8剩余时间 &c{1}"
+              - ""
+    - id: test
+      name: player death
+      node: |
+        {{cause
+        DROWNING
+        SUFFOCATION}}
+        {{number 1}}
+      description:
+        - "&8体验舒适的天堂"
+        - "    &8进度 &6{0}"
+        - ""
   # 时间框架
   time:
     # 类型: ALWAYS, DAY, WEEKLY, MONTHLY, YEARLY, CUSTOM

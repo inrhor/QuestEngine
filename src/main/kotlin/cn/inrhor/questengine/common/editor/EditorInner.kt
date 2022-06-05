@@ -9,7 +9,7 @@ import taboolib.platform.util.asLangText
 object EditorInner {
 
     val editInnerMeta = listOf(
-        "NAME", "NEXTINNER", "TIME", "DESC")
+        "NAME", "TIME", "DESC")
 
     fun Player.editorInner(questID: String, innerID: String) {
         val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
@@ -25,7 +25,7 @@ object EditorInner {
             .newLine()
         editInnerMeta.forEach {
             json.append("      "+asLangText("EDITOR-EDIT-INNER-$it",
-                inner.name, inner.nextInnerQuestID, inner.time.langTime(this)))
+                inner.name, inner.time.langTime(this)))
                 .append("  "+asLangText("EDITOR-EDIT-INNER-META"))
                 .hoverText(asLangText("EDITOR-EDIT-INNER-META-HOVER"))
             if (it == "NEXTINNER") {
@@ -37,7 +37,7 @@ object EditorInner {
         }
         listOf("TARGET", "REWARD", "FAIL").forEach {
             json.append("      "+asLangText("EDITOR-EDIT-INNER-$it",
-                inner.name, inner.nextInnerQuestID))
+                inner.name))
                 .append("  "+asLangText("EDITOR-EDIT-INNER-META"))
                 .hoverText(asLangText("EDITOR-EDIT-INNER-META-HOVER"))
                 .runCommand("/qen eval quest select $questID inner select $innerID editor ${it.lowercase()} in list page 0")

@@ -36,7 +36,7 @@ fun ScriptFrame.selectControlID() = variables().get<Any?>(ActionSelect.ID.variab
 fun ScriptFrame.player() = script().sender?.castSafely<Player>()?: error("unknown player")
 
 enum class ActionSelect(vararg val variable: String) {
-    ID("@QenQuestId", "@QenInnerId", "@QenTargetId", "@QenRewardId", "@QenNavID",
+    ID("@QenQuestId", "@QenInnerId", "@QenTargetId", "@QenXxxx", "@QenNavID",
         "@QenDialogID", "@QenControlID"),
     UUID("@QenQuestUid")
 }

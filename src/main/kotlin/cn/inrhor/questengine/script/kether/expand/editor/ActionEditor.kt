@@ -17,7 +17,7 @@ class ActionEditor {
     }
 
     enum class RewardUi {
-        LIST, EDIT, DEL,ADD,CREATE
+        LIST, DEL,ADD
     }
 
     enum class ListUi {
@@ -190,7 +190,6 @@ class ActionEditor {
                 }
                 /**
                  * editor reward in list page [page]
-                 * editor reward in edit page [page]
                  * editor reward in del/add [index]
                  */
                 case("reward") {
@@ -202,16 +201,8 @@ class ActionEditor {
                             val page = it.nextInt()
                             EditorReward(ui, page = page)
                         }
-                        RewardUi.EDIT -> {
-                            it.expect("page")
-                            val page = it.nextInt()
-                            EditorReward(ui, page = page)
-                        }
                         RewardUi.DEL, RewardUi.ADD -> {
                             EditorReward(ui, it.nextToken())
-                        }
-                        RewardUi.CREATE -> {
-                            EditorReward(ui)
                         }
                         else -> error("unknown ui")
                     }

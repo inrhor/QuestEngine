@@ -9,13 +9,13 @@ import taboolib.common.platform.function.submit
 import java.util.*
 
 class QuestInnerModule(var id: String, var name: String,
-                       var nextInnerQuestID: String,
                        var description: List<String>,
-                       var reward: QuestReward,
+                       var finish: String,
+                       var fail: String,
                        var time: TimeFrame,
                        var control: MutableList<QuestControl>,
                        var target: MutableList<QuestTarget>) {
-    constructor(): this("innerIDNull", "null inner name", "",listOf(), QuestReward(),
+    constructor(): this("innerIDNull", "null inner name", listOf(), "", "",
         TimeFrame(), mutableListOf(), mutableListOf())
 
     fun existTargetID(id: String): Boolean {
@@ -46,10 +46,10 @@ class QuestInnerModule(var id: String, var name: String,
         }
     }
 
-    private fun timeout(player: Player, innerModule: QuestInnerModule, innerData: QuestInnerData) {
+    private fun timeout(player: Player, innerData: QuestInnerData) {
         if (innerData.state != QuestState.FAILURE) {
             innerData.state = QuestState.FAILURE
-            runEval(player, innerModule.reward.fail)
+            runEval(player, fail)
         }
     }
 
@@ -71,7 +71,7 @@ class QuestInnerModule(var id: String, var name: String,
                             cancel()
                             return@submit
                         }else {
-                            timeout(player, innerModule, innerData)
+                            timeout(player, innerData)
                         }
                     }
                 }

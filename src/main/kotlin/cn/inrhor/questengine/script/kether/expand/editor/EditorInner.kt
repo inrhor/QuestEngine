@@ -3,7 +3,6 @@ package cn.inrhor.questengine.script.kether.expand.editor
 import cn.inrhor.questengine.common.editor.EditorInner.editorInner
 import cn.inrhor.questengine.common.editor.EditorList.editorInnerDesc
 import cn.inrhor.questengine.common.editor.EditorList.editorListInner
-import cn.inrhor.questengine.common.editor.EditorList.editorNextInner
 import cn.inrhor.questengine.common.editor.EditorTime.editTime
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import taboolib.common.util.addSafely
@@ -53,9 +52,6 @@ class EditorInner(val ui: ActionEditor.InnerUi, vararg val variable: String, val
                             sender.editorInner(questID, innerID)
                         }
                     }
-                    "nextinner" -> {
-                        sender.editorNextInner(questID, innerID, page)
-                    }
                     "time" -> {
                         sender.editTime(questID, innerID)
                     }
@@ -93,11 +89,6 @@ class EditorInner(val ui: ActionEditor.InnerUi, vararg val variable: String, val
                                 sender.editorInnerDesc(questID, innerID)
                             }
                         }
-                    }
-                    else -> {
-                        inner.nextInnerQuestID = variable[1]
-                        QuestManager.saveFile(questID, innerID)
-                        sender.editorInner(questID, innerID)
                     }
                 }
             }

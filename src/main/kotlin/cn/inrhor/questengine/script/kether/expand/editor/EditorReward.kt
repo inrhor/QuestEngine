@@ -2,7 +2,6 @@ package cn.inrhor.questengine.script.kether.expand.editor
 
 import cn.inrhor.questengine.api.quest.module.inner.FinishReward
 import cn.inrhor.questengine.common.editor.EditorList.editorFinishReward
-import cn.inrhor.questengine.common.editor.EditorList.editorRewardList
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.script.kether.*
 import cn.inrhor.questengine.utlis.newLineList
@@ -20,39 +19,23 @@ class EditorReward(val ui: ActionEditor.RewardUi, vararg var variable: String, v
         val innerID = frame.selectInnerID()
         when (ui) {
             ActionEditor.RewardUi.LIST -> {
-                sender.editorRewardList(questID, innerID, page)
-            }
-            ActionEditor.RewardUi.EDIT -> {
-                sender.editorFinishReward(questID, innerID, frame.selectRewardID(), page)
+                sender.editorFinishReward(questID, innerID, page)
             }
             ActionEditor.RewardUi.DEL -> {
                 val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return frameVoid()
-                inner.reward.finish.removeAt(variable[0].toInt())
+                inner.finish = inner.finish.newLineList().removeAt(variable[0].toInt())
                 QuestManager.saveFile(questID, innerID)
-                sender.editorFinishReward(questID, innerID, frame.selectRewardID())
+                sender.editorFinishReward(questID, innerID)
             }
             ActionEditor.RewardUi.ADD -> {
                 sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-EVAL"))) {
                     val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return@inputSign
-                    val reward = inner.reward.getFinishReward(frame.selectRewardID())?: return@inputSign
-                    val list = reward.script.newLineList()
+                    val list = inner.finish.newLineList()
                     val index = if (variable[0]=="{head}") 0 else variable[0].toInt()+1
                     list.addSafely(index, it[1], "")
-                    reward.script = list.joinToString("\n")
+                    inner.finish = list.joinToString("\n")
                     QuestManager.saveFile(questID, innerID)
-                    sender.editorFinishReward(questID, innerID, frame.selectRewardID())
-                }
-            }
-            ActionEditor.RewardUi.CREATE -> {
-                sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-REWARD-ID"))) {
-                    val id = it[1]
-                    if (id.isEmpty()) return@inputSign
-                    val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return@inputSign
-                    if (!inner.reward.existRewardID(id)) {
-                        inner.reward.finish.add(FinishReward(id, ""))
-                    }
-                    QuestManager.saveFile(questID, innerID)
-                    sender.editorFinishReward(questID, innerID, id)
+                    sender.editorFinishReward(questID, innerID)
                 }
             }
         }

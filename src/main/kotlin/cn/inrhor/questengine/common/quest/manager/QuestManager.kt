@@ -267,11 +267,7 @@ object QuestManager {
                 if (!player.isOnline || innerData.state != QuestState.DOING) {
                     cancel(); return@submit
                 }
-                var finish = 0
-                targets.values.forEach {
-                    if (it.state == QuestState.FINISH) finish++
-                }
-                if (finish >= targetSize) {
+                if (innerData.isFinishTarget()) {
                     cancel()
                     finishInnerQuest(player, questData, innerData)
                     return@submit
@@ -456,8 +452,10 @@ object QuestManager {
         innerData.state = state
         if (state == QuestState.FAILURE && innerFailReward) {
             val innerQuestID = innerData.innerQuestID
-            val failReward = getReward(questData.questID, innerQuestID, "", state) ?: return
-            runEval(player, failReward)
+            val innerModule = getInnerQuestModule(questData.questID, innerQuestID)
+            if (innerModule != null) {
+                runEval(player, innerModule.fail)
+            }
         }
     }
 
@@ -501,32 +499,13 @@ object QuestManager {
     }
 
     /**
-     * 结束当前内部任务，执行下一个内部任务或最终完成
-     *
-     * 最终完成请将 innerQuestID 设为 空
+     * 完成内部任务
      */
     fun finishInnerQuest(player: Player, questUUID: UUID, questID: String, innerQuestID: String) {
         val questData = getQuestData(player, questUUID) ?: return
-        val innerData = questData.questInnerData
-        innerData.state = QuestState.FINISH
-        questData.finishedList.add(innerQuestID)
-        val questInnerModule = getInnerQuestModule(questID, innerQuestID) ?: return
-        val nextInnerID = questInnerModule.nextInnerQuestID
-        if (nextInnerID == "") {
-            questData.state = QuestState.FINISH
-            val questModule = getQuestModule(questID)?: return
-            if (questModule.mode.type == ModeType.COLLABORATION) {
-                val tData = player.teamData()?: return
-                tData.members.forEach {
-                    val m = Bukkit.getPlayer(it)?: return@forEach
-                    val mQuestData = getQuestData(m, questUUID)?: return@forEach
-                    mQuestData.state = QuestState.FINISH
-                    mQuestData.finishedList.add(innerQuestID)
-                }
-            }
-        }else {
-            acceptNextInner(player, questData, nextInnerID)
-        }
+        val innerData = getInnerQuestData(player, questUUID, innerQuestID)
+        val questModule = getQuestModule(questID)?: return
+        innerData?.stateToggle(player, questData, QuestState.FINISH, questModule, reward = true, isTrigger = true)
     }
 
     fun finishInnerQuest(player: Player, questID: String, innerQuestID: String) {
@@ -566,22 +545,6 @@ object QuestManager {
      */
     fun getInnerQuestData(player: Player, questUUID: UUID, innerQuestID: String): QuestInnerData? {
         return Database.database.getInnerQuestData(player, questUUID, innerQuestID)
-    }
-
-    /**
-     * 得到奖励脚本，成功与否
-     * 成功的一般是在目标完成时得到
-     */
-    fun getReward(questID: String, innerQuestID: String, rewardID: String, type: QuestState): String {
-        val questModule = questMap[questID]!!
-        for (m in questModule.innerQuestList) {
-            if (m.id == innerQuestID) {
-                return if (type == QuestState.FINISH) {
-                    m.reward.getFinishScript(rewardID)
-                }else m.reward.fail
-            }
-        }
-        return ""
     }
 
     /**

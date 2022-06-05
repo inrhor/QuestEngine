@@ -3,7 +3,6 @@ package cn.inrhor.questengine.common.editor.list
 import cn.inrhor.questengine.api.target.RegisterTarget
 import cn.inrhor.questengine.script.kether.*
 import org.bukkit.entity.Player
-import taboolib.common.util.addSafely
 import taboolib.module.chat.TellrawJson
 import taboolib.module.chat.colored
 import taboolib.platform.util.asLangText
@@ -13,7 +12,6 @@ class EditorOfList(player: Player, header: String, json: TellrawJson = TellrawJs
     override fun listAppend(content: String, split: Boolean, index: Int, list: List<*>, button: Array<out EditorButton>) {
         if (list.isEmpty()) return
         val l: MutableList<String> = list.toMutableList() as MutableList<String>
-        if (content == "EDITOR-SELECT-REWARD-LIST") l.addSafely(0, "all", "")
         val get = l[index]
         json.append("      "+player.asLangText(content, get))
         var sum = 0
@@ -43,11 +41,7 @@ class EditorOfList(player: Player, header: String, json: TellrawJson = TellrawJs
             } else {
                 sum++
                 if (it.content == "EDITOR-LIST-INNER-NOTE-ADD") json.newLine().append("      ")
-                if (it.content =="EDITOR-SELECT-REWARD-LIST" && get == "all") {
-                    json.append(bl + player.asLangText("EDITOR-SELECT-REWARD-LIST-ALL"))
-                }else {
-                    json.append(bl + player.asLangText(it.content))
-                }
+                json.append(bl + player.asLangText(it.content))
             }
             if (it.hover.isNotEmpty()) json.hoverText(player.asLangText(it.hover))
             if (it.command.isNotEmpty()) json.runCommand(

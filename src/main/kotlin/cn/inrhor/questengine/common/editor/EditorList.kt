@@ -134,19 +134,6 @@ object EditorList {
         return this
     }
 
-    fun Player.editorNextInner(questID: String, innerID: String, page: Int = 0) {
-        val questModule = QuestManager.getQuestModule(questID)?: return
-        EditorInnerList(this, questModule, asLangText("EDITOR-EDIT-INNER-NEXT", questID, innerID))
-            .editorBack(this, "/qen eval quest select $questID inner select $innerID editor inner in edit home")
-            .list(page, 7, questModule.innerQuestList, true, "EDITOR-EDIT-INNER-LIST",
-                "qen eval quest select $questID inner select $innerID editor inner in edit nextinner page {page}",
-                EditorListModule.EditorButton("EDITOR-EDIT-INNER-NEXT-CHOOSE"),
-                EditorListModule.EditorButton("EDITOR-EDIT-INNER-NEXT-META",
-                    "EDITOR-EDIT-INNER-NEXT-HOVER",
-                    "/qen eval quest select $questID inner select $innerID editor inner in change nextinner to {innerID}"))
-            .json.sendTo(adaptPlayer(this))
-    }
-
     fun Player.editorInnerDesc(questID: String, innerID: String, page: Int = 0) {
         val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
         EditorOfList(this, asLangText("EDITOR-EDIT-INNER-NOTE", questID, innerID), empty = "  ")
@@ -190,41 +177,23 @@ object EditorList {
             .json.sendTo(adaptPlayer(this))
     }
 
-    fun Player.editorRewardList(questID: String, innerID: String, page: Int = 0) {
+    fun Player.editorFinishReward(questID: String, innerID: String, page: Int = 0) {
         val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
-        EditorRewardList(this, asLangText("EDITOR-FINISH_REWARD", questID, innerID))
-            .editorBack(this, "/qen eval quest select $questID inner select $innerID editor inner in edit home")
-            .add(asLangText("EDITOR-EDIT-FINISH_REWARD-ADD"),
-                EditorListModule.EditorButton(asLangText("EDITOR-EDIT-FINISH_REWARD-ADD-META"),
-                    asLangText("EDITOR-EDIT-FINISH_REWARD-ADD-HOVER"),
-                    "/qen eval quest select $questID inner select $innerID editor reward in create"))
-            .list(page, 7, inner.reward.finish, true, "EDITOR-FINISH_REWARD-LIST",
-            "qen eval quest select $questID inner select $innerID editor reward in list page {page}",
-            EditorListModule.EditorButton("EDITOR-EDIT-FINISH_REWARD-EDIT"),
-            EditorListModule.EditorButton("EDITOR-EDIT-FINISH_REWARD-EDIT-META",
-            "EDITOR-EDIT-FINISH_REWARD-EDIT-HOVER",
-                "/qen eval quest select $questID inner select $innerID innerReward select {rewardID} editor reward in edit page 0"))
-            .json.sendTo(adaptPlayer(this))
-    }
-
-    fun Player.editorFinishReward(questID: String, innerID: String, rewardID: String, page: Int = 0) {
-        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
-        val finish = inner.reward.getFinishScript(rewardID)
+        val finish = inner.finish
         val sel = "/qen eval quest select $questID inner select $innerID"
-        val selRew = "$sel innerReward select $rewardID"
-        EditorOfList(this, asLangText("EDITOR-EDIT-FINISH_REWARD", questID, innerID, rewardID))
+        EditorOfList(this, asLangText("EDITOR-EDIT-FINISH_REWARD", questID, innerID))
             .editorBack(this, "$sel editor inner in edit home")
-            .listAdd(this, "$selRew editor reward in add {head}")
+            .listAdd(this, "$sel editor reward in add {head}")
             .list(page, 3, finish.newLineList(), true, "EDITOR-EDIT-FINISH_REWARD-LIST",
-                "$selRew editor reward in edit page {0}",
+                "$sel editor reward in list page {0}",
                 EditorListModule.EditorButton("EDITOR-SCRIPT-RETURN"),
                 EditorListModule.EditorButton("EDITOR-LIST-NEXT-ADD"),
                 EditorListModule.EditorButton("EDITOR-LIST-NEXT-ADD-META",
                     "EDITOR-LIST-NEXT-ADD-HOVER",
-                    "$selRew editor reward in add {index}"),
+                    "$sel editor reward in add {index}"),
                 EditorListModule.EditorButton("EDITOR-LIST-DEL"),
                 EditorListModule.EditorButton("EDITOR-LIST-DEL-META", "EDITOR-LIST-DEL-HOVER",
-                    "$selRew editor reward in del {index}"))
+                    "$sel editor reward in del {index}"))
             .json.sendTo(adaptPlayer(this))
     }
 
@@ -233,7 +202,7 @@ object EditorList {
         EditorOfList(this, asLangText("EDITOR-EDIT-FAIL_REWARD", questID, innerID))
             .editorBack(this, "/qen eval quest select $questID inner select $innerID editor inner in edit home")
             .listAdd(this, "/qen eval quest select $questID inner select $innerID editor fail in add {head}")
-            .list(page, 3, inner.reward.fail.newLineList(), true, "EDITOR-EDIT-FAIL_REWARD-LIST",
+            .list(page, 3, inner.fail.newLineList(), true, "EDITOR-EDIT-FAIL_REWARD-LIST",
                 "qen eval quest select $questID inner select $innerID editor fail in list page {page}",
                 EditorListModule.EditorButton("EDITOR-SCRIPT-RETURN"),
                 EditorListModule.EditorButton("EDITOR-LIST-NEXT-ADD"),
@@ -255,19 +224,6 @@ object EditorList {
                 EditorListModule.EditorButton("EDITOR-SELECT-TARGET-SEL",
                     "EDITOR-SELECT-TARGET-SEL-HOVER",
                     "/qen eval quest select $questID inner select $innerID innerTarget select $targetID editor target in change name to {targetName}"))
-            .json.sendTo(adaptPlayer(this))
-    }
-
-    fun Player.selectReward(questID: String, innerID: String, targetID: String, page: Int = 0) {
-        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
-        EditorOfList(this, asLangText("EDITOR-SELECT-REWARD", questID, innerID))
-            .editorBack(this,
-                "/qen eval quest select $questID inner select $innerID innerTarget select $targetID editor target in edit home")
-            .list(page, 7, inner.reward.finish, true, "EDITOR-SELECT-REWARD-LIST",
-                "qen eval editor target in sel reward page {page}",
-                EditorListModule.EditorButton("EDITOR-SELECT-REWARD-SEL",
-                    "EDITOR-SELECT-REWARD-SEL-HOVER",
-                    "/qen eval quest select $questID inner select $innerID innerTarget select $targetID editor target in edit reward_boolean"))
             .json.sendTo(adaptPlayer(this))
     }
 
