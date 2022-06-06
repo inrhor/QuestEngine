@@ -1,8 +1,8 @@
 package cn.inrhor.questengine.common.quest
 
 import cn.inrhor.questengine.QuestEngine
-import cn.inrhor.questengine.api.quest.module.inner.QuestInnerModule
-import cn.inrhor.questengine.api.quest.module.main.QuestModule
+import cn.inrhor.questengine.api.quest.module.inner.QuestModule
+import cn.inrhor.questengine.api.quest.module.group.GroupModule
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.utlis.UtilString
 import cn.inrhor.questengine.utlis.file.FileUtil
@@ -24,7 +24,7 @@ object QuestFile {
             val main = "space/quest/cropQuest/"
             val res = QuestEngine.resource
             res.releaseResourceFile(main+"setting.yml", true)
-            res.releaseResourceFile(main+"inner_1.yml", true)
+            res.releaseResourceFile(main+"crop1.yml", true)
             loadQuest()
         }
         for (file in lists) {
@@ -37,7 +37,7 @@ object QuestFile {
         val settingFile = File(file.path + File.separator + "setting.yml")
         if (!settingFile.exists()) return
         val setting = Configuration.loadFromFile(settingFile)
-        val questModule = setting.getObject<QuestModule>("quest", false)
+        val questModule = setting.getObject<GroupModule>("quest", false)
         val questID = questModule.questID
 
         val descMap = mutableMapOf<String, List<String>>()
@@ -48,7 +48,7 @@ object QuestFile {
             questModule.descMap = descMap
         }
 
-        val innerQuestList = mutableListOf<QuestInnerModule>()
+        val innerQuestList = mutableListOf<QuestModule>()
 
         val innerFolder = FileUtil.getFile("space/quest/"+file.name)
         val lists = FileUtil.getFileList(innerFolder)
@@ -57,10 +57,10 @@ object QuestFile {
             if (it.name == "setting.yml" && !innerYaml.contains("inner")) {
                 continue
             }
-            val innerModule = innerYaml.getObject<QuestInnerModule>("inner", false)
+            val innerModule = innerYaml.getObject<QuestModule>("inner", false)
             innerQuestList.add(innerModule)
         }
-        questModule.innerQuestList = innerQuestList
+        questModule.questList = innerQuestList
         QuestManager.register(questID, questModule, questModule.sort)
     }
 

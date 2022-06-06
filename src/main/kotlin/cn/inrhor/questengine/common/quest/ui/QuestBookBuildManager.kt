@@ -1,10 +1,10 @@
 package cn.inrhor.questengine.common.quest.ui
 
 import cn.inrhor.questengine.common.database.data.DataStorage
-import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
+import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.api.quest.module.inner.QuestTarget
-import cn.inrhor.questengine.api.quest.module.main.QuestModule
+import cn.inrhor.questengine.api.quest.module.group.GroupModule
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.quest.toUnit
 import cn.inrhor.questengine.utlis.copy
@@ -43,7 +43,7 @@ object QuestBookBuildManager {
     /**
      * 分类任务模块列表
      */
-    val sortQuest = mutableMapOf<String, MutableSet<QuestModule>>()
+    val sortQuest = mutableMapOf<String, MutableSet<GroupModule>>()
 
     /**
      * 任务信息手册
@@ -55,7 +55,7 @@ object QuestBookBuildManager {
      */
     val innerQuestNoteUI = buildFrame()
 
-    fun addSortQuest(sort: String, questModule: QuestModule) {
+    fun addSortQuest(sort: String, questModule: GroupModule) {
         if (sortQuest.containsKey(sort)) {
             sortQuest[sort]!!.add(questModule)
             return
@@ -131,7 +131,7 @@ object QuestBookBuildManager {
         val ui = innerQuestListUI.copy()
         val textComponent = innerQuestListUI.textComponent["click"]?: return mutableListOf()
         ui.textComponent.clear()
-        val qID = qData.questID
+        val qID = qData.id
         setInnerText(player, qID, questUUID, qData.questInnerData.innerQuestID, ui, textComponent)
         qData.finishedList.forEach {
             setInnerText(player, qID, questUUID, it, ui, textComponent)
@@ -140,7 +140,7 @@ object QuestBookBuildManager {
     }
 
     private fun setInnerText(player: Player, questID: String, questUUID: String, innerID: String, builderFrame: BuilderFrame, textComponent: TextComponent) {
-        val innerModule = QuestManager.getInnerQuestModule(questID, innerID)?: return
+        val innerModule = QuestManager.getInnerModule(questID, innerID)?: return
         val fork = builderFrame.noteComponent["fork"]?: return
         builderFrame.noteComponent[innerID] = NoteComponent(fork.note.copy(), fork.condition(player).copy())
         builderFrame.noteComponent.values.forEach {
@@ -170,7 +170,7 @@ object QuestBookBuildManager {
         val ui = innerQuestNoteUI.copy()
         val innerData = QuestManager.getInnerQuestData(player, questUUID, innerID)?: return mutableListOf()
         val questID = innerData.questID
-        val innerModule = QuestManager.getInnerQuestModule(questID, innerID)?: return mutableListOf()
+        val innerModule = QuestManager.getInnerModule(questID, innerID)?: return mutableListOf()
         var time = "null"
         val endDate = innerData.end
         if (endDate != null) {
@@ -189,7 +189,7 @@ object QuestBookBuildManager {
     fun targetNodeBuild(player: Player, questUUID: UUID, innerID: String): MutableList<TellrawJson> {
         val list = mutableListOf<TellrawJson>()
         val innerData = QuestManager.getInnerQuestData(player, questUUID, innerID)?: return list
-        innerData.targetsData.values.forEach {
+        innerData.target.values.forEach {
             allTargetNoteBuild(player, innerData, it.questTarget).forEach { t ->
                 list.add(t)
             }
@@ -197,7 +197,7 @@ object QuestBookBuildManager {
         return list
     }
 
-    private fun allTargetNoteBuild(player: Player, innerData: QuestInnerData, target: QuestTarget): MutableList<TellrawJson> {
+    private fun allTargetNoteBuild(player: Player, innerData: QuestData, target: QuestTarget): MutableList<TellrawJson> {
         val tData = innerData.getTargetData(target.name)?: return mutableListOf()
         val targetUI = buildFrame().loadFrame(target.ui).copy()
         targetUI.noteComponent.values.forEach {
@@ -250,7 +250,7 @@ object QuestBookBuildManager {
 
     private fun getDescMap(questID: String, innerID: String, sign: String): List<String>? {
         if (innerID.isNotEmpty()) {
-            val innerModule = QuestManager.getInnerQuestModule(questID, innerID)?: return null
+            val innerModule = QuestManager.getInnerModule(questID, innerID)?: return null
             return innerModule.description
         }
         val qModule = QuestManager.getQuestModule(questID)?: return null

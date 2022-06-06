@@ -1,16 +1,16 @@
 package cn.inrhor.questengine.common.editor.list
 
-import cn.inrhor.questengine.api.quest.module.inner.QuestInnerModule
-import cn.inrhor.questengine.api.quest.module.main.QuestModule
+import cn.inrhor.questengine.api.quest.module.inner.QuestModule
+import cn.inrhor.questengine.api.quest.module.group.GroupModule
 import org.bukkit.entity.Player
 import taboolib.module.chat.TellrawJson
 import taboolib.platform.util.asLangText
 
-class EditorInnerList(player: Player, val questModule: QuestModule, header: String, json: TellrawJson = TellrawJson()) : EditorListModule(player, header, json) {
+class EditorInnerList(player: Player, val questModule: GroupModule, header: String, json: TellrawJson = TellrawJson()) : EditorListModule(player, header, json) {
 
     override fun listAppend(content: String, split: Boolean, index: Int, list: List<*>, button: Array<out EditorButton>) {
         if (list.isEmpty()) return
-        val l: MutableList<QuestInnerModule> = list.toMutableList() as MutableList<QuestInnerModule>
+        val l: MutableList<QuestModule> = list.toMutableList() as MutableList<QuestModule>
         val get = l[index]
         json.append("      "+get(content, get))
         var sum = 0
@@ -19,7 +19,7 @@ class EditorInnerList(player: Player, val questModule: QuestModule, header: Stri
             sum++
             val command = it.command.replace("{innerID}", get.id)
             if (it.content == "EDITOR-EDIT-QUEST-START-STATE-META") {
-                if (questModule.startInnerQuestID == get.id) {
+                if (questModule.startQuestID == get.id) {
                     json.append(bl + player.asLangText(it.content+"_2"))
                 }else {
                     json
@@ -41,7 +41,7 @@ class EditorInnerList(player: Player, val questModule: QuestModule, header: Stri
         }
     }
 
-    fun get(node: String, inner: QuestInnerModule): String {
+    fun get(node: String, inner: QuestModule): String {
         return player.asLangText(node, inner.id, inner.name, inner.id+"§7(${questModule.questID})")
     }
 }

@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.common.database.type
 
 import cn.inrhor.questengine.QuestEngine
-import cn.inrhor.questengine.api.quest.control.toControlPriority
 import cn.inrhor.questengine.api.quest.control.toInt
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.database.Database
@@ -210,11 +209,11 @@ class DatabaseSQL: Database() {
             val nState = it.first.first.second
             val time = it.first.second
             val end = it.second?: null
-            val nModule = QuestManager.getInnerQuestModule(questID, innerID)?: return
-            val innerData = QuestInnerData(questID, innerID,
+            val nModule = QuestManager.getInnerModule(questID, innerID)?: return
+            val innerData = QuestData(questID, innerID,
                 QuestManager.getInnerModuleTargetMap(questUUID, nModule),
                 nState.toState(), time, end)
-            val questData = QuestData(questUUID, questID, innerData, qState.toState(), finishInner(uId))
+            val questData = GroupData(questUUID, questID, innerData, qState.toState(), finishInner(uId))
             pData.questDataList[questUUID] = questData
             QuestManager.checkTimeTask(player, questUUID, questID)
         }
@@ -260,7 +259,7 @@ class DatabaseSQL: Database() {
         return list
     }
 
-    override fun getInnerQuestData(player: Player, questUUID: UUID, innerQuestID: String): QuestInnerData? {
+    override fun getInnerQuestData(player: Player, questUUID: UUID, innerQuestID: String): QuestData? {
         val uId = userId(player)
         tableQuest.select(source) {
             where {
@@ -279,14 +278,14 @@ class DatabaseSQL: Database() {
                     getDate(tableInner.name+".time") to getDate(tableInner.name+".end")
         }.forEach {
             val questID = it.first.first.first
-            val innerModule = QuestManager.getInnerQuestModule(questID, innerQuestID)?: return@forEach
+            val innerModule = QuestManager.getInnerModule(questID, innerQuestID)?: return@forEach
             val targets = returnTargets(player, questUUID, innerQuestID,
                 QuestManager.getInnerModuleTargetMap(questUUID, innerModule)
             )
             val state = it.first.first.second.toState()
             val time = it.first.second
             val end = it.second?: null
-            return QuestInnerData(questID, innerQuestID, targets, state, time, end)
+            return QuestData(questID, innerQuestID, targets, state, time, end)
         }
         return null
     }
@@ -351,7 +350,7 @@ class DatabaseSQL: Database() {
                 }
             }
         }
-        val cData = pData.controlData
+        val cData = pData.controlQueue
         cData.highestControls.forEach { (cID, cData) ->
             pushControl(uId, cID, cData)
         }
@@ -389,7 +388,7 @@ class DatabaseSQL: Database() {
         }
     }
 
-    private fun pushControl(uId: Long, controlID: String, cData: QuestControlData) {
+    private fun pushControl(uId: Long, controlID: String, cData: ControlData) {
         if (ControlManager.runLogType(controlID) == RunLogType.DISABLE) return
         val line = cData.line
         if (hasControl(uId, controlID)) {
@@ -404,12 +403,12 @@ class DatabaseSQL: Database() {
             }
         }else {
             tableControl.insert(source, "user", "c_id", "priority", "line") {
-                value(uId, controlID, cData.controlPriority.toInt(), line)
+                value(uId, controlID, cData.priority.toInt(), line)
             }
         }
     }
 
-    private fun updateInner(id: Long, questUUID: UUID, questInnerData: QuestInnerData) {
+    private fun updateInner(id: Long, questUUID: UUID, questInnerData: QuestData) {
         val state = questInnerData.state.toInt()
         val qId = findQuest(id, questUUID)
         tableInner.update(source) {
@@ -425,8 +424,8 @@ class DatabaseSQL: Database() {
         updateTarget(qId, questInnerData)
     }
 
-    override fun createQuest(player: Player, questUUID: UUID, questData: QuestData) {
-        val questID = questData.questID
+    override fun createQuest(player: Player, questUUID: UUID, questData: GroupData) {
+        val questID = questData.id
         val innerData = questData.questInnerData
         val state = questData.state.toInt()
         val uId = userId(player)
@@ -446,17 +445,17 @@ class DatabaseSQL: Database() {
         createInner(qId, innerData)
     }
 
-    private fun createInner(qId: Long, questInnerData: QuestInnerData) {
+    private fun createInner(qId: Long, questInnerData: QuestData) {
         val state = questInnerData.state.toInt()
         tableInner.insert(source, "quest", "n_id", "state") {
-            value(qId, questInnerData.innerQuestID, state)
+            value(qId, questInnerData.id, state)
         }
         val nId = tableInner.select(source) {
             rows("id")
             where {
                 and {
                     "quest" eq qId
-                    "n_id" eq questInnerData.innerQuestID
+                    "n_id" eq questInnerData.id
                     "state" eq state
                 }
             }
@@ -465,8 +464,8 @@ class DatabaseSQL: Database() {
         createTarget(nId, questInnerData)
     }
 
-    private fun createTarget(nId: Long, questInnerData: QuestInnerData) {
-        questInnerData.targetsData.forEach { (a, e) ->
+    private fun createTarget(nId: Long, questInnerData: QuestData) {
+        questInnerData.target.forEach { (a, e) ->
             val schedule = e.schedule
             tableTarget.insert(source, "inner", "id", "name", "schedule") {
                 value(nId, a, e.name, schedule)
@@ -480,9 +479,9 @@ class DatabaseSQL: Database() {
         }.firstOrNull { getLong("id") }?: -1L
     }
 
-    private fun updateTarget(qId: Long, questInnerData: QuestInnerData) {
-        val nId = findInner(qId, questInnerData.innerQuestID)
-        questInnerData.targetsData.forEach { (a, e) ->
+    private fun updateTarget(qId: Long, questInnerData: QuestData) {
+        val nId = findInner(qId, questInnerData.id)
+        questInnerData.target.forEach { (a, e) ->
             val schedule = e.schedule
             tableTarget.update(source) {
                 where {
@@ -496,8 +495,8 @@ class DatabaseSQL: Database() {
         }
     }
 
-    override fun removeQuest(player: Player, questData: QuestData) {
-        val questUUID = questData.questUUID
+    override fun removeQuest(player: Player, questData: GroupData) {
+        val questUUID = questData.uuid
         val uId = userId(player)
         delete(uId, questUUID)
         tableQuest.delete(source) {

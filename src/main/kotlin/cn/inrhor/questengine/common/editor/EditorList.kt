@@ -135,7 +135,7 @@ object EditorList {
     }
 
     fun Player.editorInnerDesc(questID: String, innerID: String, page: Int = 0) {
-        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
+        val inner = QuestManager.getInnerModule(questID, innerID)?: return
         EditorOfList(this, asLangText("EDITOR-EDIT-INNER-NOTE", questID, innerID), empty = "  ")
             .editorBack(this, "/qen eval quest select $questID inner select $innerID editor inner in edit home")
             .add(asLangText("EDITOR-LIST-INNER-DESC-ADD"),
@@ -156,7 +156,7 @@ object EditorList {
     }
 
     fun Player.editorTargetList(questID: String, innerID: String, page: Int = 0) {
-        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
+        val inner = QuestManager.getInnerModule(questID, innerID)?: return
         EditorTargetList(this, asLangText("EDITOR-TARGET", questID, innerID))
             .editorBack(this, "/qen eval quest select $questID inner select $innerID editor inner in edit home")
             .add(asLangText("EDITOR-TARGET-ADD"),
@@ -178,7 +178,7 @@ object EditorList {
     }
 
     fun Player.editorFinishReward(questID: String, innerID: String, page: Int = 0) {
-        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
+        val inner = QuestManager.getInnerModule(questID, innerID)?: return
         val finish = inner.finish
         val sel = "/qen eval quest select $questID inner select $innerID"
         EditorOfList(this, asLangText("EDITOR-EDIT-FINISH_REWARD", questID, innerID))
@@ -198,7 +198,7 @@ object EditorList {
     }
 
     fun Player.editorFailReward(questID: String, innerID: String, page: Int = 0) {
-        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
+        val inner = QuestManager.getInnerModule(questID, innerID)?: return
         EditorOfList(this, asLangText("EDITOR-EDIT-FAIL_REWARD", questID, innerID))
             .editorBack(this, "/qen eval quest select $questID inner select $innerID editor inner in edit home")
             .listAdd(this, "/qen eval quest select $questID inner select $innerID editor fail in add {head}")

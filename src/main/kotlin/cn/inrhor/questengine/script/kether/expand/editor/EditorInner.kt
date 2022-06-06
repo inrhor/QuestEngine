@@ -46,7 +46,7 @@ class EditorInner(val ui: ActionEditor.InnerUi, vararg val variable: String, val
                 when (variable[0]) {
                     "name" -> {
                         sender.inputSign(arrayOf(sender.asLangText("EDITOR-EDIT-INNER-NAME-INPUT"))) {
-                            val innerModule = QuestManager.getInnerQuestModule(questID, innerID)?: return@inputSign
+                            val innerModule = QuestManager.getInnerModule(questID, innerID)?: return@inputSign
                             innerModule.name = it[1]
                             QuestManager.saveFile(questID, innerID)
                             sender.editorInner(questID, innerID)
@@ -65,7 +65,7 @@ class EditorInner(val ui: ActionEditor.InnerUi, vararg val variable: String, val
             }
             ActionEditor.InnerUi.CHANGE -> {
                 val innerID = frame.selectInnerID()
-                val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return frameVoid()
+                val inner = QuestManager.getInnerModule(questID, innerID)?: return frameVoid()
                 when (variable[0]) {
                     "desc" -> {
                         when (variable[1]) {

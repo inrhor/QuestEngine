@@ -51,7 +51,7 @@ object ActionControl {
                     val level = it.nextInt().toControlPriority()
                     actionNow {
                         val pD = DataStorage.getPlayerData(player())
-                        val controlData =  pD.controlData
+                        val controlData =  pD.controlQueue
                         if (level == ControlPriority.HIGHEST) {
                             controlData.highestQueue(player(), selectControlID())
                         }else {

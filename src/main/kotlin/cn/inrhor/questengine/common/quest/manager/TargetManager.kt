@@ -1,12 +1,9 @@
 package cn.inrhor.questengine.common.quest.manager
 
 import cn.inrhor.questengine.common.database.data.PlayerData
-import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.database.data.teamData
-import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.manager.QuestManager.matchQuestMode
-import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
 object TargetManager {

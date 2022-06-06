@@ -1,11 +1,11 @@
 package cn.inrhor.questengine.common.quest.manager
 
 import cn.inrhor.questengine.api.quest.module.inner.QuestControl
-import cn.inrhor.questengine.common.database.data.ControlData
+import cn.inrhor.questengine.common.database.data.ControlQueue
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
-import cn.inrhor.questengine.common.database.data.quest.QuestControlData
-import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
+import cn.inrhor.questengine.common.database.data.quest.ControlData
+import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.script.kether.runEval
 import org.bukkit.entity.Player
 
@@ -14,20 +14,20 @@ object ControlManager {
     /**
      * 存储控制模块
      */
-    fun saveControl(player: Player, pData: PlayerData, questInnerData: QuestInnerData) {
-        saveControl(player, pData.controlData, questInnerData)
+    fun saveControl(player: Player, pData: PlayerData, questInnerData: QuestData) {
+        saveControl(player, pData.controlQueue, questInnerData)
     }
 
-    fun saveControl(player: Player, controlData: ControlData, questInnerData: QuestInnerData) {
+    fun saveControl(player: Player, controlData: ControlQueue, questInnerData: QuestData) {
         val questID = questInnerData.questID
-        val innerQuestID = questInnerData.innerQuestID
-        val mModule = QuestManager.getInnerQuestModule(questID, innerQuestID) ?: return
+        val innerQuestID = questInnerData.id
+        val mModule = QuestManager.getInnerModule(questID, innerQuestID) ?: return
         val cModule = mModule.control
 
         cModule.forEach {
             val pri = it.level
             val controlID = generateControlID(questID, innerQuestID, it.id)
-            val qcData = QuestControlData(player, controlID, pri, it.control(questID, innerQuestID))
+            val qcData = ControlData(player, controlID, pri, it.control(questID, innerQuestID))
             controlData.addControl(controlID, qcData)
         }
     }
@@ -38,7 +38,7 @@ object ControlManager {
     fun pullControl(player: Player, controlID: String, line: Int,) {
         val uuid = player.uniqueId
         val pDate = DataStorage.getPlayerData(uuid)
-        val cData = pDate.controlData
+        val cData = pDate.controlQueue
 
         val controlModule = getControlModule(controlID)?: return
         val log = controlModule.log
@@ -55,7 +55,7 @@ object ControlManager {
             val spt = logType.split(" ")
             runLine = spt[1].toInt()
         }
-        val controlData = QuestControlData(player, controlID, controlModule.level, controlModule.control(questID, innerID), runLine)
+        val controlData = ControlData(player, controlID, controlModule.level, controlModule.control(questID, innerID), runLine)
         cData.addControl(controlID, controlData)
         if (log.enable) {
             runEval(player, log.replaceRecall(questID, innerID, controlID))
@@ -66,7 +66,7 @@ object ControlManager {
         val sp = controlID.split("-")
         val questID = sp[0]
         val innerQuestID = sp[1]
-        val mModule = QuestManager.getInnerQuestModule(questID, innerQuestID) ?: return null
+        val mModule = QuestManager.getInnerModule(questID, innerQuestID) ?: return null
         mModule.control.forEach {
             if (it.id == sp[2]) return it
         }

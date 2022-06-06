@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.editor.list
 
-import cn.inrhor.questengine.api.quest.module.main.QuestModule
+import cn.inrhor.questengine.api.quest.module.group.GroupModule
 import org.bukkit.entity.Player
 import taboolib.module.chat.TellrawJson
 import taboolib.platform.util.asLangText
@@ -9,7 +9,7 @@ class EditorQuestList(player: Player, header: String, json: TellrawJson = Tellra
 
     override fun listAppend(content: String, split: Boolean, index: Int, list: List<*>, button: Array<out EditorButton>) {
         if (list.isEmpty()) return
-        val l: MutableList<QuestModule> = list.toMutableList() as MutableList<QuestModule>
+        val l: MutableList<GroupModule> = list.toMutableList() as MutableList<GroupModule>
         val get = l[index]
         json.append("      "+get(content, get))
         var sum = 0
@@ -22,7 +22,7 @@ class EditorQuestList(player: Player, header: String, json: TellrawJson = Tellra
         }
     }
 
-    fun get(node: String, quest: QuestModule): String {
+    fun get(node: String, quest: GroupModule): String {
         return player.asLangText(node, quest.questID, quest.name)
     }
 }

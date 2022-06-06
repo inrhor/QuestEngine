@@ -12,7 +12,7 @@ object EditorInner {
         "NAME", "TIME", "DESC")
 
     fun Player.editorInner(questID: String, innerID: String) {
-        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
+        val inner = QuestManager.getInnerModule(questID, innerID)?: return
         val json = TellrawJson()
             .newLine()
             .append("   "+asLangText("EDITOR-EDIT-INNER", questID, innerID))

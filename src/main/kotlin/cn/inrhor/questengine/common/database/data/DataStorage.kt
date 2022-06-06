@@ -17,15 +17,15 @@ object DataStorage {
         playerDataStorage[uuid] = playerData
     }
 
-    fun getPlayerData(player: Player): PlayerData {
-        return getPlayerData(player.uniqueId)
+    fun Player.getPlayerData(): PlayerData {
+        return this.uniqueId.getPlayerData()
     }
 
-    fun getPlayerData(uuid: UUID): PlayerData {
-        var pData = playerDataStorage[uuid]
+    fun UUID.getPlayerData(): PlayerData {
+        var pData = playerDataStorage[this]
         if (pData == null) {
-            pData = PlayerData(uuid)
-            Bukkit.getPlayer(uuid)?.sendLang("DATA-NULL_DATA")
+            pData = PlayerData(this)
+            Bukkit.getPlayer(this)?.sendLang("DATA-NULL_DATA")
         }
         return pData
     }

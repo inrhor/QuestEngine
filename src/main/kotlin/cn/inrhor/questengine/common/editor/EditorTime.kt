@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.common.editor
 
-import cn.inrhor.questengine.api.quest.module.inner.QuestInnerModule
 import cn.inrhor.questengine.api.quest.module.inner.TimeFrame
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player
@@ -11,7 +10,7 @@ import taboolib.platform.util.asLangText
 object EditorTime {
 
     fun Player.editTime(questID: String, innerID: String) {
-        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
+        val inner = QuestManager.getInnerModule(questID, innerID)?: return
         val time = inner.time
         val json = TellrawJson()
             .newLine()
@@ -38,7 +37,7 @@ object EditorTime {
     }
 
     fun Player.selectTimeType(questID: String, innerID: String) {
-        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return
+        val inner = QuestManager.getInnerModule(questID, innerID)?: return
         val json = TellrawJson()
             .newLine()
             .append("   "+asLangText("EDITOR-EDIT-TIME-SELECT", questID, innerID))

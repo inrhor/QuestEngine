@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.database.data
 
-class TagsData(private val tags: MutableSet<String> = mutableSetOf()) {
+data class TagsData(val tags: MutableSet<String> = mutableSetOf()) {
 
     fun addTag(tag: String) {
         tags.add(tag)

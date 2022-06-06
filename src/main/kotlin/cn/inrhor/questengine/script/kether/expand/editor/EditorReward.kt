@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.script.kether.expand.editor
 
-import cn.inrhor.questengine.api.quest.module.inner.FinishReward
 import cn.inrhor.questengine.common.editor.EditorList.editorFinishReward
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.script.kether.*
@@ -22,14 +21,14 @@ class EditorReward(val ui: ActionEditor.RewardUi, vararg var variable: String, v
                 sender.editorFinishReward(questID, innerID, page)
             }
             ActionEditor.RewardUi.DEL -> {
-                val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return frameVoid()
+                val inner = QuestManager.getInnerModule(questID, innerID)?: return frameVoid()
                 inner.finish = inner.finish.newLineList().removeAt(variable[0].toInt())
                 QuestManager.saveFile(questID, innerID)
                 sender.editorFinishReward(questID, innerID)
             }
             ActionEditor.RewardUi.ADD -> {
                 sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-EVAL"))) {
-                    val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return@inputSign
+                    val inner = QuestManager.getInnerModule(questID, innerID)?: return@inputSign
                     val list = inner.finish.newLineList()
                     val index = if (variable[0]=="{head}") 0 else variable[0].toInt()+1
                     list.addSafely(index, it[1], "")

@@ -20,7 +20,7 @@ object HandbookTarget {
                 val p = sender.cast<Player>()
                 val questUUID = UUID.fromString(context.argument(0))
                 p.sendBook {
-                    QuestBookBuildManager.targetNodeBuild(p, questUUID, QuestManager.getInnerQuestData(p, questUUID)!!.innerQuestID).forEach {
+                    QuestBookBuildManager.targetNodeBuild(p, questUUID, QuestManager.getInnerQuestData(p, questUUID)!!.id).forEach {
                         write(it)
                     }
                 }

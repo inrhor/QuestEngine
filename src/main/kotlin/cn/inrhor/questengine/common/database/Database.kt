@@ -2,8 +2,8 @@ package cn.inrhor.questengine.common.database
 
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
+import cn.inrhor.questengine.common.database.data.quest.GroupData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
-import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
 import cn.inrhor.questengine.common.database.type.DatabaseLocal
 import cn.inrhor.questengine.common.database.type.DatabaseManager
 import cn.inrhor.questengine.common.database.type.DatabaseSQL
@@ -33,12 +33,12 @@ abstract class Database {
     /**
      * 得到玩家已存储的内部任务
      */
-    abstract fun getInnerQuestData(player: Player, questUUID: UUID, innerQuestID: String): QuestInnerData?
+    abstract fun getInnerQuestData(player: Player, questUUID: UUID, innerQuestID: String): QuestData?
 
     /**
      * 清除任务数据，并清除内部任务和目标任务
      */
-    abstract fun removeQuest(player: Player, questData: QuestData)
+    abstract fun removeQuest(player: Player, questData: GroupData)
 
     /**
      * 清除内部任务数据，并清除其目标数据
@@ -50,7 +50,7 @@ abstract class Database {
      */
     abstract fun removeControl(player: Player, controlID: String)
 
-    open fun createQuest(player: Player, questUUID: UUID, questData: QuestData) {}
+    open fun createQuest(player: Player, questUUID: UUID, questData: GroupData) {}
 
     companion object {
 

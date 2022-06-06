@@ -26,7 +26,7 @@ data class TargetData(
      * 启用调度类型的任务目标
      * 备注：要求多人完成的，则判断 成员数 <= 进度
      */
-    fun runTask(player: Player, questData: QuestData, innerData: QuestInnerData, modeType: ModeType) {
+    fun runTask(player: Player, questData: GroupData, innerData: QuestData, modeType: ModeType) {
         var pass = false
         val t = questTarget.period.toLong()
         submit(delay = t, period = t, async = questTarget.async) {
@@ -64,11 +64,11 @@ data class TargetData(
         }
     }
 
-    private fun runTaskModePass(questData: QuestData, members: MutableSet<UUID>): Boolean {
+    private fun runTaskModePass(questData: GroupData, members: MutableSet<UUID>): Boolean {
         var i = 0
         members.forEach {
             val pData = DataStorage.getPlayerData(it)
-            val qData = pData.questDataList[questData.questUUID]?: return false
+            val qData = pData.questDataList[questData.uuid]?: return false
             val tData = qData.questInnerData.getTargetData(name)?: return false
             if (tData.schedule >= 1) i++
         }

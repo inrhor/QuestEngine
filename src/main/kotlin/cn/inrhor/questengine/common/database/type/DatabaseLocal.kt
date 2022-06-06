@@ -2,7 +2,6 @@ package cn.inrhor.questengine.common.database.type
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.common.quest.manager.QuestManager
-import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.quest.*
@@ -32,10 +31,10 @@ class DatabaseLocal: Database() {
         return Configuration.loadFromFile(file)
     }
 
-    override fun removeQuest(player: Player, questData: QuestData) {
+    override fun removeQuest(player: Player, questData: GroupData) {
         val uuid = player.uniqueId
         val data = getLocal(uuid)
-        val questUUID = questData.questUUID
+        val questUUID = questData.uuid
         data["quest.$questUUID"] = null
         val file = File(QuestEngine.plugin.dataFolder, "data/$uuid.yml")
         data.saveToFile(file)
@@ -49,36 +48,10 @@ class DatabaseLocal: Database() {
         data.saveToFile(file)
     }
 
-    /*
-        uuid.yml
-
-        quest:
-            UUID:
-                questID: ""
-                state: DOING
-                finishedQuest: []
-                innerQuest:
-                    innerQuestID: ""
-                    state: DOING
-                    targets:
-                        name: ""
-                        time: -1
-                        schedule: 0
-
-        control:
-            controlID:
-                priority: highest
-                line: 0
-                waitTime: 0
-
-        tags:
-            - tag
-
-     */
     override fun pull(player: Player) {
         val uuid = player.uniqueId
         val data = getLocal(uuid)
-        val questDataMap = mutableMapOf<UUID, QuestData>()
+        val questDataMap = mutableMapOf<UUID, GroupData>()
         if (data.contains("quest")) {
             data.getConfigurationSection("quest")!!.getKeys(false).forEach {
                 val node = "quest.$it."
@@ -93,7 +66,7 @@ class DatabaseLocal: Database() {
 
                 val state = (data.getString(node+"state")?: "IDLE").toState()
 
-                val questData = QuestData(UUID.fromString(it), questID,
+                val questData = GroupData(UUID.fromString(it), questID,
                     questInnerData, state, finished)
                 questDataMap[UUID.fromString(it)] = questData
                 QuestManager.checkTimeTask(player, questUUID, questID)
@@ -114,23 +87,23 @@ class DatabaseLocal: Database() {
         }
     }
 
-    override fun getInnerQuestData(player: Player, questUUID: UUID, innerQuestID: String): QuestInnerData? {
+    override fun getInnerQuestData(player: Player, questUUID: UUID, innerQuestID: String): QuestData? {
         val uuid = player.uniqueId
         val data = getLocal(uuid)
         val node = "quest.$questUUID.innerQuest."
         return getInnerQuestData(data, node, questUUID, innerQuestID)
     }
 
-    private fun getInnerQuestData(data: Configuration, node: String, questUUID: UUID, innerQuestID: String): QuestInnerData? {
+    private fun getInnerQuestData(data: Configuration, node: String, questUUID: UUID, innerQuestID: String): QuestData? {
         val innerState = (data.getString(node+"state")?: "IDLE").toState()
         val questID = data.getString("quest.$questUUID.questID")?: return null
-        val innerModule = QuestManager.getInnerQuestModule(questID, innerQuestID)?: return null
+        val innerModule = QuestManager.getInnerModule(questID, innerQuestID)?: return null
         val innerTargetDataMap = returnTargets(
             data, node, QuestManager.getInnerModuleTargetMap(questUUID, innerModule))
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val timeDate = if (data.contains(node+"timeDate")) dateFormat.parse(data.getString(node+"timeDate")) else Date()
         val end = if (data.contains(node+"endTimeDate")) dateFormat.parse(data.getString(node+"endTimeDate")) else null
-        return QuestInnerData(questID, innerQuestID, innerTargetDataMap, innerState, timeDate, end)
+        return QuestData(questID, innerQuestID, innerTargetDataMap, innerState, timeDate, end)
     }
 
     private fun returnTargets(data: Configuration, node: String, targetDataMap: MutableMap<String, TargetData>): MutableMap<String, TargetData> {
@@ -163,21 +136,21 @@ class DatabaseLocal: Database() {
             data[innerNode+"innerQuestID"] = innerID
             pushData(data, innerNode, innerData)
         }
-        pData.controlData.highestControls.forEach { (cID, cData) ->
+        pData.controlQueue.highestControls.forEach { (cID, cData) ->
             pushControl(data, cID, cData)
         }
-        pData.controlData.controls.forEach { (cID, cData) ->
+        pData.controlQueue.controls.forEach { (cID, cData) ->
             pushControl(data, cID, cData)
         }
         data["tags"] = pData.tagsData.getList()
         data.saveToFile(file)
     }
 
-    private fun pushControl(data: Configuration, controlID: String, cData: QuestControlData) {
+    private fun pushControl(data: Configuration, controlID: String, cData: ControlData) {
         val logType = ControlManager.runLogType(controlID)
         if (logType == RunLogType.DISABLE) return
         val node = "control.$controlID."
-        data[node+"priority"] = cData.controlPriority.toString()
+        data[node+"priority"] = cData.priority.toString()
         when (logType) {
             RunLogType.RESTART -> {
                 data[node+"line"] = 0
@@ -189,10 +162,10 @@ class DatabaseLocal: Database() {
         }
     }
 
-    private fun pushData(data: Configuration, node: String, questInnerData: QuestInnerData) {
+    private fun pushData(data: Configuration, node: String, questInnerData: QuestData) {
         val state = questInnerData.state.toStr()
         data[node+"state"] = state
-        questInnerData.targetsData.forEach { (id, targetData) ->
+        questInnerData.target.forEach { (id, targetData) ->
             val schedule = targetData.schedule
             data[node+"targets.$id.schedule"] = schedule
         }

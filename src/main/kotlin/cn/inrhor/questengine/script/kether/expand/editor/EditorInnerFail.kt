@@ -22,14 +22,14 @@ class EditorInnerFail(val ui: ActionEditor.ListUi, vararg val variable: String, 
                 sender.editorFailReward(questID, innerID, page)
             }
             ActionEditor.ListUi.DEL -> {
-                val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return frameVoid()
+                val inner = QuestManager.getInnerModule(questID, innerID)?: return frameVoid()
                 inner.fail = inner.fail.removeAt(variable[0].toInt())
                 QuestManager.saveFile(questID, innerID)
                 sender.editorFailReward(questID, innerID)
             }
             ActionEditor.ListUi.ADD -> {
                 sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-EVAL"))) {
-                    val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return@inputSign
+                    val inner = QuestManager.getInnerModule(questID, innerID)?: return@inputSign
                     val list = inner.fail.newLineList()
                     val index = if (variable[0]=="{head}") 0 else variable[0].toInt()+1
                     list.addSafely(index, it[1], "")

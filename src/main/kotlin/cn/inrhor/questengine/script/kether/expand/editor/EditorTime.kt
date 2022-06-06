@@ -24,7 +24,7 @@ class EditorTime(val ui: ActionEditor.TimeUi, vararg val variable: String) : Scr
                         sender.selectTimeType(questID, innerID)
                     }
                     "day" -> {
-                        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return frameVoid()
+                        val inner = QuestManager.getInnerModule(questID, innerID)?: return frameVoid()
                         sender.inputSign(sender.asLangTextList("EDITOR-PLEASE-TIME",
                             sender.asLangText("EDITOR-TIME-FROM"),).toTypedArray()) {
                             sender.inputSign(sender.asLangTextList("EDITOR-PLEASE-TIME",
@@ -36,7 +36,7 @@ class EditorTime(val ui: ActionEditor.TimeUi, vararg val variable: String) : Scr
                         }
                     }
                     "weekly" -> {
-                        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return frameVoid()
+                        val inner = QuestManager.getInnerModule(questID, innerID)?: return frameVoid()
                         sender.inputSign(sender.asLangTextList("EDITOR-PLEASE-WEEK",
                             sender.asLangText("EDITOR-TIME-FROM")).toTypedArray()) {
                             val week1 = it[3].toInt()-1
@@ -59,7 +59,7 @@ class EditorTime(val ui: ActionEditor.TimeUi, vararg val variable: String) : Scr
                         }
                     }
                     "monthly" -> {
-                        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return frameVoid()
+                        val inner = QuestManager.getInnerModule(questID, innerID)?: return frameVoid()
                         sender.inputSign(sender.asLangTextList("EDITOR-PLEASE-DAY",
                             sender.asLangText("EDITOR-TIME-FROM")).toTypedArray()) {
                             sender.inputSign(sender.asLangTextList("EDITOR-PLEASE-TIME",
@@ -77,7 +77,7 @@ class EditorTime(val ui: ActionEditor.TimeUi, vararg val variable: String) : Scr
                         }
                     }
                     "yearly" -> {
-                        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return frameVoid()
+                        val inner = QuestManager.getInnerModule(questID, innerID)?: return frameVoid()
                         sender.inputSign(sender.asLangTextList("EDITOR-PLEASE-MONTH",
                             sender.asLangText("EDITOR-TIME-FROM")).toTypedArray()) {
                             val m1 = it[3].toInt()-1
@@ -112,7 +112,7 @@ class EditorTime(val ui: ActionEditor.TimeUi, vararg val variable: String) : Scr
                         }
                     }
                     "custom" -> {
-                        val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return frameVoid()
+                        val inner = QuestManager.getInnerModule(questID, innerID)?: return frameVoid()
                         sender.inputSign(sender.asLangTextList("EDITOR-PLEASE-TIME-CUSTOM").toTypedArray()) {
                             inner.time.duration = it[2]
                             QuestManager.saveFile(questID, innerID)
@@ -125,7 +125,7 @@ class EditorTime(val ui: ActionEditor.TimeUi, vararg val variable: String) : Scr
                 }
             }
             ActionEditor.TimeUi.CHANGE -> {
-                val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return frameVoid()
+                val inner = QuestManager.getInnerModule(questID, innerID)?: return frameVoid()
                 val time = inner.time
                 time.type = TimeFrame.Type.valueOf(variable[1].uppercase())
                 time.duration = ""

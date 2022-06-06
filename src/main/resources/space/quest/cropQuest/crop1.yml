@@ -1,0 +1,92 @@
+quest:
+  -
+    # 任务编号
+    id: quest1
+    name: "耕田之下的稻草人"
+    note: |
+      稻草人似乎需要你的帮助
+    # 接受任务设置
+    accept:
+      # 是否自动接受
+      auto: false
+      # 接受任务条件
+      condition: ""
+    # 任务组
+    group:
+      # 继承任务编号的任务组属性
+      # 若找不到任务编号则不列入任务组
+      extends: ""
+      # 任务组编号
+      number: crop
+      # 任务组分类, 无则不显示在手册
+      sort: new
+      # 关于任务组手册内容
+      note: |
+        农作下的初篇...
+    # 时间框架
+    time:
+      # 类型: ALWAYS, DAY, WEEKLY, MONTHLY, YEARLY, CUSTOM
+      type: WEEKLY
+      # monthly  duration: 20,00:00:00>31,15:30:00
+      # yearly  duration: 6,15,16:29:30>11,1,00:00:00
+      # custom  duration: s/m/h 5
+      duration: 2,00:00:00>2,23:59:59
+    # 任务模式
+    mode:
+      # 可选如下
+      #   PERSONAL  单人
+      #   COLLABORATION  协作
+      type: PERSONAL
+      amount: -1
+      # 共享任务数据
+      shareData: true
+    # 控制模块
+    control:
+      -
+        id: ""
+        # 队列模式 NORMAL, HIGH
+        queue: normal
+        # 类型 ACCEPT, FINISH, FAIL, QUIT, RESET
+        type: FINISH
+        # 选择 SELF, TEAM, ALL
+        select: TEAM
+        script: |
+          subtitle color &a第一篇完成
+          waitTime 3s
+          subtitle color 即将开始下一篇任务
+          waitTime 2s
+          quest accept quest2
+      -
+        id: "1"
+        # 队列模式 NORMAL, HIGH
+        queue: HIGH
+        # 类型 ACCEPT, FINISH, FAIL, QUIT, RESET
+        type: ACCEPT
+        # 选择 SELF, TEAM, ALL
+        select: TEAM
+        script: |
+          subtitle color &c稻草人: ...
+          waitTime 2s
+          subtitle color &c稻草人: ...
+          waitTime 2s
+          subtitle 它似乎有些破损
+          waitTime 3s
+          title color &a接受任务
+          subtitle color &f耕田之下的稻草人
+    target:
+      -
+        # 目标编号
+        id: a
+        event: break block
+        node: |
+          {{block
+          stone
+          chest}}
+          {{amount 3}}
+        ui:
+          part:
+            - id: desc
+              note: |
+                &8挖掘石块或打破箱子 &a3 &8个
+                    &8进度 &6{{schedule}}
+                    &8剩余时间 &c{{limit time}}

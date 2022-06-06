@@ -107,14 +107,14 @@ class EditorTarget(val ui: ActionEditor.TargetUi, vararg val variable: String, v
                 }
             }
             ActionEditor.TargetUi.DEL -> {
-                val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return frameVoid()
+                val inner = QuestManager.getInnerModule(questID, innerID)?: return frameVoid()
                 inner.delTarget(frame.selectTargetID())
                 QuestManager.saveFile(questID, innerID)
                 sender.editorTargetList(questID, innerID)
             }
             ActionEditor.TargetUi.ADD -> {
                 sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-TARGET-ID"))) {
-                    val inner = QuestManager.getInnerQuestModule(questID, innerID)?: return@inputSign
+                    val inner = QuestManager.getInnerModule(questID, innerID)?: return@inputSign
                     val id = it[1]
                     if (inner.existTargetID(id)) {
                         sender.sendLang("EXIST-TARGET-ID", UtilString.pluginTag, id)

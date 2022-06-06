@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.quest.manager
 
-import cn.inrhor.questengine.api.quest.module.main.QuestModule
-import cn.inrhor.questengine.common.database.data.quest.QuestInnerData
+import cn.inrhor.questengine.api.quest.module.group.GroupModule
+import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.database.data.teamData
@@ -35,21 +35,21 @@ object RewardManager {
         sendFinish(player, q, targetData)
     }
 
-    fun sendFinish(player: Player, innerData: QuestInnerData) {
+    fun sendFinish(player: Player, innerData: QuestData) {
         if (innerData.isFinishTarget()) {
-            QuestManager.getInnerQuestModule(innerData.questID, innerData.innerQuestID)
+            QuestManager.getInnerModule(innerData.questID, innerData.id)
                 ?.let { runEval(player, it.finish) }
         }
     }
 
-    fun sendFinish(player: Player, questModule: QuestModule, targetData: TargetData) {
+    fun sendFinish(player: Player, questModule: GroupModule, targetData: TargetData) {
         val questID = questModule.questID
         val questUUID = targetData.questUUID
         val innerID = targetData.innerID
         targetData.state = QuestState.FINISH
-        val innerModule = QuestManager.getInnerQuestModule(questID, innerID)?: return
+        val innerModule = QuestManager.getInnerModule(questID, innerID)?: return
         val innerData = QuestManager.getInnerQuestData(player, questUUID, innerID)?: return
-        innerData.targetsData[targetData.questTarget.id] = targetData
+        innerData.target[targetData.questTarget.id] = targetData
         if (innerData.isFinishTarget()) {
             runEval(player, "quest select useUid $questUUID inner select $innerID "+innerModule.finish)
         }
