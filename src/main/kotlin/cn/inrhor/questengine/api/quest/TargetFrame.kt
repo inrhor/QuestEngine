@@ -1,9 +1,9 @@
-package cn.inrhor.questengine.api.quest.module.inner
+package cn.inrhor.questengine.api.quest
 
 import cn.inrhor.questengine.api.ui.UiFrame
 import cn.inrhor.questengine.utlis.variableReader
 
-class QuestTarget(var id: String, var name: String,
+data class TargetFrame(var id: String, var name: String,
                   var period: Int, var async: Boolean, var condition: String,
                   var node: String, val ui: UiFrame
 ) {

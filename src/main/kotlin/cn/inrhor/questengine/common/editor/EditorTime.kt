@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.editor
 
-import cn.inrhor.questengine.api.quest.module.inner.TimeFrame
+import cn.inrhor.questengine.api.quest.module.TimeFrame
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.adaptPlayer

@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.database.data
 
-import cn.inrhor.questengine.common.database.data.quest.GroupData
+import cn.inrhor.questengine.common.database.data.quest.QuestData
 
 data class DataContainer(
-    var group: MutableList<GroupData> = mutableListOf(), var tags: TagsData = TagsData()
+    var quest: MutableMap<String, QuestData> = mutableMapOf(), var tags: TagsData = TagsData()
 )

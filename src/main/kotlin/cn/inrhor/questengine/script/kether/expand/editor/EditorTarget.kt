@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.script.kether.expand.editor
 
-import cn.inrhor.questengine.api.quest.module.inner.QuestTarget
+import cn.inrhor.questengine.api.quest.module.QuestTarget
 import cn.inrhor.questengine.api.target.RegisterTarget
 import cn.inrhor.questengine.common.editor.EditorList.editorNodeList
 import cn.inrhor.questengine.common.editor.EditorList.editorTargetCondition

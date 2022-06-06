@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.database.data.quest
 
-import cn.inrhor.questengine.api.quest.module.inner.TimeFrame
+import cn.inrhor.questengine.api.quest.module.TimeFrame
 import cn.inrhor.questengine.api.quest.module.group.GroupModule
 import cn.inrhor.questengine.common.database.data.teamData
 import cn.inrhor.questengine.common.quest.ModeType

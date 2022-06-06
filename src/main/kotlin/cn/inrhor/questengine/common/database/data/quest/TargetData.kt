@@ -3,7 +3,7 @@ package cn.inrhor.questengine.common.database.data.quest
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.quest.ModeType
 import cn.inrhor.questengine.common.quest.QuestState
-import cn.inrhor.questengine.api.quest.module.inner.QuestTarget
+import cn.inrhor.questengine.api.quest.module.QuestTarget
 import cn.inrhor.questengine.common.database.data.teamData
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.quest.manager.RewardManager

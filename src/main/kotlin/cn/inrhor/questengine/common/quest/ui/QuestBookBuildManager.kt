@@ -3,7 +3,7 @@ package cn.inrhor.questengine.common.quest.ui
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.quest.QuestState
-import cn.inrhor.questengine.api.quest.module.inner.QuestTarget
+import cn.inrhor.questengine.api.quest.module.QuestTarget
 import cn.inrhor.questengine.api.quest.module.group.GroupModule
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.quest.toUnit

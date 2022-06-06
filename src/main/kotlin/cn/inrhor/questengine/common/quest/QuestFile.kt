@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.common.quest
 
 import cn.inrhor.questengine.QuestEngine
-import cn.inrhor.questengine.api.quest.module.inner.QuestModule
 import cn.inrhor.questengine.api.quest.module.group.GroupModule
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.utlis.UtilString

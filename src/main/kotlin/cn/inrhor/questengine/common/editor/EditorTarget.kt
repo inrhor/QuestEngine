@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.editor
 
-import cn.inrhor.questengine.api.quest.module.inner.QuestTarget
+import cn.inrhor.questengine.api.quest.module.QuestTarget
 import cn.inrhor.questengine.api.target.RegisterTarget
 import cn.inrhor.questengine.api.target.TargetNode
 import cn.inrhor.questengine.api.target.TargetNodeType

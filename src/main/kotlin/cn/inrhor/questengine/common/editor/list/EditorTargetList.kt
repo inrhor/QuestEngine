@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.editor.list
 
-import cn.inrhor.questengine.api.quest.module.inner.QuestTarget
+import cn.inrhor.questengine.api.quest.module.QuestTarget
 import org.bukkit.entity.Player
 import taboolib.module.chat.TellrawJson
 import taboolib.platform.util.asLangText

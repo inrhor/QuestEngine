@@ -1,12 +1,10 @@
-package cn.inrhor.questengine.api.quest.module.inner
+package cn.inrhor.questengine.api.quest
 
 import org.bukkit.entity.Player
 import taboolib.platform.util.asLangText
 import java.util.*
 
-class TimeFrame(var type: Type, var duration: String) {
-
-    constructor():this(Type.ALWAYS, "")
+data class TimeAddon(var type: Type = Type.ALWAYS, var duration: String = "") {
 
     enum class Type {
         ALWAYS, DAY, WEEKLY, MONTHLY, YEARLY, CUSTOM

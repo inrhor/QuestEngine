@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.api.target.util
 
-import cn.inrhor.questengine.common.database.data.quest.TargetData
-import cn.inrhor.questengine.api.quest.module.inner.QuestTarget
+import cn.inrhor.questengine.api.quest.module.QuestTarget
 import cn.inrhor.questengine.script.kether.runEval
 
 import cn.inrhor.questengine.utlis.bukkit.ItemCheck

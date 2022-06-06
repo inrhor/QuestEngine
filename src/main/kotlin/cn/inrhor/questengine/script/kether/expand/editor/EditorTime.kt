@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.script.kether.expand.editor
 
-import cn.inrhor.questengine.api.quest.module.inner.TimeFrame
+import cn.inrhor.questengine.api.quest.module.TimeFrame
 import cn.inrhor.questengine.common.editor.EditorTime.editTime
 import cn.inrhor.questengine.common.editor.EditorTime.selectTimeType
 import cn.inrhor.questengine.common.quest.manager.QuestManager
