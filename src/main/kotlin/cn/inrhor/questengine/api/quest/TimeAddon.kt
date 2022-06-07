@@ -39,6 +39,9 @@ data class TimeAddon(var type: Type = Type.ALWAYS, var duration: String = "") {
         }
     }
 
+    /**
+     * @return 是否没超时
+     */
     fun noTimeout(now: Date, before: Date, after: Date): Boolean {
         return now.after(before) && now.before(after)
     }

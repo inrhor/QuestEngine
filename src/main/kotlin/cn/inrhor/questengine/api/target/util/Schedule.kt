@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.api.target.util
 
 import cn.inrhor.questengine.common.database.data.quest.TargetData
-import cn.inrhor.questengine.common.quest.manager.RewardManager
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import org.bukkit.entity.Player
 

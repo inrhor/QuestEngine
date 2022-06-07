@@ -4,30 +4,26 @@ import cn.inrhor.questengine.common.database.data.teamData
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
-enum class QueuePriority {
-    NORMAL, HIGH
-}
-
 enum class QueueType {
-    ACCEPT, FINISH, FAIL, QUIT, RESET
+    ACCEPT, FINISH, FAIL, QUIT, RESET, TRACK
 }
 
 enum class SelectObject {
     SELF {
-        override fun objective(player: Player): List<Player> {
-            return listOf(player)
+        override fun objective(player: Player): Set<Player> {
+            return setOf(player)
         }
          },
     TEAM {
-        override fun objective(player: Player): List<Player> {
-            return player.teamData()?.playerMembers()?.toMutableList()?: mutableListOf()
+        override fun objective(player: Player): Set<Player> {
+            return player.teamData()?.playerMembers()?: setOf()
         }
          },
     ALL {
-        override fun objective(player: Player): List<Player> {
-            return Bukkit.getOnlinePlayers().toMutableList()
+        override fun objective(player: Player): Set<Player> {
+            return Bukkit.getOnlinePlayers().toSet()
         }
     };
 
-    abstract fun objective(player: Player): List<Player>
+    abstract fun objective(player: Player): Set<Player>
 }

@@ -69,7 +69,7 @@ object PluginLoader {
     private fun clearMap() {
         DialogManager.clearMap()
         ItemManager.clearMap()
-        QuestManager.questMap.clear()
+        QuestManager.clearQuestMap()
     }
 
 }

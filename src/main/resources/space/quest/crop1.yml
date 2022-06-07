@@ -43,9 +43,7 @@ quest:
   control:
     -
       id: ""
-      # 队列模式 NORMAL, HIGH
-      queue: normal
-      # 类型 ACCEPT, FINISH, FAIL, QUIT, RESET
+      # 类型 ACCEPT, FINISH, FAIL, QUIT, RESET, TRACK
       type: FINISH
       # 选择 SELF, TEAM, ALL
       select: SELF

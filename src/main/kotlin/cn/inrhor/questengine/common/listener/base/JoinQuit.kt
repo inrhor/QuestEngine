@@ -1,9 +1,10 @@
 package cn.inrhor.questengine.common.listener.base
 
 import cn.inrhor.questengine.common.collaboration.TeamManager
-import cn.inrhor.questengine.common.database.data.DataStorage
-import cn.inrhor.questengine.common.quest.enum.StateType
+import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
+import cn.inrhor.questengine.common.database.data.existQuestData
 import cn.inrhor.questengine.common.quest.manager.QuestManager
+import cn.inrhor.questengine.common.quest.manager.QuestManager.acceptQuest
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import taboolib.common.platform.event.*
@@ -14,11 +15,11 @@ object JoinQuit {
     @SubscribeEvent
     fun onPlayerJoin(ev: PlayerJoinEvent) {
         val p = ev.player
-        val uuid = p.uniqueId
         submit(async = true, delay = 20L) {
             QuestManager.autoQuestMap.keys.forEach {
-                if (QuestManager.existQuestData(uuid, it, StateType.DOING)) return@forEach
-                QuestManager.acceptQuest(p, it)
+                if (!p.existQuestData(it)) {
+                    p.acceptQuest(it)
+                }
             }
         }
     }
@@ -26,7 +27,7 @@ object JoinQuit {
     @SubscribeEvent
     fun onPlayerQuit(ev: PlayerQuitEvent) {
         val uuid = ev.player.uniqueId
-        val pData = DataStorage.getPlayerData(uuid)
+        val pData = uuid.getPlayerData()
         val tData = pData.teamData?: return
         if (TeamManager.isLeader(uuid, tData)) {
             tData.delTeam()

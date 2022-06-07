@@ -170,7 +170,7 @@ class DatabaseLocal: Database() {
             data[node+"targets.$id.schedule"] = schedule
         }
         setTimeDate(data, node+"timeDate", questInnerData.timeDate)
-        val endTimeDate = questInnerData.end?: return
+        val endTimeDate = questInnerData.endDate?: return
         setTimeDate(data, node + "endTimeDate", endTimeDate)
     }
 

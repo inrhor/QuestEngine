@@ -1,27 +1,29 @@
 package cn.inrhor.questengine.common.database.data.quest
 
+import cn.inrhor.questengine.api.quest.QuestFrame
 import cn.inrhor.questengine.api.quest.TimeAddon
 import cn.inrhor.questengine.common.quest.enum.StateType
-import cn.inrhor.questengine.common.quest.manager.QuestManager.getControlFrame
-import org.bukkit.entity.Player
+import cn.inrhor.questengine.utlis.time.toDate
+import cn.inrhor.questengine.utlis.time.toStr
 import java.text.SimpleDateFormat
 import java.util.*
 
 data class QuestData(
     val id: String = "?",
     var target: MutableList<TargetData> = mutableListOf(),
-    var state: StateType = StateType.DOING,
-    val control: MutableList<String>,
-    var time: Date = Date(), @Transient var end: Date? = null) {
+    var state: StateType = StateType.DOING, var time: String = Date().toStr(), var end: String ="") {
 
-    fun loadControl(player: Player) {
-        control.forEach {
-            val c = it.getControlFrame(id)
-        }
-    }
+    @Transient var timeDate: Date = Date()
+    @Transient var endDate: Date? = null
 
+    constructor(questFrame: QuestFrame): this(questFrame.id, questFrame.newTargetsData())
+
+    /**
+     * 更新时间, 支持周期时间
+     * 加载数据清使用此方法
+     */
     fun TimeAddon.updateTime() {
-        time = Date()
+        timeDate = Date()
         val type = type
         val duration = duration
         if (type != TimeAddon.Type.ALWAYS) {
@@ -31,10 +33,10 @@ data class QuestData(
             when (type) {
                 TimeAddon.Type.DAY -> {
                     val ymdFormat = SimpleDateFormat("yyyy-MM-dd")
-                    val ymd= ymdFormat.format(time)
+                    val ymd= ymdFormat.format(timeDate)
                     val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                    time = dateFormat.parse("$ymd ${a[0]}")
-                    end = dateFormat.parse("$ymd ${b[0]}")
+                    timeDate = dateFormat.parse("$ymd ${a[0]}")
+                    endDate = dateFormat.parse("$ymd ${b[0]}")
                 }
                 TimeAddon.Type.ALWAYS -> {}
                 TimeAddon.Type.WEEKLY -> {
@@ -45,8 +47,8 @@ data class QuestData(
                     val c = a[1].split(":") ;val d = b[1].split(":")
                     cal1.set(Calendar.HOUR, c[0].toInt());cal1.set(Calendar.MINUTE, c[1].toInt());cal1.set(Calendar.SECOND, c[2].toInt())
                     cal2.set(Calendar.HOUR, d[0].toInt());cal2.set(Calendar.MINUTE, d[1].toInt());cal2.set(Calendar.SECOND, d[2].toInt())
-                    time = cal1.time
-                    end = cal2.time
+                    timeDate = cal1.time
+                    endDate = cal2.time
                 }
                 TimeAddon.Type.MONTHLY -> {
                     val cal1 = Calendar.getInstance()
@@ -56,8 +58,8 @@ data class QuestData(
                     val c = a[1].split(":") ;val d = b[1].split(":")
                     cal1.set(Calendar.HOUR, c[0].toInt());cal1.set(Calendar.MINUTE, c[1].toInt());cal1.set(Calendar.SECOND, c[2].toInt())
                     cal2.set(Calendar.HOUR, d[0].toInt());cal2.set(Calendar.MINUTE, d[1].toInt());cal2.set(Calendar.SECOND, d[2].toInt())
-                    time = cal1.time
-                    end = cal2.time
+                    timeDate = cal1.time
+                    endDate = cal2.time
                 }
                 TimeAddon.Type.YEARLY -> {
                     val cal1 = Calendar.getInstance()
@@ -69,8 +71,8 @@ data class QuestData(
                     val c = a[2].split(":") ;val d = b[2].split(":")
                     cal1.set(Calendar.HOUR, c[0].toInt());cal1.set(Calendar.MINUTE, c[1].toInt());cal1.set(Calendar.SECOND, c[2].toInt())
                     cal2.set(Calendar.HOUR, d[0].toInt());cal2.set(Calendar.MINUTE, d[1].toInt());cal2.set(Calendar.SECOND, d[2].toInt())
-                    time = cal1.time
-                    end = cal2.time
+                    timeDate = cal1.time
+                    endDate = cal2.time
                 }
                 TimeAddon.Type.CUSTOM -> {
                     val add = duration.lowercase().split(" ")
@@ -87,7 +89,7 @@ data class QuestData(
                             cal.add(Calendar.HOUR, t)
                         }
                     }
-                    end = cal.time
+                    endDate = cal.time
                 }
             }
         }

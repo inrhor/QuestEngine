@@ -1,11 +1,15 @@
 package cn.inrhor.questengine.common.quest.manager
 
+import cn.inrhor.questengine.api.event.QuestEvent
 import cn.inrhor.questengine.api.quest.ControlFrame
 import cn.inrhor.questengine.api.quest.QuestFrame
 import cn.inrhor.questengine.common.collaboration.TeamManager
+import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.teamData
 import cn.inrhor.questengine.common.quest.enum.ModeType
+import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.common.quest.ui.QuestBookBuildManager
+import cn.inrhor.questengine.script.kether.runEval
 import org.bukkit.entity.Player
 
 object QuestManager {
@@ -18,7 +22,11 @@ object QuestManager {
     /**
      * 自动接受的任务模块内容
      */
-    private var autoQuestMap = mutableMapOf<String, QuestFrame>()
+    var autoQuestMap = mutableMapOf<String, QuestFrame>()
+
+    fun getQuestMap() = questMap
+
+    fun clearQuestMap() = questMap.clear()
 
     /**
      * 注册任务模块内容
@@ -81,5 +89,49 @@ object QuestManager {
         questID.getQuestFrame().control.forEach { if (it.id == this) return it }
         error("null control frame: $this($questID)")
     }
+
+    /**
+     * 接受任务
+     */
+    fun Player.acceptQuest(quest: QuestFrame) {
+        if (runEval(this, quest.accept.condition)) {
+            getPlayerData().dataContainer.installQuest(quest)
+            QuestEvent.Accept(this, quest).call()
+        }
+    }
+
+    /**
+     * 接受任务
+     */
+    fun Player.acceptQuest(questID: String) {
+        acceptQuest(questID.getQuestFrame())
+    }
+
+    /**
+     * 放弃任务
+     */
+    fun Player.quitQuest(questID: String) {
+        getPlayerData().dataContainer.unloadQuest(questID)
+        QuestEvent.Quit(this, questID.getQuestFrame()).call()
+    }
+
+    /**
+     * 完成任务
+     */
+    fun Player.finishQuest(questID: String) {
+        getPlayerData().dataContainer.toggleQuest(questID, StateType.FINISH)
+        QuestEvent.Finish(this, questID.getQuestFrame()).call()
+    }
+
+    /**
+     * 重置任务
+     */
+    fun Player.resetQuest(questID: String) {
+        val quest = questID.getQuestFrame()
+        getPlayerData().dataContainer.installQuest(quest)
+        QuestEvent.Reset(this, quest).call()
+    }
+
+
 
 }

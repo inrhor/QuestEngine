@@ -2,13 +2,10 @@ package cn.inrhor.questengine.utlis.time
 
 import cn.inrhor.questengine.common.quest.enum.StateType
 import org.bukkit.entity.Player
-import taboolib.common.platform.function.*
-import taboolib.module.lang.asLangText
 import taboolib.platform.util.asLangText
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Calendar
-import java.util.regex.Pattern
 
 fun Date.toStr(): String {
     val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -34,59 +31,6 @@ fun Date.add(timeUnit: Int, add: Int): Date {
     calendar.add(timeUnit, add)
     return calendar.time
 }
-
-/**
- * 判断日期YYMMDD避免给定错误日期
- */
-fun String.checkDate(strYearMM: String): String {
-    val rep =
-        "((\\d{2}(([02468][048])|" +
-                "([13579][26]))[\\-]((((0?[13578])|" +
-                "(1[02]))[\\-]((0?[1-9])|([1-2][0-9])|(3[01])))|" +
-                "(((0?[469])|(11))[\\-]((0?[1-9])|([1-2][0-9])|" +
-                "(30)))|(0?2[\\-]((0?[1-9])|([1-2][0-9])))))|" +
-                "(\\d{2}(([02468][1235679])|([13579][01345789]))" +
-                "[\\-]((((0?[13578])|(1[02]))[\\-]((0?[1-9])|([1-2][0-9])|" +
-                "(3[01])))|(((0?[469])|(11))[\\-]((0?[1-9])|([1-2][0-9])|" +
-                "(30)))|(0?2[\\-]((0?[1-9])|(1[0-9])|(2[0-8]))))))"
-    val m = Pattern.matches(rep, this)
-    return if (m) this else "$strYearMM-01"
-}
-
-fun Date.add(timeUnit: String, add: Int): Date {
-    return when (timeUnit) {
-        "year" -> this.add(Calendar.YEAR, add)
-        "day" -> this.add(Calendar.DATE, add)
-        "minute" -> this.add(Calendar.MINUTE, add)
-        "s" -> this.add(Calendar.SECOND, add)
-        else -> this
-    }
-}
-
-/**
- * 时间单位
- *
- * targetData.timeUnit -> timeUnit
- */
-fun String.toTimeUnitLang(): String {
-    when (this.lowercase()) {
-        "s" -> return console().asLangText("QUEST-TIME_S")
-        "minute" -> return console().asLangText("QUEST-TIME_MINUTE")
-    }
-    return ""
-}
-
-/**
- * 获得时间标识符
- */
-fun String.toTimeUnit(): String {
-    val str = this.lowercase()
-    if (str == "always") {
-        return ""
-    }
-    return str.split(" ")[0]
-}
-
 
 object TimeUtil {
 

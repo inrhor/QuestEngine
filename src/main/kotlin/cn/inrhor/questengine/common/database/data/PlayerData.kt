@@ -2,6 +2,8 @@ package cn.inrhor.questengine.common.database.data
 
 import cn.inrhor.questengine.api.collaboration.TeamOpen
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
+import cn.inrhor.questengine.common.database.data.quest.QuestData
+import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.dialog.theme.chat.ChatCache
 import cn.inrhor.questengine.common.nav.NavData
 import org.bukkit.entity.Player
@@ -10,7 +12,6 @@ import java.util.*
 /**
  * @param uuid 玩家UUID
  * @param dialogData 对话数据
- * @param controlQueue 控制模块队列
  * @param dataContainer 数据存储
  */
 data class PlayerData(
@@ -25,5 +26,36 @@ data class PlayerData(
  * @return 玩家队伍
  */
 fun Player.teamData(): TeamOpen? {
-    return this.getPlayerData().teamData
+    return getPlayerData().teamData
+}
+
+/**
+ * @return 是否存在任务数据
+ */
+fun Player.existQuestData(questID: String): Boolean {
+    return getPlayerData().dataContainer.quest.containsKey(questID)
+}
+
+/**
+ * @return 任务数据
+ */
+fun Player.questData(questID: String): QuestData {
+    return getPlayerData().dataContainer.quest[questID]?: error("null quest data: $questID")
+}
+
+/**
+ * @return 标签数据
+ */
+fun Player.tagsData(): TagsData {
+    return getPlayerData().dataContainer.tags
+}
+
+/**
+ * @return 目标数据
+ */
+fun Player.targetData(questID: String, targetID: String): TargetData {
+    questData(questID).target.forEach {
+        if (it.id == targetID) return it
+    }
+    error("null target data: $targetID($questID)")
 }

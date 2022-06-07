@@ -19,7 +19,7 @@ object Metrics {
     fun init() {
         bStats.let {
             it.addCustomChart(SingleLineChart("quest") {
-                QuestManager.questMap.size
+                QuestManager.getQuestMap().size
             })
             it.addCustomChart(SingleLineChart("dialog") {
                 DialogManager.getMap().size

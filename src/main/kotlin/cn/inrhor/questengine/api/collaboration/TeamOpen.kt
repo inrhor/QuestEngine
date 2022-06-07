@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.api.collaboration
 
 import cn.inrhor.questengine.common.collaboration.TeamManager
-import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.util.*
@@ -28,7 +28,7 @@ abstract class TeamOpen {
 
     open fun delTeam() {
         members.forEach {
-            val pData = DataStorage.getPlayerData(it)
+            val pData = it.getPlayerData()
             pData.teamData = null
         }
         TeamManager.teamsMap.remove(teamName)
@@ -37,10 +37,14 @@ abstract class TeamOpen {
 
     open fun getAmount(): Int = members.size
 
-    open fun playerMembers(): MutableSet<Player> {
+    /**
+     * @param containLeader 是否包含队长
+     */
+    open fun playerMembers(containLeader: Boolean = true): MutableSet<Player> {
         val p = mutableSetOf<Player>()
-        members.forEach {
-            val m = Bukkit.getPlayer(it)
+        for (i in members) {
+            if (!containLeader && i == leader) continue
+            val m = Bukkit.getPlayer(i)
             if (m != null) {
                 p.add(m)
             }

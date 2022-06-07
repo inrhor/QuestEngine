@@ -419,7 +419,7 @@ class DatabaseSQL: Database() {
             }
             set("state", state)
             set("time", questInnerData.timeDate)
-            set("end",questInnerData.end)
+            set("end",questInnerData.endDate)
         }
         updateTarget(qId, questInnerData)
     }

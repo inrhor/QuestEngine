@@ -6,6 +6,7 @@ import cn.inrhor.questengine.api.hologram.HoloDisplay
 import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.api.packet.destroyEntity
 import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.dialog.theme.hologram.HitBoxData
 import cn.inrhor.questengine.common.dialog.theme.hologram.HologramData
 import cn.inrhor.questengine.common.dialog.theme.hologram.OriginLocation
@@ -134,7 +135,7 @@ data class HitBoxSpawner(
         destroyEntity(viewers, stackID)
         viewers.forEach {
             pause(it)
-            DataStorage.getPlayerData(it).dialogData.holoBoxMap.
+            it.getPlayerData().dialogData.holoBoxMap.
             remove(dialogHolo.dialogModule.dialogID)
         }
         viewers.clear()
