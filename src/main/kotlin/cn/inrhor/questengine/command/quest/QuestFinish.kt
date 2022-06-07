@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.command.quest
 
 import cn.inrhor.questengine.common.database.data.DataStorage
-import cn.inrhor.questengine.common.quest.QuestState
+import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.Bukkit
 import taboolib.common.platform.ProxyCommandSender
@@ -30,7 +30,7 @@ object QuestFinish {
 
                     val questID = args[0]
 
-                    QuestManager.endQuest(player, questID, QuestState.FINISH, false)
+                    QuestManager.endQuest(player, questID, StateType.FINISH, false)
                 }
             }
         }

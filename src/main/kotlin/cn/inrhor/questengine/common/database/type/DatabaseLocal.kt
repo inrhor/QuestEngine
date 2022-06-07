@@ -8,8 +8,8 @@ import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.quest.manager.ControlManager
 import cn.inrhor.questengine.common.quest.manager.RunLogType
 import cn.inrhor.questengine.common.quest.manager.TargetManager
-import cn.inrhor.questengine.common.quest.toState
-import cn.inrhor.questengine.common.quest.toStr
+import cn.inrhor.questengine.common.quest.enum.toState
+import cn.inrhor.questengine.common.quest.enum.toStr
 import cn.inrhor.questengine.utlis.time.toStr
 import org.bukkit.entity.Player
 import taboolib.module.configuration.Configuration

@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.quest
+package cn.inrhor.questengine.common.quest.enum
 
 import org.bukkit.entity.Player
 import taboolib.platform.util.asLangText

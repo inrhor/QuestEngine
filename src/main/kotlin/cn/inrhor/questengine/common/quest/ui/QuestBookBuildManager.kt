@@ -2,11 +2,11 @@ package cn.inrhor.questengine.common.quest.ui
 
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.quest.QuestData
-import cn.inrhor.questengine.common.quest.QuestState
+import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.api.quest.module.QuestTarget
 import cn.inrhor.questengine.api.quest.module.group.GroupModule
 import cn.inrhor.questengine.common.quest.manager.QuestManager
-import cn.inrhor.questengine.common.quest.toUnit
+import cn.inrhor.questengine.common.quest.enum.toUnit
 import cn.inrhor.questengine.utlis.copy
 import cn.inrhor.questengine.utlis.file.releaseFile
 import cn.inrhor.questengine.utlis.time.TimeUtil
@@ -107,7 +107,7 @@ object QuestBookBuildManager {
         qData.values.forEach {
             val id = it.questID
             val m = QuestManager.getQuestModule(id)
-            if (m?.sort == sort && it.state != QuestState.FINISH && !hasDisplay.contains(id)) {
+            if (m?.sort == sort && it.state != StateType.FINISH && !hasDisplay.contains(id)) {
                 hasDisplay.add(id)
                 val textComp = textCompClick.copy()
                 setText(player, id, it.questUUID.toString(), sortView, textComp)
@@ -263,13 +263,13 @@ object QuestBookBuildManager {
 
     private fun finish(player: Player, questID: String): Boolean {
         val qData = QuestManager.getQuestData(player.uniqueId, questID)?: return false
-        return qData.state == QuestState.FINISH
+        return qData.state == StateType.FINISH
     }
 
     fun listReply(player: Player, questID: String, questUUID: String, list: MutableList<String>): MutableList<String> {
         for (i in 0 until list.size) {
             val qModule = QuestManager.getQuestModule(questID)?: break
-            val stateUnit = QuestState.NOT_ACCEPT.toUnit(player)
+            val stateUnit = StateType.NOT_ACCEPT.toUnit(player)
             list[i] = list[i].replaceWithOrder(
                 qModule.name, // {0}
                 questID, // {1}

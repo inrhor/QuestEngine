@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.utlis.time
 
-import cn.inrhor.questengine.common.quest.QuestState
+import cn.inrhor.questengine.common.quest.enum.StateType
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.*
 import taboolib.module.lang.asLangText
@@ -90,8 +90,8 @@ fun String.toTimeUnit(): String {
 
 object TimeUtil {
 
-    fun remainDate(player: Player, state: QuestState, future: Date): String {
-        if (state == QuestState.FAILURE) return player.asLangText("QUEST-STATE_FAILURE")
+    fun remainDate(player: Player, state: StateType, future: Date): String {
+        if (state == StateType.FAILURE) return player.asLangText("QUEST-STATE_FAILURE")
         val nowDate = Date()
         val i = future.time - nowDate.time
         val day = i / (24 * 60 * 60 * 1000)

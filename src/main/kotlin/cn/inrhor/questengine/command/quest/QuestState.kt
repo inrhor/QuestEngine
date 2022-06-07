@@ -1,9 +1,8 @@
 package cn.inrhor.questengine.command.quest
 
 import cn.inrhor.questengine.common.database.data.DataStorage
-import cn.inrhor.questengine.common.quest.QuestState
 import cn.inrhor.questengine.common.quest.manager.QuestManager
-import cn.inrhor.questengine.common.quest.toState
+import cn.inrhor.questengine.common.quest.enum.toState
 import org.bukkit.Bukkit
 import taboolib.common.platform.ProxyCommandSender
 import taboolib.common.platform.command.*

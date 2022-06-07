@@ -8,7 +8,7 @@ import cn.inrhor.questengine.common.editor.EditorList.editorFailScript
 import cn.inrhor.questengine.common.editor.EditorList.editorListQuest
 import cn.inrhor.questengine.common.editor.EditorList.editorStartInner
 import cn.inrhor.questengine.common.editor.EditorQuest.editorQuest
-import cn.inrhor.questengine.common.quest.ModeType
+import cn.inrhor.questengine.common.quest.enum.ModeType
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.script.kether.player
 import cn.inrhor.questengine.script.kether.selectQuestID

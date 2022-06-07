@@ -1,71 +1,43 @@
 package cn.inrhor.questengine.common.database.data.quest
 
-import cn.inrhor.questengine.api.quest.module.TimeFrame
-import cn.inrhor.questengine.api.quest.module.group.GroupModule
-import cn.inrhor.questengine.common.database.data.teamData
-import cn.inrhor.questengine.common.quest.ModeType
-import cn.inrhor.questengine.common.quest.QuestState
-import cn.inrhor.questengine.common.quest.manager.QuestManager
-import cn.inrhor.questengine.common.quest.manager.RewardManager
+import cn.inrhor.questengine.api.quest.TimeAddon
+import cn.inrhor.questengine.common.quest.enum.StateType
+import cn.inrhor.questengine.common.quest.manager.QuestManager.getControlFrame
 import org.bukkit.entity.Player
-import taboolib.common.platform.function.info
 import java.text.SimpleDateFormat
 import java.util.*
 
 data class QuestData(
     val id: String = "?",
     var target: MutableList<TargetData> = mutableListOf(),
-    var state: QuestState = QuestState.DOING,
-    var control: ControlData = ControlData(),
+    var state: StateType = StateType.DOING,
+    val control: MutableList<String>,
     var time: Date = Date(), @Transient var end: Date? = null) {
 
-    fun stateToggle(player: Player, questData: GroupData, state: QuestState, questModule: GroupModule, reward: Boolean = false, isTrigger: Boolean = false) {
-        this.state = state
-        info("state $state")
-        val questUUID = questData.uuid
-        if (questModule.mode.type == ModeType.COLLABORATION && isTrigger) {
-            player.teamData()?.playerMembers()?.forEach {
-                val mQuest = QuestManager.getQuestData(it, questUUID)
-                val mInner = QuestManager.getInnerQuestData(it, questUUID, id)
-                if (mQuest != null && mInner != null) {
-                    mInner.stateToggle(it, mQuest, state, questModule, true)
-                }
-            }
-        }
-        if (reward && state == QuestState.FINISH) {
-            RewardManager.sendFinish(player, this)
+    fun loadControl(player: Player) {
+        control.forEach {
+            val c = it.getControlFrame(id)
         }
     }
 
-    fun getTargetData(name: String, finish: Boolean = false): TargetData? {
-        target.values.forEach {
-            if (it.name == name) {
-                if (finish) {
-                    if (it.state == QuestState.FINISH) return it
-                }else return it
-            }
-        }
-        return null
-    }
-
-    fun updateTime(timeFrame: TimeFrame) {
-        timeDate = Date()
-        val type = timeFrame.type
-        val duration = timeFrame.duration
-        if (type != TimeFrame.Type.ALWAYS) {
+    fun TimeAddon.updateTime() {
+        time = Date()
+        val type = type
+        val duration = duration
+        if (type != TimeAddon.Type.ALWAYS) {
             val sp = duration.split(">")
             val a = sp[0].split(",")
             val b = sp[1].split(",")
             when (type) {
-                TimeFrame.Type.DAY -> {
+                TimeAddon.Type.DAY -> {
                     val ymdFormat = SimpleDateFormat("yyyy-MM-dd")
-                    val ymd= ymdFormat.format(timeDate)
+                    val ymd= ymdFormat.format(time)
                     val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                    timeDate = dateFormat.parse("$ymd ${a[0]}")
+                    time = dateFormat.parse("$ymd ${a[0]}")
                     end = dateFormat.parse("$ymd ${b[0]}")
                 }
-                TimeFrame.Type.ALWAYS -> {}
-                TimeFrame.Type.WEEKLY -> {
+                TimeAddon.Type.ALWAYS -> {}
+                TimeAddon.Type.WEEKLY -> {
                     val cal1 = Calendar.getInstance()
                     cal1.set(Calendar.DAY_OF_WEEK, a[0].toInt()) // 当前周某一天，1是上周日，2是本周一
                     val cal2 = Calendar.getInstance()
@@ -73,10 +45,10 @@ data class QuestData(
                     val c = a[1].split(":") ;val d = b[1].split(":")
                     cal1.set(Calendar.HOUR, c[0].toInt());cal1.set(Calendar.MINUTE, c[1].toInt());cal1.set(Calendar.SECOND, c[2].toInt())
                     cal2.set(Calendar.HOUR, d[0].toInt());cal2.set(Calendar.MINUTE, d[1].toInt());cal2.set(Calendar.SECOND, d[2].toInt())
-                    timeDate = cal1.time
+                    time = cal1.time
                     end = cal2.time
                 }
-                TimeFrame.Type.MONTHLY -> {
+                TimeAddon.Type.MONTHLY -> {
                     val cal1 = Calendar.getInstance()
                     val cal2 = Calendar.getInstance()
                     cal1.set(Calendar.DAY_OF_MONTH, a[0].toInt()) // 当前月的某一天
@@ -84,10 +56,10 @@ data class QuestData(
                     val c = a[1].split(":") ;val d = b[1].split(":")
                     cal1.set(Calendar.HOUR, c[0].toInt());cal1.set(Calendar.MINUTE, c[1].toInt());cal1.set(Calendar.SECOND, c[2].toInt())
                     cal2.set(Calendar.HOUR, d[0].toInt());cal2.set(Calendar.MINUTE, d[1].toInt());cal2.set(Calendar.SECOND, d[2].toInt())
-                    timeDate = cal1.time
+                    time = cal1.time
                     end = cal2.time
                 }
-                TimeFrame.Type.YEARLY -> {
+                TimeAddon.Type.YEARLY -> {
                     val cal1 = Calendar.getInstance()
                     cal1.set(Calendar.MONTH, a[0].toInt()) // 当前年某一月，0是一月
                     val cal2 = Calendar.getInstance()
@@ -97,10 +69,10 @@ data class QuestData(
                     val c = a[2].split(":") ;val d = b[2].split(":")
                     cal1.set(Calendar.HOUR, c[0].toInt());cal1.set(Calendar.MINUTE, c[1].toInt());cal1.set(Calendar.SECOND, c[2].toInt())
                     cal2.set(Calendar.HOUR, d[0].toInt());cal2.set(Calendar.MINUTE, d[1].toInt());cal2.set(Calendar.SECOND, d[2].toInt())
-                    timeDate = cal1.time
+                    time = cal1.time
                     end = cal2.time
                 }
-                TimeFrame.Type.CUSTOM -> {
+                TimeAddon.Type.CUSTOM -> {
                     val add = duration.lowercase().split(" ")
                     val cal = Calendar.getInstance()
                     val t = add[1].toInt()
@@ -122,17 +94,14 @@ data class QuestData(
     }
 
     /**
-     * 是否完成了内部任务的所有目标
-      */
+     * @return 是否完成了所有目标
+     */
     fun isFinishTarget(): Boolean {
         var finish = 0
         val targetSize = target.size
-        info("size $targetSize")
-        target.values.forEach {
-            info("state ${it.state}  id ${it.questTarget.id}")
-            if (it.state == QuestState.FINISH) finish++
+        target.forEach {
+            if (it.state == StateType.FINISH) finish++
         }
-        info("finish $finish")
         return finish >= targetSize
     }
 

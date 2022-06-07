@@ -4,7 +4,6 @@ import cn.inrhor.questengine.api.quest.module.inner.QuestControl
 import cn.inrhor.questengine.common.database.data.ControlQueue
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
-import cn.inrhor.questengine.common.database.data.quest.ControlData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.script.kether.runEval
 import org.bukkit.entity.Player

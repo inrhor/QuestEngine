@@ -9,8 +9,8 @@ import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.quest.manager.ControlManager
 import cn.inrhor.questengine.common.quest.manager.RunLogType
 import cn.inrhor.questengine.common.quest.manager.TargetManager
-import cn.inrhor.questengine.common.quest.toInt
-import cn.inrhor.questengine.common.quest.toState
+import cn.inrhor.questengine.common.quest.enum.toInt
+import cn.inrhor.questengine.common.quest.enum.toState
 import org.bukkit.entity.Player
 import taboolib.module.database.ColumnOptionSQL
 import taboolib.module.database.ColumnTypeSQL

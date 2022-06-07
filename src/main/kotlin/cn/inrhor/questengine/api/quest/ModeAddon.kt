@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.api.quest
 
-import cn.inrhor.questengine.common.quest.ModeType
+import cn.inrhor.questengine.common.quest.enum.ModeType
 
 data class ModeAddon(
     var type: ModeType = ModeType.PERSONAL,

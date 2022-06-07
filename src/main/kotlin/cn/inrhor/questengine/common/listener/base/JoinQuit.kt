@@ -2,7 +2,7 @@ package cn.inrhor.questengine.common.listener.base
 
 import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.data.DataStorage
-import cn.inrhor.questengine.common.quest.QuestState
+import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
@@ -17,7 +17,7 @@ object JoinQuit {
         val uuid = p.uniqueId
         submit(async = true, delay = 20L) {
             QuestManager.autoQuestMap.keys.forEach {
-                if (QuestManager.existQuestData(uuid, it, QuestState.DOING)) return@forEach
+                if (QuestManager.existQuestData(uuid, it, StateType.DOING)) return@forEach
                 QuestManager.acceptQuest(p, it)
             }
         }

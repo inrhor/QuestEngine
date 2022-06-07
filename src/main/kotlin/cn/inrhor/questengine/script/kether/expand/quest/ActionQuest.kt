@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.script.kether.expand.quest
 
 import cn.inrhor.questengine.common.quest.manager.QuestManager
-import cn.inrhor.questengine.common.quest.toState
+import cn.inrhor.questengine.common.quest.enum.toState
 import cn.inrhor.questengine.script.kether.*
 import taboolib.library.kether.ArgTypes
 import taboolib.module.kether.KetherParser

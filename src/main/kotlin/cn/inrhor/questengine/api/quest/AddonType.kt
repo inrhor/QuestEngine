@@ -4,7 +4,7 @@ import cn.inrhor.questengine.common.database.data.teamData
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
-enum class QueueLevel {
+enum class QueuePriority {
     NORMAL, HIGH
 }
 

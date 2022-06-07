@@ -1,95 +1,51 @@
 package cn.inrhor.questengine.common.quest.manager
 
-import cn.inrhor.questengine.api.quest.module.group.GroupModule
+import cn.inrhor.questengine.api.quest.ControlFrame
+import cn.inrhor.questengine.api.quest.QuestFrame
 import cn.inrhor.questengine.common.collaboration.TeamManager
-import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
-import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.database.data.teamData
-import cn.inrhor.questengine.common.quest.ModeType
+import cn.inrhor.questengine.common.quest.enum.ModeType
 import cn.inrhor.questengine.common.quest.ui.QuestBookBuildManager
-
-import cn.inrhor.questengine.utlis.time.*
 import org.bukkit.entity.Player
-import taboolib.common.platform.function.*
-import java.util.*
 
 object QuestManager {
 
     /**
      * 注册的任务模块内容
      */
-    var questMap = mutableMapOf<String, GroupModule>()
+    private var questMap = mutableMapOf<String, QuestFrame>()
 
     /**
      * 自动接受的任务模块内容
      */
-    var autoQuestMap = mutableMapOf<String, GroupModule>()
+    private var autoQuestMap = mutableMapOf<String, QuestFrame>()
 
     /**
      * 注册任务模块内容
      */
-    fun register(questID: String, questModule: GroupModule, sort: String = "") {
-        questMap[questID] = questModule
-        questModule.questList.forEach {
-            it.target.forEach { e->
-                e.loadNode()
-            }
+    fun QuestFrame.register() {
+        questMap[id] = this
+        target.forEach {
+            it.loadNode()
         }
-        if (questModule.accept.way.lowercase() == "auto") {
-            autoQuestMap[questID] = questModule
+        if (accept.auto) {
+            autoQuestMap[id] = this
         }
-        QuestBookBuildManager.addSortQuest(sort, questModule)
-    }
-
-    /**
-     * @return 任务组模块
-     */
-    fun String.getGroupModule(): GroupModule {
-        return questMap[this]?: error("group no register")
+        QuestBookBuildManager.addSortQuest(group.sort, this)
     }
 
     /**
      * @return 任务模块
      */
-    fun String.getQuestModule(groupID: String): QuestModule? {
-        questMap[groupID]?.questList?.forEach {
-            if (it.id == this) return it
-        }
-        return null
-    }
-
-    /**
-     * 精准检索玩家任务组数据
-     */
-    fun UUID.getGroupData(pUid: UUID): GroupData {
-        pUid.getPlayerData().dataContainer.group.forEach {
-            if (it.uuid == this) return it
-        }
-        error("null group data")
-    }
-
-    /**
-     * 根据 QuestID 模糊检索玩家任务组数据
-     */
-    fun String.getGroupData(pUid: UUID): GroupData {
-        pUid.getPlayerData().dataContainer.group.forEach {
-            if (it.id == this) return it
-        }
-        error("null group data")
-    }
-
-    /**
-     * @return Group UUID 返回 ID
-     */
-    fun UUID.getGroupID(player: Player): String {
-        return this.getGroupData(player.uniqueId).id
+    fun String.getQuestFrame(): QuestFrame {
+        return questMap[this]?: error("null quest frame: $this")
     }
 
     /**
      * @return 玩家是否满足任务组模式
      * @param share 是否判断共享数据
      */
-    fun GroupModule.matchMode(player: Player, share: Boolean = true): Boolean {
+    fun QuestFrame.matchMode(player: Player, share: Boolean = true): Boolean {
         val mode = this.mode
         if (mode.type == ModeType.PERSONAL) return true
         val amount = mode.amount
@@ -108,32 +64,22 @@ object QuestManager {
      * @param share 是否判断共享数据
      */
     fun String.matchMode(player: Player, share: Boolean = true): Boolean {
-        return this.getGroupModule().matchMode(player, share)
-    }
-
-    /**
-     * @return 玩家是否满足任务组模式
-     * @param share 是否判断共享数据
-     */
-    fun UUID.matchMode(player: Player, share: Boolean = true): Boolean {
-        return this.getGroupID(player).getGroupModule().matchMode(player, share)
+        return getQuestFrame().matchMode(player, share)
     }
 
     /**
      * @return 任务组队伍模式
      */
     fun String.getQuestMode(): ModeType {
-        return this.getGroupModule().mode.type
+        return getQuestFrame().mode.type
     }
 
     /**
-     * @return 是否存在任务组数据
+     * @return 控制模块
      */
-    fun UUID.existGroupData(player: Player): Boolean {
-        player.getPlayerData().dataContainer.group.forEach {
-            if (it.uuid == this) return true
-        }
-        return false
+    fun String.getControlFrame(questID: String): ControlFrame {
+        questID.getQuestFrame().control.forEach { if (it.id == this) return it }
+        error("null control frame: $this($questID)")
     }
 
 }

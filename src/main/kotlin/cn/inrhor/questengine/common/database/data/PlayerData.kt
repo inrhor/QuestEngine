@@ -17,7 +17,6 @@ data class PlayerData(
     val uuid: UUID,
     var teamData: TeamOpen? = null,
     val dialogData: DialogData = DialogData(),
-    var controlQueue: ControlQueue = ControlQueue(),
     var dataContainer: DataContainer = DataContainer(),
     val chatCache: ChatCache = ChatCache(),
     val navData: MutableMap<String, NavData> = mutableMapOf())

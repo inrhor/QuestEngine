@@ -2,18 +2,15 @@ package cn.inrhor.questengine.common.database.data
 
 import cn.inrhor.questengine.api.quest.control.ControlPriority
 import cn.inrhor.questengine.common.database.Database
-import cn.inrhor.questengine.common.database.data.quest.ControlData
 import org.bukkit.entity.Player
 import kotlin.collections.LinkedHashMap
 
 /**
  * 控制模块数据列表
  *
- * @param highestControls 最高级控制，排队运行
- * @param controls 普通控制，共存运行
+ * @param control 排队运行
  */
-class ControlQueue(var highestControls: LinkedHashMap<String, ControlData> = linkedMapOf(),
-                   var controls: MutableMap<String, ControlData> = mutableMapOf()) {
+class ControlQueue(var control: LinkedHashMap<String, ControlData> = linkedMapOf()) {
 
     /**
      * /**
