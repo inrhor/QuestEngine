@@ -26,6 +26,10 @@ abstract class TeamOpen {
         members.add(member)
     }
 
+    open fun isLeader(player: Player): Boolean {
+        return player.uniqueId == leader
+    }
+
     open fun delTeam() {
         members.forEach {
             val pData = it.getPlayerData()

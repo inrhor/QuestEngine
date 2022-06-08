@@ -55,8 +55,6 @@ quest:
         quest accept quest2
     -
       id: "1"
-      # 队列模式 NORMAL, HIGH
-      queue: HIGH
       # 类型 ACCEPT, FINISH, FAIL, QUIT, RESET
       type: ACCEPT
       # 选择 SELF, TEAM, ALL

@@ -1,10 +1,12 @@
 package cn.inrhor.questengine.common.quest.manager
 
 import cn.inrhor.questengine.api.event.QuestEvent
+import cn.inrhor.questengine.api.event.TargetEvent
 import cn.inrhor.questengine.api.quest.ControlFrame
 import cn.inrhor.questengine.api.quest.QuestFrame
 import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
+import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.database.data.teamData
 import cn.inrhor.questengine.common.quest.enum.ModeType
 import cn.inrhor.questengine.common.quest.enum.StateType
@@ -17,7 +19,9 @@ object QuestManager {
     /**
      * 注册的任务模块内容
      */
-    private var questMap = mutableMapOf<String, QuestFrame>()
+    private val questMap = mutableMapOf<String, QuestFrame>()
+
+    val extendsQuest = mutableListOf<QuestFrame>()
 
     /**
      * 自动接受的任务模块内容
@@ -27,6 +31,10 @@ object QuestManager {
     fun getQuestMap() = questMap
 
     fun clearQuestMap() = questMap.clear()
+
+    fun QuestFrame.waitRegister() {
+        extendsQuest.add(this)
+    }
 
     /**
      * 注册任务模块内容
@@ -48,6 +56,11 @@ object QuestManager {
     fun String.getQuestFrame(): QuestFrame {
         return questMap[this]?: error("null quest frame: $this")
     }
+
+    /**
+     * @return 是否存在任务模块
+     */
+    fun String.existQuestFrame() = questMap.containsKey(this)
 
     /**
      * @return 玩家是否满足任务组模式
@@ -132,6 +145,11 @@ object QuestManager {
         QuestEvent.Reset(this, quest).call()
     }
 
-
+    /**
+     * 完成目标
+     */
+    fun Player.finishTarget(targetData: TargetData, modeType: ModeType) {
+        TargetEvent.Finish(this, targetData, modeType).call()
+    }
 
 }

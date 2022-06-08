@@ -6,6 +6,8 @@ import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.dialog.theme.chat.ChatCache
 import cn.inrhor.questengine.common.nav.NavData
+import cn.inrhor.questengine.common.quest.enum.ModeType
+import cn.inrhor.questengine.common.quest.enum.StateType
 import org.bukkit.entity.Player
 import java.util.*
 
@@ -58,4 +60,25 @@ fun Player.targetData(questID: String, targetID: String): TargetData {
         if (it.id == targetID) return it
     }
     error("null target data: $targetID($questID)")
+}
+
+/**
+ * @return 是否完成任务的所有目标
+ */
+fun Player.completedTargets(questID: String, modeType: ModeType): Boolean {
+    if (modeType == ModeType.COLLABORATION) {
+        teamData()?.playerMembers()?.forEach {
+            if (!it.completedTarget(questID)) return false
+        }
+    }else {
+        return completedTarget(questID)
+    }
+    return true
+}
+
+fun Player.completedTarget(questID: String): Boolean {
+    questData(questID).target.forEach {
+        if (it.state != StateType.FINISH) return false
+    }
+    return true
 }

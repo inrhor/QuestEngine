@@ -2,6 +2,8 @@ package cn.inrhor.questengine.api.quest
 
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.database.data.questData
+import cn.inrhor.questengine.common.database.data.teamData
+import cn.inrhor.questengine.common.quest.enum.ModeType
 import cn.inrhor.questengine.script.kether.runEvalSet
 import org.bukkit.entity.Player
 import java.util.*
@@ -11,7 +13,7 @@ data class QuestFrame(
     val accept: AcceptAddon = AcceptAddon(),
     val time: TimeAddon = TimeAddon(),
     val mode: ModeAddon = ModeAddon(),
-    val group: GroupAddon = GroupAddon(),
+    var group: GroupAddon = GroupAddon(),
     val target: MutableList<TargetFrame> = mutableListOf(),
     val control: MutableList<ControlFrame>
 ) {
@@ -36,7 +38,14 @@ data class QuestFrame(
         return time.noTimeout(Date(), questData.timeDate, endDate)
     }
 
+    /**
+     * 运行脚本
+     * 在协同模式中，应当只由队长执行
+     */
     fun runEval(player: Player, queueType: QueueType) {
+        if (mode.type == ModeType.COLLABORATION && player.teamData()?.isLeader(player) == false) {
+            return
+        }
         control.forEach {
             if (it.type == queueType) {
                 runEvalSet(it.select.objective(player), it.script)
