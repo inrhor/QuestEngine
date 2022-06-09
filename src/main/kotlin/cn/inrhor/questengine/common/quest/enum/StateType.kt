@@ -9,6 +9,11 @@ enum class StateType(val int: Int) {
     FINISH(2),
     FAILURE(3);
 
+    companion object {
+        private val values = values()
+        fun fromInt(value: Int) = values.firstOrNull { it.int == value }?: NOT_ACCEPT
+    }
+
     fun toUnit(player: Player): String {
         return player.asLangText("STATE-TYPE-$this")
     }

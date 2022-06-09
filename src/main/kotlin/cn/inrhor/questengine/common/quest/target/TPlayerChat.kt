@@ -1,9 +1,9 @@
 package cn.inrhor.questengine.common.quest.target
 
-import cn.inrhor.questengine.api.quest.module.QuestTarget
-import cn.inrhor.questengine.common.quest.manager.QuestManager
+import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.api.target.util.Schedule
+import cn.inrhor.questengine.common.database.data.doingTargets
 import cn.inrhor.questengine.script.kether.runEval
 
 import org.bukkit.entity.Player
@@ -18,8 +18,8 @@ object TPlayerChat: TargetExtend<AsyncPlayerChatEvent>() {
     init {
         event = AsyncPlayerChatEvent::class
         tasker{
-            QuestManager.getDoingTargets(player, name).forEach {
-                if (targetTrigger(player, name, "message", message, it.questTarget)) {
+            player.doingTargets(name).forEach {
+                if (targetTrigger(player, name, "message", message, it.getTargetFrame())) {
                     Schedule.isNumber(player, name, "number", it)
                 }
             }
@@ -34,7 +34,7 @@ object TPlayerChat: TargetExtend<AsyncPlayerChatEvent>() {
      * @param tag 键
      * @param content 需要的匹配内容
      */
-    fun targetTrigger(player: Player, name: String, tag: String, content: String, target: QuestTarget): Boolean {
+    fun targetTrigger(player: Player, name: String, tag: String, content: String, target: TargetFrame): Boolean {
         val condition = target.nodeMeta(tag)?: return false
         return runEval(player, "strMatch type $condition *'$content'")
     }

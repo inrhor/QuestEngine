@@ -19,6 +19,4 @@ object TNpcRight: TargetExtend<NPCRightClickEvent>() {
         }
     }
 
-
-
 }

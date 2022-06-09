@@ -21,6 +21,9 @@ data class TargetData(
 
     constructor(questID: String, target: TargetFrame): this(target.id, questID)
 
+    /**
+     * @return 目标模块
+     */
     fun getTargetFrame(): TargetFrame {
         questID.getQuestFrame().target.forEach {
             if (it.id == id) return it

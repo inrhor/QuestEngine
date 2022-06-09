@@ -23,15 +23,4 @@ object TargetManager {
         return schedule
     }
 
-    fun runTask(pData: PlayerData, player: Player) {
-        pData.questDataList.values.forEach {
-            val inner = it.questInnerData
-            inner.targetsData.values.forEach { t ->
-                if (t.name.lowercase().startsWith("task ")) {
-                    t.runTask(player, it, inner, QuestManager.getQuestMode(it.questID))
-                }
-            }
-        }
-    }
-
 }

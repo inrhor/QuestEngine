@@ -5,12 +5,15 @@ import cn.inrhor.questengine.api.quest.control.toInt
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.quest.*
-import cn.inrhor.questengine.common.quest.manager.ControlManager
+import cn.inrhor.questengine.common.database.data.tagsData
+import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.common.quest.manager.RunLogType
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.common.quest.enum.toInt
 import cn.inrhor.questengine.common.quest.enum.toState
+import cn.inrhor.questengine.utlis.time.toStr
 import org.bukkit.entity.Player
 import taboolib.module.database.ColumnOptionSQL
 import taboolib.module.database.ColumnTypeSQL
@@ -43,34 +46,7 @@ class DatabaseSQL: Database() {
                 options(ColumnOptionSQL.KEY)
             }
         }
-        add("uuid") {
-            type(ColumnTypeSQL.VARCHAR, 36) {
-                options(ColumnOptionSQL.UNIQUE_KEY)
-            }
-        }
-        add("q_id") { // questID
-            type(ColumnTypeSQL.VARCHAR, 36) {
-                options(ColumnOptionSQL.KEY)
-            }
-        }
-        add("inner") {
-            type(ColumnTypeSQL.INT, 16) {
-                options(ColumnOptionSQL.KEY)
-            }
-        }
-        add("state") {
-            type(ColumnTypeSQL.INT, 16)
-        }
-    }
-
-    val tableInner = Table(table+"_inner", host) {
-        add { id() }
-        add("quest") {
-            type(ColumnTypeSQL.INT, 16) {
-                options(ColumnOptionSQL.KEY)
-            }
-        }
-        add("n_id") { // innerID
+        add("quest") { // questID
             type(ColumnTypeSQL.VARCHAR, 36) {
                 options(ColumnOptionSQL.KEY)
             }
@@ -88,21 +64,8 @@ class DatabaseSQL: Database() {
         }
     }
 
-    val tableFinish = Table(table+"_finish", host) {
-        add("quest") {
-            type(ColumnTypeSQL.INT, 16) {
-                options(ColumnOptionSQL.KEY)
-            }
-        }
-        add("inner") {
-            type(ColumnTypeSQL.INT, 16) {
-                options(ColumnOptionSQL.KEY)
-            }
-        }
-    }
-
     val tableTarget = Table(table+"_target", host) {
-        add("inner") {
+        add("quest") {
             type(ColumnTypeSQL.INT, 16) {
                 options(ColumnOptionSQL.KEY)
             }
@@ -112,32 +75,11 @@ class DatabaseSQL: Database() {
                 options(ColumnOptionSQL.KEY)
             }
         }
-        add("name") {
-            type(ColumnTypeSQL.VARCHAR, 64) {
-                options(ColumnOptionSQL.KEY)
-            }
-        }
         add("schedule") {
             type(ColumnTypeSQL.INT)
         }
-    }
-
-    val tableControl = Table(table+"_control", host) {
-        add("user") {
-            type(ColumnTypeSQL.INT, 16) {
-                options(ColumnOptionSQL.KEY)
-            }
-        }
-        add("c_id") {
-            type(ColumnTypeSQL.VARCHAR, 36) {
-                options(ColumnOptionSQL.KEY)
-            }
-        }
-        add("priority") {
-            type(ColumnTypeSQL.INT)
-        }
-        add("line") {
-            type(ColumnTypeSQL.INT)
+        add("state") {
+            type(ColumnTypeSQL.INT, 16)
         }
     }
 
@@ -160,9 +102,6 @@ class DatabaseSQL: Database() {
         tableUser.workspace(source) {createTable()}.run()
         tableQuest.workspace(source) { createTable() }.run()
         tableTarget.workspace(source) { createTable() }.run()
-        tableInner.workspace(source) { createTable() }.run()
-        tableFinish.workspace(source) { createTable() }.run()
-        tableControl.workspace(source) { createTable() }.run()
         tableTags.workspace(source) { createTable() }.run()
     }
 
@@ -180,7 +119,7 @@ class DatabaseSQL: Database() {
 
     override fun pull(player: Player) {
         val uuid = player.uniqueId
-        val pData = DataStorage.getPlayerData(uuid)
+        val pData = uuid.getPlayerData()
         if (!tableUser.find(source) {where { "uuid" eq uuid.toString() }}) {
             tableUser.insert(source, "uuid") {
                 value(uuid.toString())
@@ -188,129 +127,42 @@ class DatabaseSQL: Database() {
         }
         val uId = userId(player)
         tableQuest.select(source) {
-            rows(tableQuest.name+".uuid", tableQuest.name+".q_id", tableQuest.name+".state", tableInner.name+".n_id", tableInner.name+".state")
+            rows("id", "quest", "state", "time", "end")
             where { "user" eq uId}
-            innerJoin(tableInner.name) {
-                where { tableQuest.name+".id" eq pre(tableInner.name+".quest") }
-            }
         }.map {
-            getString(tableQuest.name+".uuid") to
-                    getString(tableQuest.name+".q_id") to
-                    getInt(tableQuest.name+".state") to
-                    getString(tableInner.name+".n_id") to
-                    getInt(tableInner.name+".state") to
-                    getDate(tableInner.name+".time") to
-                    getDate(tableInner.name+".end")
+            getLong("id") to
+            getString("quest") to
+                    getInt("state") to
+                    getDate("time") to
+                    getDate("end")
         }.forEach {
-            val questUUID = UUID.fromString(it.first.first.first.first.first.first)
-            val questID = it.first.first.first.first.first.second
-            val qState = it.first.first.first.first.second
-            val innerID = it.first.first.first.second
-            val nState = it.first.first.second
+            val qId = it.first.first.first.first
+            val questID = it.first.first.first.second
+            val state = it.first.first.second
             val time = it.first.second
-            val end = it.second?: null
-            val nModule = QuestManager.getInnerModule(questID, innerID)?: return
-            val innerData = QuestData(questID, innerID,
-                QuestManager.getInnerModuleTargetMap(questUUID, nModule),
-                nState.toState(), time, end)
-            val questData = GroupData(questUUID, questID, innerData, qState.toState(), finishInner(uId))
-            pData.questDataList[questUUID] = questData
-            QuestManager.checkTimeTask(player, questUUID, questID)
+            val end = if (it.second == null) "" else it.second.toStr()
+            val questData = QuestData(questID, mutableListOf(), StateType.fromInt(state), time.toStr(), end)
+            questData.target = returnTargets(qId)
         }
-        tableControl.select(source) {
-            where { "user" eq uId }
-            rows("c_id", "line")
-        }.map {
-            getString("c_id") to getInt("line")
-        }.forEach {
-            val controlID = it.first
-            val line = it.second
-            ControlManager.pullControl(player, controlID, line)
-        }
-        TargetManager.runTask(pData, player)
         tableTags.select(source) {
             where { "user" eq uId }
             rows("tag")
         }.map {
             getString("tag")
         }.forEach {
-            pData.tagsData.addTag(it)
+            player.tagsData().addTag(it)
         }
     }
 
-    fun finishInner(id: Long): MutableSet<String> {
-        val list = mutableSetOf<String>()
-        tableQuest.select(source) {
-            rows(tableInner.name+".n_id")
-            where {
-                and {
-                    tableQuest.name+".user" eq id
-                    tableQuest.name+".id" eq tableFinish.name+".quest"
-                }
-            }
-            innerJoin(tableInner.name) {
-                tableQuest.name+".id" eq pre(tableInner.name+".quest")
-            }
-        }.map {
-            getString(tableInner.name+".n_id")
-        }.forEach {
-            list.add(it)
+    private fun returnTargets(qId: Long): MutableList<TargetData> {
+        val list = mutableListOf<TargetData>()
+        tableTarget.select(source) {
+
         }
         return list
     }
 
-    override fun getInnerQuestData(player: Player, questUUID: UUID, innerQuestID: String): QuestData? {
-        val uId = userId(player)
-        tableQuest.select(source) {
-            where {
-                and {
-                    tableQuest.name+".user" eq uId
-                    tableQuest.name+".uuid" eq questUUID.toString()
-                }
-            }
-            innerJoin(tableInner.name) {
-                tableInner.name+".n_id" eq innerQuestID
-                tableInner.name+".quest" eq pre(tableQuest.name+".id")
-            }
-            rows(tableQuest.name+".q_id", tableInner.name+".state")
-        }.map {
-            getString(tableQuest.name+".q_id") to getInt(tableInner.name+".state") to
-                    getDate(tableInner.name+".time") to getDate(tableInner.name+".end")
-        }.forEach {
-            val questID = it.first.first.first
-            val innerModule = QuestManager.getInnerModule(questID, innerQuestID)?: return@forEach
-            val targets = returnTargets(player, questUUID, innerQuestID,
-                QuestManager.getInnerModuleTargetMap(questUUID, innerModule)
-            )
-            val state = it.first.first.second.toState()
-            val time = it.first.second
-            val end = it.second?: null
-            return QuestData(questID, innerQuestID, targets, state, time, end)
-        }
-        return null
-    }
-
-    private fun returnTargets(player: Player, questUUID: UUID, innerQuestID: String,
-                              targetDataMap: MutableMap<String, TargetData>): MutableMap<String, TargetData> {
-        val uId = userId(player)
-        val qId = findQuest(uId, questUUID)
-        val nId = findInner(qId, innerQuestID)
-        tableTarget.select(source) {
-            rows("id", "schedule")
-            where {
-                "inner" eq nId
-            }
-        }.map {
-            getString("id") to getInt("schedule")
-        }.forEach {
-            val id = it.first
-            val targetData = targetDataMap[id]?: return@forEach
-            targetData.schedule = it.second
-        }
-        return targetDataMap
-    }
-
-    override fun push(player: Player) {
+/*        override fun push(player: Player) {
         val pData = DataStorage.getPlayerData(player.uniqueId)
         val uId = userId(player)
         pData.questDataList.forEach { (questUUID, questData) ->
@@ -367,63 +219,6 @@ class DatabaseSQL: Database() {
         }
     }
 
-    fun updateFinish(qId: Long, nId: Long) {
-        if (!(tableFinish.find(source) {
-                where { "quest" eq qId and("inner" eq nId) }
-            }))  {
-            tableFinish.insert(source, "quest", "inner") {
-                value(qId, nId)
-            }
-        }
-    }
-
-    private fun hasControl(uId: Long, controlID: String): Boolean {
-        return tableControl.find(source) {
-            where {
-                and {
-                    "user" eq uId
-                    "c_id" eq  controlID
-                }
-            }
-        }
-    }
-
-    private fun pushControl(uId: Long, controlID: String, cData: ControlData) {
-        if (ControlManager.runLogType(controlID) == RunLogType.DISABLE) return
-        val line = cData.line
-        if (hasControl(uId, controlID)) {
-            tableControl.update(source) {
-                where {
-                    and {
-                        "user" eq uId
-                        "c_id" eq  controlID
-                    }
-                }
-                set("line", line)
-            }
-        }else {
-            tableControl.insert(source, "user", "c_id", "priority", "line") {
-                value(uId, controlID, cData.priority.toInt(), line)
-            }
-        }
-    }
-
-    private fun updateInner(id: Long, questUUID: UUID, questInnerData: QuestData) {
-        val state = questInnerData.state.toInt()
-        val qId = findQuest(id, questUUID)
-        tableInner.update(source) {
-            where {
-                and {
-                    "quest" eq qId
-                }
-            }
-            set("state", state)
-            set("time", questInnerData.timeDate)
-            set("end",questInnerData.endDate)
-        }
-        updateTarget(qId, questInnerData)
-    }
-
     override fun createQuest(player: Player, questUUID: UUID, questData: GroupData) {
         val questID = questData.id
         val innerData = questData.questInnerData
@@ -445,25 +240,6 @@ class DatabaseSQL: Database() {
         createInner(qId, innerData)
     }
 
-    private fun createInner(qId: Long, questInnerData: QuestData) {
-        val state = questInnerData.state.toInt()
-        tableInner.insert(source, "quest", "n_id", "state") {
-            value(qId, questInnerData.id, state)
-        }
-        val nId = tableInner.select(source) {
-            rows("id")
-            where {
-                and {
-                    "quest" eq qId
-                    "n_id" eq questInnerData.id
-                    "state" eq state
-                }
-            }
-            limit(1)
-        }.firstOrNull { getLong("id") } ?: -1L
-        createTarget(nId, questInnerData)
-    }
-
     private fun createTarget(nId: Long, questInnerData: QuestData) {
         questInnerData.target.forEach { (a, e) ->
             val schedule = e.schedule
@@ -471,12 +247,6 @@ class DatabaseSQL: Database() {
                 value(nId, a, e.name, schedule)
             }
         }
-    }
-
-    fun findInner(qId: Long, innerID: String): Long {
-        return tableInner.select(source) {
-            where { "quest" eq qId and("n_id" eq innerID) }
-        }.firstOrNull { getLong("id") }?: -1L
     }
 
     private fun updateTarget(qId: Long, questInnerData: QuestData) {
@@ -509,16 +279,6 @@ class DatabaseSQL: Database() {
         }
     }
 
-    override fun removeControl(player: Player, controlID: String) {
-        tableControl.delete(source) {
-            where { "user" eq userId(player) }
-        }
-    }
-
-    override fun removeInnerQuest(player: Player, questUUID: UUID) {
-        delete(userId(player), questUUID)
-    }
-
     fun findQuest(uId: Long, questUUID: UUID): Long {
         return tableQuest.select(source) {
             where { "user" eq uId and("uuid" eq questUUID.toString()) }
@@ -542,7 +302,7 @@ class DatabaseSQL: Database() {
                 "quest" eq findQuest(uId, questUUID)
             }
         }
-    }
+    }*/
 
     companion object {
         private val saveUserId = ConcurrentHashMap<UUID, Long>()

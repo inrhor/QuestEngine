@@ -2,7 +2,6 @@ package cn.inrhor.questengine.common.database
 
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
-import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.type.DatabaseLocal
 import cn.inrhor.questengine.common.database.type.DatabaseManager
 import cn.inrhor.questengine.common.database.type.DatabaseSQL
@@ -15,7 +14,6 @@ import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import taboolib.common.platform.event.*
 import taboolib.common.platform.function.*
-import java.util.*
 
 abstract class Database {
 
@@ -30,26 +28,14 @@ abstract class Database {
     abstract fun push(player: Player)
 
     /**
-     * 得到玩家已存储的内部任务
+     * 清除任务数据
      */
-    abstract fun getInnerQuestData(player: Player, questUUID: UUID, innerQuestID: String): QuestData?
+    abstract fun removeQuest(player: Player, questID: String)
 
     /**
-     * 清除任务数据，并清除内部任务和目标任务
+     * 创建任务数据
      */
-    abstract fun removeQuest(player: Player, questData: GroupData)
-
-    /**
-     * 清除内部任务数据，并清除其目标数据
-     */
-    open fun removeInnerQuest(player: Player, questUUID: UUID) {}
-
-    /**
-     * 清除控制模块数据
-     */
-    abstract fun removeControl(player: Player, controlID: String)
-
-    open fun createQuest(player: Player, questUUID: UUID, questData: GroupData) {}
+    open fun createQuest(player: Player, questID: String) {}
 
     companion object {
 
@@ -84,7 +70,7 @@ abstract class Database {
 
         @Awake(LifeCycle.ACTIVE)
         fun updateDatabase() {
-            submit(async = true, period = 100L) {
+            submit(async = true, period = 200L) {
                 pushAll()
             }
         }

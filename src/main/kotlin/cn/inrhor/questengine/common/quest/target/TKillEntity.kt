@@ -1,9 +1,9 @@
 package cn.inrhor.questengine.common.quest.target
 
-import cn.inrhor.questengine.api.quest.module.QuestTarget
-import cn.inrhor.questengine.common.quest.manager.QuestManager
+import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.api.target.util.Schedule
+import cn.inrhor.questengine.common.database.data.doingTargets
 import cn.inrhor.questengine.script.kether.runEval
 
 import cn.inrhor.questengine.utlis.subAfter
@@ -21,8 +21,9 @@ object TKillEntity: TargetExtend<EntityDeathEvent>() {
         event = EntityDeathEvent::class
         tasker{
             val player = entity.killer?: return@tasker null
-            QuestManager.getDoingTargets(player, name).forEach {
-                if (checkEntity(it.questTarget, entityType) && checkCondition(player, it.questTarget, entity, droppedExp)) {
+            player.doingTargets(name).forEach {
+                val target = it.getTargetFrame()
+                if (checkEntity(target, entityType) && checkCondition(player, target, entity, droppedExp)) {
                     Schedule.isNumber(player, name, "number", it)
                 }
             }
@@ -30,7 +31,7 @@ object TKillEntity: TargetExtend<EntityDeathEvent>() {
         }
     }
 
-    private fun checkEntity(target: QuestTarget, type: EntityType): Boolean {
+    private fun checkEntity(target: TargetFrame, type: EntityType): Boolean {
         val condition = target.nodeMeta("entity")?: return false
         return when (condition[0].uppercase()) {
             "PLAYER" -> type == EntityType.PLAYER
@@ -38,7 +39,7 @@ object TKillEntity: TargetExtend<EntityDeathEvent>() {
         }
     }
 
-    private fun checkCondition(player: Player, target: QuestTarget, entity: Entity, dropExp: Int): Boolean {
+    private fun checkCondition(player: Player, target: TargetFrame, entity: Entity, dropExp: Int): Boolean {
         val condition = target.nodeMeta("condition")?: return false
         val checkNumber = (target.nodeMeta("check")?: listOf("0"))[0].toInt()
         var i = 0

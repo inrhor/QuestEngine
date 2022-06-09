@@ -1,8 +1,8 @@
 package cn.inrhor.questengine.common.quest.target
 
-import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.api.target.util.Schedule
+import cn.inrhor.questengine.common.database.data.doingTargets
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerJoinEvent
 
@@ -19,7 +19,7 @@ object TPlayerJoinServer: TargetExtend<PlayerJoinEvent>() {
     }
 
     fun match(player: Player, name: String) {
-        QuestManager.getDoingTargets(player, name).forEach {
+        player.doingTargets(name).forEach {
             Schedule.isNumber(player, name, "number", it)
         }
     }

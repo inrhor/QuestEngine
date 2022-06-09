@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.listener.chat
 
-import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import net.md_5.bungee.api.chat.BaseComponent
 import net.md_5.bungee.api.chat.TextComponent
 import taboolib.common.platform.event.SubscribeEvent
@@ -24,7 +24,7 @@ object ChatCacheListener {
                 } else return
             }
             val p = ev.player
-            val pData = DataStorage.getPlayerData(p)
+            val pData = p.getPlayerData()
             val cache = pData.chatCache
             if (!cache.enable) return
             if (cache.release.contains(a) || a.contains("@d31877bc-b8bc-4355-a4e5-9b055a494e9f")) return
@@ -37,7 +37,7 @@ object ChatCacheListener {
     fun bar(ev: PacketSendEvent) {
         if (ev.packet.name == "PacketPlayOutChat" && ev.packet.read<Any>("b").toString() == "GAME_INFO") {
             val p = ev.player
-            val pData = DataStorage.getPlayerData(p)
+            val pData = p.getPlayerData()
             if (pData.chatCache.enable) {
                 val components = ev.packet.read<Array<BaseComponent>>("components") ?: return
                 val text = TextComponent.toPlainText(*components).uncolored()

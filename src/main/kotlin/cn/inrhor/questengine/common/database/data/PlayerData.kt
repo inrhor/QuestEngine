@@ -76,9 +76,28 @@ fun Player.completedTargets(questID: String, modeType: ModeType): Boolean {
     return true
 }
 
+/**
+ * @return 是否完成任务的所有目标
+ */
 fun Player.completedTarget(questID: String): Boolean {
     questData(questID).target.forEach {
         if (it.state != StateType.FINISH) return false
     }
     return true
+}
+
+/**
+ * 正在进行的任务目标条目列
+ */
+fun Player.doingTargets(name: String): List<TargetData> {
+    val list = mutableListOf<TargetData>()
+    val doing = StateType.DOING
+    getPlayerData().dataContainer.quest.values.forEach {
+        if (it.state == doing) {
+            it.target.forEach { t ->
+                if (t.state == doing && t.getTargetFrame().name == name) list.add(t)
+            }
+        }
+    }
+    return list
 }
