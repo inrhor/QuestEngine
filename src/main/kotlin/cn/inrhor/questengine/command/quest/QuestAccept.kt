@@ -1,6 +1,8 @@
 package cn.inrhor.questengine.command.quest
 
 import cn.inrhor.questengine.common.quest.manager.QuestManager
+import cn.inrhor.questengine.common.quest.manager.QuestManager.acceptQuest
+import cn.inrhor.questengine.common.quest.manager.QuestManager.existQuestFrame
 import org.bukkit.Bukkit
 import taboolib.common.platform.ProxyCommandSender
 import taboolib.common.platform.command.*
@@ -17,7 +19,7 @@ object QuestAccept {
             // questID
             dynamic {
                 suggestion<ProxyCommandSender> { _, _ ->
-                    QuestManager.questMap.map { it.key }
+                    QuestManager.getQuestMap().map { it.key }
                 }
                 execute<ProxyCommandSender> { sender, context, argument ->
                     val args = argument.split(" ")
@@ -27,11 +29,11 @@ object QuestAccept {
                     }
 
                     val questID = args[0]
-                    if (!QuestManager.questMap.containsKey(questID)) {
+                    if (!questID.existQuestFrame()) {
                         return@execute
                     }
 
-                    QuestManager.acceptQuest(player, questID)
+                    player.acceptQuest(questID)
                 }
             }
         }

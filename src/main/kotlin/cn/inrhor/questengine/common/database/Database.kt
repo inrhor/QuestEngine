@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.database
 
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
+import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.type.DatabaseLocal
 import cn.inrhor.questengine.common.database.type.DatabaseManager
 import cn.inrhor.questengine.common.database.type.DatabaseSQL
@@ -35,7 +36,7 @@ abstract class Database {
     /**
      * 创建任务数据
      */
-    open fun createQuest(player: Player, questID: String) {}
+    open fun createQuest(player: Player, questData: QuestData) {}
 
     companion object {
 

@@ -2,7 +2,7 @@ package cn.inrhor.questengine.common.dialog.theme.chat
 
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.api.dialog.theme.DialogTheme
-import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.dialog.DialogManager.refresh
 import cn.inrhor.questengine.common.dialog.DialogManager.setId
 import org.bukkit.Location
@@ -32,7 +32,7 @@ class DialogChat(
     override fun play() {
         viewers.forEach {
             textViewer(it)
-            val pData = DataStorage.getPlayerData(it)
+            val pData = it.getPlayerData()
             pData.dialogData.addDialog(dialogModule.dialogID, this)
             pData.chatCache.open()
             it.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, Int.MAX_VALUE, 1))
@@ -79,14 +79,9 @@ class DialogChat(
 
     override fun end() {
         viewers.forEach {
-            val pData = DataStorage.getPlayerData(it)
+            val pData = it.getPlayerData()
             pData.chatCache.close(it)
             pData.dialogData.dialogMap.remove(dialogModule.dialogID)
-            /*Bukkit.getScheduler().callSyncMethod(QuestEngine.plugin) {
-                it.removePotionEffect(PotionEffectType.BLINDNESS)
-                it.removePotionEffect(PotionEffectType.INVISIBILITY)
-            }*/
-            // debug
             submit {
                 it.removePotionEffect(PotionEffectType.BLINDNESS)
                 it.removePotionEffect(PotionEffectType.INVISIBILITY)

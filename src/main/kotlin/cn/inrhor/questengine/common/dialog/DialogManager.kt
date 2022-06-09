@@ -3,6 +3,7 @@ package cn.inrhor.questengine.common.dialog
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.api.dialog.theme.DialogTheme
 import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.dialog.theme.chat.DialogChat
 import cn.inrhor.questengine.common.dialog.theme.hologram.core.DialogHologram
 import cn.inrhor.questengine.script.kether.runEval
@@ -69,7 +70,7 @@ object DialogManager {
     }
 
     fun hasDialog(player: Player, dialogID: String): Boolean {
-        DataStorage.getPlayerData(player).dialogData.dialogMap[dialogID]?: return false
+        player.getPlayerData().dialogData.dialogMap[dialogID]?: return false
         return true
     }
 
@@ -165,7 +166,7 @@ object DialogManager {
     }
 
     fun endHoloDialog(player: Player, dialogID: String) {
-        val pDate = DataStorage.getPlayerData(player)
+        val pDate = player.getPlayerData()
         pDate.dialogData.endHoloDialog(dialogID)
     }
 }

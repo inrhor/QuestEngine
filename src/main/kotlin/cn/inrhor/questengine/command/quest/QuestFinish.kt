@@ -1,8 +1,7 @@
 package cn.inrhor.questengine.command.quest
 
-import cn.inrhor.questengine.common.database.data.DataStorage
-import cn.inrhor.questengine.common.quest.enum.StateType
-import cn.inrhor.questengine.common.quest.manager.QuestManager
+import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
+import cn.inrhor.questengine.common.quest.manager.QuestManager.finishQuest
 import org.bukkit.Bukkit
 import taboolib.common.platform.ProxyCommandSender
 import taboolib.common.platform.command.*
@@ -18,7 +17,7 @@ object QuestFinish {
             dynamic {
                 suggestion<ProxyCommandSender> { _, context ->
                     Bukkit.getPlayer(context.argument(-1))?.let { p ->
-                        DataStorage.getPlayerData(p).questDataList.values.map { it.questID }
+                        p.getPlayerData().dataContainer.quest.keys.map { it }
                     }
                 }
                 execute<ProxyCommandSender> { sender, context, argument ->
@@ -30,7 +29,7 @@ object QuestFinish {
 
                     val questID = args[0]
 
-                    QuestManager.endQuest(player, questID, StateType.FINISH, false)
+                    player.finishQuest(questID)
                 }
             }
         }

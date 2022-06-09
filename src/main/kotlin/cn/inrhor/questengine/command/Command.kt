@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.command
 
+import cn.inrhor.questengine.command.handbook.HandbookHome
 import taboolib.common.platform.command.*
 
 
@@ -7,16 +8,13 @@ import taboolib.common.platform.command.*
 internal object Command {
 
     @CommandBody(permission = "QuestEngine.use.handbook")
-    val handbook = HandbookCommand
+    val home = HandbookHome.home
 
     @CommandBody(permission = "QuestEngine.admin.quest")
     val quest = QuestCommand
 
     @CommandBody(permission = "QuestEngine.admin.eval")
     val eval = EvalCommand.eval
-
-    @CommandBody(permission = "QuestEngine.admin.quest")
-    val innerQuest = QuestInnerCommand
 
     @CommandBody(permission = "QuestEngine.admin.dialog")
     val dialog = DialogCommand.dialog

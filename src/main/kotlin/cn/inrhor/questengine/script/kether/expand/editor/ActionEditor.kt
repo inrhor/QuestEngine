@@ -8,16 +8,8 @@ class ActionEditor {
         HOME, LIST, ADD, DEL, EDIT, CHANGE
     }
 
-    enum class InnerUi {
-        LIST, DEL, EDIT, CHANGE, ADD
-    }
-
     enum class TargetUi {
         LIST,EDIT,ADD,DEL,SEL,CHANGE
-    }
-
-    enum class RewardUi {
-        LIST, DEL,ADD
     }
 
     enum class ListUi {
@@ -70,55 +62,6 @@ class ActionEditor {
                             }
                         }
                         else -> EditorQuest(ui)
-                    }
-                }
-                /**
-                 * editor inner in list page [page]
-                 * editor inner in add
-                 * editor inner in del
-                 * editor inner in edit [meta]
-                 * editor inner in edit [meta] page [page]
-                 * editor inner in change [meta] (desc) to [change]
-                 */
-                case("inner") {
-                    it.mark()
-                    it.expect("in")
-                    when (val ui = InnerUi.valueOf(it.nextToken().uppercase())) {
-                        InnerUi.LIST -> {
-                            it.expect("page")
-                            EditorInner(ui, page = it.nextInt())
-                        }
-                        InnerUi.ADD, InnerUi.DEL -> {
-                            EditorInner(ui)
-                        }
-                        InnerUi.EDIT -> {
-                            when (val meta = it.nextToken()) {
-                                "nextinner" -> {
-                                    it.expect("page")
-                                    val page = it.nextInt()
-                                    EditorInner(ui, meta, page = page)
-                                }
-                                else -> {
-                                    EditorInner(ui, meta)
-                                }
-                            }
-                        }
-                        InnerUi.CHANGE -> {
-                            when (val meta = it.nextToken()) {
-                                "desc" -> {
-                                    val tag = it.nextToken()
-                                    it.expect("to")
-                                    val change = it.nextToken()
-                                    EditorInner(ui, meta, tag, change)
-                                }
-                                else -> {
-                                    it.expect("to")
-                                    val change = it.nextToken()
-                                    EditorInner(ui, meta, change)
-                                }
-                            }
-                        }
-                        else -> error("unknown ui")
                     }
                 }
                 /**
@@ -184,25 +127,6 @@ class ActionEditor {
                                     EditorTarget(ui, meta, change)
                                 }
                             }
-                        }
-                        else -> error("unknown ui")
-                    }
-                }
-                /**
-                 * editor reward in list page [page]
-                 * editor reward in del/add [index]
-                 */
-                case("reward") {
-                    it.mark()
-                    it.expect("in")
-                    when (val ui = RewardUi.valueOf(it.nextToken().uppercase())) {
-                        RewardUi.LIST -> {
-                            it.expect("page")
-                            val page = it.nextInt()
-                            EditorReward(ui, page = page)
-                        }
-                        RewardUi.DEL, RewardUi.ADD -> {
-                            EditorReward(ui, it.nextToken())
                         }
                         else -> error("unknown ui")
                     }

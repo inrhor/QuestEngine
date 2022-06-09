@@ -2,7 +2,7 @@ package cn.inrhor.questengine.common.collaboration
 
 import cn.inrhor.questengine.api.collaboration.TeamData
 import cn.inrhor.questengine.api.collaboration.TeamOpen
-import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.PlayerData
 import org.bukkit.entity.Player
 import java.util.*
@@ -15,11 +15,21 @@ object TeamManager {
     val teamsMap = mutableMapOf<String, TeamOpen>()
 
     fun hasTeam(pUUID: UUID): Boolean {
-        val pData = DataStorage.getPlayerData(pUUID)
-        return hasTeam(pData)
+        return hasTeam(pUUID.getPlayerData())
     }
 
     fun hasTeam(pData: PlayerData): Boolean = pData.teamData != null
+
+    fun getTeamData(teamName: String): TeamOpen? = teamsMap[teamName]
+
+    fun getTeamData(pUUID: UUID): TeamOpen? {
+        val pData = pUUID.getPlayerData()
+        return pData.teamData
+    }
+
+    fun getTeamData(player: Player): TeamOpen? {
+        return getTeamData(player.uniqueId)
+    }
 
     fun isLeader(pUUID: UUID, teamName: String): Boolean {
         val teamData = getTeamData(teamName)?: return false
@@ -28,17 +38,6 @@ object TeamManager {
 
     fun isLeader(pUUID: UUID, teamData: TeamOpen): Boolean {
         return teamData.leader == pUUID
-    }
-
-    fun getTeamData(teamName: String): TeamOpen? = teamsMap[teamName]
-
-    fun getTeamData(pUUID: UUID): TeamOpen? {
-        val pData = DataStorage.getPlayerData(pUUID)
-        return pData.teamData
-    }
-
-    fun getTeamData(player: Player): TeamOpen? {
-        return getTeamData(player.uniqueId)
     }
 
     fun getMemberAmount(teamName: String): Int {
@@ -51,7 +50,7 @@ object TeamManager {
     }
 
     fun createTeam(teamName: String, leader: UUID) {
-        val pData = DataStorage.getPlayerData(leader)
+        val pData = leader.getPlayerData()
         if (hasTeam(pData)) return
         if (teamsMap.containsKey(teamName)) return
         val teamData = TeamData(teamName, leader)
@@ -68,7 +67,7 @@ object TeamManager {
     fun removeMember(mUUID: UUID, teamData: TeamOpen) {
         if (!teamData.members.contains(mUUID)) return
         teamData.members.remove(mUUID)
-        val mData = DataStorage.getPlayerData(mUUID)
+        val mData = mUUID.getPlayerData()
         mData.teamData = null
     }
 

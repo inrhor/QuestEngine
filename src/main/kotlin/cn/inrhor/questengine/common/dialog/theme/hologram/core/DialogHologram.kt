@@ -4,7 +4,7 @@ import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.api.dialog.theme.DialogTheme
 import cn.inrhor.questengine.api.dialog.ReplyModule
 import cn.inrhor.questengine.api.hologram.HoloIDManager
-import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.dialog.theme.hologram.HologramData
 import cn.inrhor.questengine.common.dialog.theme.hologram.OriginLocation
 import cn.inrhor.questengine.common.dialog.theme.hologram.content.AnimationItem
@@ -31,7 +31,7 @@ class DialogHologram(
     override fun play() {
         parserContent()
         viewers.forEach {
-            val pData = DataStorage.getPlayerData(it)
+            val pData = it.getPlayerData()
             pData.dialogData.addDialog(dialogModule.dialogID, this)
         }
     }

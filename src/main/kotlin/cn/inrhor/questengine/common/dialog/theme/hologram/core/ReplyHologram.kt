@@ -4,7 +4,7 @@ import cn.inrhor.questengine.api.dialog.ReplyModule
 import cn.inrhor.questengine.api.dialog.theme.ReplyTheme
 import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.api.packet.updateDisplayName
-import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.dialog.theme.hologram.OriginLocation
 import cn.inrhor.questengine.common.dialog.theme.hologram.content.AnimationItem
 import cn.inrhor.questengine.common.dialog.theme.hologram.parserOrigin
@@ -29,7 +29,7 @@ class ReplyHologram(
      */
     override fun play() {
         dialogHolo.viewers.forEach {
-            val pData = DataStorage.getPlayerData(it)
+            val pData = it.getPlayerData()
             pData.dialogData.addReply(dialogHolo.dialogModule.dialogID, this)
         }
         submit(async = true, delay = this.delay) {
@@ -98,7 +98,7 @@ class ReplyHologram(
         val hitBox = HitBoxSpawner(dialogHolo, replyModule, content, hitBoxID, stackID)
         holoHitBox.hitBoxList.add(hitBox)
         dialogHolo.viewers.forEach {
-            val pData = DataStorage.getPlayerData(it)
+            val pData = it.getPlayerData()
             pData.dialogData.addHoloBox(dialogHolo.dialogModule.dialogID, holoHitBox)
         }
         return hitBox

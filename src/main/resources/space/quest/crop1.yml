@@ -42,7 +42,7 @@ quest:
   # 控制模块
   control:
     -
-      id: ""
+      id: "2"
       # 类型 ACCEPT, FINISH, FAIL, QUIT, RESET, TRACK
       type: FINISH
       # 选择 SELF, TEAM, ALL

@@ -1,9 +1,9 @@
 package cn.inrhor.questengine.common.quest.manager
 
-import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
+import cn.inrhor.questengine.common.database.data.targetData
 import cn.inrhor.questengine.common.database.data.teamData
-import cn.inrhor.questengine.common.quest.manager.QuestManager.matchQuestMode
+import cn.inrhor.questengine.common.quest.manager.QuestManager.matchMode
 import org.bukkit.entity.Player
 
 object TargetManager {
@@ -13,11 +13,10 @@ object TargetManager {
      */
     fun scheduleUtil(player: Player, name: String, targetData: TargetData): Int {
         var schedule = targetData.schedule
-        if (targetData.questUUID.matchQuestMode(player, true)) {
-            player.teamData()?.playerMembers()?.forEach {
-                val innerData = QuestManager.getInnerQuestData(it, targetData.questUUID)
-                val tgData = innerData?.getTargetData(name)
-                schedule += tgData?.schedule?: 0
+        if (targetData.questID.matchMode(player)) {
+            player.teamData()?.playerMembers(false)?.forEach {
+                val tgData = player.targetData(targetData.questID, targetData.id)
+                schedule += tgData.schedule
             }
         }
         return schedule
