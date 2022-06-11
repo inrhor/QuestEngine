@@ -4,6 +4,7 @@ import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.common.quest.manager.QuestManager.finishTarget
 import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestFrame
+import cn.inrhor.questengine.common.quest.manager.QuestManager.getTargetFrame
 import cn.inrhor.questengine.common.quest.manager.QuestManager.matchMode
 import cn.inrhor.questengine.script.kether.runEvalSet
 import org.bukkit.entity.Player
@@ -24,10 +25,7 @@ data class TargetData(
      * @return 目标模块
      */
     fun getTargetFrame(): TargetFrame {
-        questID.getQuestFrame().target.forEach {
-            if (it.id == id) return it
-        }
-        error("null target frame: $id($questID)")
+        return id.getTargetFrame(questID)
     }
 
     fun load(player: Player) {

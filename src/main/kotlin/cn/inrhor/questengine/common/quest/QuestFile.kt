@@ -44,6 +44,7 @@ object QuestFile {
         val quest = setting.getObject<QuestFrame>("quest", false)
         val group = quest.group
         val extend = group.extends
+        quest.path = file.path
         if (extend.isNotEmpty()) {
             if (extend.existQuestFrame()) {
                 quest.group = extend.getQuestFrame().group

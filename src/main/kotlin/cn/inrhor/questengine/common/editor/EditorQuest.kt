@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.editor
 
-import cn.inrhor.questengine.common.quest.manager.QuestManager
+import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestFrame
 import cn.inrhor.questengine.utlis.lang
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.adaptPlayer
@@ -10,11 +10,11 @@ import taboolib.platform.util.asLangText
 object EditorQuest {
 
     val editQuestMeta = listOf(
-        "NAME", "INNER", "START", "SORT", "MODETYPE", "MODEAMOUNT", "SHAREDATA",
-        "ACCEPTWAY", "MAXQUANTITY", "ACCEPTCONDITION", "FAILURECONDITION", "FAILURESCRIPT")
+        "NAME", "NOTE", "GROUPEXTENDS", "GROUPNUMBER", "GROUPSORT", "GROUPNOTE", "MODETYPE", "MODEAMOUNT", "SHAREDATA",
+        "TIME", "ACCEPTAUTO", "ACCEPTCONDITION", "CONTROL", "TARGET")
 
     fun Player.editorQuest(questID: String) {
-        val questModule = QuestManager.getQuestModule(questID)?: return
+        val quest = questID.getQuestFrame()
         val json = TellrawJson()
             .newLine()
             .append("   "+asLangText("EDITOR-EDIT-QUEST", questID))
@@ -26,17 +26,19 @@ object EditorQuest {
             .newLine()
             .newLine()
         editQuestMeta.forEach {
+            val group = quest.group
+            val mode = quest.mode
+            val accept = quest.accept
             json.append("      "+asLangText("EDITOR-EDIT-QUEST-$it",
-                questModule.name, questModule.startInnerQuestID, questModule.sort,
-                questModule.mode.modeTypeLang(this), questModule.mode.amount,
-                questModule.mode.shareData.lang(this),
-                questModule.accept.wayLang(this),
-                questModule.accept.maxQuantity))
+                quest.name, group.extends, group.number, group.sort, group.note,
+                mode.type.lang(this), mode.amount,
+                mode.shareData.lang(this),
+                accept.autoLang(this)))
                 .append("  "+asLangText("EDITOR-EDIT-QUEST-META"))
                 .hoverText(asLangText("EDITOR-EDIT-QUEST-META-HOVER"))
             if (it == "INNER") {
                 json.runCommand("/qen eval quest select $questID editor inner in list page 0")
-            }else if (listOf("ACCEPTCONDITION", "FAILURECONDITION", "FAILURESCRIPT").contains(it)) {
+            }else if (listOf("NOTE", "GROUPNOTE", "ACCEPTCONDITION").contains(it)) {
                 json.runCommand("/qen eval quest select $questID editor quest in edit "+it.lowercase()+" page 0")
             }else {
                 json.runCommand("/qen eval quest select $questID editor quest in edit "+it.lowercase())

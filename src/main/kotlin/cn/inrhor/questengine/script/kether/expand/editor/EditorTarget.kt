@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.script.kether.expand.editor
 
-import cn.inrhor.questengine.api.quest.module.QuestTarget
+import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.api.target.RegisterTarget
 import cn.inrhor.questengine.common.editor.EditorList.editorNodeList
 import cn.inrhor.questengine.common.editor.EditorList.editorTargetCondition
@@ -8,7 +8,10 @@ import cn.inrhor.questengine.common.editor.EditorList.editorTargetList
 import cn.inrhor.questengine.common.editor.EditorList.selectTargetList
 import cn.inrhor.questengine.common.editor.EditorTarget.editorTarget
 import cn.inrhor.questengine.common.editor.EditorTarget.editorTargetNode
-import cn.inrhor.questengine.common.quest.manager.QuestManager
+import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestFrame
+import cn.inrhor.questengine.common.quest.manager.QuestManager.getTargetFrame
+import cn.inrhor.questengine.common.quest.manager.QuestManager.saveFile
+import cn.inrhor.questengine.common.quest.manager.QuestManager.saveQuestFile
 import cn.inrhor.questengine.script.kether.*
 import cn.inrhor.questengine.utlis.UtilString
 import cn.inrhor.questengine.utlis.newLineList
@@ -25,118 +28,117 @@ class EditorTarget(val ui: ActionEditor.TargetUi, vararg val variable: String, v
     override fun run(frame: ScriptFrame): CompletableFuture<Void> {
         val sender = frame.player()
         val questID = frame.selectQuestID()
-        val innerID = frame.selectInnerID()
         when (ui) {
             ActionEditor.TargetUi.CHANGE -> {
                 val targetID = frame.selectTargetID()
                 when (variable[0]) {
                     "node" -> {
-                        val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return frameVoid()
+                        val target = targetID.getTargetFrame(questID)
                         val node = variable[1]
                         val i = variable[3]
                         val meta = target.nodeMeta(node)?: mutableListOf()
                         if (variable[2]=="del") {
                             meta.removeAt(i.toInt())
                             target.reloadNode(node, meta)
-                            QuestManager.saveFile(questID, innerID)
-                            sender.editorNodeList(questID, innerID, target, node)
+                            questID.saveQuestFile()
+                            sender.editorNodeList(questID, target, node)
                         }else {
                             sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-NODE-CONTENT"))) {
                                 val index = if (i=="{head}") 0 else i.toInt()+1
-                                meta.addSafely(index, it[1], "")
+                                meta.addSafely(index, it[1]+it[2]+it[3], "")
                                 target.reloadNode(node, meta)
-                                QuestManager.saveFile(questID, innerID)
-                                sender.editorNodeList(questID, innerID, target, node)
+                                questID.saveQuestFile()
+                                sender.editorNodeList(questID, target, node)
                             }
                         }
                     }
                     "name" -> {
-                        val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return frameVoid()
+                        val target = targetID.getTargetFrame(questID)
                         target.name = variable[1]
                         target.node = ""
-                        QuestManager.saveFile(questID, innerID)
-                        sender.editorTarget(questID, innerID, targetID)
+                        questID.saveQuestFile()
+                        sender.editorTarget(questID, targetID)
                     }
                     "condition" -> {
-                        val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return frameVoid()
+                        val target = targetID.getTargetFrame(questID)
                         val i = variable[2]
                         if (variable[1]=="del") {
                             target.condition = target.condition.removeAt(i.toInt())
-                            QuestManager.saveFile(questID, innerID)
-                            sender.editorTargetCondition(questID, innerID, targetID, 0)
+                            questID.saveQuestFile()
+                            sender.editorTargetCondition(questID, targetID, 0)
                         }else {
                             sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-EVAL"))) {
                                 val list = target.condition.newLineList()
                                 val index = if (i=="{head}") 0 else i.toInt()+1
                                 list.addSafely(index, it[1], "")
                                 target.condition = list.joinToString("\n")
-                                QuestManager.saveFile(questID, innerID)
-                                sender.editorTargetCondition(questID, innerID, targetID, 0)
+                                questID.saveQuestFile()
+                                sender.editorTargetCondition(questID, targetID, 0)
                             }
                         }
                     }
                 }
             }
             ActionEditor.TargetUi.LIST -> {
-                sender.editorTargetList(questID, innerID, page)
+                sender.editorTargetList(questID, page)
             }
             ActionEditor.TargetUi.EDIT -> {
                 val targetID = frame.selectTargetID()
                 when (variable[0]) {
                     "name" -> {
-                        sender.selectTargetList(questID, innerID, targetID)
+                        sender.selectTargetList(questID, targetID)
                     }
                     "async" -> {
-                        val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return frameVoid()
+                        val target = targetID.getTargetFrame(questID)
                         val a = target.async
                         target.async = !a
-                        sender.editorTarget(questID, innerID, targetID)
-                        QuestManager.saveFile(questID, innerID)
+                        sender.editorTarget(questID, targetID)
+                        questID.saveQuestFile()
                     }
                     "condition" -> {
-                        sender.editorTargetCondition(questID, innerID, targetID, page)
+                        sender.editorTargetCondition(questID, targetID, page)
                     }
                     "node" -> {
-                        val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return frameVoid()
+                        val target = targetID.getTargetFrame(questID)
                         val node = RegisterTarget.getNode(target.name, variable[1])?: return frameVoid()
-                        sender.editorTargetNode(questID, innerID, target, node)
+                        sender.editorTargetNode(questID, target, node)
                     }
                     else -> {
-                        sender.editorTarget(questID,innerID,targetID)
+                        sender.editorTarget(questID, targetID)
                     }
                 }
             }
             ActionEditor.TargetUi.DEL -> {
-                val inner = QuestManager.getInnerModule(questID, innerID)?: return frameVoid()
-                inner.delTarget(frame.selectTargetID())
-                QuestManager.saveFile(questID, innerID)
-                sender.editorTargetList(questID, innerID)
+                val quest = questID.getQuestFrame()
+                quest.delTarget(frame.selectTargetID())
+                quest.saveFile()
+                sender.editorTargetList(questID)
             }
             ActionEditor.TargetUi.ADD -> {
                 sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-TARGET-ID"))) {
-                    val inner = QuestManager.getInnerModule(questID, innerID)?: return@inputSign
+                    val quest = questID.getQuestFrame()
                     val id = it[1]
-                    if (inner.existTargetID(id)) {
+                    if (quest.existTargetID(id)) {
                         sender.sendLang("EXIST-TARGET-ID", UtilString.pluginTag, id)
                         return@inputSign
                     }
-                    val target = QuestTarget()
+                    val target = TargetFrame()
                     target.id = id
-                    inner.target.add(target)
-                    QuestManager.saveFile(questID, innerID)
-                    sender.selectTargetList(questID, innerID, id)
+                    quest.target.add(target)
+                    quest.saveFile()
+                    sender.selectTargetList(questID, id)
                 }
             }
             ActionEditor.TargetUi.SEL -> {
                 val targetID = frame.selectTargetID()
                 when (variable[0]) {
                     "node" -> {
-                        val target = QuestManager.getTargetModule(questID, innerID, targetID)?: return frameVoid()
+                        val target = targetID.getTargetFrame(questID)
                         val node = RegisterTarget.getNode(target.name, variable[1])?: return frameVoid()
-                        sender.editorTargetNode(questID, innerID, target, node)
+                        sender.editorTargetNode(questID, target, node)
                     }
                     "list" -> {
-                        sender.selectTargetList(questID, innerID, targetID, page)
+                        sender.selectTargetList(questID, targetID, page)
                     }
                 }
             }

@@ -4,6 +4,7 @@ import cn.inrhor.questengine.api.event.QuestEvent
 import cn.inrhor.questengine.api.event.TargetEvent
 import cn.inrhor.questengine.api.quest.ControlFrame
 import cn.inrhor.questengine.api.quest.QuestFrame
+import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
@@ -13,6 +14,10 @@ import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.common.quest.ui.QuestBookBuildManager
 import cn.inrhor.questengine.script.kether.runEval
 import org.bukkit.entity.Player
+import taboolib.common.io.deepDelete
+import taboolib.common.io.newFile
+import taboolib.module.configuration.Configuration
+import taboolib.module.configuration.Configuration.Companion.setObject
 
 object QuestManager {
 
@@ -48,6 +53,38 @@ object QuestManager {
             autoQuestMap[id] = this
         }
         QuestBookBuildManager.addSortQuest(group.sort, this)
+    }
+
+    /**
+     * 保存任务配置
+     */
+    fun QuestFrame.saveFile() {
+        val file = newFile(path)
+        val yaml = Configuration.loadFromFile(file)
+        yaml.setObject("quest", this)
+        yaml.saveToFile(file)
+    }
+
+    /**
+     * 保存任务配置
+     */
+    fun String.saveQuestFile() {
+        getQuestFrame().saveFile()
+    }
+
+    /**
+     * 删除任务配置
+     */
+    fun QuestFrame.delFile() {
+        newFile(path).deepDelete()
+        questMap.remove(id)
+    }
+
+    /**
+     * 删除任务配置
+     */
+    fun String.delQuestFile() {
+        getQuestFrame().delFile()
     }
 
     /**
@@ -150,6 +187,16 @@ object QuestManager {
      */
     fun Player.finishTarget(targetData: TargetData, modeType: ModeType) {
         TargetEvent.Finish(this, targetData, modeType).call()
+    }
+
+    /**
+     * @return 目标模块
+     */
+    fun String.getTargetFrame(questID: String): TargetFrame {
+        questID.getQuestFrame().target.forEach {
+            if (it.id == this) return it
+        }
+        error("null target frame: $this($questID)")
     }
 
 }

@@ -42,7 +42,7 @@ class ActionEditor {
                         }
                         QuestUi.EDIT -> {
                             when (val meta = it.nextToken()) {
-                                "acceptcondition", "failurecondition", "failurescript" -> {
+                                "note", "acceptcondition", "groupnote" -> {
                                     it.expect("page")
                                     EditorQuest(ui, meta, page = it.nextInt())
                                 }
@@ -55,7 +55,7 @@ class ActionEditor {
                             val meta = it.nextToken()
                             it.expect("to")
                             when (meta) {
-                                "acceptcondition", "failurecondition", "failurescript" -> {
+                                "note", "acceptcondition", "groupnote" -> {
                                     EditorQuest(ui, meta, it.nextToken(), it.nextToken())
                                 }
                                 else -> EditorQuest(ui, meta, it.nextToken())
@@ -127,25 +127,6 @@ class ActionEditor {
                                     EditorTarget(ui, meta, change)
                                 }
                             }
-                        }
-                        else -> error("unknown ui")
-                    }
-                }
-                /**
-                 * editor fail in list page [page]
-                 * editor fail in del/add [index]
-                 */
-                case("fail") {
-                    it.mark()
-                    it.expect("in")
-                    when (val ui = ListUi.valueOf(it.nextToken().uppercase())) {
-                        ListUi.LIST -> {
-                            it.expect("page")
-                            val page = it.nextInt()
-                            EditorInnerFail(ui, page=page)
-                        }
-                        ListUi.DEL, ListUi.ADD -> {
-                            EditorInnerFail(ui, it.nextToken())
                         }
                         else -> error("unknown ui")
                     }

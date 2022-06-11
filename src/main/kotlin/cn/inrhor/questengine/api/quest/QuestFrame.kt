@@ -15,8 +15,8 @@ data class QuestFrame(
     val mode: ModeAddon = ModeAddon(),
     var group: GroupAddon = GroupAddon(),
     val target: MutableList<TargetFrame> = mutableListOf(),
-    val control: MutableList<ControlFrame>
-) {
+    val control: MutableList<ControlFrame> = mutableListOf(),
+    @Transient var path: String = "") {
 
     /**
      * @return 返回新的任务数据
@@ -51,6 +51,22 @@ data class QuestFrame(
                 runEvalSet(it.select.objective(player), it.script)
             }
         }
+    }
+
+    fun delTarget(targetID: String) {
+        val i = target.iterator()
+        while (i.hasNext()) {
+            val n = i.next()
+            if (n.id== targetID) {
+                i.remove()
+                break
+            }
+        }
+    }
+
+    fun existTargetID(targetID: String): Boolean {
+        target.forEach { if (it.id == targetID) return true }
+        return false
     }
 
 }
