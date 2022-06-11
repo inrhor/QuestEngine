@@ -1,19 +1,16 @@
 package cn.inrhor.questengine.script.kether.expand
 
-import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.database.data.tagsData
 import cn.inrhor.questengine.script.kether.player
-import taboolib.common.platform.ProxyPlayer
 import taboolib.module.kether.*
 import taboolib.module.kether.scriptParser
 import java.util.concurrent.CompletableFuture
 
-class KetherTags {
+class ActionTags {
 
     class DoTag(val type: Type, val tag: String): ScriptAction<Void>() {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {
-            val player = frame.player()
-            val pData = DataStorage.getPlayerData(player.uniqueId)
-            val tags = pData.tagsData
+            val tags = frame.player().tagsData()
             if (type == Type.ADD) {
                 tags.addTag(tag)
             }else {
@@ -30,9 +27,8 @@ class KetherTags {
     class HasTag(val tag: String): ScriptAction<Boolean>() {
         override fun run(frame: ScriptFrame): CompletableFuture<Boolean> {
             return CompletableFuture<Boolean>().also {
-                val player = frame.script().sender as? ProxyPlayer ?: error("unknown player")
-                val pData = DataStorage.getPlayerData(player.uniqueId)
-                it.complete(pData.tagsData.has(tag))
+                val tags = frame.player().tagsData()
+                it.complete(tags.has(tag))
             }
         }
     }

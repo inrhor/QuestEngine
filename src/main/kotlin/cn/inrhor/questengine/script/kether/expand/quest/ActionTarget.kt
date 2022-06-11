@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.script.kether.expand.quest
 
-import cn.inrhor.questengine.script.kether.ActionSelect
 import taboolib.library.kether.ArgTypes
 import taboolib.module.kether.KetherParser
 import taboolib.module.kether.actionNow
@@ -16,7 +15,7 @@ object ActionTarget {
                 val inner = it.next(ArgTypes.ACTION)
                 actionNow {
                     newFrame(inner).run<Any>().thenAccept { a ->
-                        variables().set(ActionSelect.ID.variable[2], a.toString())
+                        variables().set("@QenTargetID", a.toString())
                     }
                 }
             }

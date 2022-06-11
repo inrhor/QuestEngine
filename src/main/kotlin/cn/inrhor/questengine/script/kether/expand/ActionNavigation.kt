@@ -1,8 +1,7 @@
 package cn.inrhor.questengine.script.kether.expand
 
-import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.nav.NavData
-import cn.inrhor.questengine.script.kether.ActionSelect
 import cn.inrhor.questengine.script.kether.frameVoid
 import cn.inrhor.questengine.script.kether.player
 import cn.inrhor.questengine.script.kether.selectNavID
@@ -18,7 +17,7 @@ class ActionNavigation {
     class Create(val location: ParsedAction<*>): ScriptAction<Void>() {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {
             return frame.newFrame(location).run<Location>().thenAccept {
-                DataStorage.getPlayerData(frame.player().uniqueId).navData[frame.selectNavID()] = NavData(it)
+                frame.player().uniqueId.getPlayerData().navData[frame.selectNavID()] = NavData(it)
             }
         }
     }
@@ -27,7 +26,7 @@ class ActionNavigation {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {
             val sender = frame.player()
             val id = frame.selectNavID()
-            val data = DataStorage.getPlayerData(sender.uniqueId)
+            val data = sender.uniqueId.getPlayerData()
             val nav = data.navData
             if (nav.containsKey(id)) {
                 val n = data.navData[id]!!
@@ -58,7 +57,7 @@ class ActionNavigation {
                     val action = it.next(ArgTypes.ACTION)
                     actionNow {
                         newFrame(action).run<Any>().thenAccept { a ->
-                            variables().set(ActionSelect.ID.variable[4], a.toString())
+                            variables().set("@QenNavID", a.toString())
                         }
                     }
                 }

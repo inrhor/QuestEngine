@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.common.listener.chat
 
 import cn.inrhor.questengine.api.dialog.theme.DialogTheme
-import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.dialog.DialogManager.setId
 import cn.inrhor.questengine.common.dialog.theme.chat.DialogChat
 import cn.inrhor.questengine.script.kether.runEvalSet
@@ -16,7 +16,7 @@ object ScrollReply {
     @SubscribeEvent(EventPriority.HIGHEST, ignoreCancelled = true)
     fun scroll(ev: PlayerItemHeldEvent) {
         val p = ev.player
-        val pData = DataStorage.getPlayerData(p)
+        val pData = p.getPlayerData()
         pData.dialogData.dialogMap.values.forEach {
             if (it.type == DialogTheme.Type.Chat) {
                 val chat = it as DialogChat
@@ -48,7 +48,7 @@ object ScrollReply {
     @SubscribeEvent
     fun choose(ev: PlayerSwapHandItemsEvent) {
         val p = ev.player
-        val pData = DataStorage.getPlayerData(p)
+        val pData = p.getPlayerData()
         pData.dialogData.dialogMap.values.forEach {
             if (it.type == DialogTheme.Type.Chat) {
                 val chat = it as DialogChat

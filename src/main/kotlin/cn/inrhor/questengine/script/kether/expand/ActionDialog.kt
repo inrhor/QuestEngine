@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.script.kether.expand
 
 import cn.inrhor.questengine.common.dialog.DialogManager
-import cn.inrhor.questengine.script.kether.ActionSelect
 import cn.inrhor.questengine.script.kether.player
 import cn.inrhor.questengine.script.kether.selectDialogID
 import org.bukkit.Location
@@ -24,7 +23,7 @@ object ActionDialog {
                     val action = it.next(ArgTypes.ACTION)
                     actionNow {
                         newFrame(action).run<Any>().thenAccept { a ->
-                            variables().set(ActionSelect.ID.variable[5], a.toString())
+                            variables().set("@QenDialogID", a.toString())
                         }
                     }
                 }
