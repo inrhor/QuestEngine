@@ -54,6 +54,7 @@ object QuestManager {
             autoQuestMap[id] = this
         }
         QuestBookBuildManager.addSortQuest(group.sort, this)
+        time.updateTime()
     }
 
     /**
@@ -146,8 +147,9 @@ object QuestManager {
      */
     fun Player.acceptQuest(quest: QuestFrame) {
         if (runEval(this, quest.accept.condition)) {
-            getPlayerData().dataContainer.installQuest(this, quest)
+            getPlayerData().dataContainer.installQuest(quest)
             QuestEvent.Accept(this, quest).call()
+            questData(quest.id).updateTime(this)
         }
     }
 
@@ -179,16 +181,17 @@ object QuestManager {
      */
     fun Player.resetQuest(questID: String) {
         val quest = questID.getQuestFrame()
-        getPlayerData().dataContainer.installQuest(this, quest)
+        getPlayerData().dataContainer.installQuest(quest)
         QuestEvent.Reset(this, quest).call()
+        questData(quest.id).updateTime(this)
     }
 
     /**
      * 任务失败
      */
     fun Player.failQuest(questID: String) {
-        getPlayerData().dataContainer.toggleQuest(questID, StateType.FINISH)
-        QuestEvent.Finish(this, questID.getQuestFrame()).call()
+        getPlayerData().dataContainer.toggleQuest(questID, StateType.FAILURE)
+        QuestEvent.Fail(this, questID.getQuestFrame()).call()
     }
 
     /**

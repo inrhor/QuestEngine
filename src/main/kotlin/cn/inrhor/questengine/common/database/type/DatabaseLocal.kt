@@ -35,25 +35,23 @@ class DatabaseLocal: Database() {
     override fun pull(player: Player) {
         val uuid = player.uniqueId
         val data = uuid.getLocal()
-        val questDataMap = mutableMapOf<String, QuestData>()
+        val pData = player.getPlayerData()
+        val questDataMap = pData.dataContainer.quest
         if (data.contains("quest")) {
             data.getConfigurationSection("quest")!!.getKeys(false).forEach {
                 val questData = data.getObject<QuestData>("quest.$it", false)
                 questData.target.forEach { e -> e.load(player) }
-                questData.updateTime(player)
                 questDataMap[it] = questData
+                questData.updateTime(player)
             }
         }
-        val pData = player.getPlayerData()
-        pData.dataContainer.quest = questDataMap
         pData.dataContainer.tags = TagsData(data.getStringList("tags").toMutableSet())
     }
 
     override fun push(player: Player) {
         val uuid = player.uniqueId
-        val pData = player.getPlayerData()
         val data = uuid.getLocal()
-        pData.dataContainer.quest.forEach { (t, u) ->
+        player.getPlayerData().dataContainer.quest.forEach { (t, u) ->
             data.setObject("quest.$t", u)
         }
         data.setObject("tags", player.tagsData())

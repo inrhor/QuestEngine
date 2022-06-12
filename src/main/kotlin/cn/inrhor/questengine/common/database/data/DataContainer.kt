@@ -4,21 +4,18 @@ import cn.inrhor.questengine.api.quest.QuestFrame
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.utlis.time.toStr
-import org.bukkit.entity.Player
 import java.util.*
 
 data class DataContainer(
-    var quest: MutableMap<String, QuestData> = mutableMapOf(), var tags: TagsData = TagsData()
+    val quest: MutableMap<String, QuestData> = mutableMapOf(), var tags: TagsData = TagsData()
 ) {
 
     /**
      * 注册新任务
      * 覆盖原有任务数据
      */
-    fun installQuest(player: Player, questFrame: QuestFrame) {
-        val questData = QuestData(questFrame)
-        quest[questFrame.id] = questData
-        questData.updateTime(player)
+    fun installQuest(questFrame: QuestFrame) {
+        quest[questFrame.id] = QuestData(questFrame)
     }
 
     /**

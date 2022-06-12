@@ -33,10 +33,9 @@ data class QuestFrame(
     /**
      * @return 任务脚本是否在允许的时间
      */
-    fun allowTime(player: Player): Boolean {
-        val questData = player.questData(id)
-        val endDate = questData.endDate?: return true
-        return Date().noTimeout(questData.timeDate, endDate)
+    fun allowTime(): Boolean {
+        val endDate = time.endDate?: return true
+        return Date().noTimeout(time.timeDate, endDate)
     }
 
     /**

@@ -9,7 +9,7 @@ object QuestListener {
     fun accept(ev: QuestEvent.Accept) {
         val p = ev.player
         val quest = ev.questFrame
-        if (!quest.allowTime(p)) return
+        if (!quest.allowTime()) return
         quest.runEval(p, ev.queueType)
     }
 

@@ -22,6 +22,8 @@ object PluginLoader {
 
     private var reloading = false
 
+    fun isReloading() = reloading
+
     @Awake(LifeCycle.ENABLE)
     fun init() {
         val version = MinecraftVersion.major
