@@ -122,7 +122,7 @@ object EditorList {
         val list = target.nodeMeta(node)?: mutableListOf()
         val id = target.id
         EditorOfList(this, asLangText("EDITOR-TARGET-LIST-UI-NODE",
-            questID, id, asLangText("EDITOR-TARGET-LIST-NODE-${node.uppercase()}")), other = arrayOf(target.name, node))
+            questID, id, asLangText("EDITOR-TARGET-LIST-NODE-${node.uppercase()}")), other = arrayOf(target.event, node))
             .editorBack(this, "/qen eval quest select $questID innerTarget select $id editor target in edit home")
             .listAdd(this, "/qen eval quest select $questID innerTarget select $id editor target in change node to '$node' add {head}")
             .list(page, 7, list, true, "EDITOR-TARGET-LIST-FOR-NODE",

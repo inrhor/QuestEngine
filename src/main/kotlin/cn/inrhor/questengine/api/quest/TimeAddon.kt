@@ -2,7 +2,6 @@ package cn.inrhor.questengine.api.quest
 
 import org.bukkit.entity.Player
 import taboolib.platform.util.asLangText
-import java.util.*
 
 data class TimeAddon(var type: Type = Type.ALWAYS, var duration: String = "") {
 
@@ -37,13 +36,6 @@ data class TimeAddon(var type: Type = Type.ALWAYS, var duration: String = "") {
             }
             else -> player.asLangText("QUEST-ALWAYS")
         }
-    }
-
-    /**
-     * @return 是否没超时
-     */
-    fun noTimeout(now: Date, before: Date, after: Date): Boolean {
-        return now.after(before) && now.before(after)
     }
 
 }

@@ -8,6 +8,7 @@ import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
+import cn.inrhor.questengine.common.database.data.questData
 import cn.inrhor.questengine.common.database.data.teamData
 import cn.inrhor.questengine.common.quest.enum.ModeType
 import cn.inrhor.questengine.common.quest.enum.StateType
@@ -145,7 +146,7 @@ object QuestManager {
      */
     fun Player.acceptQuest(quest: QuestFrame) {
         if (runEval(this, quest.accept.condition)) {
-            getPlayerData().dataContainer.installQuest(quest)
+            getPlayerData().dataContainer.installQuest(this, quest)
             QuestEvent.Accept(this, quest).call()
         }
     }
@@ -169,7 +170,7 @@ object QuestManager {
      * 完成任务
      */
     fun Player.finishQuest(questID: String) {
-        getPlayerData().dataContainer.toggleQuest(questID, StateType.FINISH)
+        getPlayerData().dataContainer.toggleQuest(questID, StateType.FINISH).finishTime(questID)
         QuestEvent.Finish(this, questID.getQuestFrame()).call()
     }
 
@@ -178,8 +179,16 @@ object QuestManager {
      */
     fun Player.resetQuest(questID: String) {
         val quest = questID.getQuestFrame()
-        getPlayerData().dataContainer.installQuest(quest)
+        getPlayerData().dataContainer.installQuest(this, quest)
         QuestEvent.Reset(this, quest).call()
+    }
+
+    /**
+     * 任务失败
+     */
+    fun Player.failQuest(questID: String) {
+        getPlayerData().dataContainer.toggleQuest(questID, StateType.FINISH)
+        QuestEvent.Finish(this, questID.getQuestFrame()).call()
     }
 
     /**

@@ -24,6 +24,6 @@ class EditorTargetList(player: Player, header: String, json: TellrawJson = Tellr
     }
 
     fun get(node: String, target: TargetFrame): String {
-        return player.asLangText(node, target.id, target.name)
+        return player.asLangText(node, target.id, target.event)
     }
 }

@@ -17,7 +17,6 @@ import org.bukkit.entity.Player
 import taboolib.common.util.replaceWithOrder
 import taboolib.module.chat.TellrawJson
 import taboolib.module.configuration.Configuration.Companion.getObject
-import java.util.*
 
 /**
  * 任务手册构建工具
@@ -148,7 +147,7 @@ object QuestBookBuildManager {
         if (builderFrame.textComponent.containsKey(questID)) return
         val fork = builderFrame.noteComponent["fork"]?: return
 
-        builderFrame.noteComponent[questID] = NoteComponent(fork.note.copy(), fork.condition(player).copy())
+        builderFrame.noteComponent[questID] = NoteComponent(fork.note.copy(), fork.condition(player))
 
         if (!builderFrame.textCondition(player, listReply(player, questID, textComponent.condition))) return
 
@@ -176,15 +175,19 @@ object QuestBookBuildManager {
 
     fun listReply(player: Player, questID: String, list: MutableList<String>): MutableList<String> {
         for (i in 0 until list.size) {
-            val quest = questID.getQuestFrame()
-            val stateUnit = StateType.NOT_ACCEPT.toUnit(player)
-            list[i] = list[i].replaceWithOrder(
-                quest.name, // {0}
-                questID, // {1}
-                if (questID.isNotEmpty()) player.questData(questID).state.toUnit(player) else stateUnit,
-            )
+            list[i] = listReply(player, questID, list[i])
         }
         return list
+    }
+
+    fun listReply(player: Player, questID: String, list: String): String {
+        val quest = questID.getQuestFrame()
+        val stateUnit = StateType.NOT_ACCEPT.toUnit(player)
+        return list.replaceWithOrder(
+            quest.name, // {0}
+            questID, // {1}
+            if (questID.isNotEmpty()) player.questData(questID).state.toUnit(player) else stateUnit,
+        )
     }
 
 }

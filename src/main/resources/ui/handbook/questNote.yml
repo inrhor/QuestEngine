@@ -18,8 +18,8 @@ already:
     - id: quest
       note:
         - "@quit;"
-      condition:
-        - "{6}"
+      condition: |
+        {6}
   addon:
     - id: target
       text:

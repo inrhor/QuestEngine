@@ -137,6 +137,7 @@ class DatabaseSQL: Database() {
             val end = if (it.second == null) "" else it.second.toStr()
             val questData = QuestData(questID, mutableListOf(), StateType.fromInt(state), time.toStr(), end)
             questData.target = returnTargets(qId, questID)
+            questData.updateTime(player)
             pData.dataContainer.quest[questID] = questData
         }
         tableTags.select(source) {

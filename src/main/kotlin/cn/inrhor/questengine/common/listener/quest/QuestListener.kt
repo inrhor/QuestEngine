@@ -29,6 +29,11 @@ object QuestListener {
     }
 
     @SubscribeEvent
+    fun fail(ev: QuestEvent.Fail) {
+        ev.questFrame.runEval(ev.player, ev.queueType)
+    }
+
+    @SubscribeEvent
     fun track(ev: QuestEvent.Track) {
         ev.questFrame.runEval(ev.player, ev.queueType)
     }

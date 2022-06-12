@@ -17,5 +17,6 @@ class QuestEvent {
 
     class Track(val player: Player, val questFrame: QuestFrame, val queueType: QueueType = QueueType.TRACK): BukkitProxyEvent()
 
+    class Fail(val player: Player, val questFrame: QuestFrame, val queueType: QueueType = QueueType.FAIL): BukkitProxyEvent()
 
 }

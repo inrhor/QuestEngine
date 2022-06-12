@@ -54,7 +54,7 @@ class EditorTarget(val ui: ActionEditor.TargetUi, vararg val variable: String, v
                     }
                     "name" -> {
                         val target = targetID.getTargetFrame(questID)
-                        target.name = variable[1]
+                        target.event = variable[1]
                         target.node = ""
                         questID.saveQuestFile()
                         sender.editorTarget(questID, targetID)
@@ -100,7 +100,7 @@ class EditorTarget(val ui: ActionEditor.TargetUi, vararg val variable: String, v
                     }
                     "node" -> {
                         val target = targetID.getTargetFrame(questID)
-                        val node = RegisterTarget.getNode(target.name, variable[1])?: return frameVoid()
+                        val node = RegisterTarget.getNode(target.event, variable[1])?: return frameVoid()
                         sender.editorTargetNode(questID, target, node)
                     }
                     else -> {
@@ -134,7 +134,7 @@ class EditorTarget(val ui: ActionEditor.TargetUi, vararg val variable: String, v
                 when (variable[0]) {
                     "node" -> {
                         val target = targetID.getTargetFrame(questID)
-                        val node = RegisterTarget.getNode(target.name, variable[1])?: return frameVoid()
+                        val node = RegisterTarget.getNode(target.event, variable[1])?: return frameVoid()
                         sender.editorTargetNode(questID, target, node)
                     }
                     "list" -> {

@@ -95,7 +95,7 @@ fun Player.doingTargets(name: String): List<TargetData> {
     getPlayerData().dataContainer.quest.values.forEach {
         if (it.state == doing) {
             it.target.forEach { t ->
-                if (t.state == doing && t.getTargetFrame().name == name) list.add(t)
+                if (t.state == doing && t.getTargetFrame().event == name) list.add(t)
             }
         }
     }

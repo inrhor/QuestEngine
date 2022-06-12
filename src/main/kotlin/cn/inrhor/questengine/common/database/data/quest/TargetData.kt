@@ -31,7 +31,7 @@ data class TargetData(
     fun load(player: Player) {
         if (state == StateType.DOING) {
             val target = getTargetFrame()
-            if (target.name.uppercase().startsWith("TASK ")) {
+            if (target.event.uppercase().startsWith("TASK ")) {
                 target.task(player)
             }
         }

@@ -104,7 +104,7 @@ class BuilderFrame {
     /**
      * 组件所需条件
      */
-    fun textCondition(player: Player?, conditions: List<String>): Boolean {
+    fun textCondition(player: Player?, conditions: String): Boolean {
         if (player == null) return true
         return runEval(player, conditions)
     }
@@ -134,7 +134,7 @@ class BuilderFrame {
     }
 
     fun addNote(partFrame: PartFrame) {
-        noteComponent[partFrame.id] = NoteComponent(partFrame.note.toMutableList(), partFrame.condition.toMutableList())
+        noteComponent[partFrame.id] = NoteComponent(partFrame.note.toMutableList(), partFrame.condition)
     }
 
     fun copy(): BuilderFrame {

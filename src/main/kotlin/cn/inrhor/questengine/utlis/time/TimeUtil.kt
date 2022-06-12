@@ -23,6 +23,13 @@ fun Date.toStrYearMM(): String {
 }
 
 /**
+ * @return 是否没超时
+ */
+fun Date.noTimeout(before: Date, after: Date): Boolean {
+    return after(before) && before(after)
+}
+
+/**
  * 增加日期时间
  */
 fun Date.add(timeUnit: Int, add: Int): Date {

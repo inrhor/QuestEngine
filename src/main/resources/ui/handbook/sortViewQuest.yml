@@ -12,13 +12,13 @@ for:
   # JSON标签
   addon:
     - id: noClick
-      condition: []
+      condition: ""
       text:
         - "&7&l[ &c&l尚未接受 &7&l]"
       hover:
         - "#quest-desc-info"
     - id: click
-      condition: []
+      condition: ""
       text:
         - "&7&l[ &6&l点击阅览 &7&l]"
       hover:

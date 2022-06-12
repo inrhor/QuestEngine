@@ -14,13 +14,13 @@ import taboolib.platform.compat.replacePlaceholder
 data class TextComponent(
     var text: MutableList<String> = mutableListOf(),
     var hover: MutableList<String> = mutableListOf(),
-    var condition: MutableList<String> = mutableListOf(),
+    var condition: String = "",
     var command: String = "",
     var type: BuilderFrame.Type = BuilderFrame.Type.CUSTOM
 ) {
 
     constructor(addon: AddonFrame, type: BuilderFrame.Type = BuilderFrame.Type.CUSTOM):
-            this(addon.text.toMutableList(), addon.hover.toMutableList(), addon.condition.toMutableList(), addon.command, type)
+            this(addon.text.toMutableList(), addon.hover.toMutableList(), addon.condition, addon.command, type)
 
     fun build(player: Player?): TellrawJson {
         val json = TellrawJson().append(text(player).toJsonStr())
@@ -45,9 +45,9 @@ data class TextComponent(
         return hover.replacePlaceholder(player).toMutableList()
     }
 
-    fun condition(player: Player?): MutableList<String> {
+    fun condition(player: Player?): String {
         player?: return condition
-        return condition.replacePlaceholder(player).toMutableList()
+        return condition.replacePlaceholder(player)
     }
 
     fun command(player: Player?): String {

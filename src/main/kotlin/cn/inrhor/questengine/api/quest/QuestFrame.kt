@@ -5,6 +5,7 @@ import cn.inrhor.questengine.common.database.data.questData
 import cn.inrhor.questengine.common.database.data.teamData
 import cn.inrhor.questengine.common.quest.enum.ModeType
 import cn.inrhor.questengine.script.kether.runEvalSet
+import cn.inrhor.questengine.utlis.time.noTimeout
 import org.bukkit.entity.Player
 import java.util.*
 
@@ -35,7 +36,7 @@ data class QuestFrame(
     fun allowTime(player: Player): Boolean {
         val questData = player.questData(id)
         val endDate = questData.endDate?: return true
-        return time.noTimeout(Date(), questData.timeDate, endDate)
+        return Date().noTimeout(questData.timeDate, endDate)
     }
 
     /**

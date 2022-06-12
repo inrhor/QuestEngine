@@ -10,7 +10,7 @@ import taboolib.platform.compat.replacePlaceholder
  */
 class NoteComponent(
     var note: MutableList<String>,
-    var condition: MutableList<String> = mutableListOf(),
+    var condition: String = "",
     var fork: Boolean = false) {
 
     fun note(player: Player?): MutableList<String> {
@@ -18,9 +18,9 @@ class NoteComponent(
         return note.replacePlaceholder(player).toMutableList()
     }
 
-    fun condition(player: Player?): MutableList<String> {
+    fun condition(player: Player?): String {
         player?: return condition
-        return condition.replacePlaceholder(player).toMutableList()
+        return condition.replacePlaceholder(player)
     }
 
 }

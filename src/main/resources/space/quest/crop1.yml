@@ -81,7 +81,7 @@ quest:
       ui:
         part:
           - id: desc
-            note: |
-              &8挖掘石块或打破箱子 &a3 &8个
-                  &8进度 &6{{schedule}}
-                  &8剩余时间 &c{{limit time}}
+            note:
+              - "&8挖掘石块或打破箱子 &a3 &8个"
+              - "   &8进度 &6{{schedule}}"
+              - "   &8剩余时间 &c{{limit time}}"

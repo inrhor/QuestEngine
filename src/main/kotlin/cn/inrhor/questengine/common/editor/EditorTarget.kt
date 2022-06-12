@@ -31,11 +31,11 @@ object EditorTarget {
             .runCommand("/qen eval quest select $questID innerTarget select $targetID editor target in list page 0")
             .newLine()
             .newLine()
-       if (target.name.uppercase().contains("TASK ")) editMeta.add("PERIOD")
+       if (target.event.uppercase().contains("TASK ")) editMeta.add("PERIOD")
        editMeta.forEach {
            val t = "${target.async}".uppercase()
            json.append("      " + asLangText("EDITOR-EDIT-TARGET-$it",
-               target.name, target.period, asLangText("ASYNC-BOOLEAN-META-$t")))
+               target.event, target.period, asLangText("ASYNC-BOOLEAN-META-$t")))
                .append("  " + asLangText("EDITOR-EDIT-TARGET-META"))
            if (it == "ASYNC") {
                json.hoverText(asLangText("EDITOR-EDIT-TARGET-BOOLEAN-META-HOVER"))
@@ -51,7 +51,7 @@ object EditorTarget {
                }
            }
        }
-       RegisterTarget.getNodeList(target.name).forEach {
+       RegisterTarget.getNodeList(target.event).forEach {
            val node = it.node
            if (it.nodeType == TargetNodeType.LIST) {
                json.append("      "+asLangText("EDITOR-TARGET-LIST-NODE",

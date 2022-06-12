@@ -10,6 +10,7 @@ import taboolib.module.kether.printKetherErrorMessage
 import taboolib.platform.util.asLangText
 
 fun runEval(player: Player, script: String): Boolean {
+    if (script.isEmpty()) return true
     return try {
         KetherShell.eval(script, sender = adaptPlayer(player), namespace = listOf("QuestEngine")).thenApply {
             Coerce.toBoolean(it)

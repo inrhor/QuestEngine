@@ -38,8 +38,9 @@ class DatabaseLocal: Database() {
         val questDataMap = mutableMapOf<String, QuestData>()
         if (data.contains("quest")) {
             data.getConfigurationSection("quest")!!.getKeys(false).forEach {
-                val questData = data.getObject<QuestData>(it, false)
-                questData.target.forEach { e-> e.load(player) }
+                val questData = data.getObject<QuestData>("quest.$it", false)
+                questData.target.forEach { e -> e.load(player) }
+                questData.updateTime(player)
                 questDataMap[it] = questData
             }
         }

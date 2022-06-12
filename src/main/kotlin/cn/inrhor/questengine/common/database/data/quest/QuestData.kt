@@ -3,8 +3,16 @@ package cn.inrhor.questengine.common.database.data.quest
 import cn.inrhor.questengine.api.quest.QuestFrame
 import cn.inrhor.questengine.api.quest.TimeAddon
 import cn.inrhor.questengine.common.quest.enum.StateType
+import cn.inrhor.questengine.common.quest.manager.QuestManager.acceptQuest
+import cn.inrhor.questengine.common.quest.manager.QuestManager.failQuest
+import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestFrame
+import cn.inrhor.questengine.utlis.time.noTimeout
 import cn.inrhor.questengine.utlis.time.toDate
 import cn.inrhor.questengine.utlis.time.toStr
+import org.bukkit.Bukkit
+import org.bukkit.entity.Player
+import taboolib.common.platform.function.info
+import taboolib.common.platform.function.submit
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -20,12 +28,13 @@ data class QuestData(
 
     /**
      * 更新时间, 支持周期时间
-     * 加载数据清使用此方法
+     * 加载数据使用此方法
      */
-    fun TimeAddon.updateTime() {
+    fun updateTime(player: Player) {
+        val timeAddon = id.getQuestFrame().time
         timeDate = Date()
-        val type = type
-        val duration = duration
+        val type = timeAddon.type
+        val duration = timeAddon.duration
         if (type != TimeAddon.Type.ALWAYS) {
             val sp = duration.split(">")
             val a = sp[0].split(",")
@@ -90,6 +99,32 @@ data class QuestData(
                         }
                     }
                     endDate = cal.time
+                }
+            }
+            if (endDate != null) {
+                // 任务开始时间
+                val start = time.toDate()
+                // 如果任务开始时间不在任务时间段内
+                if (!start.noTimeout(timeDate, endDate!!)) {
+                    info("timeout")
+                    if (state == StateType.DOING) {
+                        info("doing -> fail")
+                        player.failQuest(id)
+                    }else if (state == StateType.FAILURE || state == StateType.FINISH) {
+                        // 如果现在时间在任务时间段内
+                        info("fail finish")
+                        if (Date().noTimeout(timeDate, endDate!!)) {
+                            info("no timeout set to accept")
+                            player.acceptQuest(id)
+                        }
+                    }
+                }
+            }
+            submit(delay = 20L, async = true) {
+                if (player.isOnline) {
+                    submit {
+                        updateTime(player)
+                    }
                 }
             }
         }
