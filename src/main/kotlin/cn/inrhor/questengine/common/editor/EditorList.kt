@@ -32,6 +32,38 @@ object EditorList {
             .json.sendTo(adaptPlayer(this))
     }
 
+    fun Player.editorAcceptCondition(questID: String, page: Int = 0) {
+        listEdit(this, questID, questID.getQuestFrame().accept.condition,
+            "ACCEPT", "CONDITION", "acceptcondition", page)
+    }
+
+    fun Player.editQuestNote(content: String, questID: String, page: Int = 0) {
+        contentEdit(content, questID, "EDITOR-QUEST-NOTE", "note", page)
+    }
+
+    fun Player.editGroupNote(content: String, questID: String, page: Int = 0) {
+        contentEdit(content, questID, "EDITOR-GROUP-NOTE", "groupnote", page)
+    }
+
+    fun Player.contentEdit(content: String, questID: String, head: String, node: String, page: Int = 0) {
+        val s = "qen eval quest select $questID editor quest in"
+        val edit = "$s edit $node"
+        val change = "/$s change $node to"
+        EditorOfList(this, asLangText(head, questID))
+            .editorBack(this, "/$s edit home")
+            .listAdd(this, "$change add {head}")
+            .list(page, 3, content.newLineList(), true, "EDITOR-CONTENT-LIST",
+                "$edit page {page}",
+                EditorListModule.EditorButton("EDITOR-LIST-NEXT-ADD"),
+                EditorListModule.EditorButton("EDITOR-LIST-NEXT-ADD-META",
+                    "EDITOR-LIST-NEXT-ADD-HOVER",
+                    "$change add {index}"),
+                EditorListModule.EditorButton("EDITOR-LIST-DEL"),
+                EditorListModule.EditorButton("EDITOR-LIST-DEL-META", "EDITOR-LIST-DEL-HOVER",
+                    "$change del {index}"))
+            .json.sendTo(adaptPlayer(this))
+    }
+
     fun listEdit(player: Player, questID: String, list: String, node: String, meta: String, cmd: String, page: Int = 0) {
         EditorOfList(player, player.asLangText("EDITOR-$node-$meta-LIST", questID))
             .editorBack(player, "/qen eval quest select $questID editor quest in edit home")
@@ -87,7 +119,7 @@ object EditorList {
     fun Player.editorTargetList(questID: String, page: Int = 0) {
         val quest = questID.getQuestFrame()
         EditorTargetList(this, asLangText("EDITOR-TARGET", questID))
-            .editorBack(this, "/qen eval quest select $questID editor inner in edit home")
+            .editorBack(this, "/qen eval quest select $questID editor quest in edit home")
             .add(asLangText("EDITOR-TARGET-ADD"),
                 EditorListModule.EditorButton(asLangText("EDITOR-TARGET-ADD-META"),
                     asLangText("EDITOR-TARGET-ADD-HOVER"),

@@ -13,6 +13,7 @@ import cn.inrhor.questengine.common.database.data.teamData
 import cn.inrhor.questengine.common.quest.enum.ModeType
 import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.common.quest.ui.QuestBookBuildManager
+import cn.inrhor.questengine.common.quest.ui.QuestBookBuildManager.updateSortQuest
 import cn.inrhor.questengine.script.kether.runEval
 import org.bukkit.entity.Player
 import taboolib.common.io.deepDelete
@@ -53,7 +54,7 @@ object QuestManager {
         if (accept.auto) {
             autoQuestMap[id] = this
         }
-        QuestBookBuildManager.addSortQuest(group.sort, this)
+        updateSortQuest(group.sort)
         time.updateTime()
     }
 

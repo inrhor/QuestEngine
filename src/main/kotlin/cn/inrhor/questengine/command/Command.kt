@@ -8,7 +8,7 @@ import taboolib.common.platform.command.*
 internal object Command {
 
     @CommandBody(permission = "QuestEngine.use.handbook")
-    val home = HandbookHome.home
+    val handbook = HandbookHome.handbook
 
     @CommandBody(permission = "QuestEngine.admin.quest")
     val quest = QuestCommand

@@ -7,7 +7,7 @@ for:
   fork:
     - ""
     - "&7&l< &8&l{0} &7&l>"
-    - "     @{1};"
+    - "     @{{questID}};"
     - ""
   # JSON标签
   addon:
@@ -23,3 +23,4 @@ for:
         - "&7&l[ &6&l点击阅览 &7&l]"
       hover:
         - "&7&l[ &a&l点击 &7&l]"
+      command: "/qen eval handbook info {{questID}}"

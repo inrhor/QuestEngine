@@ -51,7 +51,13 @@ class DatabaseLocal: Database() {
     override fun push(player: Player) {
         val uuid = player.uniqueId
         val data = uuid.getLocal()
-        player.getPlayerData().dataContainer.quest.forEach { (t, u) ->
+        val q = player.getPlayerData().dataContainer.quest
+        data.getConfigurationSection("quest")?.getKeys(false)?.forEach {
+            if (!q.containsKey(it)) {
+                data["quest.$it"] = null
+            }
+        }
+        q.forEach { (t, u) ->
             data.setObject("quest.$t", u)
         }
         data.setObject("tags", player.tagsData())

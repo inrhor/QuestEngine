@@ -3,6 +3,7 @@ package cn.inrhor.questengine.utlis.ui
 
 import cn.inrhor.questengine.api.ui.PartFrame
 import cn.inrhor.questengine.api.ui.UiFrame
+import cn.inrhor.questengine.common.quest.ui.QuestBookBuildManager
 import cn.inrhor.questengine.script.kether.runEval
 import cn.inrhor.questengine.utlis.toJsonStr
 import org.bukkit.entity.Player
@@ -39,7 +40,7 @@ class BuilderFrame {
      * 构建
      */
     fun build(player: Player? = null): MutableList<TellrawJson> {
-        noteComponent.values.forEach { v ->
+        noteComponent.forEach { (i ,v) ->
             if (!v.fork && textCondition(player, v.condition(player))) {
                 val note = v.note(player)
                 val json = autoPage(note.size)
@@ -52,15 +53,9 @@ class BuilderFrame {
                     }
                     textComponent.forEach { (id, comp) ->
                         if (textCondition(player, comp.condition)) {
-                            var rep = "$id;"
+                            val rep = "$id;"
                             if (it.contains(rep)) {
-                                if (it.contains("-")) {
-                                    val sort = it.split("-")[0]
-                                    comp.autoCommand(sort)
-                                    rep = "$sort-$id;"
-                                } else {
-                                    comp.autoCommand(id.split(".")[0])
-                                }
+                                comp.autoCommand(i)
                                 json.append(comp.build(player))
                                 json.append(it.replace(rep, ""))
                             }
@@ -122,13 +117,10 @@ class BuilderFrame {
         }
         ui.part.forEach {
             addNote(it)
+            QuestBookBuildManager.sortQuest[it.id] = mutableSetOf()
         }
         ui.addon.forEach {
-            val text = TextComponent(it, uiType)
-            if (uiType != Type.CUSTOM) {
-                text.command = "/qen handbook sort"
-            }
-            textComponent[it.id] = text
+            textComponent[it.id] = TextComponent(it, uiType)
         }
         return this
     }

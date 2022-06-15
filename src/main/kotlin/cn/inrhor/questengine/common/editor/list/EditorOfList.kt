@@ -14,6 +14,7 @@ class EditorOfList(player: Player, header: String, json: TellrawJson = TellrawJs
         val l: MutableList<String> = list.toMutableList() as MutableList<String>
         val get = l[index]
         json.append("      "+player.asLangText(content, get))
+        if (content=="EDITOR-CONTENT-LIST") json.newLine()
         var sum = 0
         button.forEach {
             val bl = if (split && (sum%2 == 0)) empty else " "

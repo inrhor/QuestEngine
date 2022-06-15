@@ -3,6 +3,7 @@ package cn.inrhor.questengine.utlis
 import cn.inrhor.questengine.QuestEngine
 import org.bukkit.entity.Player
 import taboolib.common.util.VariableReader
+import taboolib.common.util.addSafely
 import taboolib.module.chat.colored
 import taboolib.platform.util.asLangText
 
@@ -11,7 +12,7 @@ object UtilString {
     fun updateLang(): List<String> = QuestEngine.config.getStringList("update.lang")
 
     val pluginTag by lazy {
-        "§7§l[ §c§li §7§l]§7§l[ §3§lQuestEngine §7§l]"
+        "§7[ §ci §7]§7[ §3QuestEngine §7]"
     }
 }
 
@@ -25,6 +26,12 @@ fun String.removeAt(int: Int): String {
     val l = this.newLineList()
     l.removeAt(int)
     return l.joinToString("\n")
+}
+
+fun String.indexAdd(index: Int, string: String): String {
+    val list = newLineList()
+    list.addSafely(index, string, "")
+    return list.joinToString("\n")
 }
 
 /**

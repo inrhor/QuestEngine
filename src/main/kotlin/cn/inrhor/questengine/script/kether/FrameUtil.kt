@@ -19,7 +19,4 @@ fun ScriptFrame.selectNavID() = variables().get<Any?>("@QenNavID")
 fun ScriptFrame.selectDialogID() = variables().get<Any?>("@QenDialogID")
     .orElse(null)?.toString()?: error("unknown dialog id")
 
-fun ScriptFrame.selectControlID() = variables().get<Any?>("@ControlID")
-    .orElse(null)?.toString()?: error("unknown control id")
-
 fun ScriptFrame.player() = script().sender?.castSafely<Player>()?: error("unknown player")

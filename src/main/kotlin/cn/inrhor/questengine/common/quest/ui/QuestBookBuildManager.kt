@@ -2,11 +2,13 @@ package cn.inrhor.questengine.common.quest.ui
 
 import cn.inrhor.questengine.api.quest.QuestFrame
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
+import cn.inrhor.questengine.common.database.data.existQuestData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.database.data.questData
 import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestFrame
+import cn.inrhor.questengine.common.quest.ui.QuestBookBuildManager.questSortBuild
 import cn.inrhor.questengine.utlis.copy
 import cn.inrhor.questengine.utlis.file.releaseFile
 import cn.inrhor.questengine.utlis.ui.BuilderFrame
@@ -17,6 +19,8 @@ import org.bukkit.entity.Player
 import taboolib.common.util.replaceWithOrder
 import taboolib.module.chat.TellrawJson
 import taboolib.module.configuration.Configuration.Companion.getObject
+import taboolib.platform.compat.replacePlaceholder
+import taboolib.platform.util.sendBook
 
 /**
  * 任务手册构建工具
@@ -43,12 +47,18 @@ object QuestBookBuildManager {
      */
     val questNoteUI = buildFrame()
 
-    fun addSortQuest(sort: String, quest: QuestFrame) {
-        if (sortQuest.containsKey(sort)) {
-            sortQuest[sort]!!.add(quest)
-            return
+    fun QuestFrame.updateSortQuest(sort: String) {
+        sortQuest.values.forEach {
+            val i = it.iterator()
+            while (i.hasNext()) {
+                val n = i.next()
+                if (n.id == id) {
+                    i.remove()
+                    break
+                }
+            }
         }
-        sortQuest[sort] = mutableSetOf(quest)
+        sortQuest[sort]?.add(this)
     }
 
     fun init() {
@@ -77,59 +87,64 @@ object QuestBookBuildManager {
     /**
      * 为用户编译任务手册的任务信息
      */
-    fun questSortBuild(player: Player, sort: String): MutableList<TellrawJson> {
-        val pData = player.getPlayerData()
-        val qData = pData.dataContainer.quest
-        val hasDisplay = mutableSetOf<String>()
-        val sortView = sortViewQuestUI.copy()
-        val textCompNo = getTextComp("noClick")?: return mutableListOf()
-        val textCompClick = getTextComp("click")?: return mutableListOf()
-        sortView.textComponent.clear()
+    fun Player.questSortBuild(sort: String) {
+        sendBook {
+            val pData = getPlayerData()
+            val qData = pData.dataContainer.quest
+            val hasDisplay = mutableSetOf<String>()
+            val sortView = sortViewQuestUI.copy()
+            val textCompNo = getTextComp("noClick")?: return@sendBook
+            val textCompClick = getTextComp("click")?: return@sendBook
+            sortView.textComponent.clear()
 
-        qData.values.forEach {
-            val id = it.id
-            val m = id.getQuestFrame()
-            if (m.group.sort == sort && it.state != StateType.FINISH && !hasDisplay.contains(id)) {
-                hasDisplay.add(id)
-                val textComp = textCompClick.copy()
-                setText(player, id, sortView, textComp)
+            qData.values.forEach {
+                val id = it.id
+                val m = id.getQuestFrame()
+                if (m.group.sort == sort && it.state != StateType.FINISH && !hasDisplay.contains(id)) {
+                    hasDisplay.add(id)
+                    val textComp = textCompClick.copy()
+                    setText(this@questSortBuild, id, sortView, textComp)
+                }
+            }
+
+            val sortList = sortQuest[sort]
+            sortList?.forEach {
+                val id = it.id
+                if (!hasDisplay.contains(id)) {
+                    val noText = textCompNo.copy()
+                    setText(this@questSortBuild, id, sortView, noText)
+                }
+            }
+
+            sortView.build(player).forEach {
+                write(it)
             }
         }
-
-        val sortList = sortQuest[sort]
-        sortList?.forEach {
-            val id = it.id
-            if (!hasDisplay.contains(id)) {
-                val noText = textCompNo.copy()
-                setText(player, id, sortView, noText)
-            }
-        }
-
-        return sortView.build(player)
     }
 
-    fun questNoteBuild(player: Player, questID: String): MutableList<TellrawJson> {
+    fun Player.questNoteBuild(questID: String) {
         val ui = questNoteUI.copy()
         ui.noteComponent.values.forEach {
-            it.note = listReply(player, questID, it.note)
+            it.note = listReply(this, questID, it.note)
             it.note = descSet(it.note, "note", questID)
-            it.condition = listReply(player, questID, it.condition)
+            it.condition = listReply(this, questID, it.condition)
         }
-        ui.textComponent.values.forEach {
-            it.command = it.command.replace("{2}", questID, true)
+        sendBook {
+            ui.build(player).forEach { write(it) }
         }
-        return ui.build(player)
     }
 
-    fun targetNodeBuild(player: Player, questID: String): MutableList<TellrawJson> {
+    fun Player.targetNodeBuild(questID: String) {
         val list = mutableListOf<TellrawJson>()
-        val data = player.questData(questID)
+        val data = questData(questID)
         data.target.forEach {
-            allTargetNoteBuild(player, data, it).forEach { t ->
+            allTargetNoteBuild(this, data, it).forEach { t ->
                 list.add(t)
             }
         }
-        return list
+        sendBook {
+            list.forEach { write(it) }
+        }
     }
 
     private fun allTargetNoteBuild(player: Player, questData: QuestData, targetData: TargetData): MutableList<TellrawJson> {
@@ -137,8 +152,11 @@ object QuestBookBuildManager {
         targetUI.noteComponent.values.forEach {
             val note = it.note
             for (i in 0 until note.size) {
-                note[i] = note[i].replaceWithOrder(targetData.schedule)
+                note[i] = note[i]
+                    .replace("{{targetID}}", targetData.id)
+                    .replace("{{questID}}", questData.id)
             }
+            it.note = it.note.replacePlaceholder(player).toMutableList()
         }
         return targetUI.build(player)
     }
@@ -152,8 +170,6 @@ object QuestBookBuildManager {
         if (!builderFrame.textCondition(player, listReply(player, questID, textComponent.condition))) return
 
         textComponent.hover = descSet(textComponent.hover, "info", questID)
-
-        textComponent.command = "/qen handbook info $questID"
 
         builderFrame.noteComponent.values.forEach {
             if (!it.fork) {
@@ -185,9 +201,8 @@ object QuestBookBuildManager {
         val stateUnit = StateType.NOT_ACCEPT.toUnit(player)
         return list.replaceWithOrder(
             quest.name, // {0}
-            questID, // {1}
-            if (questID.isNotEmpty()) player.questData(questID).state.toUnit(player) else stateUnit,
-        )
+            if (player.existQuestData(questID)) player.questData(questID).state.toUnit(player) else stateUnit
+        ).replace("{{questID}}", questID)
     }
 
 }

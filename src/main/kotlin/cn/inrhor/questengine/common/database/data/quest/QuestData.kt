@@ -9,9 +9,7 @@ import cn.inrhor.questengine.utlis.time.noTimeout
 import cn.inrhor.questengine.utlis.time.toDate
 import cn.inrhor.questengine.utlis.time.toStr
 import org.bukkit.entity.Player
-import taboolib.common.platform.function.info
 import taboolib.common.platform.function.submit
-import java.text.SimpleDateFormat
 import java.util.*
 
 data class QuestData(
@@ -32,25 +30,16 @@ data class QuestData(
         if (endDate != null) {
             // 任务开始时间
             val start = time.toDate()
-            info("--------->")
-            info("stat: ${start.toStr()}")
-            info("needTime: ${timeDate.toStr()}")
-            info("needEnd: ${endDate.toStr()}")
-            info("now: ${Date().toStr()}")
-            info("<---------")
             if (state == StateType.DOING) {
                 // 如果现在时间或任务开始时间不在任务时间段内
                 if (!Date().noTimeout(timeDate, endDate) || !start.noTimeout(timeDate, endDate)) {
-                    info("doing -> fail")
                     player.failQuest(id)
                 }
             } else if (state == StateType.FAILURE || state == StateType.FINISH) {
                 // 如果任务开始时间不在任务时间段内
                 if (!start.noTimeout(timeDate, endDate)) {
                     // 如果现在时间在任务时间段内
-                    info("fail finish")
                     if (Date().noTimeout(timeDate, endDate)) {
-                        info("no timeout set to accept")
                         player.acceptQuest(id)
                         return
                     }

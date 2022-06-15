@@ -19,7 +19,7 @@ object EditorTime {
             .append("      "+asLangText("EDITOR-BACK"))
             .append("  "+asLangText("EDITOR-BACK-META"))
             .hoverText(asLangText("EDITOR-BACK-HOVER"))
-            .runCommand("/qen eval quest select $questID editor inner in edit home")
+            .runCommand("/qen eval quest select $questID editor quest in edit home")
             .newLine()
             .newLine()
             .append("      "+asLangText("EDITOR-EDIT-TIME-TYPE",
@@ -45,7 +45,7 @@ object EditorTime {
             .append("      "+asLangText("EDITOR-BACK"))
             .append("  "+asLangText("EDITOR-BACK-META"))
             .hoverText(asLangText("EDITOR-BACK-HOVER"))
-            .runCommand("/qen eval quest select $questID editor inner in edit time")
+            .runCommand("/qen eval quest select $questID editor quest in edit time")
             .newLine()
             .newLine()
         listOf("ALWAYS", "DAY", "WEEKLY", "MONTHLY", "YEARLY", "CUSTOM").forEach {

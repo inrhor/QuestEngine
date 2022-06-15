@@ -2,16 +2,25 @@ package cn.inrhor.questengine.script.kether.expand.editor
 
 import cn.inrhor.questengine.script.kether.frameVoid
 import cn.inrhor.questengine.common.editor.EditorHome.editorHomeQuest
+import cn.inrhor.questengine.common.editor.EditorList.editGroupNote
+import cn.inrhor.questengine.common.editor.EditorList.editQuestNote
+import cn.inrhor.questengine.common.editor.EditorList.editorAcceptCondition
 import cn.inrhor.questengine.common.editor.EditorList.editorListQuest
+import cn.inrhor.questengine.common.editor.EditorList.editorTargetList
 import cn.inrhor.questengine.common.editor.EditorQuest.editorQuest
+import cn.inrhor.questengine.common.editor.EditorTime.editTime
 import cn.inrhor.questengine.common.quest.enum.ModeType
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.quest.manager.QuestManager.delQuestFile
+import cn.inrhor.questengine.common.quest.manager.QuestManager.existQuestFrame
 import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestFrame
 import cn.inrhor.questengine.common.quest.manager.QuestManager.saveFile
 import cn.inrhor.questengine.common.quest.manager.QuestManager.saveQuestFile
+import cn.inrhor.questengine.common.quest.ui.QuestBookBuildManager.updateSortQuest
 import cn.inrhor.questengine.script.kether.player
 import cn.inrhor.questengine.script.kether.selectQuestID
+import cn.inrhor.questengine.utlis.indexAdd
+import cn.inrhor.questengine.utlis.removeAt
 import taboolib.module.kether.ScriptAction
 import taboolib.module.kether.ScriptFrame
 import taboolib.module.nms.inputSign
@@ -25,8 +34,8 @@ class EditorQuest(val ui: ActionEditor.QuestUi, vararg val variable: String, val
         when (ui) {
             ActionEditor.QuestUi.LIST -> sender.editorListQuest(page)
             ActionEditor.QuestUi.ADD -> {
-                sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-QUEST-ID"))) {
-                    val questID = it[1].replace(" ", "")
+                sender.inputSign(arrayOf("",sender.asLangText("EDITOR-PLEASE-QUEST-ID"))) {
+                    val questID = it[0].replace(" ", "")
                     if (questID == "" || QuestManager.getQuestMap().containsKey(questID)) {
                         sender.sendLang("QUEST-ERROR-ID", questID)
                         return@inputSign
@@ -44,21 +53,43 @@ class EditorQuest(val ui: ActionEditor.QuestUi, vararg val variable: String, val
                 val quest = questID.getQuestFrame()
                 when (variable[0]) {
                     "name" -> {
-                        sender.inputSign(arrayOf(sender.asLangText("", "EDITOR-EDIT-QUEST-NAME-INPUT"))) {
+                        sender.inputSign(arrayOf("",sender.asLangText("EDITOR-EDIT-QUEST-NAME-INPUT"))) {
                             quest.name = it[0]
                             quest.saveFile()
                             sender.editorQuest(questID)
                         }
                     }
                     "note" -> {
-                        //
+                        sender.editQuestNote(quest.note, questID, page)
                     }
-                    "sort" -> {
-                        sender.inputSign(arrayOf(sender.asLangText("","EDITOR-PLEASE-SORT"))) {
-                            quest.group.sort = it[0]
+                    "groupextends" -> {
+                        sender.inputSign(arrayOf("",sender.asLangText("EDITOR-PLEASE-QUEST-ID"))) {
+                            quest.group.extends = it[0]
+                            val ext = quest.group.extends
+                            if (ext.existQuestFrame()) {
+                                quest.group = ext.getQuestFrame().group
+                            }
                             quest.saveFile()
                             sender.editorQuest(questID)
                         }
+                    }
+                    "groupnumber" -> {
+                        sender.inputSign(arrayOf("",sender.asLangText("EDITOR-PLEASE-GROUP-NUMBER"))) {
+                            quest.group.number = it[0]
+                            quest.saveFile()
+                            sender.editorQuest(questID)
+                        }
+                    }
+                    "groupsort" -> {
+                        sender.inputSign(arrayOf("",sender.asLangText("EDITOR-PLEASE-SORT"))) {
+                            quest.group.sort = it[0]
+                            quest.updateSortQuest(quest.group.sort)
+                            quest.saveFile()
+                            sender.editorQuest(questID)
+                        }
+                    }
+                    "groupnote" -> {
+                        sender.editGroupNote(quest.group.note, questID, page)
                     }
                     "modetype" -> {
                         val mode = quest.mode
@@ -86,18 +117,24 @@ class EditorQuest(val ui: ActionEditor.QuestUi, vararg val variable: String, val
                     }
                     "acceptauto" -> {
                         val accept = quest.accept
+                        if (accept.auto) {
+                            QuestManager.autoQuestMap.remove(questID)
+                        }
                         accept.auto = !accept.auto
                         quest.saveFile()
                         sender.editorQuest(questID)
+                    }
+                    "acceptcondition" -> {
+                        sender.editorAcceptCondition(questID, page)
                     }
                     "control" -> {
                         //
                     }
                     "target" -> {
-                        //
+                        sender.editorTargetList(questID, page)
                     }
                     "time" -> {
-                        //
+                        sender.editTime(questID)
                     }
                     else -> {
                         sender.editorQuest(frame.selectQuestID())
@@ -112,24 +149,35 @@ class EditorQuest(val ui: ActionEditor.QuestUi, vararg val variable: String, val
                     "note" -> {
                         when (change) {
                             "del" -> {
-                                //
+                                quest.note = quest.note.removeAt(variable[2].toInt())
+                                quest.saveFile()
+                                sender.editQuestNote(quest.note, questID)
                             }
                             "add" -> {
                                 sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-EVAL"))) {
-                                    /*val con = quest.accept.condition
-                                    val list = con.newLineList()
                                     val index = if (variable[2]=="{head}") 0 else variable[2].toInt()+1
-                                    list.addSafely(index, it[1], "")
-                                    quest.accept.condition = list.joinToString("\n")
+                                    quest.note = quest.note.indexAdd(index, it[1]+it[2]+it[3])
                                     quest.saveFile()
-                                    sender.editorAcceptCondition(questID)*/
+                                    sender.editQuestNote(quest.note, questID)
                                 }
                             }
                         }
                     }
                     "groupnote" -> {
                         when (change) {
-                            //
+                            "del" -> {
+                                quest.group.note = quest.group.note.removeAt(variable[2].toInt())
+                                quest.saveFile()
+                                sender.editGroupNote(quest.group.note, questID)
+                            }
+                            "add" -> {
+                                sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-EVAL"))) {
+                                    val index = if (variable[2]=="{head}") 0 else variable[2].toInt()+1
+                                    quest.group.note = quest.group.note.indexAdd(index, it[1]+it[2]+it[3])
+                                    quest.saveFile()
+                                    sender.editGroupNote(quest.group.note, questID)
+                                }
+                            }
                         }
                     }
                 }

@@ -8,7 +8,7 @@ import taboolib.platform.util.sendBook
 
 object HandbookHome {
 
-    val home = subCommand {
+    val handbook = subCommand {
         execute<ProxyPlayer> { sender, _, _ ->
             val p = sender.cast<Player>()
             p.sendBook {

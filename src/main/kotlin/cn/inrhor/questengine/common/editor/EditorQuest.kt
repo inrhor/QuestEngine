@@ -10,7 +10,8 @@ import taboolib.platform.util.asLangText
 object EditorQuest {
 
     val editQuestMeta = listOf(
-        "NAME", "NOTE", "GROUPEXTENDS", "GROUPNUMBER", "GROUPSORT", "GROUPNOTE", "MODETYPE", "MODEAMOUNT", "SHAREDATA",
+        "NAME", "NOTE", "GROUPEXTENDS", "GROUPNUMBER", "GROUPSORT", "GROUPNOTE",
+        "MODETYPE", "MODEAMOUNT", "SHAREDATA",
         "TIME", "ACCEPTAUTO", "ACCEPTCONDITION", "CONTROL", "TARGET")
 
     fun Player.editorQuest(questID: String) {
@@ -30,15 +31,13 @@ object EditorQuest {
             val mode = quest.mode
             val accept = quest.accept
             json.append("      "+asLangText("EDITOR-EDIT-QUEST-$it",
-                quest.name, group.extends, group.number, group.sort, group.note,
+                quest.name, group.extends, group.number, group.sort,
                 mode.type.lang(this), mode.amount,
                 mode.shareData.lang(this),
                 accept.autoLang(this)))
                 .append("  "+asLangText("EDITOR-EDIT-QUEST-META"))
                 .hoverText(asLangText("EDITOR-EDIT-QUEST-META-HOVER"))
-            if (it == "INNER") {
-                json.runCommand("/qen eval quest select $questID editor inner in list page 0")
-            }else if (listOf("NOTE", "GROUPNOTE", "ACCEPTCONDITION").contains(it)) {
+            if (listOf("NOTE", "GROUPNOTE", "ACCEPTCONDITION").contains(it)) {
                 json.runCommand("/qen eval quest select $questID editor quest in edit "+it.lowercase()+" page 0")
             }else {
                 json.runCommand("/qen eval quest select $questID editor quest in edit "+it.lowercase())

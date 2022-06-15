@@ -31,7 +31,7 @@ data class TextComponent(
 
     fun autoCommand(arg: String) {
         if (type == BuilderFrame.Type.SORT) {
-            command = "/qen handbook sort $arg"
+            command = "/qen eval handbook sort $arg"
         }
     }
 
@@ -50,9 +50,11 @@ data class TextComponent(
         return condition.replacePlaceholder(player)
     }
 
-    fun command(player: Player?): String {
+    fun command(player: Player?, questID: String = ""): String {
+        command = command.replace("{{questID}}", questID)
         player?: return command
-        return command.replacePlaceholder(player).replace("{player}", player.name)
+        return command.replace("{{player}}", player.name)
+            .replacePlaceholder(player)
     }
 
 }
