@@ -117,7 +117,9 @@ class BuilderFrame {
         }
         ui.part.forEach {
             addNote(it)
-            QuestBookBuildManager.sortQuest[it.id] = mutableSetOf()
+            if (uiType == Type.SORT) {
+                QuestBookBuildManager.sortQuest[it.id] = mutableSetOf()
+            }
         }
         ui.addon.forEach {
             textComponent[it.id] = TextComponent(it, uiType)

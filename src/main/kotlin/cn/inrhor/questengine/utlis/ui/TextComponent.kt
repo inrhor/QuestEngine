@@ -50,8 +50,7 @@ data class TextComponent(
         return condition.replacePlaceholder(player)
     }
 
-    fun command(player: Player?, questID: String = ""): String {
-        command = command.replace("{{questID}}", questID)
+    fun command(player: Player?): String {
         player?: return command
         return command.replace("{{player}}", player.name)
             .replacePlaceholder(player)

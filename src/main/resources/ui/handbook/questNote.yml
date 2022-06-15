@@ -10,6 +10,7 @@ already:
       note:
         - "任务状态： {1}"
         - ""
+        - "#group-desc-note"
         - "#quest-desc-note"
         - ""
     - id: target

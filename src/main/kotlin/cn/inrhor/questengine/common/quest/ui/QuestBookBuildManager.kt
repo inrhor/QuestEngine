@@ -2,13 +2,11 @@ package cn.inrhor.questengine.common.quest.ui
 
 import cn.inrhor.questengine.api.quest.QuestFrame
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
-import cn.inrhor.questengine.common.database.data.existQuestData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.database.data.questData
 import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestFrame
-import cn.inrhor.questengine.common.quest.ui.QuestBookBuildManager.questSortBuild
 import cn.inrhor.questengine.utlis.copy
 import cn.inrhor.questengine.utlis.file.releaseFile
 import cn.inrhor.questengine.utlis.ui.BuilderFrame
@@ -16,7 +14,6 @@ import cn.inrhor.questengine.utlis.ui.NoteComponent
 import cn.inrhor.questengine.utlis.ui.TextComponent
 import cn.inrhor.questengine.utlis.ui.buildFrame
 import org.bukkit.entity.Player
-import taboolib.common.util.replaceWithOrder
 import taboolib.module.chat.TellrawJson
 import taboolib.module.configuration.Configuration.Companion.getObject
 import taboolib.platform.compat.replacePlaceholder
@@ -124,6 +121,9 @@ object QuestBookBuildManager {
 
     fun Player.questNoteBuild(questID: String) {
         val ui = questNoteUI.copy()
+        ui.textComponent.values.forEach {
+            it.command = listReply(this, questID, it.command)
+        }
         ui.noteComponent.values.forEach {
             it.note = listReply(this, questID, it.note)
             it.note = descSet(it.note, "note", questID)
@@ -170,6 +170,7 @@ object QuestBookBuildManager {
         if (!builderFrame.textCondition(player, listReply(player, questID, textComponent.condition))) return
 
         textComponent.hover = descSet(textComponent.hover, "info", questID)
+        textComponent.command = textComponent.command.replace("{{questID}}", questID)
 
         builderFrame.noteComponent.values.forEach {
             if (!it.fork) {
@@ -182,11 +183,16 @@ object QuestBookBuildManager {
     }
 
     fun descSet(list: MutableList<String>, sign: String, questID: String): MutableList<String> {
-        val desc = mutableListOf<String>()
         for (i in 0 until list.size) {
-            desc.add(list[i])
+            if (sign.isNotEmpty()) {
+                if (list[i] == "#quest-desc-$sign") {
+                    list[i] = questID.getQuestFrame().note
+                }else if (list[i] == "#group-desc-$sign") {
+                    list[i] = questID.getQuestFrame().group.note
+                }
+            }
         }
-        return desc
+        return list
     }
 
     fun listReply(player: Player, questID: String, list: MutableList<String>): MutableList<String> {
@@ -197,12 +203,7 @@ object QuestBookBuildManager {
     }
 
     fun listReply(player: Player, questID: String, list: String): String {
-        val quest = questID.getQuestFrame()
-        val stateUnit = StateType.NOT_ACCEPT.toUnit(player)
-        return list.replaceWithOrder(
-            quest.name, // {0}
-            if (player.existQuestData(questID)) player.questData(questID).state.toUnit(player) else stateUnit
-        ).replace("{{questID}}", questID)
+        return list.replace("{{questID}}", questID).replacePlaceholder(player)
     }
 
 }
