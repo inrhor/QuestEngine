@@ -7,7 +7,7 @@ import taboolib.platform.compat.PlaceholderExpansion
 
 object HookPlaceholderAPI: PlaceholderExpansion {
 
-    override val identifier = "questengine"
+    override val identifier = "qen"
 
     override fun onPlaceholderRequest(player: Player?, args: String): String {
         if (player == null) return "Null Player"

@@ -85,34 +85,34 @@ object QuestBookBuildManager {
      * 为用户编译任务手册的任务信息
      */
     fun Player.questSortBuild(sort: String) {
+        val pData = getPlayerData()
+        val qData = pData.dataContainer.quest
+        val hasDisplay = mutableSetOf<String>()
+        val sortView = sortViewQuestUI.copy()
+        val textCompNo = getTextComp("noClick")?: return
+        val textCompClick = getTextComp("click")?: return
+        sortView.textComponent.clear()
+
+        qData.values.forEach {
+            val id = it.id
+            val m = id.getQuestFrame()
+            if (m.group.sort == sort && it.state != StateType.FINISH && !hasDisplay.contains(id)) {
+                hasDisplay.add(id)
+                val textComp = textCompClick.copy()
+                setText(this@questSortBuild, id, sortView, textComp)
+            }
+        }
+
+        val sortList = sortQuest[sort]
+        sortList?.forEach {
+            val id = it.id
+            if (!hasDisplay.contains(id)) {
+                val noText = textCompNo.copy()
+                setText(this@questSortBuild, id, sortView, noText)
+            }
+        }
+
         sendBook {
-            val pData = getPlayerData()
-            val qData = pData.dataContainer.quest
-            val hasDisplay = mutableSetOf<String>()
-            val sortView = sortViewQuestUI.copy()
-            val textCompNo = getTextComp("noClick")?: return@sendBook
-            val textCompClick = getTextComp("click")?: return@sendBook
-            sortView.textComponent.clear()
-
-            qData.values.forEach {
-                val id = it.id
-                val m = id.getQuestFrame()
-                if (m.group.sort == sort && it.state != StateType.FINISH && !hasDisplay.contains(id)) {
-                    hasDisplay.add(id)
-                    val textComp = textCompClick.copy()
-                    setText(this@questSortBuild, id, sortView, textComp)
-                }
-            }
-
-            val sortList = sortQuest[sort]
-            sortList?.forEach {
-                val id = it.id
-                if (!hasDisplay.contains(id)) {
-                    val noText = textCompNo.copy()
-                    setText(this@questSortBuild, id, sortView, noText)
-                }
-            }
-
             sortView.build(player).forEach {
                 write(it)
             }
@@ -165,7 +165,7 @@ object QuestBookBuildManager {
         if (builderFrame.textComponent.containsKey(questID)) return
         val fork = builderFrame.noteComponent["fork"]?: return
 
-        builderFrame.noteComponent[questID] = NoteComponent(fork.note.copy(), fork.condition(player))
+        builderFrame.noteComponent[questID] = NoteComponent(fork.note.copy(), listReply(player, questID, fork.condition))
 
         if (!builderFrame.textCondition(player, listReply(player, questID, textComponent.condition))) return
 
@@ -174,8 +174,8 @@ object QuestBookBuildManager {
 
         builderFrame.noteComponent.values.forEach {
             if (!it.fork) {
-                it.note = listReply(player, questID, it.note(player))
-                it.condition = listReply(player, questID, it.condition(player))
+                it.note = listReply(player, questID, it.note)
+                it.condition = listReply(player, questID, it.condition)
             }
         }
 

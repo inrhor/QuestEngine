@@ -3,7 +3,9 @@ quest:
   id: quest1
   name: "耕田之下的稻草人"
   note: |
-    稻草人似乎需要你的帮助
+    &8稻草人似乎需要你的帮助
+    &8
+    &8剩余时间: %qen_quest select quest1 quest limitTime%
   # 接受任务设置
   accept:
     # 是否自动接受
@@ -83,5 +85,4 @@ quest:
           - id: desc
             note:
               - "&8挖掘石块或打破箱子 &a3 &8个"
-              - "   &8进度 &6{schedule}"
-              - "   &8剩余时间 &c{limit time}"
+              - "   &8进度 &6%qen_quest select quest1 target select a target schedule%"

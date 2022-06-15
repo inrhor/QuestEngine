@@ -1,5 +1,8 @@
 package cn.inrhor.questengine.utlis.time
 
+import cn.inrhor.questengine.common.quest.enum.StateType
+import org.bukkit.entity.Player
+import taboolib.platform.util.asLangText
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Calendar
@@ -34,4 +37,23 @@ fun Date.add(timeUnit: Int, add: Int): Date {
     calendar.time = this
     calendar.add(timeUnit, add)
     return calendar.time
+}
+
+fun Date.remainDate(player: Player, state: StateType): String {
+    if (state == StateType.FAILURE) return player.asLangText("STATE-TYPE-FAILURE")
+    val nowDate = Date()
+    val i = time - nowDate.time
+    val day = i / (24 * 60 * 60 * 1000)
+    if (day < 0) return player.asLangText("QUEST-TIMEOUT")
+    val hour = i / (60 * 60 * 1000) - day * 24
+    if (hour < 0) return player.asLangText("QUEST-TIMEOUT")
+    val minute = i / (60 * 1000) - day * 24 * 60 - hour * 60
+    if (minute < 0) return player.asLangText("QUEST-TIMEOUT")
+    val second = i / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - minute * 60
+    if (second < 0) return player.asLangText("QUEST-TIMEOUT")
+    val d = player.asLangText("QUEST-TIME_DAY")
+    val h = player.asLangText("QUEST-TIME_HOUR")
+    val m = player.asLangText("QUEST-TIME_MINUTE")
+    val s = player.asLangText("QUEST-TIME_S")
+    return "$day$d$hour$h$minute$m$second$s"
 }

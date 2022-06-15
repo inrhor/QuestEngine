@@ -6,7 +6,7 @@ for:
   # 内容物
   fork:
     - ""
-    - "&7&l< &8&l{0} &7&l>"
+    - "&7&l< &8&l%qen_quest select {{questID}} quest name% &7&l>"
     - "     @{{questID}};"
     - ""
   # JSON标签

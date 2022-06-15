@@ -41,8 +41,8 @@ class BuilderFrame {
      */
     fun build(player: Player? = null): MutableList<TellrawJson> {
         noteComponent.forEach { (i ,v) ->
-            if (!v.fork && textCondition(player, v.condition(player))) {
-                val note = v.note(player)
+            if (!v.fork && textCondition(player, v.condition)) {
+                val note = v.note
                 val json = autoPage(note.size)
                 val sp = (note.toJsonStr()+"\n").split("@")
                 var first = false

@@ -11,16 +11,4 @@ import taboolib.platform.compat.replacePlaceholder
 class NoteComponent(
     var note: MutableList<String>,
     var condition: String = "",
-    var fork: Boolean = false) {
-
-    fun note(player: Player?): MutableList<String> {
-        player?: return note
-        return note.replacePlaceholder(player).toMutableList()
-    }
-
-    fun condition(player: Player?): String {
-        player?: return condition
-        return condition.replacePlaceholder(player)
-    }
-
-}
+    var fork: Boolean = false)
