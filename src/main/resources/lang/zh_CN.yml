@@ -1,7 +1,7 @@
 LOADER-INFO:
   - "&7[ &ci &7]&r  ┝  &3正在加载插件  &f{0}"
   - "&7[ &ci &7]&r  ┝  &3当前插件版本  &f{1}"
-  - "&7[ &ci &7]&r  ┝  &3支持游戏版本  &f1.12-1.18 {2}"
+  - "&7[ &ci &7]&r  ┝  &3支持游戏版本  &f{3} {2}"
 LOADER-TIME_COST: "{0}&r 所有配置载入完成，耗时 &8{1}ms"
 LOADER-NOT_INSTALLED-PLIB: "{0}&c 启用外部数据包模式，但未安装插件： &rProtocolLib"
 

@@ -207,10 +207,11 @@ class DatabaseSQL: Database() {
             value(uId, questID, state, questData.time.toDate())
         }
         val qID = findQuest(uId, questID)
-        createTarget(qID, questData)
+        createTarget(player, qID, questData)
     }
 
-    private fun createTarget(qID: Long, questData: QuestData) {
+    private fun createTarget(player: Player, qID: Long, questData: QuestData) {
+        removeQuest(player, questData.id)
         questData.target.forEach {
             tableTarget.insert(source, "inner", "id", "name", "schedule") {
                 value(qID, it.id, it.schedule, it.state.int)

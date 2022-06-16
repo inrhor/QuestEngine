@@ -35,7 +35,7 @@ taboolib {
         prefix("QuestEngine")
     }
     classifier = null
-    version = "6.0.8-9"
+    version = "6.0.9-4"
 }
 
 repositories {
@@ -44,6 +44,7 @@ repositories {
 }
 
 dependencies {
+    compileOnly("ink.ptms.core:v11900:11900-minimize:mapped")
     compileOnly("ink.ptms.core:v11701:11701-minimize:mapped")
     compileOnly("ink.ptms.core:v11701:11701-minimize:universal")
     compileOnly("ink.ptms.core:v11604:11604")

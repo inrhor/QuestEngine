@@ -12,6 +12,7 @@ import cn.inrhor.questengine.common.database.data.questData
 import cn.inrhor.questengine.common.database.data.teamData
 import cn.inrhor.questengine.common.quest.enum.ModeType
 import cn.inrhor.questengine.common.quest.enum.StateType
+import cn.inrhor.questengine.common.quest.manager.QuestManager.failQuest
 import cn.inrhor.questengine.common.quest.ui.QuestBookBuildManager
 import cn.inrhor.questengine.common.quest.ui.QuestBookBuildManager.updateSortQuest
 import cn.inrhor.questengine.script.kether.runEval
@@ -193,6 +194,13 @@ object QuestManager {
     fun Player.failQuest(questID: String) {
         getPlayerData().dataContainer.toggleQuest(questID, StateType.FAILURE)
         QuestEvent.Fail(this, questID.getQuestFrame()).call()
+    }
+
+    /**
+     * 追踪任务
+     */
+    fun Player.trackQuest(questID: String) {
+        QuestEvent.Track(this, questID.getQuestFrame()).call()
     }
 
     /**
