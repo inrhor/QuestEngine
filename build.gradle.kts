@@ -35,7 +35,7 @@ taboolib {
         prefix("QuestEngine")
     }
     classifier = null
-    version = "6.0.9-4"
+    version = "6.0.9-26"
 }
 
 repositories {
@@ -57,7 +57,7 @@ dependencies {
     compileOnly("ink.ptms.core:v11000:11000")
     compileOnly("ink.ptms.core:v10900:10900")
     compileOnly("public:Citizens:1.0.0")
-    compileOnly("ink.ptms:Adyeshach:1.3.19")
+    compileOnly("ink.ptms:Adyeshach:1.4.21")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
     compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
@@ -65,6 +65,12 @@ dependencies {
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> { kotlinOptions {
+    jvmTarget = "1.8"
+    freeCompilerArgs = listOf("-Xjvm-default=all")
+}
 }
 
 configure<JavaPluginConvention> {

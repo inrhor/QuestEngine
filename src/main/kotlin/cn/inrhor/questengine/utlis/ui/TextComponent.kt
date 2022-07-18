@@ -31,7 +31,7 @@ data class TextComponent(
 
     fun autoCommand(arg: String) {
         if (type == BuilderFrame.Type.SORT) {
-            command = "/qen eval handbook sort $arg"
+            command = "/qen handbook sort $arg"
         }
     }
 

@@ -13,7 +13,7 @@ import taboolib.module.kether.switch
 
 object ActionTarget {
 
-    @KetherParser(["innerTarget"], shared = true)
+    @KetherParser(["target"], shared = true)
     fun parser() = scriptParser {
         it.switch {
             case("select") {

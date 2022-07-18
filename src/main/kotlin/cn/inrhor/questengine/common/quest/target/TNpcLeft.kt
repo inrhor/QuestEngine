@@ -26,7 +26,7 @@ object TNpcLeft: TargetExtend<NPCLeftClickEvent>() {
         player.doingTargets(name).forEach {
             val target = it.getTargetFrame()
             if (TriggerUtils.idTrigger(target, npcID)) {
-                TriggerUtils.booleanTrigger(player, target)
+                TriggerUtils.booleanTrigger(player, it, target)
             }
         }
     }

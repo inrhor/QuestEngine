@@ -43,33 +43,27 @@ quest:
     shareData: true
   # 控制模块
   control:
-    -
-      id: "2"
-      # 类型 ACCEPT, FINISH, FAIL, QUIT, RESET, TRACK
+    - select: SELF
+      id: '2'
       type: FINISH
-      # 选择 SELF, TEAM, ALL
-      select: SELF
       script: |
-        subtitle color &a第一篇完成
+        subtitle color "&a第一篇完成"
         waitTime 3s
-        subtitle color 即将开始下一篇任务
+        subtitle color "即将开始下一篇任务"
         waitTime 2s
         quest accept quest2
-    -
-      id: "1"
-      # 类型 ACCEPT, FINISH, FAIL, QUIT, RESET
+    - select: SELF
+      id: '1'
       type: ACCEPT
-      # 选择 SELF, TEAM, ALL
-      select: TEAM
       script: |
-        subtitle color &c稻草人: ...
+        subtitle color "&c稻草人: ..."
         waitTime 2s
-        subtitle color &c稻草人: ...
+        subtitle color "&c稻草人: ..."
         waitTime 2s
         subtitle 它似乎有些破损
         waitTime 3s
-        title color &a接受任务
-        subtitle color &f耕田之下的稻草人
+        title color "&a接受任务"
+        subtitle color "&f耕田之下的稻草人"
   target:
     -
       # 目标编号

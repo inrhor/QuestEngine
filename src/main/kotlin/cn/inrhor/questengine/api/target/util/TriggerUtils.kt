@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.api.target.util
 
 import cn.inrhor.questengine.api.quest.TargetFrame
+import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.script.kether.runEval
 
 import cn.inrhor.questengine.utlis.bukkit.ItemCheck
@@ -22,9 +23,11 @@ object TriggerUtils {
      *
      * @return 布尔值，默认true
      */
-    fun booleanTrigger(player: Player, target: TargetFrame): Boolean {
-        val needCondition = target.nodeMeta("need")?: return false
-        return runEval(player, needCondition)
+    fun booleanTrigger(player: Player, targetData: TargetData, target: TargetFrame, run: Boolean = true, amount: Int = 1) {
+        val needCondition = target.nodeMeta("need")?: mutableListOf()
+        if (runEval(player, needCondition) && run) {
+            Schedule.run(player, target.event, targetData, amount)
+        }
     }
 
     /**

@@ -1,32 +1,22 @@
 package cn.inrhor.questengine.common.quest.target
 
 import cn.inrhor.questengine.api.target.TargetExtend
-import cn.inrhor.questengine.api.target.util.TriggerUtils
-import cn.inrhor.questengine.common.database.data.doingTargets
-import net.citizensnpcs.api.event.NPCLeftClickEvent
+import cn.inrhor.questengine.common.quest.target.TNpcLeft.match
+import ink.ptms.adyeshach.api.event.AdyeshachEntityDamageEvent
 import org.bukkit.Bukkit
-import org.bukkit.entity.Player
+import taboolib.common.platform.function.info
 
-object TNpcLeft: TargetExtend<NPCLeftClickEvent>() {
+object TAdyLeft: TargetExtend<AdyeshachEntityDamageEvent>() {
 
-    override val name = "left npc"
+    override val name = "left ady"
 
     init {
-        if (Bukkit.getPluginManager().getPlugin("Citizens") != null) {
-            event = NPCLeftClickEvent::class
+        if (Bukkit.getPluginManager().getPlugin("Adyeshach") != null) {
+            event = AdyeshachEntityDamageEvent::class
             tasker {
-                val player = clicker
-                match(player, npc.id.toString(), name)
+                val player = player
+                match(player, entity.id, name)
                 player
-            }
-        }
-    }
-
-    fun match(player: Player, npcID: String, name: String) {
-        player.doingTargets(name).forEach {
-            val target = it.getTargetFrame()
-            if (TriggerUtils.idTrigger(target, npcID)) {
-                TriggerUtils.booleanTrigger(player, target)
             }
         }
     }

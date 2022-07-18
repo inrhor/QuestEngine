@@ -20,9 +20,13 @@ object RegisterTarget {
         add("break block", block, amount)
         add("place block", block, amount)
         add("enchant item", TargetNode("cost", TargetNodeType.DOUBLE), number)
-        add("player kill entity", number, TargetNode("entity", TargetNodeType.STRING))
+        add("player kill entity", number, TargetNode("entity", TargetNodeType.STRING),
+            TargetNode("check", TargetNodeType.INT),
+            TargetNode("condition", TargetNodeType.LIST))
         add("left npc", id, need)
         add("right npc", id, need)
+        add("left ady", id, need)
+        add("right ady", id, need)
         add("player chat", TargetNode("message", TargetNodeType.STRING), number)
         add("player send command", TargetNode("content", TargetNodeType.STRING), number)
         add("player death", CauseNode(), number)

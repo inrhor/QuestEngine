@@ -32,15 +32,12 @@ object TKillEntity: TargetExtend<EntityDeathEvent>() {
     }
 
     private fun checkEntity(target: TargetFrame, type: EntityType): Boolean {
-        val condition = target.nodeMeta("entity")?: return false
-        return when (condition[0].uppercase()) {
-            "PLAYER" -> type == EntityType.PLAYER
-            else -> type != EntityType.PLAYER
-        }
+        val condition = target.nodeMeta("entity")?: return true
+        return condition.contains(type.name)
     }
 
     private fun checkCondition(player: Player, target: TargetFrame, entity: Entity, dropExp: Int): Boolean {
-        val condition = target.nodeMeta("condition")?: return false
+        val condition = target.nodeMeta("condition")?: return true
         val checkNumber = (target.nodeMeta("check")?: listOf("0"))[0].toInt()
         var i = 0
         condition.forEach {

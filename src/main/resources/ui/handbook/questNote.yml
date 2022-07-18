@@ -26,7 +26,7 @@ already:
         - "&7&l[ &3&l查看当前任务目标 &7&l]"
       hover:
         - "&7&l[ &a&l点击 &7&l]"
-      command: "/qen eval handbook target {{questID}}"
+      command: "/qen handbook target {{questID}}"
     - id: quit
       text:
         - "&7&l[ &c&l点击放弃任务 &7&l]"

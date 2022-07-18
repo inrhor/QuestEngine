@@ -249,6 +249,8 @@ EDITOR-SELECT-PASS-COLLECTION-PACKET: "&f\"&7{0} &f(&7交互允许数据包实�
 EDITOR-SELECT-ENCHANT-ITEM: "&f\"&7{0} &f(&7附魔物品&f)\""
 EDITOR-SELECT-LEFT-NPC: "&f\"&7{0} &f(&7左键CitizensNPC&f)\""
 EDITOR-SELECT-RIGHT-NPC: "&f\"&7{0} &f(&7右键CitizensNPC&f)\""
+EDITOR-SELECT-LEFT-ADY: "&f\"&7{0} &f(&7左键AdyeshachNPC&f)\""
+EDITOR-SELECT-RIGHT-ADY: "&f\"&7{0} &f(&7右键AdyeshachNPC&f)\""
 EDITOR-SELECT-PLAYER-CHAT: "&f\"&7{0} &f(&7玩家聊天&f)\""
 EDITOR-SELECT-PLAYER-KILL-ENTITY: "&f\"&7{0} &f(&7玩家击杀实体&f)\""
 EDITOR-SELECT-PLAYER-SEND-COMMAND: "&f\"&7{0} &f(&7玩家发送命令&f)\""
