@@ -62,8 +62,8 @@ object QuestManager {
     /**
      * 保存任务配置
      */
-    fun QuestFrame.saveFile() {
-        val file = newFile(path)
+    fun QuestFrame.saveFile(create: Boolean = false) {
+        val file = newFile(path, create)
         val yaml = Configuration.loadFromFile(file)
         yaml.setObject("quest", this)
         yaml.saveToFile(file)

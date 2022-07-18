@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.script.kether.expand.editor
 
+import cn.inrhor.questengine.api.quest.QuestFrame
 import cn.inrhor.questengine.script.kether.frameVoid
 import cn.inrhor.questengine.common.editor.EditorHome.editorHomeQuest
 import cn.inrhor.questengine.common.editor.EditorList.editGroupNote
@@ -14,6 +15,7 @@ import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.quest.manager.QuestManager.delQuestFile
 import cn.inrhor.questengine.common.quest.manager.QuestManager.existQuestFrame
 import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestFrame
+import cn.inrhor.questengine.common.quest.manager.QuestManager.register
 import cn.inrhor.questengine.common.quest.manager.QuestManager.saveFile
 import cn.inrhor.questengine.common.quest.manager.QuestManager.saveQuestFile
 import cn.inrhor.questengine.common.quest.ui.QuestBookBuildManager.updateSortQuest
@@ -40,7 +42,9 @@ class EditorQuest(val ui: ActionEditor.QuestUi, vararg val variable: String, val
                         sender.sendLang("QUEST-ERROR-ID", questID)
                         return@inputSign
                     }
-                    questID.saveQuestFile()
+                    val questFrame = QuestFrame(id = questID, path = "plugins\\QuestEngine\\space\\quest\\$questID.yml")
+                    questFrame.register()
+                    questFrame.saveFile(true)
                     sender.editorQuest(questID)
                 }
             }
