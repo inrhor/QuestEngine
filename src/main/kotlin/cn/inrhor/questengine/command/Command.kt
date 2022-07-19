@@ -4,7 +4,7 @@ import cn.inrhor.questengine.command.handbook.HandbookHome
 import taboolib.common.platform.command.*
 
 
-@CommandHeader("questengine", ["qen"])
+@CommandHeader("questengine", ["qen"], permission = "questengine.command")
 internal object Command {
 
     @CommandBody(permission = "QuestEngine.use.handbook")
@@ -31,6 +31,6 @@ internal object Command {
     @CommandBody(permission = "QuestEngine.admin.tags")
     val tags = TagsCommand
 
-    @CommandBody(permission = "QuestEngine.editor")
+    @CommandBody(permission = "QuestEngine.admin.editor")
     val editor = EditorCommand.editor
 }
