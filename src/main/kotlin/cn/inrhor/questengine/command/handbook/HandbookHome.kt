@@ -25,8 +25,7 @@ object HandbookHome {
                 execute<ProxyPlayer> { sender, context, argument ->
                     val p = sender.cast<Player>()
                     val e = argument.split(" ")[0]
-                    val c = context.argument(-1)
-                    when (c) {
+                    when (context.argument(-1)) {
                         "sort" -> {
                             p.questSortBuild(e)
                         }

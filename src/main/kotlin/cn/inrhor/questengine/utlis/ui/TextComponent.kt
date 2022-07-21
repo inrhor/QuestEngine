@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.utlis.ui
 
 import cn.inrhor.questengine.api.ui.AddonFrame
+import cn.inrhor.questengine.utlis.copy
 import cn.inrhor.questengine.utlis.toJsonStr
 import org.bukkit.entity.Player
 import taboolib.module.chat.TellrawJson
@@ -11,7 +12,7 @@ import taboolib.platform.compat.replacePlaceholder
  *
  * 文字组件
  */
-data class TextComponent(
+class TextComponent(
     var text: MutableList<String> = mutableListOf(),
     var hover: MutableList<String> = mutableListOf(),
     var condition: String = "",
@@ -21,6 +22,10 @@ data class TextComponent(
 
     constructor(addon: AddonFrame, type: BuilderFrame.Type = BuilderFrame.Type.CUSTOM):
             this(addon.text.toMutableList(), addon.hover.toMutableList(), addon.condition, addon.command, type)
+
+    fun copy(): TextComponent {
+        return TextComponent(text.copy(), hover.copy(), condition, command, type)
+    }
 
     fun build(player: Player?): TellrawJson {
         val json = TellrawJson().append(text(player).toJsonStr())

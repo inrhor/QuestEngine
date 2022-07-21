@@ -151,7 +151,11 @@ object QuestManager {
         if (runEval(this, quest.accept.condition)) {
             getPlayerData().dataContainer.installQuest(quest)
             QuestEvent.Accept(this, quest).call()
-            questData(quest.id).updateTime(this)
+            val data = questData(quest.id)
+            data.updateTime(this)
+            data.target.forEach {
+                it.load(this)
+            }
         }
     }
 

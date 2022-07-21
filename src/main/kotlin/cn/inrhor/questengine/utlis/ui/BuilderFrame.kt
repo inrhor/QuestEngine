@@ -5,6 +5,7 @@ import cn.inrhor.questengine.api.ui.PartFrame
 import cn.inrhor.questengine.api.ui.UiFrame
 import cn.inrhor.questengine.common.quest.ui.QuestBookBuildManager
 import cn.inrhor.questengine.script.kether.runEval
+import cn.inrhor.questengine.utlis.copy
 import cn.inrhor.questengine.utlis.toJsonStr
 import org.bukkit.entity.Player
 import taboolib.module.chat.TellrawJson
@@ -132,14 +133,22 @@ class BuilderFrame {
     }
 
     fun copy(): BuilderFrame {
-        return buildFrame() {
+        /*return buildFrame {
             this@BuilderFrame.noteComponent.forEach { (t, u) ->
                 noteComponent[t] = u
             }
             this@BuilderFrame.textComponent.forEach { (t, u) ->
                 textComponent[t] = u
             }
+        }*/
+        val frame = BuilderFrame()
+        noteComponent.forEach { (t, u) ->
+            frame.noteComponent[t] = NoteComponent(u.note.copy(), u.condition, u.fork)
         }
+        textComponent.forEach { (t, u) ->
+            frame.textComponent[t] = u.copy()
+        }
+        return frame
     }
 
 }

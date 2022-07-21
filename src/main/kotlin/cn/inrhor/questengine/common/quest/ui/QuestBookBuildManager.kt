@@ -9,11 +9,9 @@ import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestFrame
 import cn.inrhor.questengine.utlis.copy
 import cn.inrhor.questengine.utlis.file.releaseFile
-import cn.inrhor.questengine.utlis.ui.BuilderFrame
-import cn.inrhor.questengine.utlis.ui.NoteComponent
-import cn.inrhor.questengine.utlis.ui.TextComponent
-import cn.inrhor.questengine.utlis.ui.buildFrame
+import cn.inrhor.questengine.utlis.ui.*
 import org.bukkit.entity.Player
+import taboolib.common.platform.function.info
 import taboolib.module.chat.TellrawJson
 import taboolib.module.configuration.Configuration.Companion.getObject
 import taboolib.platform.compat.replacePlaceholder
@@ -126,7 +124,7 @@ object QuestBookBuildManager {
         }
         ui.noteComponent.values.forEach {
             it.note = listReply(this, questID, it.note)
-            it.note = descSet(it.note, "note", questID)
+            it.note = descSet(it.note, "note", questID).replacePlaceholder(this).toMutableList()
             it.condition = listReply(this, questID, it.condition)
         }
         sendBook {
