@@ -37,7 +37,7 @@ object TPlayerFish: TargetExtend<PlayerFishEvent>() {
                 if (!es.contains(entity.type.toString())) return
             }
             if (hs.isNotEmpty()) {
-                if (!hs.contains(hook.type.toString())) return
+                if (!hs.contains(hook.hookedEntity?.type.toString())) return
             }
             if (ss.isNotEmpty()) {
                 if (!ss.contains(state.toString())) return

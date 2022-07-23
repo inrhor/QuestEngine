@@ -16,10 +16,11 @@ object RegisterTarget {
         val amount = TargetNode("amount", TargetNodeType.INT)
         val number = TargetNode("number", TargetNodeType.INT)
         val id = IdNode()
-        val need = TargetNode("need", TargetNodeType.LIST)
+        val need = TargetNode("need")
+        val item =TargetNode("need", TargetNodeType.STRING)
         add("break block", block, amount)
         add("place block", block, amount)
-        add("enchant item", TargetNode("cost", TargetNodeType.DOUBLE), number)
+        add("enchant item", TargetNode("cost", TargetNodeType.DOUBLE), number, item)
         add("player kill entity", number, TargetNode("entity", TargetNodeType.STRING),
             TargetNode("check", TargetNodeType.INT),
             TargetNode("condition", TargetNodeType.LIST))
@@ -33,6 +34,7 @@ object RegisterTarget {
         add("player join server", number)
         add("player quit server", number)
         add("player fish", TargetNode("entitylist"), TargetNode("hook"), TargetNode("state"), TargetNode("exp", TargetNodeType.INT), amount)
+        add("craft item", item, amount, TargetNode("matrix"))
         add("TASK")
     }
 

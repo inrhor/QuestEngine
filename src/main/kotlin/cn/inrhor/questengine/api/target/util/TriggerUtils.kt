@@ -43,7 +43,7 @@ object TriggerUtils {
      * 物品匹配器
      */
     fun itemTrigger(target: TargetFrame, itemStack: ItemStack): Boolean {
-        val content = target.nodeMeta("item")?: return false
+        val content = target.nodeMeta("item")?: return true
         return ItemCheck.itemCheckSplit(content[0]).match(itemStack, false)
     }
 
