@@ -3,10 +3,10 @@ package cn.inrhor.questengine.api.target.util
 import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.script.kether.runEval
-
-import cn.inrhor.questengine.utlis.bukkit.ItemCheck
+import cn.inrhor.questengine.utlis.bukkit.ItemMatch
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import taboolib.common5.Demand
 
 object TriggerUtils {
 
@@ -44,7 +44,10 @@ object TriggerUtils {
      */
     fun itemTrigger(target: TargetFrame, itemStack: ItemStack): Boolean {
         val content = target.nodeMeta("item")?: return true
-        return ItemCheck.itemCheckSplit(content[0]).match(itemStack, false)
+        content.forEach {
+            if (ItemMatch(Demand(it)).check(itemStack)) return true
+        }
+        return false
     }
 
 }

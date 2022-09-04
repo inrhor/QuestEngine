@@ -21,7 +21,7 @@ class KetherSpaceRange(val x: Double, val y: Double, val z: Double, val location
     }
 
     internal object Parser {
-        @KetherParser(["spaceRange"], namespace = "QuestEngine")
+        @KetherParser(["spaceRange"])
         fun parser() = scriptParser {
             val x = it.nextDouble()
             val y = it.nextDouble()

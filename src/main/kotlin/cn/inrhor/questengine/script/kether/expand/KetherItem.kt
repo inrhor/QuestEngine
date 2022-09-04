@@ -1,7 +1,9 @@
 package cn.inrhor.questengine.script.kether.expand
 
 import cn.inrhor.questengine.script.kether.player
-import cn.inrhor.questengine.utlis.bukkit.ItemCheck
+import cn.inrhor.questengine.utlis.bukkit.InvSlot
+import cn.inrhor.questengine.utlis.bukkit.ItemMatch
+import taboolib.common5.Demand
 import taboolib.module.kether.*
 import taboolib.library.kether.*
 import java.util.concurrent.CompletableFuture
@@ -12,12 +14,7 @@ class KetherItem {
         override fun run(frame: ScriptFrame): CompletableFuture<Boolean> {
             return frame.newFrame(item).run<Any>().thenApply {
                 val player = frame.player()
-                val item = ItemCheck.eval(it.toString())
-                when (type.lowercase()) {
-                    "all" -> item.invHas(player, false)
-                    "mainhand" -> item.isMainHand(player, false)
-                    else -> false
-                }
+                ItemMatch(Demand(it.toString())).slotHas(player, InvSlot.valueOf(type.uppercase()))
             }
         }
     }
@@ -26,13 +23,13 @@ class KetherItem {
         override fun run(frame: ScriptFrame): CompletableFuture<Boolean> {
             return frame.newFrame(item).run<Any>().thenApply {
                 val player = frame.player()
-                ItemCheck.eval(it.toString()).invHas(player, true)
+                ItemMatch(Demand(it.toString())).slotHas(player, take = true)
             }
         }
     }
 
     internal object Parser {
-        @KetherParser(["itemCheck"], namespace = "QuestEngine")
+        @KetherParser(["itemCheck"])
         fun parser() = scriptParser {
             it.mark()
             when (it.expects("inv", "take")) {

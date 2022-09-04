@@ -21,7 +21,7 @@ class ActionEditor {
     }
 
     companion object {
-        @KetherParser(["editor"], namespace = "QuestEngine", shared = true)
+        @KetherParser(["editor"], shared = true)
         fun parser() = scriptParser {
             it.switch {
                 /**

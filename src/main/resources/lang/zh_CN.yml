@@ -266,7 +266,7 @@ EDITOR-SELECT-PLAYER-QUIT-SERVER: "&f\"&7{0} &f(&7退出服务器&f)\""
 EDITOR-SELECT-PLAYER-FISH: "&f\"&7{0} &f(&7玩家钓鱼&f)\""
 EDITOR-SELECT-CRAFT-FISH: "&f\"&7{0} &f(&7合成物品&f)\""
 
-EXIST-TARGET-ID: "{0}&r &6{1} &8该内部任务已有相同的任务目标ID"
+EXIST-TARGET-ID: "{0}&r &6{1} &8该任务已有相同的任务目标ID"
 
 EDITOR-TARGET-CONDITION: "&3&l可视化模式 &7- &f编辑任务 \"&7{1}&f(&7{0}&f)&7 {2}&f\" 目标触发条件"
 

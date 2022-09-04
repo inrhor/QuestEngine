@@ -85,18 +85,18 @@ object EditorList {
         val t = targetID.getTargetFrame(questID)
         val list = t.condition
         EditorOfList(this, asLangText("EDITOR-TARGET-CONDITION", questID, targetID))
-            .editorBack(this, "/qen eval quest select $questID innerTarget select $targetID editor target in edit home")
-            .listAdd(this, "/qen eval quest select $questID innerTarget select $targetID editor target in change condition to add {head}")
+            .editorBack(this, "/qen eval quest select $questID target select $targetID editor target in edit home")
+            .listAdd(this, "/qen eval quest select $questID target select $targetID editor target in change condition to add {head}")
             .list(page, 3, list.newLineList(), true, "EDITOR-CONDITION-LIST",
-                "qen eval quest select $questID innerTarget select $targetID editor target in edit condition page {page}",
+                "qen eval quest select $questID target select $targetID editor target in edit condition page {page}",
                 EditorListModule.EditorButton("EDITOR-CONDITION-RETURN"),
                 EditorListModule.EditorButton("EDITOR-LIST-NEXT-ADD"),
                 EditorListModule.EditorButton("EDITOR-LIST-NEXT-ADD-META",
                     "EDITOR-LIST-NEXT-ADD-HOVER",
-                    "/qen eval quest select $questID innerTarget select $targetID editor target in change condition to add {index}"),
+                    "/qen eval quest select $questID target select $targetID editor target in change condition to add {index}"),
                 EditorListModule.EditorButton("EDITOR-LIST-DEL"),
                 EditorListModule.EditorButton("EDITOR-LIST-DEL-META", "EDITOR-LIST-DEL-HOVER",
-                    "/qen eval quest select $questID innerTarget select $targetID editor target in change condition to del {index}"))
+                    "/qen eval quest select $questID target select $targetID editor target in change condition to del {index}"))
             .json.sendTo(adaptPlayer(this))
     }
 
@@ -130,23 +130,23 @@ object EditorList {
             EditorListModule.EditorButton("EDITOR-TARGET-EDIT"),
             EditorListModule.EditorButton("EDITOR-TARGET-EDIT-META",
                 "EDITOR-TARGET-EDIT-HOVER",
-                "/qen eval quest select $questID innerTarget select {targetID} editor target in edit home"),
+                "/qen eval quest select $questID target select {targetID} editor target in edit home"),
                 EditorListModule.EditorButton("EDITOR-TARGET-DEL"),
                 EditorListModule.EditorButton("EDITOR-TARGET-DEL-META",
                     asLangText("EDITOR-TARGET-DEL-HOVER"),
-                    "/qen eval quest select $questID innerTarget select {targetID} editor target in del"))
+                    "/qen eval quest select $questID target select {targetID} editor target in del"))
             .json.sendTo(adaptPlayer(this))
     }
 
     fun Player.selectTargetList(questID: String, targetID: String, page: Int = 0) {
         EditorSelTarget(this, asLangText("EDITOR-SELECT-TARGET", questID, targetID))
             .editorBack(this,
-                "/qen eval quest select $questID innerTarget select $targetID editor target in edit home")
+                "/qen eval quest select $questID target select $targetID editor target in edit home")
             .list(page, 7, RegisterTarget.saveTarget.map { it.key }, true, "EDITOR-SELECT",
-                "qen eval quest select $questID innerTarget select $targetID editor target in sel list page {page}",
+                "qen eval quest select $questID target select $targetID editor target in sel list page {page}",
                 EditorListModule.EditorButton("EDITOR-SELECT-TARGET-SEL",
                     "EDITOR-SELECT-TARGET-SEL-HOVER",
-                    "/qen eval quest select $questID innerTarget select $targetID editor target in change name to {targetName}"))
+                    "/qen eval quest select $questID target select $targetID editor target in change name to {targetName}"))
             .json.sendTo(adaptPlayer(this))
     }
 
@@ -155,18 +155,18 @@ object EditorList {
         val id = target.id
         EditorOfList(this, asLangText("EDITOR-TARGET-LIST-UI-NODE",
             questID, id, asLangText("EDITOR-TARGET-LIST-NODE-${node.uppercase()}")), other = arrayOf(target.event, node))
-            .editorBack(this, "/qen eval quest select $questID innerTarget select $id editor target in edit home")
-            .listAdd(this, "/qen eval quest select $questID innerTarget select $id editor target in change node to '$node' add {head}")
+            .editorBack(this, "/qen eval quest select $questID target select $id editor target in edit home")
+            .listAdd(this, "/qen eval quest select $questID target select $id editor target in change node to '$node' add {head}")
             .list(page, 7, list, true, "EDITOR-TARGET-LIST-FOR-NODE",
-                "/qen eval quest select $questID innerTarget select $id editor target in sel node page {page} to '$node'",
+                "/qen eval quest select $questID target select $id editor target in sel node page {page} to '$node'",
                 EditorListModule.EditorButton("EDITOR-CONDITION-RETURN"),
                 EditorListModule.EditorButton("EDITOR-LIST-NEXT-ADD"),
                 EditorListModule.EditorButton("EDITOR-LIST-NEXT-ADD-META",
                     "EDITOR-LIST-NEXT-ADD-HOVER",
-                    "/qen eval quest select $questID innerTarget select $id editor target in change node to '$node' add {index}"),
+                    "/qen eval quest select $questID target select $id editor target in change node to '$node' add {index}"),
                 EditorListModule.EditorButton("EDITOR-LIST-DEL"),
                 EditorListModule.EditorButton("EDITOR-LIST-DEL-META", "EDITOR-LIST-DEL-HOVER",
-                    "/qen eval quest select $questID innerTarget select $id editor target in change node to '$node' del {index}"))
+                    "/qen eval quest select $questID target select $id editor target in change node to '$node' del {index}"))
             .json.sendTo(adaptPlayer(this))
     }
 }

@@ -28,7 +28,7 @@ object EditorTarget {
             .append("      "+asLangText("EDITOR-BACK"))
             .append("  "+asLangText("EDITOR-BACK-META"))
             .hoverText(asLangText("EDITOR-BACK-HOVER"))
-            .runCommand("/qen eval quest select $questID innerTarget select $targetID editor target in list page 0")
+            .runCommand("/qen eval quest select $questID target select $targetID editor target in list page 0")
             .newLine()
             .newLine()
        if (target.event.uppercase().contains("TASK ")) editMeta.add("PERIOD")
@@ -44,10 +44,10 @@ object EditorTarget {
            }
            when (it) {
                "CONDITION" -> {
-                   json.runCommand("/qen eval quest select $questID innerTarget select $targetID editor target in edit "+it.lowercase()+" page 0").newLine()
+                   json.runCommand("/qen eval quest select $questID target select $targetID editor target in edit "+it.lowercase()+" page 0").newLine()
                }
                else -> {
-                   json.runCommand("/qen eval quest select $questID innerTarget select $targetID editor target in edit "+it.lowercase()).newLine()
+                   json.runCommand("/qen eval quest select $questID target select $targetID editor target in edit "+it.lowercase()).newLine()
                }
            }
        }
@@ -58,7 +58,7 @@ object EditorTarget {
                    asLangText("EDITOR-TARGET-LIST-NODE-${node.uppercase()}")))
                    .append("  "+asLangText("EDITOR-TARGET-NODE-META"))
                    .hoverText(asLangText("EDITOR-TARGET-NODE-META-HOVER"))
-                   .runCommand("/qen eval quest select $questID innerTarget select $targetID editor target in sel node to '$node' page 0")
+                   .runCommand("/qen eval quest select $questID target select $targetID editor target in sel node to '$node' page 0")
                    .newLine()
            }else {
                val nodeMeta = target.nodeMeta(node)
@@ -68,7 +68,7 @@ object EditorTarget {
                if (it.nodeType == TargetNodeType.BOOLEAN) {
                    json.hoverText(asLangText("EDITOR-TARGET-NODE-BOOLEAN-HOVER"))
                }else json.hoverText(asLangText("EDITOR-TARGET-NODE-META-HOVER"))
-               json.runCommand("/qen eval quest select $questID innerTarget select $targetID editor target in edit node to '$node'").newLine()
+               json.runCommand("/qen eval quest select $questID target select $targetID editor target in edit node to '$node'").newLine()
            }
        }
         json.newLine().sendTo(adaptPlayer(this))

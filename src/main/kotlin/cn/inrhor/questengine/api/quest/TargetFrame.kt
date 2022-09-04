@@ -2,6 +2,7 @@ package cn.inrhor.questengine.api.quest
 
 import cn.inrhor.questengine.api.ui.UiFrame
 import cn.inrhor.questengine.utlis.variableReader
+import taboolib.common.util.VariableReader
 
 data class TargetFrame(var id: String, var event: String,
                        var period: Int, var async: Boolean, var condition: String,
@@ -14,12 +15,18 @@ data class TargetFrame(var id: String, var event: String,
     val nodeMap: MutableMap<String, MutableList<String>> = mutableMapOf()
 
     fun loadNode() {
+        // {{}}
         node.variableReader().forEach {
             if (it.isEmpty()) return@forEach
-            val sp = it.split("\n", " ")
-            val l = sp.toMutableList()
-            l.removeAt(0)
-            nodeMap[sp[0]] = l
+            // <>
+            val meta = VariableReader("<", ">").readToFlatten(it)[0]
+            if (!meta.isVariable) return@forEach
+            val list = mutableListOf<String>()
+            val content = VariableReader("[[", "]]").readToFlatten(it)
+            content.forEach { c ->
+                if (c.isVariable) list.add(c.text)
+            }
+            nodeMap[meta.text] = list
         }
     }
 
@@ -27,17 +34,20 @@ data class TargetFrame(var id: String, var event: String,
         node = ""
         nodeMap.remove(newNode)
         nodeMap.forEach { (t, u) ->
-            node +="{{$t\n${u.joinToString("\n")}}}"
+            node +="{{<$t>\n[[$u]]\n}}"
         }
         nodeMap[newNode] = newList
-        node +="{{$newNode\n${newList.joinToString("\n")}}}"
+        if (newList.isEmpty()) return
+        node +="{{<$newNode>"
+        newList.forEach {
+            node += "[[$it]]"
+        }
+        node += "}}"
     }
 
     fun nodeMeta(meta: String): MutableList<String>? {
         if (nodeMap.containsKey(meta)) {
-            val list = nodeMap[meta]!!
-            list.remove("")
-            return list
+            return nodeMap[meta]!!
         }
         return null
     }

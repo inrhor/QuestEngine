@@ -118,7 +118,7 @@ class EditorTarget(val ui: ActionEditor.TargetUi, vararg val variable: String, v
                 sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-TARGET-ID"))) {
                     val quest = questID.getQuestFrame()
                     val id = it[1]
-                    if (quest.existTargetID(id)) {
+                    if (quest.existTargetID(id) || id.isEmpty()) {
                         sender.sendLang("EXIST-TARGET-ID", UtilString.pluginTag, id)
                         return@inputSign
                     }

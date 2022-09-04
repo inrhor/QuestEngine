@@ -5,10 +5,11 @@ import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.api.target.util.Schedule
 import cn.inrhor.questengine.api.target.util.TriggerUtils.itemTrigger
 import cn.inrhor.questengine.common.database.data.doingTargets
-import cn.inrhor.questengine.utlis.bukkit.ItemCheck
+import cn.inrhor.questengine.utlis.bukkit.ItemMatch
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.CraftItemEvent
 import org.bukkit.inventory.ItemStack
+import taboolib.common5.Demand
 
 object TCraftItem: TargetExtend<CraftItemEvent>() {
 
@@ -45,7 +46,7 @@ object TCraftItem: TargetExtend<CraftItemEvent>() {
 
     fun itemsMatch(s: List<String>, itemStack: ItemStack): Boolean {
         s.forEach {
-            if (ItemCheck.itemCheckSplit(it).match(itemStack, false)) return true
+            if (ItemMatch(Demand(it)).check(itemStack, false)) return true
         }
         return false
     }

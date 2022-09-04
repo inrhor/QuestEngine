@@ -33,7 +33,7 @@ class KetherStrMatch(val type: Type, val target: ParsedAction<*>, val source: Pa
      * strMatch type all/contains is *... *...
      */
     internal object Parser {
-        @KetherParser(["strMatch"], namespace = "QuestEngine")
+        @KetherParser(["strMatch"])
         fun parser() = scriptParser {
             it.mark()
             it.expect("type")

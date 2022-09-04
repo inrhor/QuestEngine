@@ -70,10 +70,10 @@ quest:
       id: a
       event: break block
       node: |
-        {{block
-        stone
-        chest}}
-        {{amount 3}}
+        {{<block>
+        [[stone]]
+        [[chest]]}}
+        {{<amount>[[3]]}}
       ui:
         part:
           - id: desc
