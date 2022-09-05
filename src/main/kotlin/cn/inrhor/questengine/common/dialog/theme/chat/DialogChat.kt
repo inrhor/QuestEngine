@@ -5,12 +5,14 @@ import cn.inrhor.questengine.api.dialog.theme.DialogTheme
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.dialog.DialogManager.refresh
 import cn.inrhor.questengine.common.dialog.DialogManager.setId
+import cn.inrhor.questengine.utlis.variableReader
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import taboolib.common.platform.function.adaptPlayer
 import taboolib.common.platform.function.submit
+import taboolib.common5.Demand
 import taboolib.common5.util.printed
 import taboolib.module.chat.TellrawJson
 import taboolib.module.chat.colored
@@ -42,18 +44,72 @@ class DialogChat(
 
     fun textViewer(viewer: Player) {
         val content = dialogModule.dialog
-        val list = mutableListOf<List<String>>()
-        content.forEach {
-            list.add(it.replacePlaceholder(viewer).colored().printed())
+        val list = mutableListOf<MutableList<DataText>>()
+        for (element in content) {
+            val c = element.replacePlaceholder(viewer).colored()
+            val line = mutableListOf<DataText>()
+            c.variableReader().forEach { v ->
+                val d = Demand(v)
+                val s = d.get(0)?: ""
+                val t = DisplayType.valueOf(d.namespace.uppercase())
+                line.add(DataText(t, s))
+            }
+            list.add(line)
         }
         parserContent(viewer, list)
     }
 
-    fun parserContent(viewer: Player, list: MutableList<List<String>>, index: Int = 0) {
+    /**
+     * @param index 当前行打印的序号
+     */
+    fun parserContent(viewer: Player, list: MutableList<MutableList<DataText>>, line: Int = 0, index: Int = 0) {
+        if (!viewer.isOnline) return
+        submit(async = true, delay = 3L) {
+            val tellrawJson = TellrawJson()
+            tellrawJson.refresh()
+            var newLine = line
+            for (e in 0 until list.size) { // 行
+                val data = list[e]
+                for (d in 0 until data.size) {
+                    val it = data[d]
+                    if (it.type == DisplayType.ANIMATION) {
+                        if (line == e) {
+                            tellrawJson.append(it.context[index])
+                        }else if (line > e) {
+                            tellrawJson.append(it.context.last())
+                        }
+                    }else {
+                        tellrawJson.append(it.s)
+                    }
+                    if (d >= data.size-1 && line >= e) {
+                        if (it.type == DisplayType.ANIMATION) {
+                            if (it.context.size-1 <= index) newLine++
+                        }else {
+                            newLine++
+                        }
+                    }
+                }
+                tellrawJson.newLine()
+            }
+            json = tellrawJson
+            tellrawJson.setId().sendTo(adaptPlayer(viewer))
+            val size = list.size
+            if (size-1 == 0 || size-1 < line) {
+                replyChat.play()
+                return@submit
+            }
+            val ex = if (newLine > line) 0 else index+1
+            parserContent(viewer, list, newLine, ex)
+        }
+    }
+
+
+
+    /*fun parserContent(viewer: Player, list: MutableList<List<String>>, index: Int = 0) {
         val size = list.size
         if (list.isEmpty()) TellrawJson().refresh()
         json = TellrawJson().refresh()
-        if (index>0) {
+        if (index > 0) {
             for (i in 0 until index) {
                 json.append(list[i].last()).newLine()
             }
@@ -75,7 +131,7 @@ class DialogChat(
                 parserContent(viewer, element, index+1)
             }
         }
-    }
+    }*/
 
     override fun end() {
         viewers.forEach {
@@ -96,6 +152,18 @@ class DialogChat(
 
     override fun deleteViewer(viewer: Player) {
         viewers.remove(viewer)
+    }
+
+    class DataText(val type: DisplayType, val s: String, var context: List<String> = listOf()) {
+
+        init {
+            if (type == DisplayType.ANIMATION) context = s.printed()
+        }
+
+    }
+
+    enum class DisplayType {
+        STATIC, ANIMATION
     }
 
 }

@@ -29,20 +29,22 @@ class ReplyChat(val dialogChat: DialogChat, val reply: List<ReplyModule>): Reply
         for (i in reply.indices) {
             val r = reply[i]
             if (runEvalSet(viewers, r.condition)) {
+                val isEnd = i >= reply.size-1
                 if (has == dialogChat.scrollIndex) {
-                    handleContent(viewers, r, r.tagChoose)
-                }else handleContent(viewers, r, r.tagDefault); has++
+                    handleContent(viewers, r, r.tagChoose, isEnd)
+                }else handleContent(viewers, r, r.tagDefault, isEnd); has++
             }else has ++
         }
     }
 
-    private fun handleContent(viewers: MutableSet<Player>, replyModule: ReplyModule, prefix: String) {
+    private fun handleContent(viewers: MutableSet<Player>, replyModule: ReplyModule, prefix: String, isEnd: Boolean) {
         viewers.forEach {
             val list = replyModule.content
             val json = TellrawJson()
             for (i in 0 until list.size) {
                 json.append((prefix+list[i]).replacePlaceholder(it).colored())
             }
+            if (isEnd) json.newLine()
             json.setId().sendTo(adaptPlayer(it))
         }
     }

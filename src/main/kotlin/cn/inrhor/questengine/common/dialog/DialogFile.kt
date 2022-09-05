@@ -15,7 +15,8 @@ import java.io.File
 object DialogFile {
 
     fun loadDialog() {
-        val dialogFolder = FileUtil.getFile("space/dialog/", "DIALOG-NO_FILES", true)
+        val dialogFolder = FileUtil.getFile("space/dialog/", "DIALOG-NO_FILES", true,
+            "chat", "hologram")
 
         FileUtil.getFileList(dialogFolder).forEach{
             checkRegDialog(it, dialogFolder)
