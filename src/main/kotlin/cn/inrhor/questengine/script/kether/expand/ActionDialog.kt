@@ -16,7 +16,7 @@ object ActionDialog {
      * dialog end
      */
     internal object Parser {
-        @KetherParser(["dialog"])
+        @KetherParser(["dialog"], shared = true)
         fun parser() = scriptParser {
             it.switch {
                 case("select") {

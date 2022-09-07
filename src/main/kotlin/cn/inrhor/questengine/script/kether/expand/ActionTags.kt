@@ -37,7 +37,7 @@ class ActionTags {
      * tags add/remove/has [tag]
      */
     internal object Parser {
-        @KetherParser(["tags"])
+        @KetherParser(["tags"], shared = true)
         fun parser() = scriptParser {
             it.mark()
             when (it.expects("add", "remove", "has")) {

@@ -31,6 +31,7 @@ taboolib {
             name("ProtocolLib").optional(true)
             name("PlaceholderAPI").optional(true)
             name("BigDoors").optional(true)
+            name("WorldGuard").optional(true)
         }
         prefix("QuestEngine")
     }
@@ -41,6 +42,7 @@ taboolib {
 repositories {
     mavenCentral()
     maven("https://repo.dmulloy2.net/repository/public/") // ProtocolLib
+    maven("https://maven.enginehub.org/repo/") // WorldGuard
 }
 
 dependencies {
@@ -60,6 +62,7 @@ dependencies {
     compileOnly("ink.ptms:Adyeshach:1.4.21")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.0")
     compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 }
 
