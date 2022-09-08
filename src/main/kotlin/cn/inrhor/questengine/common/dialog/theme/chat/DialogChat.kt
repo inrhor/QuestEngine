@@ -6,17 +6,12 @@ import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.dialog.DialogManager.refresh
 import cn.inrhor.questengine.common.dialog.DialogManager.setId
 import cn.inrhor.questengine.utlis.variableReader
-import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import taboolib.common.platform.function.adaptPlayer
-import taboolib.common.platform.function.info
 import taboolib.common.platform.function.submit
-import taboolib.common.util.addSafely
-import taboolib.common.util.setSafely
-import taboolib.common5.Demand
 import taboolib.common5.util.printed
 import taboolib.module.chat.TellrawJson
 import taboolib.module.chat.colored
@@ -66,6 +61,10 @@ class DialogChat(
     fun parserContent(viewer: Player, list: MutableList<MutableList<DataText>>, line: Int = 0) {
         if (!viewer.isOnline) return
         submit(delay = 3L) {
+            if (finishParser(list)) {
+                replyChat.play()
+                return@submit
+            }
             val tellrawJson = TellrawJson()
             tellrawJson.refresh() // 清除聊天框
             tellrawJson.append("")
@@ -82,74 +81,25 @@ class DialogChat(
                         }
                     }else {
                         tellrawJson.append(tag.s)
+                        tag.finish = true
                     }
                 }
                 tellrawJson.newLine()
             }
             tellrawJson.setId().sendTo(adaptPlayer(viewer))
-            val l = staticLine+newLine
-            info("n $l  s "+list.size)
-            if (l >= list.size) {
-                replyChat.play()
-                return@submit
-            }
+            json = tellrawJson
             parserContent(viewer, list, newLine)
         }
     }
 
-    /**
-     * @param index 当前行打印的序号
-     */
-    /*fun parserContent(viewer: Player, list: MutableList<MutableList<DataText>>, line: Int = 0, index: Int = 0) {
-        if (!viewer.isOnline) return
-        submit(delay = 3L) {
-            val tellrawJson = TellrawJson()
-            tellrawJson.refresh()
-            val size = list.size
-            info("size $size line $line")
-            if (size <= line) {
-                replyChat.play()
-                return@submit
+    fun finishParser(list: MutableList<MutableList<DataText>>): Boolean {
+        list.forEach {
+            it.forEach { d ->
+                if (!d.finish) return false
             }
-            var newLine = line
-            for (e in 0 until list.size) { // 行
-                val data = list[e]
-                for (d in 0 until data.size) {
-                    val it = data[d]
-                    if (it.type == DisplayType.ANIMATION) {
-                        if (line == e) {
-                            tellrawJson.append(it.context[index])
-                        }else if (line > e) {
-                            tellrawJson.append(it.context.last())
-                        }
-                    }else {
-                        tellrawJson.append(it.s)
-                    }
-                    info("??? "+it.s)
-//                    info("标签 $d  限量标签 "+(data.size-1)+"  终行 $line 当前行 $e")
-                    info("line $line  e $e   "+(line <= e))
-                    info("d $d  size "+(data.size-1))
-                    if (d >= data.size-1 && line <= e) {
-                        if (it.type == DisplayType.ANIMATION) {
-                            info("si "+(it.context.size-1)+"   index $index")
-                            if (it.context.size-1 <= index) {
-                                info("newLine")
-                                newLine++
-                            }
-                        }else {
-                            info("newLine++++")
-                            newLine++
-                        }
-                    }
-                }
-                tellrawJson.newLine()
-            }
-            json = tellrawJson
-            tellrawJson.setId().sendTo(adaptPlayer(viewer))
-            val ex = if (newLine > line) 0 else index+1
-            parserContent(viewer, list, newLine, ex)
         }
-    }*/
+        return true
+    }
 
     override fun end() {
         viewers.forEach {
