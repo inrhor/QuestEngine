@@ -6,12 +6,16 @@ import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.dialog.DialogManager.refresh
 import cn.inrhor.questengine.common.dialog.DialogManager.setId
 import cn.inrhor.questengine.utlis.variableReader
+import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import taboolib.common.platform.function.adaptPlayer
+import taboolib.common.platform.function.info
 import taboolib.common.platform.function.submit
+import taboolib.common.util.addSafely
+import taboolib.common.util.setSafely
 import taboolib.common5.Demand
 import taboolib.common5.util.printed
 import taboolib.module.chat.TellrawJson
@@ -49,9 +53,9 @@ class DialogChat(
             val c = element.replacePlaceholder(viewer).colored()
             val line = mutableListOf<DataText>()
             c.variableReader().forEach { v ->
-                val d = Demand(v)
-                val s = d.get(0)?: ""
-                val t = DisplayType.valueOf(d.namespace.uppercase())
+                val o = v.variableReader("[[", "]]")
+                val t = DisplayType.valueOf(o[0].uppercase())
+                val s = o[1]
                 line.add(DataText(t, s))
             }
             list.add(line)
@@ -59,14 +63,54 @@ class DialogChat(
         parserContent(viewer, list)
     }
 
+    fun parserContent(viewer: Player, list: MutableList<MutableList<DataText>>, line: Int = 0) {
+        if (!viewer.isOnline) return
+        submit(delay = 3L) {
+            val tellrawJson = TellrawJson()
+            tellrawJson.refresh() // 清除聊天框
+            tellrawJson.append("")
+            var newLine = line
+            for (l in 0 until list.size) { // 每行
+                val theLine = list[l]
+                theLine.forEach { tag -> //每独立标签
+                    if (tag.type == DisplayType.ANIMATION) {
+                        if (l < line) {
+                            tellrawJson.append(tag.textFrame())
+                        }else if (l == line) {
+                            tellrawJson.append(tag.textFrame())
+                            if (tag.finish) newLine++
+                        }
+                    }else {
+                        tellrawJson.append(tag.s)
+                    }
+                }
+                tellrawJson.newLine()
+            }
+            tellrawJson.setId().sendTo(adaptPlayer(viewer))
+            val l = staticLine+newLine
+            info("n $l  s "+list.size)
+            if (l >= list.size) {
+                replyChat.play()
+                return@submit
+            }
+            parserContent(viewer, list, newLine)
+        }
+    }
+
     /**
      * @param index 当前行打印的序号
      */
-    fun parserContent(viewer: Player, list: MutableList<MutableList<DataText>>, line: Int = 0, index: Int = 0) {
+    /*fun parserContent(viewer: Player, list: MutableList<MutableList<DataText>>, line: Int = 0, index: Int = 0) {
         if (!viewer.isOnline) return
-        submit(async = true, delay = 3L) {
+        submit(delay = 3L) {
             val tellrawJson = TellrawJson()
             tellrawJson.refresh()
+            val size = list.size
+            info("size $size line $line")
+            if (size <= line) {
+                replyChat.play()
+                return@submit
+            }
             var newLine = line
             for (e in 0 until list.size) { // 行
                 val data = list[e]
@@ -81,10 +125,19 @@ class DialogChat(
                     }else {
                         tellrawJson.append(it.s)
                     }
-                    if (d >= data.size-1 && line >= e) {
+                    info("??? "+it.s)
+//                    info("标签 $d  限量标签 "+(data.size-1)+"  终行 $line 当前行 $e")
+                    info("line $line  e $e   "+(line <= e))
+                    info("d $d  size "+(data.size-1))
+                    if (d >= data.size-1 && line <= e) {
                         if (it.type == DisplayType.ANIMATION) {
-                            if (it.context.size-1 <= index) newLine++
+                            info("si "+(it.context.size-1)+"   index $index")
+                            if (it.context.size-1 <= index) {
+                                info("newLine")
+                                newLine++
+                            }
                         }else {
+                            info("newLine++++")
                             newLine++
                         }
                     }
@@ -93,43 +146,8 @@ class DialogChat(
             }
             json = tellrawJson
             tellrawJson.setId().sendTo(adaptPlayer(viewer))
-            val size = list.size
-            if (size-1 == 0 || size-1 < line) {
-                replyChat.play()
-                return@submit
-            }
             val ex = if (newLine > line) 0 else index+1
             parserContent(viewer, list, newLine, ex)
-        }
-    }
-
-
-
-    /*fun parserContent(viewer: Player, list: MutableList<List<String>>, index: Int = 0) {
-        val size = list.size
-        if (list.isEmpty()) TellrawJson().refresh()
-        json = TellrawJson().refresh()
-        if (index > 0) {
-            for (i in 0 until index) {
-                json.append(list[i].last()).newLine()
-            }
-        }
-        if (size-1 == 0 || size-1 < index) {
-            replyChat.play()
-            return
-        }
-        textSend(viewer, list, index, list[index], 0)
-    }
-
-    private fun textSend(viewer: Player, element: MutableList<List<String>>, index: Int, list: List<String>, line: Int) {
-        submit(async = true, delay = 3L) {
-            val new = TellrawJson()
-            new.append(json).append(list[line]).newLine().setId().sendTo(adaptPlayer(viewer))
-            if (line != list.size-1) {
-                textSend(viewer, element, index, list, line+1)
-            }else {
-                parserContent(viewer, element, index+1)
-            }
         }
     }*/
 
@@ -154,7 +172,18 @@ class DialogChat(
         viewers.remove(viewer)
     }
 
-    class DataText(val type: DisplayType, val s: String, var context: List<String> = listOf()) {
+    class DataText(val type: DisplayType, val s: String, var context: List<String> = listOf(),
+                   var finish: Boolean = false, var frame: Int = 0) {
+
+        fun textFrame(): String {
+            return if (frame <= context.size-1) {
+                frame++
+                context[frame-1]
+            }else {
+                finish = true
+                context.last()
+            }
+        }
 
         init {
             if (type == DisplayType.ANIMATION) context = s.printed()

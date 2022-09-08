@@ -14,10 +14,11 @@ object ChatCacheListener {
 
     @SubscribeEvent
     fun prevent(ev: PacketSendEvent) {
+        if (MinecraftVersion.major < 10) return // 仅限1.18+使用
         if (ev.packet.name == "PacketPlayOutChat" && ev.packet.read<Any>("b").toString() != "GAME_INFO") {
             var a = ev.packet.read<Any>("a").toString()
             if (a == "null") {
-                if (MinecraftVersion.major >= 10 || MinecraftVersion.majorLegacy < 11700) {
+                if (MinecraftVersion.major >= 10/* || MinecraftVersion.majorLegacy < 11700*/) {
                     kotlin.runCatching {
                         a = Coerce.toList(ev.packet.read<Any>("components")).toString()
                     }

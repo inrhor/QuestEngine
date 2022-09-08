@@ -17,8 +17,8 @@ chatDialog1:
   type: chat
   # 关于对话 如下是全息对话示例
   dialog:
-    - '{{static 静态文字占位}}{{animation &a测试对话}}'
-    - '{{animation Hello}}'
+    - "{{static 静态文字占位}}{{animation &a测试对话}}"
+    - "{{animation Hello}}"
   # 关于回复
   reply:
     -

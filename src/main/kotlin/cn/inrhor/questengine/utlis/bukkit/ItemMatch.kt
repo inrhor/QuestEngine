@@ -1,17 +1,20 @@
 package cn.inrhor.questengine.utlis.bukkit
 
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.common5.Demand
 import taboolib.platform.util.isNotAir
 
 class ItemMatch(val itemType: ItemType = ItemType.MINECRAFT,
+                val material: Material?,
                 val displayName: String?,
                 val loreContains: String?,
                 val customModelData: Int?,
                 val amount: Int?) {
 
     constructor(d: Demand): this(ItemType.valueOf(d.namespace),
+        d.get("material")?.uppercase()?.let { Material.valueOf(it) },
         d.get("displayName"),
         d.get("loreContains"),
         d.get("customModelData")?.toInt(),
@@ -23,6 +26,7 @@ class ItemMatch(val itemType: ItemType = ItemType.MINECRAFT,
 
             }
         }*/
+        if (material != null && itemStack.type != material) return false
         val meta = itemStack.itemMeta
         if (displayName != null && displayName != meta?.displayName) return false
         if (loreContains != null && meta?.lore?.contains(loreContains) == false) return false
@@ -30,7 +34,7 @@ class ItemMatch(val itemType: ItemType = ItemType.MINECRAFT,
             if (meta?.customModelData != customModelData) return false
         }
         if (amount != null && itemStack.amount < amount) return false
-        itemStack.amount -= 1
+        if (take) itemStack.amount -= 1
         return true
     }
 

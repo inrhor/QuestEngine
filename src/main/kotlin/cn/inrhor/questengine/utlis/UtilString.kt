@@ -62,9 +62,9 @@ fun MutableList<String>.copy(): MutableList<String> {
     return list
 }
 
-fun String.variableReader(): MutableList<String> {
+fun String.variableReader(star: String = "{{", end: String = "}}"): MutableList<String> {
     val list = mutableListOf<String>()
-    VariableReader().readToFlatten(this).forEach {
+    VariableReader(star, end).readToFlatten(this).forEach {
         if (it.isVariable) list.add(it.text)
     }
     return list

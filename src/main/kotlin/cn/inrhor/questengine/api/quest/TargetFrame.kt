@@ -22,7 +22,7 @@ data class TargetFrame(var id: String, var event: String,
             val meta = VariableReader("<", ">").readToFlatten(it)[0]
             if (!meta.isVariable) return@forEach
             val list = mutableListOf<String>()
-            val content = VariableReader("[[", "]]").readToFlatten(it)
+            val content = VariableReader("[", "]").readToFlatten(it)
             content.forEach { c ->
                 if (c.isVariable) list.add(c.text)
             }
@@ -34,13 +34,13 @@ data class TargetFrame(var id: String, var event: String,
         node = ""
         nodeMap.remove(newNode)
         nodeMap.forEach { (t, u) ->
-            node +="{{<$t>\n[[$u]]\n}}"
+            node +="{{<$t>\n[$u]\n}}"
         }
         nodeMap[newNode] = newList
         if (newList.isEmpty()) return
         node +="{{<$newNode>"
         newList.forEach {
-            node += "[[$it]]"
+            node += "[$it]"
         }
         node += "}}"
     }
