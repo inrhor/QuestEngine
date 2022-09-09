@@ -22,12 +22,13 @@ object QuestFile {
      */
     fun loadQuest() {
         val questFolder = FileUtil.getFile("space/quest")
-        val lists = questFolder.listFiles()?: return run {
+        val list = FileUtil.getFileList(questFolder)
+        if (list.isEmpty()) {
             console().sendLang("QUEST-NO_FILES", UtilString.pluginTag)
             QuestEngine.resource.releaseResourceFile("space/quest/crop1.yml", true)
             loadQuest()
         }
-        lists.forEach {
+        FileUtil.getFileList(questFolder).forEach {
             checkRegQuest(it)
         }
         QuestManager.extendsQuest.forEach {
