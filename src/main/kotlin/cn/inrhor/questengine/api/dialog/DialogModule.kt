@@ -16,7 +16,7 @@ class DialogModule(
 
     lateinit var dialogID: String
 
-     val type: String = "holo"
+     var type: String = "chat"
 
    fun register() {
        DialogManager.register(dialogID, this)

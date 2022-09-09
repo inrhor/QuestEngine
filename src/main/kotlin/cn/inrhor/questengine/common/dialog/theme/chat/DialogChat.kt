@@ -3,6 +3,7 @@ package cn.inrhor.questengine.common.dialog.theme.chat
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.api.dialog.theme.DialogTheme
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
+import cn.inrhor.questengine.common.dialog.DialogManager
 import cn.inrhor.questengine.common.dialog.DialogManager.refresh
 import cn.inrhor.questengine.common.dialog.DialogManager.setId
 import cn.inrhor.questengine.utlis.variableReader
@@ -25,12 +26,14 @@ class DialogChat(
     override val viewers: MutableSet<Player>,
     override val npcLoc: Location,
     var scrollIndex: Int = 0,
+    var playing: Boolean = false,
     var json: TellrawJson = TellrawJson()
 ): DialogTheme(type = Type.Chat) {
 
     val replyChat: ReplyChat = ReplyChat(this, dialogModule.reply)
 
     override fun play() {
+        playing = true
         viewers.forEach {
             textViewer(it)
             val pData = it.getPlayerData()
@@ -39,6 +42,7 @@ class DialogChat(
             it.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, Int.MAX_VALUE, 1))
             it.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, Int.MAX_VALUE, 1))
         }
+        DialogManager.spaceDialog(dialogModule, this)
     }
 
     fun textViewer(viewer: Player) {
@@ -58,33 +62,39 @@ class DialogChat(
         parserContent(viewer, list)
     }
 
-    fun parserContent(viewer: Player, list: MutableList<MutableList<DataText>>, line: Int = 0) {
+    fun parserContent(viewer: Player, list: MutableList<MutableList<DataText>>, frameLine: Int = 0) {
         if (!viewer.isOnline) return
         submit(delay = 3L) {
             if (finishParser(list)) {
+                playing = false
                 replyChat.play()
                 return@submit
             }
             val tellrawJson = TellrawJson()
             tellrawJson.refresh() // 清除聊天框
             tellrawJson.append("")
-            var newLine = line
+            var newLine = 0
+            var hasAnimation = false
             for (l in 0 until list.size) { // 每行
                 val theLine = list[l]
                 theLine.forEach { tag -> //每独立标签
                     if (tag.type == DisplayType.ANIMATION) {
-                        if (l < line) {
+                        if (l < frameLine) {
                             tellrawJson.append(tag.textFrame())
-                        }else if (l == line) {
+                        }else if (l == frameLine) {
                             tellrawJson.append(tag.textFrame())
-                            if (tag.finish) newLine++
                         }
+                        if (tag.finish) newLine++
+                        hasAnimation = true
                     }else {
                         tellrawJson.append(tag.s)
                         tag.finish = true
                     }
                 }
                 tellrawJson.newLine()
+                if (!hasAnimation) {
+                    newLine++
+                }
             }
             tellrawJson.setId().sendTo(adaptPlayer(viewer))
             json = tellrawJson
@@ -106,10 +116,8 @@ class DialogChat(
             val pData = it.getPlayerData()
             pData.chatCache.close(it)
             pData.dialogData.dialogMap.remove(dialogModule.dialogID)
-            submit {
-                it.removePotionEffect(PotionEffectType.BLINDNESS)
-                it.removePotionEffect(PotionEffectType.INVISIBILITY)
-            }
+            it.removePotionEffect(PotionEffectType.BLINDNESS)
+            it.removePotionEffect(PotionEffectType.INVISIBILITY)
         }
         viewers.clear()
     }

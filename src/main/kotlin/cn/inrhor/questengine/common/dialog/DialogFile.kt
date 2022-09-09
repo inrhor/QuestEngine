@@ -71,6 +71,9 @@ object DialogFile {
             if (!file.contains("$dialogID.reply")) {
                 if (hookSection.contains("reply")) waitMap[dialogID] = hookID else dialogModule.reply = mutableListOf()
             }
+            if (!file.contains("$dialogID.type")) {
+                if (hookSection.contains("type")) dialogModule.type = hookSection.getString("type")?: "chat"
+            }
         }
         dialogModule.register()
     }

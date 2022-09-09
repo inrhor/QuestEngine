@@ -7,12 +7,10 @@ import cn.inrhor.questengine.common.quest.manager.QuestManager.finishQuest
 import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestFrame
 import cn.inrhor.questengine.common.quest.manager.QuestManager.quitQuest
 import cn.inrhor.questengine.script.kether.*
+import cn.inrhor.questengine.script.kether.player
 import cn.inrhor.questengine.utlis.time.remainDate
 import taboolib.library.kether.ArgTypes
-import taboolib.module.kether.KetherParser
-import taboolib.module.kether.actionNow
-import taboolib.module.kether.scriptParser
-import taboolib.module.kether.switch
+import taboolib.module.kether.*
 import taboolib.platform.util.asLangText
 
 object ActionQuest {
@@ -64,11 +62,24 @@ object ActionQuest {
                 }
             }
             case("state") {
-                actionNow {
-                    try {
-                        player().questData(selectQuestID()).state.toUnit(player())
-                    }catch (ex: Exception) {
-                        StateType.NOT_ACCEPT.toUnit(player())
+                try {
+                    it.mark()
+                    it.expect("lang")
+                    actionNow {
+                        try {
+                            player().questData(selectQuestID()).state.toUnit(player())
+                        }catch (ex: Exception) {
+                            StateType.NOT_ACCEPT.toUnit(player())
+                        }
+                    }
+                }catch (ex: Exception) {
+                    it.reset()
+                    actionNow {
+                        try {
+                            player().questData(selectQuestID()).state.toString()
+                        }catch (ex: Exception) {
+                            StateType.NOT_ACCEPT.toString()
+                        }
                     }
                 }
             }

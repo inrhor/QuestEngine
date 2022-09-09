@@ -144,7 +144,7 @@ object DialogManager {
         val space = dialogModule.space
         if (!space.enable) return
         val id = dialogModule.dialogID
-        submit(async = true, period = 5L) {
+        submit(period = 5L) {
             val viewers = dialogTheme.viewers
             if (viewers.isEmpty()) {
                 cancel(); return@submit

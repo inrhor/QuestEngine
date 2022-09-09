@@ -21,7 +21,6 @@ class ReplyChat(val dialogChat: DialogChat, val reply: List<ReplyModule>): Reply
         }
         sendReply(dialogChat.viewers)
         DialogManager.sendBarHelp(dialogChat)
-        DialogManager.spaceDialog(dialogChat.dialogModule, dialogChat)
     }
 
     fun sendReply(viewers: MutableSet<Player>) {

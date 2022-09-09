@@ -8,7 +8,7 @@ already:
   part:
     - id: desc
       note:
-        - "任务状态： %qen_quest select {{questID}} quest state%"
+        - "任务状态： %qen_quest select {{questID}} quest state lang%"
         - ""
         - "#group-desc-note"
         - "#quest-desc-note"

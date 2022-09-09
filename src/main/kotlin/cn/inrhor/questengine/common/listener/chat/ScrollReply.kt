@@ -20,6 +20,7 @@ object ScrollReply {
         pData.dialogData.dialogMap.values.forEach {
             if (it.type == DialogTheme.Type.Chat) {
                 val chat = it as DialogChat
+                if (chat.playing) return
                 val index = it.scrollIndex
                 val size = chat.dialogModule.reply.size
                 var select: Int
