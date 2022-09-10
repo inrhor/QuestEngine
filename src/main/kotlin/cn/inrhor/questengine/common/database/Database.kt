@@ -51,10 +51,14 @@ abstract class Database {
 
         @SubscribeEvent
         fun join(ev: PlayerJoinEvent) {
-            val uuid = ev.player.uniqueId
+            playerPull(ev.player)
+        }
+
+        fun playerPull(player: Player) {
+            val uuid = player.uniqueId
             val pData = PlayerData(uuid)
             DataStorage.addPlayerData(uuid, pData)
-            database.pull(ev.player)
+            database.pull(player)
         }
 
         @SubscribeEvent

@@ -34,11 +34,23 @@ object ActionTarget {
                 }
             }
             case("state") {
-                actionNow {
-                    try {
-                        player().targetData(selectQuestID(), selectTargetID()).state.toUnit(player())
-                    }catch (ex: Exception) {
-                        StateType.NOT_ACCEPT.toUnit(player())
+                try {
+                    it.mark()
+                    it.expect("lang")
+                    actionNow {
+                        try {
+                            player().targetData(selectQuestID(), selectTargetID()).state.toUnit(player())
+                        }catch (ex: Exception) {
+                            StateType.NOT_ACCEPT.toUnit(player())
+                        }
+                    }
+                }catch (ex: Exception) {
+                    actionNow {
+                        try {
+                            player().targetData(selectQuestID(), selectTargetID()).state.toString()
+                        }catch (ex: Exception) {
+                            StateType.NOT_ACCEPT.toString()
+                        }
                     }
                 }
             }

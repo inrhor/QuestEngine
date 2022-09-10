@@ -1,6 +1,10 @@
 package cn.inrhor.questengine.server
 
 import cn.inrhor.questengine.QuestEngine
+import cn.inrhor.questengine.common.database.Database
+import cn.inrhor.questengine.common.database.Database.Companion.database
+import cn.inrhor.questengine.common.database.data.DataStorage
+import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.type.DatabaseManager
 import cn.inrhor.questengine.common.dialog.DialogFile
 import cn.inrhor.questengine.common.dialog.DialogManager
@@ -20,29 +24,16 @@ import kotlin.system.measureTimeMillis
 
 object PluginLoader {
 
-    private var reloading = false
-
-    fun isReloading() = reloading
-
-    @Awake(LifeCycle.ENABLE)
-    fun init() {
+    fun loadTask(logo: Boolean = true) {
+        if (logo) {
+            ConsoleMsg.logo()
+        }
         val version = MinecraftVersion.major
-        ConsoleMsg.logoSend(version)
+        ConsoleMsg.loadSend(version)
         if (version <= 3) {
             disablePlugin()
             return
         }
-        doLoad()
-        DatabaseManager.init()
-    }
-
-    @Awake(LifeCycle.DISABLE)
-    fun cancel() {
-        Bukkit.getScheduler().cancelTasks(QuestEngine.plugin)
-        clearMap()
-    }
-
-    private fun doLoad() {
         UtilString.updateLang().forEach {
             UpdateYaml.run("lang/$it.yml")
         }
@@ -56,16 +47,33 @@ object PluginLoader {
             }
             console().sendLang("LOADER-TIME_COST", UtilString.pluginTag, timeCost)
         }
+        DatabaseManager.init()
+        Bukkit.getOnlinePlayers().forEach {
+            Database.playerPull(it)
+        }
     }
 
-    fun doReload() {
-        if (reloading) {
-            throw RuntimeException("reloading")
+    fun unloadTask() {
+        ConsoleMsg.logo()
+        Bukkit.getOnlinePlayers().forEach {
+            val data = it.getPlayerData()
+            data.dialogData.dialogMap.values.forEach { d -> d.end() }
+            data.navData.values.forEach { n -> n.stop() }
+            database.push(it)
+            DataStorage.removePlayerData(it.uniqueId)
         }
-        reloading = true
         clearMap()
-        doLoad()
-        reloading = false
+        Bukkit.getScheduler().cancelTasks(QuestEngine.plugin)
+    }
+
+    @Awake(LifeCycle.LOAD)
+    fun init() {
+        loadTask()
+    }
+
+    @Awake(LifeCycle.DISABLE)
+    fun cancel() {
+        unloadTask()
     }
 
     private fun clearMap() {

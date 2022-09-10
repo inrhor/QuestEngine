@@ -23,10 +23,6 @@ data class TimeAddon(var type: Type = Type.ALWAYS, var duration: String = "") {
         timeDate = Date()
         if (type != Type.ALWAYS) {
             submit(period = 20L, async = true) {
-                if (PluginLoader.isReloading()) {
-                    cancel()
-                    return@submit
-                }
                 val sp = duration.split(">")
                 val a = sp[0].split(",")
                 val b = sp[1].split(",")

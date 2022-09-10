@@ -265,6 +265,7 @@ EDITOR-SELECT-PLAYER-JOIN-SERVER: "&f\"&7{0} &f(&7进入服务器&f)\""
 EDITOR-SELECT-PLAYER-QUIT-SERVER: "&f\"&7{0} &f(&7退出服务器&f)\""
 EDITOR-SELECT-PLAYER-FISH: "&f\"&7{0} &f(&7玩家钓鱼&f)\""
 EDITOR-SELECT-CRAFT-FISH: "&f\"&7{0} &f(&7合成物品&f)\""
+EDITOR-SELECT-PLAYER-KILL-MYTHICMOBS: "&f\"&7{0} &f(&7玩家击杀MythicMobs&f)\""
 
 EXIST-TARGET-ID: "{0}&r &6{1} &8该任务已有相同的任务目标ID"
 

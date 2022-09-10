@@ -46,6 +46,7 @@ repositories {
 }
 
 dependencies {
+    taboo("ink.ptms:um:1.0.0-beta-20")
     compileOnly("ink.ptms.core:v11900:11900-minimize:mapped")
     compileOnly("ink.ptms.core:v11701:11701-minimize:mapped")
     compileOnly("ink.ptms.core:v11701:11701-minimize:universal")
