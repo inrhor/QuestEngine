@@ -53,6 +53,47 @@ fun Player.tagsData(): TagsData {
 }
 
 /**
+ * @return 自定义数据集
+ */
+fun Player.storage(): MutableList<StorageData> {
+    return getPlayerData().dataContainer.storage
+}
+
+/**
+ * @return 自定义数据
+ */
+fun Player.getStorageValue(key: String): String {
+    storage().forEach {
+        if (it.key == key) return it.value
+    }
+    return "null"
+}
+
+/**
+ * 设置自定义数据
+ */
+fun Player.setStorage(key: String, value: String) {
+    storage().forEach {
+        if (it.key == key) {
+            it.value = value
+            return
+        }
+    }
+    storage().add(StorageData(key, value))
+}
+
+/**
+ * 删除某些自定义数据
+ */
+fun Player.delStorage(key: String) {
+    val s = storage().iterator()
+    while (s.hasNext()) {
+        if (s.next().key == key) s.remove()
+        break
+    }
+}
+
+/**
  * @return 目标数据
  */
 fun Player.targetData(questID: String, targetID: String): TargetData {

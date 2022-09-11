@@ -4,6 +4,8 @@ import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.quest.*
+import cn.inrhor.questengine.common.database.data.setStorage
+import cn.inrhor.questengine.common.database.data.storage
 import cn.inrhor.questengine.common.database.data.tagsData
 import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.utlis.time.toDate
@@ -88,6 +90,20 @@ class DatabaseSQL: Database() {
         }
     }
 
+    val tableStorage = Table(table + "_storage", host) {
+        add("user") {
+            type(ColumnTypeSQL.INT, 16) {
+                options(ColumnOptionSQL.KEY)
+            }
+        }
+        add("key") {
+            type(ColumnTypeSQL.VARCHAR, 64)
+        }
+        add("value") {
+            type(ColumnTypeSQL.VARCHAR, 64)
+        }
+    }
+
     val source: DataSource by lazy {
         host.createDataSource()
     }
@@ -97,6 +113,7 @@ class DatabaseSQL: Database() {
         tableQuest.workspace(source) { createTable() }.run()
         tableTarget.workspace(source) { createTable() }.run()
         tableTags.workspace(source) { createTable() }.run()
+        tableStorage.workspace(source) { createTable() }.run()
     }
 
     fun userId(player: Player): Long {
@@ -148,6 +165,14 @@ class DatabaseSQL: Database() {
         }.forEach {
             player.tagsData().addTag(it)
         }
+        tableStorage.select(source) {
+            where { "user" eq uId }
+            rows("key", "value")
+        }.map {
+            getString("key") to getString("value")
+        }.forEach {
+            player.setStorage(it.first, it.second)
+        }
     }
 
     private fun returnTargets(qId: Long, questID: String): MutableList<TargetData> {
@@ -190,11 +215,20 @@ class DatabaseSQL: Database() {
             updateTarget(qID, questData)
         }
         player.tagsData().tags.forEach {
-            tableQuest.update(source) {
+            tableTags.update(source) {
                 where {
                     "user" eq uId
                 }
                 set("tag", it)
+            }
+        }
+        player.storage().forEach {
+            tableStorage.update(source) {
+                where {
+                    "user" eq uId
+                }
+                set("key", it.key)
+                set("value", it.value)
             }
         }
     }
