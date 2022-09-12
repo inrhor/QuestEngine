@@ -3,6 +3,7 @@ package cn.inrhor.questengine.common.database.type
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
+import cn.inrhor.questengine.common.database.data.StorageData
 import cn.inrhor.questengine.common.database.data.TagsData
 import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.database.data.storage
@@ -50,7 +51,9 @@ class DatabaseLocal: Database() {
             pData.dataContainer.tags = TagsData(data.getStringList("tags").toMutableSet())
         }
         if (data.contains("storage")) {
-            pData.dataContainer.storage = data.getObject("storage", false)
+            data.getConfigurationSection("storage")?.getKeys(false)?.forEach {
+                pData.dataContainer.storage.add(StorageData(it, data.getString("storage.$it")?: "null"))
+            }
         }
     }
 
@@ -68,7 +71,9 @@ class DatabaseLocal: Database() {
             data.setObject("quest.$t", u)
         }
         data.setObject("tags", dataContainer.tags)
-        data.setObject("storage", dataContainer.storage)
+        dataContainer.storage.forEach {
+            data["storage."+it.key] = it.value
+        }
         data.saveToFile(uuid.playerFile())
     }
 }
