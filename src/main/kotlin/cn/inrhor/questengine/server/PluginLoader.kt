@@ -66,7 +66,7 @@ object PluginLoader {
         Bukkit.getScheduler().cancelTasks(QuestEngine.plugin)
     }
 
-    @Awake(LifeCycle.LOAD)
+    @Awake(LifeCycle.ENABLE)
     fun init() {
         loadTask()
     }

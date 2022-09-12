@@ -37,6 +37,11 @@ class DialogChat(
         viewers.forEach {
             textViewer(it)
             val pData = it.getPlayerData()
+            pData.dialogData.dialogMap.values.forEach { d ->
+                if (d.type == Type.Chat) {
+                    d.end()
+                }
+            }
             pData.dialogData.addDialog(dialogModule.dialogID, this)
             pData.chatCache.open()
             it.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, Int.MAX_VALUE, 1))

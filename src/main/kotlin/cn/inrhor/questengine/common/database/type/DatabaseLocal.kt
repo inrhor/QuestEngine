@@ -46,8 +46,12 @@ class DatabaseLocal: Database() {
                 questData.updateTime(player)
             }
         }
-        pData.dataContainer.tags = TagsData(data.getStringList("tags").toMutableSet())
-        pData.dataContainer.storage = data.getObject("storage", false)
+        if (data.contains("tags")) {
+            pData.dataContainer.tags = TagsData(data.getStringList("tags").toMutableSet())
+        }
+        if (data.contains("storage")) {
+            pData.dataContainer.storage = data.getObject("storage", false)
+        }
     }
 
     override fun push(player: Player) {
