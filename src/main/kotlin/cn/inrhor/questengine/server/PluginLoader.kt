@@ -55,6 +55,7 @@ object PluginLoader {
 
     fun unloadTask() {
         ConsoleMsg.logo()
+        Bukkit.getScheduler().cancelTasks(QuestEngine.plugin)
         Bukkit.getOnlinePlayers().forEach {
             val data = it.getPlayerData()
             data.dialogData.dialogMap.values.forEach { d -> d.end() }
@@ -63,7 +64,6 @@ object PluginLoader {
             DataStorage.removePlayerData(it.uniqueId)
         }
         clearMap()
-        Bukkit.getScheduler().cancelTasks(QuestEngine.plugin)
     }
 
     @Awake(LifeCycle.ENABLE)

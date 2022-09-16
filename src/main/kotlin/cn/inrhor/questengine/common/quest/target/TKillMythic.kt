@@ -18,20 +18,20 @@ object TKillMythic: TargetExtend<MobDeathEvent>() {
             event = MobDeathEvent::class
             tasker{
                 val k = killer?: return@tasker null
-                val player = k as Player
-                player.doingTargets(name).forEach {
+                if (k !is Player ) return@tasker null
+                k.doingTargets(name).forEach {
                     val target = it.getTargetFrame()
                     if (checkName(target, mob.id)) {
-                        Schedule.isNumber(player, name, "number", it)
+                        Schedule.isNumber(k, name, "number", it)
                     }
                 }
-                player
+                k
             }
         }
     }
 
     private fun checkName(target: TargetFrame, name: String): Boolean {
-        val condition = target.nodeMeta("id")?: return true
+        val condition = target.nodeMeta("mobs")?: return true
         return condition.contains(name)
     }
 
