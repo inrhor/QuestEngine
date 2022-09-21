@@ -69,7 +69,7 @@ class DialogChat(
 
     fun parserContent(viewer: Player, list: MutableList<MutableList<DataText>>, frameLine: Int = 0) {
         if (!viewer.isOnline) return
-        submit(delay = 3L) {
+        submit(delay = dialogModule.speed.toLong()) {
             if (finishParser(list)) {
                 playing = false
                 replyChat.play()

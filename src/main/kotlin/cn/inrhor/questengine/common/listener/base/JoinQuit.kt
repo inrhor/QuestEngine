@@ -9,8 +9,6 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import taboolib.common.platform.event.*
 import taboolib.common.platform.function.*
-import taboolib.module.nms.PacketReceiveEvent
-import taboolib.module.nms.PacketSendEvent
 
 object JoinQuit {
 

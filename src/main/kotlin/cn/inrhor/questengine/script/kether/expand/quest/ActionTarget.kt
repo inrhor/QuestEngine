@@ -45,6 +45,7 @@ object ActionTarget {
                         }
                     }
                 }catch (ex: Exception) {
+                    it.reset()
                     actionNow {
                         try {
                             player().targetData(selectQuestID(), selectTargetID()).state.toString()

@@ -5,6 +5,9 @@ chatDialog1:
     - "1"
   # 对话需要满足的触发条件
   condition: ""
+  # 播放速度(整数)
+  # 越少越快
+  speed: 2
   # 对话空间设置
   space:
     # 是否启用

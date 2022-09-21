@@ -11,7 +11,8 @@ class DialogModule(
      var reply: MutableList<ReplyModule> = mutableListOf(),
      var npcIDs: List<String> = listOf(),
      var condition: String = "",
-     var space: SpaceDialogModule = SpaceDialogModule()
+     var space: SpaceDialogModule = SpaceDialogModule(),
+    var speed: Int = 3
 ) {
 
     lateinit var dialogID: String
