@@ -21,13 +21,16 @@ object TriggerUtils {
     /**
      * 条件列表
      *
-     * @return 布尔值，默认true
+     * @return 布尔值，空或满足返回true
      */
-    fun booleanTrigger(player: Player, targetData: TargetData, target: TargetFrame, run: Boolean = true, amount: Int = 1) {
+    fun booleanTrigger(player: Player, targetData: TargetData, target: TargetFrame, run: Boolean = true, amount: Int = 1): Boolean {
         val needCondition = target.nodeMeta("need")?: mutableListOf()
-        if (runEval(player, needCondition) && run) {
-            Schedule.run(player, target.event, targetData, amount)
+        if (needCondition.isEmpty()) return true
+        if (runEval(player, needCondition)) {
+            if (run) Schedule.run(player, target.event, targetData, amount)
+            return true
         }
+        return false
     }
 
     /**

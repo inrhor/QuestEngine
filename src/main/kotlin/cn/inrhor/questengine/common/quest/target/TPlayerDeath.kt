@@ -3,6 +3,7 @@ package cn.inrhor.questengine.common.quest.target
 import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.api.target.util.Schedule
+import cn.inrhor.questengine.api.target.util.TriggerUtils
 import cn.inrhor.questengine.common.database.data.doingTargets
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.PlayerDeathEvent
@@ -18,7 +19,9 @@ object TPlayerDeath: TargetExtend<PlayerDeathEvent>() {
             val player = entity
             player.doingTargets(name).forEach {
                 if (isCause(it.getTargetFrame(), player.lastDamageCause!!.cause)) {
-                    Schedule.isNumber(player, name, "number", it)
+                    if (TriggerUtils.booleanTrigger(player, it, it.getTargetFrame(), false)) {
+                        Schedule.isNumber(player, name, "number", it)
+                    }
                 }
             }
             player
@@ -26,7 +29,7 @@ object TPlayerDeath: TargetExtend<PlayerDeathEvent>() {
     }
 
     fun isCause(target: TargetFrame, death: EntityDamageEvent.DamageCause): Boolean {
-        val idCondition = target.nodeMeta("cause")?: return false
+        val idCondition = target.nodeMeta("cause")?: return true
         return idCondition.contains(death.toString())
     }
 

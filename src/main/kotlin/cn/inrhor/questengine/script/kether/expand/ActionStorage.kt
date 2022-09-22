@@ -5,9 +5,19 @@ import cn.inrhor.questengine.common.database.data.getStorageValue
 import cn.inrhor.questengine.common.database.data.setStorage
 import cn.inrhor.questengine.script.kether.player
 import taboolib.library.kether.ArgTypes
+import taboolib.library.kether.ParsedAction
 import taboolib.module.kether.*
+import java.util.concurrent.CompletableFuture
 
 class ActionStorage {
+
+    class valueStr(val s: ParsedAction<*>): ScriptAction<String>() {
+        override fun run(frame: ScriptFrame): CompletableFuture<String> {
+            return frame.newFrame(s).run<String>().thenApply { e ->
+                frame.player().getStorageValue(e)
+            }
+        }
+    }
 
     companion object {
         internal object Parser {
@@ -16,11 +26,7 @@ class ActionStorage {
                 val a = it.next(ArgTypes.ACTION)
                 it.switch {
                     case("get") {
-                        actionNow {
-                            newFrame(a).run<String>().thenAccept { e ->
-                                player().getStorageValue(e)
-                            }
-                        }
+                        valueStr(a)
                     }
                     case("set") {
                         val b = it.next(ArgTypes.ACTION)

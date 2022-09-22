@@ -26,10 +26,14 @@ class ActionGuard {
     companion object {
         @KetherParser(["worldguard"], shared = true)
         fun parser() = scriptParser {
-            val loc = it.next(ArgTypes.ACTION)
-            it.expect("id")
-            val id = it.next(ArgTypes.ACTION)
-            GuardQuery(loc, id)
+            val any = it.next(ArgTypes.ACTION)
+            when (it.expects("id")) {
+                "id" -> {
+                    val id = it.next(ArgTypes.ACTION)
+                    GuardQuery(any, id)
+                }
+                else -> error("worldguard ")
+            }
         }
     }
 

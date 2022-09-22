@@ -37,16 +37,14 @@ object PluginLoader {
         UtilString.updateLang().forEach {
             UpdateYaml.run("lang/$it.yml")
         }
-        submit(async = true) {
-            val timeCost = measureTimeMillis {
-                ItemManager.loadItem()
-                DialogFile.loadDialog()
-                QuestBookBuildManager.init()
-                QuestFile.loadQuest()
-                releaseFile("team/chat.yml")
-            }
-            console().sendLang("LOADER-TIME_COST", UtilString.pluginTag, timeCost)
+        val timeCost = measureTimeMillis {
+            ItemManager.loadItem()
+            DialogFile.loadDialog()
+            QuestBookBuildManager.init()
+            QuestFile.loadQuest()
+            releaseFile("team/chat.yml")
         }
+        console().sendLang("LOADER-TIME_COST", UtilString.pluginTag, timeCost)
         DatabaseManager.init()
         Bukkit.getOnlinePlayers().forEach {
             Database.playerPull(it)

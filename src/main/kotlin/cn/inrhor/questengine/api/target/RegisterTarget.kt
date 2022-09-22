@@ -36,6 +36,7 @@ object RegisterTarget {
         add("player death", CauseNode(), number)
         add("player join server", number)
         add("player quit server", number)
+        add("player respawn", number, need)
         add("player fish", TargetNode("entitylist"), TargetNode("hook"), TargetNode("state"), TargetNode("exp", TargetNodeType.INT), amount)
         add("craft item", item, amount, TargetNode("matrix"))
         add("TASK")
