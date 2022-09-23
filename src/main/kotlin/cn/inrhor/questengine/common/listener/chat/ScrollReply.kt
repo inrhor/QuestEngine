@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.listener.chat
 
+import cn.inrhor.questengine.api.dialog.ReplyModule
 import cn.inrhor.questengine.api.dialog.theme.DialogTheme
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.dialog.DialogManager.setId
@@ -22,7 +23,14 @@ object ScrollReply {
                 val chat = it as DialogChat
                 if (chat.playing) return
                 val index = it.scrollIndex
-                val size = chat.dialogModule.reply.size
+                val dialog = chat.dialogModule
+                val replyList = mutableListOf<ReplyModule>()
+                dialog.reply.forEach { r->
+                    if (runEvalSet(mutableSetOf(p), r.condition)) {
+                        replyList.add(r)
+                    }
+                }
+                val size = replyList.size
                 var select: Int
                 if (ev.newSlot > ev.previousSlot) {
                     select = index + 1
@@ -38,7 +46,7 @@ object ScrollReply {
                 if (select != index) {
                     it.scrollIndex = select
                     it.json.setId().sendTo(adaptPlayer(p))
-                    it.replyChat.sendReply(mutableSetOf(p))
+                    it.replyChat.sendReply(mutableSetOf(p), replyList)
                 }
                 return
             }

@@ -23,16 +23,20 @@ class ReplyChat(val dialogChat: DialogChat, val reply: List<ReplyModule>): Reply
         DialogManager.sendBarHelp(dialogChat)
     }
 
-    fun sendReply(viewers: MutableSet<Player>) {
-        var has = 0
-        for (i in reply.indices) {
-            val r = reply[i]
-            if (runEvalSet(viewers, r.condition)) {
-                val isEnd = i >= reply.size-1
-                if (has == dialogChat.scrollIndex) {
-                    handleContent(viewers, r, r.tagChoose, isEnd)
-                }else handleContent(viewers, r, r.tagDefault, isEnd); has++
-            }else has ++
+    fun sendReply(viewers: MutableSet<Player>, replyList: MutableList<ReplyModule> = mutableListOf()) {
+        if (replyList.isEmpty()) {
+            reply.forEach {
+                if (runEvalSet(viewers, it.condition)) {
+                    replyList.add(it)
+                }
+            }
+        }
+        for ((has, i) in replyList.indices.withIndex()) {
+            val r = replyList[i]
+            val isEnd = i >= replyList.size-1
+            if (has == dialogChat.scrollIndex) {
+                handleContent(viewers, r, r.tagChoose, isEnd)
+            }else handleContent(viewers, r, r.tagDefault, isEnd);
         }
     }
 
