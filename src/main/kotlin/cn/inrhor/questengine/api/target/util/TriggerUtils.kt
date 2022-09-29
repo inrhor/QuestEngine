@@ -25,8 +25,7 @@ object TriggerUtils {
      */
     fun booleanTrigger(player: Player, targetData: TargetData, target: TargetFrame, run: Boolean = true, amount: Int = 1): Boolean {
         val needCondition = target.nodeMeta("need")?: mutableListOf()
-        if (needCondition.isEmpty()) return true
-        if (runEval(player, needCondition)) {
+        if (needCondition.isEmpty() || runEval(player, needCondition)) {
             if (run) Schedule.run(player, target.event, targetData, amount)
             return true
         }
