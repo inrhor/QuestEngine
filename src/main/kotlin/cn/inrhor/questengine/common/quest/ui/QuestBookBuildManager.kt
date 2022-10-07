@@ -11,7 +11,6 @@ import cn.inrhor.questengine.utlis.copy
 import cn.inrhor.questengine.utlis.file.releaseFile
 import cn.inrhor.questengine.utlis.ui.*
 import org.bukkit.entity.Player
-import taboolib.common.platform.function.info
 import taboolib.module.chat.TellrawJson
 import taboolib.module.configuration.Configuration.Companion.getObject
 import taboolib.platform.compat.replacePlaceholder
@@ -61,17 +60,17 @@ object QuestBookBuildManager {
     }
 
     fun load() {
-        val sort = releaseFile("ui/handbook/sort.yml", false)
+        val sort = releaseFile("ui/handbook/json/sort.yml", false)
         // 分类界面
         val sortUI = buildFrame {
             loadFrame(sort.getObject("sort", false), BuilderFrame.Type.SORT)
         }
         sortHomeUI = sortUI.build()
 
-        val sortViewQuest = releaseFile("ui/handbook/sortViewQuest.yml", false)
+        val sortViewQuest = releaseFile("ui/handbook/json/sortViewQuest.yml", false)
         sortViewQuestUI.loadFrame(sortViewQuest.getObject("for"), BuilderFrame.Type.CUSTOM)
 
-        val qNoteYaml = releaseFile("ui/handbook/questNote.yml", false)
+        val qNoteYaml = releaseFile("ui/handbook/json/questNote.yml", false)
         questNoteUI.loadFrame(qNoteYaml.getObject("already"), BuilderFrame.Type.CUSTOM)
     }
 

@@ -32,6 +32,8 @@ quest:
     # yearly  duration: 6,15,16:29:30>11,1,00:00:00
     # custom  duration: s/m/h 5
     duration: 2,00:00:00>2,23:59:59
+    # 是否重置，否则直接结束
+    reset: true
   # 任务模式
   mode:
     # 可选如下

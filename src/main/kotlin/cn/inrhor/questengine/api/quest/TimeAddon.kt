@@ -1,13 +1,12 @@
 package cn.inrhor.questengine.api.quest
 
-import cn.inrhor.questengine.server.PluginLoader
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.submit
 import taboolib.platform.util.asLangText
 import java.text.SimpleDateFormat
 import java.util.*
 
-data class TimeAddon(var type: Type = Type.ALWAYS, var duration: String = "") {
+data class TimeAddon(var type: Type = Type.ALWAYS, var duration: String = "", val reset: Boolean = true) {
 
     enum class Type {
         ALWAYS, DAY, WEEKLY, MONTHLY, YEARLY, CUSTOM

@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack
 /**
  * 对话主题抽象
  */
-abstract class DialogTheme(var type: Type = Type.Holo, var endTalk: Boolean = false) {
+abstract class DialogTheme(var type: Type = Type.Chat) {
 
     enum class Type {
         Holo, Chat

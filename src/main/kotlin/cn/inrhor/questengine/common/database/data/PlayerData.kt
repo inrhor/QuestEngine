@@ -4,6 +4,7 @@ import cn.inrhor.questengine.api.collaboration.TeamOpen
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
+import cn.inrhor.questengine.common.dialog.FlagsDialog
 import cn.inrhor.questengine.common.dialog.theme.chat.ChatCache
 import cn.inrhor.questengine.common.nav.NavData
 import cn.inrhor.questengine.common.quest.enum.ModeType
@@ -22,7 +23,9 @@ data class PlayerData(
     val dialogData: DialogData = DialogData(),
     var dataContainer: DataContainer = DataContainer(),
     val chatCache: ChatCache = ChatCache(),
-    val navData: MutableMap<String, NavData> = mutableMapOf())
+    val navData: MutableMap<String, NavData> = mutableMapOf(),
+    val flagsDialog: MutableSet<FlagsDialog> = mutableSetOf()
+)
 
 /**
  * @return 玩家队伍

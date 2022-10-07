@@ -6,6 +6,7 @@ import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.dialog.DialogManager
 import cn.inrhor.questengine.common.dialog.DialogManager.refresh
 import cn.inrhor.questengine.common.dialog.DialogManager.setId
+import cn.inrhor.questengine.common.dialog.FlagsDialog
 import cn.inrhor.questengine.utlis.variableReader
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -37,6 +38,9 @@ class DialogChat(
         viewers.forEach {
             textViewer(it)
             val pData = it.getPlayerData()
+            dialogModule.flags.forEach { f ->
+                pData.flagsDialog.add(FlagsDialog.valueOf(f))
+            }
             pData.dialogData.dialogMap.values.forEach { d ->
                 if (d.type == Type.Chat) {
                     d.end()
@@ -119,6 +123,7 @@ class DialogChat(
     override fun end() {
         viewers.forEach {
             val pData = it.getPlayerData()
+            pData.flagsDialog.clear()
             pData.chatCache.close(it)
             pData.dialogData.dialogMap.remove(dialogModule.dialogID)
             it.removePotionEffect(PotionEffectType.BLINDNESS)

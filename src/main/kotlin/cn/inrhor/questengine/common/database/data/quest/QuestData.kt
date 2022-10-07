@@ -36,6 +36,8 @@ data class QuestData(
                     player.failQuest(id)
                 }
             } else if (state == StateType.FAILURE || state == StateType.FINISH) {
+                // 如果不重置任务
+                if (!timeAddon.reset) return
                 // 如果任务开始时间不在任务时间段内
                 if (!start.noTimeout(timeDate, endDate)) {
                     // 如果现在时间在任务时间段内

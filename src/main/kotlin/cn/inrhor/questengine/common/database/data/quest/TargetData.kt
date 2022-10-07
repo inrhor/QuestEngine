@@ -39,7 +39,8 @@ data class TargetData(
 
     private fun TargetFrame.task(player: Player) {
         val quest = questID.getQuestFrame()
-        submit(async = async, period = period.toLong()) {
+        val p = period.toLong()
+        submit(delay = p, async = async, period = p) {
             if (!player.isOnline || state != StateType.DOING) {
                 cancel(); return@submit
             }

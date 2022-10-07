@@ -12,7 +12,7 @@ class DialogModule(
      var npcIDs: List<String> = listOf(),
      var condition: String = "",
      var space: SpaceDialogModule = SpaceDialogModule(),
-    var speed: Int = 3
+    var speed: Int = 2, var flags: List<String> = listOf()
 ) {
 
     lateinit var dialogID: String
