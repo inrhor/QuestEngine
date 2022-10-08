@@ -19,7 +19,7 @@ object TPlayerChat: TargetExtend<AsyncPlayerChatEvent>() {
         event = AsyncPlayerChatEvent::class
         tasker{
             player.doingTargets(name).forEach {
-                if (targetTrigger(player, name, "message", message, it.getTargetFrame())) {
+                if (targetTrigger(player, "message", message, it.getTargetFrame())) {
                     Schedule.isNumber(player, name, "number", it)
                 }
             }
@@ -30,13 +30,12 @@ object TPlayerChat: TargetExtend<AsyncPlayerChatEvent>() {
     /**
      * 匹配文字
      *
-     * @param name 事件名称
      * @param tag 键
      * @param content 需要的匹配内容
      */
-    fun targetTrigger(player: Player, name: String, tag: String, content: String, target: TargetFrame): Boolean {
+    fun targetTrigger(player: Player, tag: String, content: String, target: TargetFrame): Boolean {
         val condition = target.nodeMeta(tag)?: return false
-        return runEval(player, "strMatch type $condition *'$content'")
+        return runEval(player, "strMatch type ${condition[0]} *'$content'")
     }
 
 }

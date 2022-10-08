@@ -13,9 +13,9 @@ data class QuestFrame(
     val accept: AcceptAddon = AcceptAddon(),
     val time: TimeAddon = TimeAddon(),
     val mode: ModeAddon = ModeAddon(),
-    var group: GroupAddon = GroupAddon(),
     val target: MutableList<TargetFrame> = mutableListOf(),
     val control: MutableList<ControlFrame> = mutableListOf(),
+    var data: List<String> = listOf(),
     @Transient var path: String = "") {
 
     /**

@@ -14,7 +14,7 @@ object TPlayerCommand: TargetExtend<PlayerCommandPreprocessEvent>() {
         event = PlayerCommandPreprocessEvent::class
         tasker{
             player.doingTargets(name).forEach {
-                if (targetTrigger(player, name, "content", message, it.getTargetFrame())) {
+                if (targetTrigger(player, "content", message, it.getTargetFrame())) {
                     Schedule.isNumber(player, name, "number", it)
                 }
             }

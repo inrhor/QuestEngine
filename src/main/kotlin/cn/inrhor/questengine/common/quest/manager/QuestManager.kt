@@ -3,6 +3,7 @@ package cn.inrhor.questengine.common.quest.manager
 import cn.inrhor.questengine.api.event.QuestEvent
 import cn.inrhor.questengine.api.event.TargetEvent
 import cn.inrhor.questengine.api.quest.ControlFrame
+import cn.inrhor.questengine.api.quest.GroupFrame
 import cn.inrhor.questengine.api.quest.QuestFrame
 import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.common.collaboration.TeamManager
@@ -26,7 +27,10 @@ object QuestManager {
      */
     private val questMap = mutableMapOf<String, QuestFrame>()
 
-    val extendsQuest = mutableListOf<QuestFrame>()
+    /**
+     * 任务组模块
+     */
+    val groupMap = mutableMapOf<String, GroupFrame>()
 
     /**
      * 自动接受的任务模块内容
@@ -36,10 +40,6 @@ object QuestManager {
     fun getQuestMap() = questMap
 
     fun clearQuestMap() = questMap.clear()
-
-    fun QuestFrame.waitRegister() {
-        extendsQuest.add(this)
-    }
 
     /**
      * 注册任务模块内容

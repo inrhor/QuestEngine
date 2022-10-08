@@ -2,6 +2,8 @@ quest:
   # 任务编号
   id: quest1
   name: "耕田之下的稻草人"
+  # 数据，通常API调用
+  data: []
   # 笔记
   note:
     - "&8稻草人似乎需要你的帮助"
@@ -13,14 +15,6 @@ quest:
     auto: false
     # 接受任务条件
     condition: ""
-  # 任务组
-  group:
-    # 任务组编号
-    number: crop
-    # 任务组名称
-    name: 农业之重
-    # 任务组笔记
-    note: []
   # 时间框架
   time:
     # 类型: ALWAYS, DAY, WEEKLY, MONTHLY, YEARLY, CUSTOM

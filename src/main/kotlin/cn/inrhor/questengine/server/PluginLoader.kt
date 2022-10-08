@@ -10,6 +10,7 @@ import cn.inrhor.questengine.common.dialog.DialogFile
 import cn.inrhor.questengine.common.dialog.DialogManager
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.common.quest.QuestFile
+import cn.inrhor.questengine.common.quest.group.GroupFile
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.utlis.UtilString
 import cn.inrhor.questengine.utlis.file.releaseFile
@@ -40,6 +41,7 @@ object PluginLoader {
             ItemManager.loadItem()
             DialogFile.loadDialog()
             QuestFile.loadQuest()
+            GroupFile.load()
             releaseFile("team/chat.yml")
         }
         console().sendLang("LOADER-TIME_COST", UtilString.pluginTag, timeCost)
