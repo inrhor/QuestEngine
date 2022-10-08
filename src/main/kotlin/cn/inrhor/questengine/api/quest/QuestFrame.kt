@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.api.quest
 
 import cn.inrhor.questengine.common.database.data.quest.TargetData
-import cn.inrhor.questengine.common.database.data.questData
 import cn.inrhor.questengine.common.database.data.teamData
 import cn.inrhor.questengine.common.quest.enum.ModeType
 import cn.inrhor.questengine.script.kether.runEvalSet
@@ -10,7 +9,7 @@ import org.bukkit.entity.Player
 import java.util.*
 
 data class QuestFrame(
-    var id: String = "unknownID", var name: String = "", var note: String ="",
+    var id: String = "unknownID", var name: String = "", var note: List<String> = listOf(),
     val accept: AcceptAddon = AcceptAddon(),
     val time: TimeAddon = TimeAddon(),
     val mode: ModeAddon = ModeAddon(),

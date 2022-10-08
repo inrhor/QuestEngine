@@ -34,12 +34,6 @@ class TextComponent(
         return json
     }
 
-    fun autoCommand(arg: String) {
-        if (type == BuilderFrame.Type.SORT) {
-            command = "/qen handbook sort $arg"
-        }
-    }
-
     fun text(player: Player?): MutableList<String> {
         player?: return text
         return text.replacePlaceholder(player).toMutableList()

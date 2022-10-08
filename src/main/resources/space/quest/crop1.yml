@@ -2,10 +2,11 @@ quest:
   # 任务编号
   id: quest1
   name: "耕田之下的稻草人"
-  note: |
-    &8稻草人似乎需要你的帮助
-    &8
-    &8剩余时间: %qen_quest select quest1 quest limitTime%
+  # 笔记
+  note:
+    - "&8稻草人似乎需要你的帮助"
+    - ""
+    - "&8剩余时间: {{quest limitTime}}"
   # 接受任务设置
   accept:
     # 是否自动接受
@@ -14,16 +15,12 @@ quest:
     condition: ""
   # 任务组
   group:
-    # 继承任务编号的任务组属性
-    # 若找不到任务编号则不列入任务组
-    extends: ""
     # 任务组编号
     number: crop
-    # 任务组分类, 无则不显示在手册
-    sort: new
-    # 关于任务组手册内容
-    note: |
-      农作下的初篇...
+    # 任务组名称
+    name: 农业之重
+    # 任务组笔记
+    note: []
   # 时间框架
   time:
     # 类型: ALWAYS, DAY, WEEKLY, MONTHLY, YEARLY, CUSTOM
@@ -76,9 +73,5 @@ quest:
         [stone]
         [chest]}}
         {{<amount>[3]}}
-      ui:
-        part:
-          - id: desc
-            note:
-              - "&8挖掘石块或打破箱子 &a3 &8个"
-              - "   &8进度 &6%qen_quest select quest1 target select a target schedule%"
+      description:
+        - "打破石头或箱子{{target schedule}}/3"

@@ -1,14 +1,10 @@
 package cn.inrhor.questengine.command
 
-import cn.inrhor.questengine.command.handbook.HandbookHome
 import taboolib.common.platform.command.*
 
 
 @CommandHeader("questengine", ["qen"], permission = "questengine.command")
 internal object Command {
-
-    @CommandBody(permission = "QuestEngine.use.handbook")
-    val handbook = HandbookHome.handbook
 
     @CommandBody(permission = "QuestEngine.admin.quest")
     val quest = QuestCommand

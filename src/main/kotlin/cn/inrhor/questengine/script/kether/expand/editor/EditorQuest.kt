@@ -17,12 +17,9 @@ import cn.inrhor.questengine.common.quest.manager.QuestManager.existQuestFrame
 import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestFrame
 import cn.inrhor.questengine.common.quest.manager.QuestManager.register
 import cn.inrhor.questengine.common.quest.manager.QuestManager.saveFile
-import cn.inrhor.questengine.common.quest.manager.QuestManager.saveQuestFile
-import cn.inrhor.questengine.common.quest.ui.QuestBookBuildManager.updateSortQuest
 import cn.inrhor.questengine.script.kether.player
 import cn.inrhor.questengine.script.kether.selectQuestID
-import cn.inrhor.questengine.utlis.indexAdd
-import cn.inrhor.questengine.utlis.removeAt
+import taboolib.common.util.addSafely
 import taboolib.module.kether.ScriptAction
 import taboolib.module.kether.ScriptFrame
 import taboolib.module.nms.inputSign
@@ -80,14 +77,6 @@ class EditorQuest(val ui: ActionEditor.QuestUi, vararg val variable: String, val
                     "groupnumber" -> {
                         sender.inputSign(arrayOf("",sender.asLangText("EDITOR-PLEASE-GROUP-NUMBER"))) {
                             quest.group.number = it[0]
-                            quest.saveFile()
-                            sender.editorQuest(questID)
-                        }
-                    }
-                    "groupsort" -> {
-                        sender.inputSign(arrayOf("",sender.asLangText("EDITOR-PLEASE-SORT"))) {
-                            quest.group.sort = it[0]
-                            quest.updateSortQuest(quest.group.sort)
                             quest.saveFile()
                             sender.editorQuest(questID)
                         }
@@ -153,14 +142,18 @@ class EditorQuest(val ui: ActionEditor.QuestUi, vararg val variable: String, val
                     "note" -> {
                         when (change) {
                             "del" -> {
-                                quest.note = quest.note.removeAt(variable[2].toInt())
+                                val m = quest.note.toMutableList()
+                                m.removeAt(variable[2].toInt())
+                                quest.note = m
                                 quest.saveFile()
                                 sender.editQuestNote(quest.note, questID)
                             }
                             "add" -> {
                                 sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-EVAL"))) {
                                     val index = if (variable[2]=="{head}") 0 else variable[2].toInt()+1
-                                    quest.note = quest.note.indexAdd(index, it[1]+it[2]+it[3])
+                                    val m = quest.note.toMutableList()
+                                    m.addSafely(index, it[1]+it[2]+it[3], "")
+                                    quest.note = m
                                     quest.saveFile()
                                     sender.editQuestNote(quest.note, questID)
                                 }
@@ -170,14 +163,18 @@ class EditorQuest(val ui: ActionEditor.QuestUi, vararg val variable: String, val
                     "groupnote" -> {
                         when (change) {
                             "del" -> {
-                                quest.group.note = quest.group.note.removeAt(variable[2].toInt())
+                                val m = quest.group.note.toMutableList()
+                                m.removeAt(variable[2].toInt())
+                                quest.group.note = m
                                 quest.saveFile()
                                 sender.editGroupNote(quest.group.note, questID)
                             }
                             "add" -> {
                                 sender.inputSign(arrayOf(sender.asLangText("EDITOR-PLEASE-EVAL"))) {
                                     val index = if (variable[2]=="{head}") 0 else variable[2].toInt()+1
-                                    quest.group.note = quest.group.note.indexAdd(index, it[1]+it[2]+it[3])
+                                    val m = quest.group.note.toMutableList()
+                                    m.addSafely(index, it[1]+it[2]+it[3], "")
+                                    quest.group.note = m
                                     quest.saveFile()
                                     sender.editGroupNote(quest.group.note, questID)
                                 }

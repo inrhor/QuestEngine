@@ -11,7 +11,6 @@ import cn.inrhor.questengine.common.dialog.DialogManager
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.common.quest.QuestFile
 import cn.inrhor.questengine.common.quest.manager.QuestManager
-import cn.inrhor.questengine.common.quest.ui.QuestBookBuildManager
 import cn.inrhor.questengine.utlis.UtilString
 import cn.inrhor.questengine.utlis.file.releaseFile
 import org.bukkit.Bukkit
@@ -40,7 +39,6 @@ object PluginLoader {
         val timeCost = measureTimeMillis {
             ItemManager.loadItem()
             DialogFile.loadDialog()
-            QuestBookBuildManager.init()
             QuestFile.loadQuest()
             releaseFile("team/chat.yml")
         }

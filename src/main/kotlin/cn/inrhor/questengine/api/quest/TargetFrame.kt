@@ -1,15 +1,14 @@
 package cn.inrhor.questengine.api.quest
 
-import cn.inrhor.questengine.api.ui.UiFrame
 import cn.inrhor.questengine.utlis.variableReader
 import taboolib.common.util.VariableReader
 
 data class TargetFrame(var id: String, var event: String,
                        var period: Int, var async: Boolean, var condition: String,
-                       var node: String, val ui: UiFrame
+                       var node: String, val description: List<String>
 ) {
     constructor():
-            this("targetId", "targetName", 0, false, "", "", UiFrame())
+            this("targetId", "targetName", 0, false, "", "", listOf())
 
     @Transient
     val nodeMap: MutableMap<String, MutableList<String>> = mutableMapOf()

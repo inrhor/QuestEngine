@@ -10,7 +10,7 @@ import taboolib.platform.util.asLangText
 object EditorQuest {
 
     val editQuestMeta = listOf(
-        "NAME", "NOTE", "GROUPEXTENDS", "GROUPNUMBER", "GROUPSORT", "GROUPNOTE",
+        "NAME", "NOTE", "GROUPEXTENDS", "GROUPNUMBER", "GROUPNOTE",
         "MODETYPE", "MODEAMOUNT", "SHAREDATA",
         "TIME", "ACCEPTAUTO", "ACCEPTCONDITION", "CONTROL", "TARGET")
 
@@ -31,7 +31,7 @@ object EditorQuest {
             val mode = quest.mode
             val accept = quest.accept
             json.append("      "+asLangText("EDITOR-EDIT-QUEST-$it",
-                quest.name, group.extends, group.number, group.sort,
+                quest.name, group.extends, group.number,
                 mode.type.lang(this), mode.amount,
                 mode.shareData.lang(this),
                 accept.autoLang(this)))

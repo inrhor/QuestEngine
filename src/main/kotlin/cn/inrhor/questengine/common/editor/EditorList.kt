@@ -37,22 +37,22 @@ object EditorList {
             "ACCEPT", "CONDITION", "acceptcondition", page)
     }
 
-    fun Player.editQuestNote(content: String, questID: String, page: Int = 0) {
+    fun Player.editQuestNote(content: List<String>, questID: String, page: Int = 0) {
         contentEdit(content, questID, "EDITOR-QUEST-NOTE", "note", page)
     }
 
-    fun Player.editGroupNote(content: String, questID: String, page: Int = 0) {
+    fun Player.editGroupNote(content: List<String>, questID: String, page: Int = 0) {
         contentEdit(content, questID, "EDITOR-GROUP-NOTE", "groupnote", page)
     }
 
-    fun Player.contentEdit(content: String, questID: String, head: String, node: String, page: Int = 0) {
+    fun Player.contentEdit(content: List<String>, questID: String, head: String, node: String, page: Int = 0) {
         val s = "qen eval quest select $questID editor quest in"
         val edit = "$s edit $node"
         val change = "/$s change $node to"
         EditorOfList(this, asLangText(head, questID))
             .editorBack(this, "/$s edit home")
             .listAdd(this, "$change add {head}")
-            .list(page, 3, content.newLineList(), true, "EDITOR-CONTENT-LIST",
+            .list(page, 3, content, true, "EDITOR-CONTENT-LIST",
                 "$edit page {page}",
                 EditorListModule.EditorButton("EDITOR-LIST-NEXT-ADD"),
                 EditorListModule.EditorButton("EDITOR-LIST-NEXT-ADD-META",
@@ -62,6 +62,10 @@ object EditorList {
                 EditorListModule.EditorButton("EDITOR-LIST-DEL-META", "EDITOR-LIST-DEL-HOVER",
                     "$change del {index}"))
             .json.sendTo(adaptPlayer(this))
+    }
+
+    fun Player.contentEdit(content: String, questID: String, head: String, node: String, page: Int = 0) {
+        contentEdit(content.newLineList(), questID, head, node, page)
     }
 
     fun listEdit(player: Player, questID: String, list: String, node: String, meta: String, cmd: String, page: Int = 0) {
