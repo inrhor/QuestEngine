@@ -24,7 +24,7 @@ data class QuestData(
      * 加载数据使用此方法
      */
     fun updateTime(player: Player) {
-        val timeAddon = id.getQuestFrame().time
+        val timeAddon = id.getQuestFrame()?.time?: return
         val timeDate = timeAddon.timeDate
         val endDate = timeAddon.endDate
         if (endDate != null) {

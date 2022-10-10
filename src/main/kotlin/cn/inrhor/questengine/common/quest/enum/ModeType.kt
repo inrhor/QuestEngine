@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.quest.enum
 
-import cn.inrhor.questengine.common.database.data.teamData
+import cn.inrhor.questengine.api.manager.DataManager.teamData
 import org.bukkit.entity.Player
 import taboolib.platform.util.asLangText
 

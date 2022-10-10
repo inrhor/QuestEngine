@@ -3,7 +3,7 @@ package cn.inrhor.questengine.common.quest.target
 import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.api.target.util.Schedule
-import cn.inrhor.questengine.common.database.data.doingTargets
+import cn.inrhor.questengine.api.manager.DataManager.doingTargets
 import cn.inrhor.questengine.script.kether.runEval
 
 import org.bukkit.entity.Player
@@ -19,8 +19,9 @@ object TPlayerChat: TargetExtend<AsyncPlayerChatEvent>() {
         event = AsyncPlayerChatEvent::class
         tasker{
             player.doingTargets(name).forEach {
-                if (targetTrigger(player, "message", message, it.getTargetFrame())) {
-                    Schedule.isNumber(player, name, "number", it)
+                val t = it.getTargetFrame()?: return@forEach
+                if (targetTrigger(player, "message", message, t)) {
+                    Schedule.isNumber(player, "number", it)
                 }
             }
             player

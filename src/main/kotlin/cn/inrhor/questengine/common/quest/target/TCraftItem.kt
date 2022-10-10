@@ -4,7 +4,7 @@ import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.api.target.util.Schedule
 import cn.inrhor.questengine.api.target.util.TriggerUtils.itemTrigger
-import cn.inrhor.questengine.common.database.data.doingTargets
+import cn.inrhor.questengine.api.manager.DataManager.doingTargets
 import cn.inrhor.questengine.utlis.bukkit.ItemMatch
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.CraftItemEvent
@@ -20,13 +20,13 @@ object TCraftItem: TargetExtend<CraftItemEvent>() {
         tasker{
             val p = whoClicked as Player
             p.doingTargets(name).forEach {
-                val target = it.getTargetFrame()
+                val target = it.getTargetFrame()?: return@forEach
                 val item = inventory.result
                 val am = target.nodeMeta("amount")?: listOf("1")
                 val amount = am[0].toInt()
                 if (item != null) {
                     if (itemTrigger(target, item) && matrixItems(target, inventory.matrix)) {
-                        Schedule.run(p, name, it, amount)
+                        Schedule.run(p, it, amount)
                     }
                 }
             }

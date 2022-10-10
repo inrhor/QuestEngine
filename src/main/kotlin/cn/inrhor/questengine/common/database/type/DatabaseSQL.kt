@@ -1,12 +1,12 @@
 package cn.inrhor.questengine.common.database.type
 
 import cn.inrhor.questengine.QuestEngine
+import cn.inrhor.questengine.api.manager.DataManager.setStorage
+import cn.inrhor.questengine.api.manager.DataManager.storage
+import cn.inrhor.questengine.api.manager.DataManager.tagsData
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.quest.*
-import cn.inrhor.questengine.common.database.data.setStorage
-import cn.inrhor.questengine.common.database.data.storage
-import cn.inrhor.questengine.common.database.data.tagsData
 import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.utlis.time.toDate
 import cn.inrhor.questengine.utlis.time.toStr

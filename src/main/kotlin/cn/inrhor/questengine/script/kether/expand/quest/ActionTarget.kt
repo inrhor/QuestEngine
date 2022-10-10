@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.script.kether.expand.quest
 
-import cn.inrhor.questengine.common.database.data.targetData
+import cn.inrhor.questengine.api.manager.DataManager.targetData
 import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.script.kether.player
 import cn.inrhor.questengine.script.kether.selectQuestID
@@ -26,11 +26,7 @@ object ActionTarget {
             }
             case("schedule") {
                 actionNow {
-                    try {
-                        player().targetData(selectQuestID(), selectTargetID()).schedule
-                    }catch (ex: Exception) {
-                        0
-                    }
+                    player().targetData(selectQuestID(), selectTargetID())?.schedule?: 0
                 }
             }
             case("state") {
@@ -38,20 +34,12 @@ object ActionTarget {
                     it.mark()
                     it.expect("lang")
                     actionNow {
-                        try {
-                            player().targetData(selectQuestID(), selectTargetID()).state.toUnit(player())
-                        }catch (ex: Exception) {
-                            StateType.NOT_ACCEPT.toUnit(player())
-                        }
+                        (player().targetData(selectQuestID(), selectTargetID())?.state?: StateType.NOT_ACCEPT).toUnit(player())
                     }
                 }catch (ex: Exception) {
                     it.reset()
                     actionNow {
-                        try {
-                            player().targetData(selectQuestID(), selectTargetID()).state.toString()
-                        }catch (ex: Exception) {
-                            StateType.NOT_ACCEPT.toString()
-                        }
+                        (player().targetData(selectQuestID(), selectTargetID())?.state?: StateType.NOT_ACCEPT).toString()
                     }
                 }
             }

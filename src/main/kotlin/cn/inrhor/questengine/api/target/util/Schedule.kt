@@ -14,11 +14,11 @@ object Schedule {
     /**
      * 进度计数结算与触发奖励
      */
-    fun run(player: Player , name: String, targetData: TargetData, amount: Int) {
+    fun run(player: Player, targetData: TargetData, amount: Int) {
         if (targetData.schedule < amount) {
             targetData.schedule++
         }
-        val allSchedule = TargetManager.scheduleUtil(player, name, targetData)
+        val allSchedule = TargetManager.scheduleUtil(player, targetData)
         if (allSchedule >= amount) {
             TargetEvent.Finish(player, targetData, targetData.questID.getQuestMode()).call()
         }
@@ -27,9 +27,9 @@ object Schedule {
     /**
      * 目标计数meta数量，并触发进度结算
      */
-    fun isNumber(player: Player, name: String, meta: String, targetData: TargetData) {
-        val con = targetData.getTargetFrame().nodeMeta(meta)?: return
-        run(player, name, targetData, con[0].toInt())
+    fun isNumber(player: Player, meta: String, targetData: TargetData) {
+        val con = targetData.getTargetFrame()?.nodeMeta(meta)?: return
+        run(player, targetData, con[0].toInt())
     }
 
 }

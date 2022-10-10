@@ -3,7 +3,7 @@ package cn.inrhor.questengine.common.quest.target
 import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.api.target.util.Schedule
-import cn.inrhor.questengine.common.database.data.doingTargets
+import cn.inrhor.questengine.api.manager.DataManager.doingTargets
 import cn.inrhor.questengine.script.kether.runEval
 
 import cn.inrhor.questengine.utlis.subAfter
@@ -22,9 +22,9 @@ object TKillEntity: TargetExtend<EntityDeathEvent>() {
         tasker{
             val player = entity.killer?: return@tasker null
             player.doingTargets(name).forEach {
-                val target = it.getTargetFrame()
+                val target = it.getTargetFrame()?: return@forEach
                 if (checkEntity(target, entityType) && checkCondition(player, target, entity, droppedExp)) {
-                    Schedule.isNumber(player, name, "number", it)
+                    Schedule.isNumber(player, "number", it)
                 }
             }
             player

@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.quest.manager
 
 import cn.inrhor.questengine.api.event.QuestEvent
 import cn.inrhor.questengine.api.event.TargetEvent
+import cn.inrhor.questengine.api.manager.DataManager.questData
 import cn.inrhor.questengine.api.quest.ControlFrame
 import cn.inrhor.questengine.api.quest.GroupFrame
 import cn.inrhor.questengine.api.quest.QuestFrame
@@ -9,8 +10,7 @@ import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
-import cn.inrhor.questengine.common.database.data.questData
-import cn.inrhor.questengine.common.database.data.teamData
+import cn.inrhor.questengine.api.manager.DataManager.teamData
 import cn.inrhor.questengine.common.quest.enum.ModeType
 import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.script.kether.runEval
@@ -69,7 +69,14 @@ object QuestManager {
      * 保存任务配置
      */
     fun String.saveQuestFile() {
-        getQuestFrame().saveFile()
+        getQuestFrame()?.saveFile()
+    }
+
+    /**
+     * @return 任务模块
+     */
+    fun String.getQuestFrame(): QuestFrame? {
+        return questMap[this]
     }
 
     /**
@@ -84,14 +91,7 @@ object QuestManager {
      * 删除任务配置
      */
     fun String.delQuestFile() {
-        getQuestFrame().delFile()
-    }
-
-    /**
-     * @return 任务模块
-     */
-    fun String.getQuestFrame(): QuestFrame {
-        return questMap[this]?: error("null quest frame: $this")
+        getQuestFrame()?.delFile()
     }
 
     /**
@@ -122,22 +122,22 @@ object QuestManager {
      * @param share 是否判断共享数据
      */
     fun String.matchMode(player: Player, share: Boolean = true): Boolean {
-        return getQuestFrame().matchMode(player, share)
+        return getQuestFrame()?.matchMode(player, share)?: false
     }
 
     /**
      * @return 任务组队伍模式
      */
     fun String.getQuestMode(): ModeType {
-        return getQuestFrame().mode.type
+        return getQuestFrame()?.mode?.type?: ModeType.PERSONAL
     }
 
     /**
      * @return 控制模块
      */
-    fun String.getControlFrame(questID: String): ControlFrame {
-        questID.getQuestFrame().control.forEach { if (it.id == this) return it }
-        error("null control frame: $this($questID)")
+    fun String.getControlFrame(questID: String): ControlFrame? {
+        questID.getQuestFrame()?.control?.forEach { if (it.id == this) return it }
+        return null
     }
 
     /**
@@ -147,7 +147,7 @@ object QuestManager {
         if (runEval(this, quest.accept.condition)) {
             getPlayerData().dataContainer.installQuest(quest)
             QuestEvent.Accept(this, quest).call()
-            val data = questData(quest.id)
+            val data = questData(quest.id)?: return
             data.updateTime(this)
             data.target.forEach {
                 it.load(this)
@@ -159,48 +159,53 @@ object QuestManager {
      * 接受任务
      */
     fun Player.acceptQuest(questID: String) {
-        acceptQuest(questID.getQuestFrame())
+        val q = questID.getQuestFrame()?: return
+        acceptQuest(q)
     }
 
     /**
      * 放弃任务
      */
     fun Player.quitQuest(questID: String) {
+        val q = questID.getQuestFrame()?: return
         getPlayerData().dataContainer.unloadQuest(questID)
-        QuestEvent.Quit(this, questID.getQuestFrame()).call()
+        QuestEvent.Quit(this, q).call()
     }
 
     /**
      * 完成任务
      */
     fun Player.finishQuest(questID: String) {
+        val q = questID.getQuestFrame()?: return
         getPlayerData().dataContainer.toggleQuest(questID, StateType.FINISH).finishTime(questID)
-        QuestEvent.Finish(this, questID.getQuestFrame()).call()
+        QuestEvent.Finish(this, q).call()
     }
 
     /**
      * 重置任务
      */
     fun Player.resetQuest(questID: String) {
-        val quest = questID.getQuestFrame()
+        val quest = questID.getQuestFrame()?: return
         getPlayerData().dataContainer.installQuest(quest)
         QuestEvent.Reset(this, quest).call()
-        questData(quest.id).updateTime(this)
+        questData(quest.id)?.updateTime(this)
     }
 
     /**
      * 任务失败
      */
     fun Player.failQuest(questID: String) {
+        val q = questID.getQuestFrame()?: return
         getPlayerData().dataContainer.toggleQuest(questID, StateType.FAILURE)
-        QuestEvent.Fail(this, questID.getQuestFrame()).call()
+        QuestEvent.Fail(this, q).call()
     }
 
     /**
      * 追踪任务
      */
     fun Player.trackQuest(questID: String) {
-        QuestEvent.Track(this, questID.getQuestFrame()).call()
+        val q = questID.getQuestFrame()?: return
+        QuestEvent.Track(this, q).call()
     }
 
     /**
@@ -213,11 +218,11 @@ object QuestManager {
     /**
      * @return 目标模块
      */
-    fun String.getTargetFrame(questID: String): TargetFrame {
-        questID.getQuestFrame().target.forEach {
+    fun String.getTargetFrame(questID: String): TargetFrame? {
+        questID.getQuestFrame()?.target?.forEach {
             if (it.id == this) return it
         }
-        error("null target frame: $this($questID)")
+        return null
     }
 
 }

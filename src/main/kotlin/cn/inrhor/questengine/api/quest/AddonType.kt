@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.api.quest
 
-import cn.inrhor.questengine.common.database.data.teamData
+import cn.inrhor.questengine.api.manager.DataManager.teamData
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 

@@ -24,13 +24,13 @@ data class TargetData(
     /**
      * @return 目标模块
      */
-    fun getTargetFrame(): TargetFrame {
+    fun getTargetFrame(): TargetFrame? {
         return id.getTargetFrame(questID)
     }
 
     fun load(player: Player) {
         if (state == StateType.DOING) {
-            val target = getTargetFrame()
+            val target = getTargetFrame()?: return
             if (target.event.uppercase().startsWith("TASK ")) {
                 target.task(player)
             }
@@ -44,7 +44,7 @@ data class TargetData(
             if (!player.isOnline || state != StateType.DOING) {
                 cancel(); return@submit
             }
-            if (quest.matchMode(player) && runEvalSet(quest.mode.type.objective(player), condition)) {
+            if (quest?.matchMode(player) == true && runEvalSet(quest.mode.type.objective(player), condition)) {
                 player.finishTarget(this@TargetData, quest.mode.type)
             }
         }

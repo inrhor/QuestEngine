@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.script.kether.expand.quest
 
-import cn.inrhor.questengine.common.database.data.questData
+import cn.inrhor.questengine.api.manager.DataManager.questData
 import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.common.quest.manager.QuestManager.acceptQuest
 import cn.inrhor.questengine.common.quest.manager.QuestManager.finishQuest
@@ -58,7 +58,7 @@ object ActionQuest {
             }
             case("name") {
                 actionNow {
-                    selectQuestID().getQuestFrame().name
+                    selectQuestID().getQuestFrame()?.name?: "null"
                 }
             }
             case("state") {
@@ -66,30 +66,18 @@ object ActionQuest {
                     it.mark()
                     it.expect("lang")
                     actionNow {
-                        try {
-                            player().questData(selectQuestID()).state.toUnit(player())
-                        }catch (ex: Exception) {
-                            StateType.NOT_ACCEPT.toUnit(player())
-                        }
+                        (player().questData(selectQuestID())?.state?: StateType.NOT_ACCEPT).toUnit(player())
                     }
                 }catch (ex: Exception) {
                     it.reset()
                     actionNow {
-                        try {
-                            player().questData(selectQuestID()).state.toString()
-                        }catch (ex: Exception) {
-                            StateType.NOT_ACCEPT.toString()
-                        }
+                        (player().questData(selectQuestID())?.state?: StateType.NOT_ACCEPT).toString()
                     }
                 }
             }
             case("limitTime") {
                 actionNow {
-                    try {
-                        selectQuestID().getQuestFrame().time.endDate?.remainDate(player(), player().questData(selectQuestID()).state)
-                    }catch (ex: Exception) {
-                        player().asLangText("QUEST-ALWAYS")
-                    }
+                    selectQuestID().getQuestFrame()?.time?.endDate?.remainDate(player(), player().questData(selectQuestID())?.state?: StateType.NOT_ACCEPT)?: player().asLangText("QUEST-ALWAYS")
                 }
             }
         }

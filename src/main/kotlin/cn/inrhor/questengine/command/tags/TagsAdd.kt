@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.command.tags
 
-import cn.inrhor.questengine.common.database.data.tagsData
+import cn.inrhor.questengine.api.manager.DataManager.tagsData
 import org.bukkit.Bukkit
 import taboolib.common.platform.ProxyCommandSender
 import taboolib.common.platform.command.*

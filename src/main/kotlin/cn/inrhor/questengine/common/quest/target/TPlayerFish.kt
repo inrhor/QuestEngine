@@ -2,7 +2,7 @@ package cn.inrhor.questengine.common.quest.target
 
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.api.target.util.Schedule
-import cn.inrhor.questengine.common.database.data.doingTargets
+import cn.inrhor.questengine.api.manager.DataManager.doingTargets
 import org.bukkit.entity.Entity
 import org.bukkit.entity.FishHook
 import org.bukkit.entity.Player
@@ -22,7 +22,7 @@ object TPlayerFish: TargetExtend<PlayerFishEvent>() {
 
     fun fish(player: Player, name: String, entity: Entity?, hook: FishHook, state: PlayerFishEvent.State, exp: Int) {
         player.doingTargets(name).forEach {
-            val target = it.getTargetFrame()
+            val target = it.getTargetFrame()?: return@forEach
             val e = target.nodeMeta("entitylist")?: listOf()
             val es = e.toList()
             val h = target.nodeMeta("hook")?: listOf()
@@ -43,7 +43,7 @@ object TPlayerFish: TargetExtend<PlayerFishEvent>() {
                 if (!ss.contains(state.toString())) return
             }
             if (ps > 0 && exp < ps) return
-            Schedule.run(player, name, it, amount)
+            Schedule.run(player, it, amount)
         }
     }
 

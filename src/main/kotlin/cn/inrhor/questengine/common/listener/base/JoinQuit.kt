@@ -1,8 +1,8 @@
 package cn.inrhor.questengine.common.listener.base
 
+import cn.inrhor.questengine.api.manager.DataManager.existQuestData
 import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
-import cn.inrhor.questengine.common.database.data.existQuestData
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.quest.manager.QuestManager.acceptQuest
 import org.bukkit.event.player.PlayerJoinEvent

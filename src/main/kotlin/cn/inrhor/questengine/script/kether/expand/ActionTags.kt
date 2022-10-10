@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.script.kether.expand
 
-import cn.inrhor.questengine.common.database.data.tagsData
+import cn.inrhor.questengine.api.manager.DataManager.tagsData
 import cn.inrhor.questengine.script.kether.player
 import taboolib.module.kether.*
 import taboolib.module.kether.scriptParser

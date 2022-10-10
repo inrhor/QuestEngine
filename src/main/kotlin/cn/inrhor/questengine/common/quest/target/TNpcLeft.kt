@@ -2,7 +2,7 @@ package cn.inrhor.questengine.common.quest.target
 
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.api.target.util.TriggerUtils
-import cn.inrhor.questengine.common.database.data.doingTargets
+import cn.inrhor.questengine.api.manager.DataManager.doingTargets
 import net.citizensnpcs.api.event.NPCLeftClickEvent
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -24,7 +24,7 @@ object TNpcLeft: TargetExtend<NPCLeftClickEvent>() {
 
     fun match(player: Player, npcID: String, name: String) {
         player.doingTargets(name).forEach {
-            val target = it.getTargetFrame()
+            val target = it.getTargetFrame()?: return@forEach
             if (TriggerUtils.idTrigger(target, npcID)) {
                 TriggerUtils.booleanTrigger(player, it, target)
             }

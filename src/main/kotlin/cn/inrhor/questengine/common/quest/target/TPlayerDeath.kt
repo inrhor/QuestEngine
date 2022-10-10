@@ -4,7 +4,7 @@ import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.api.target.util.Schedule
 import cn.inrhor.questengine.api.target.util.TriggerUtils
-import cn.inrhor.questengine.common.database.data.doingTargets
+import cn.inrhor.questengine.api.manager.DataManager.doingTargets
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 
@@ -18,9 +18,10 @@ object TPlayerDeath: TargetExtend<PlayerDeathEvent>() {
         tasker{
             val player = entity
             player.doingTargets(name).forEach {
-                if (isCause(it.getTargetFrame(), player.lastDamageCause!!.cause)) {
-                    if (TriggerUtils.booleanTrigger(player, it, it.getTargetFrame(), false)) {
-                        Schedule.isNumber(player, name, "number", it)
+                val t = it.getTargetFrame()?: return@forEach
+                if (isCause(t, player.lastDamageCause!!.cause)) {
+                    if (TriggerUtils.booleanTrigger(player, it, t, false)) {
+                        Schedule.isNumber(player, "number", it)
                     }
                 }
             }

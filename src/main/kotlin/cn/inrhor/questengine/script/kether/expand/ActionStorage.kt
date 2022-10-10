@@ -1,8 +1,8 @@
 package cn.inrhor.questengine.script.kether.expand
 
-import cn.inrhor.questengine.common.database.data.delStorage
-import cn.inrhor.questengine.common.database.data.getStorageValue
-import cn.inrhor.questengine.common.database.data.setStorage
+import cn.inrhor.questengine.api.manager.DataManager.delStorage
+import cn.inrhor.questengine.api.manager.DataManager.getStorageValue
+import cn.inrhor.questengine.api.manager.DataManager.setStorage
 import cn.inrhor.questengine.script.kether.player
 import taboolib.library.kether.ArgTypes
 import taboolib.library.kether.ParsedAction

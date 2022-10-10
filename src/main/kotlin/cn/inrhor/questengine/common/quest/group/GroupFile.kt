@@ -20,7 +20,8 @@ object GroupFile {
                 val g: GroupFrame = yaml.getObject(i, false)
                 QuestManager.groupMap[i] = g
                 g.quest.forEach { q ->
-                    g.quests.add(q.getQuestFrame())
+                    val quest = q.getQuestFrame()
+                    if (quest != null) g.quests.add(quest)
                 }
             }
         }

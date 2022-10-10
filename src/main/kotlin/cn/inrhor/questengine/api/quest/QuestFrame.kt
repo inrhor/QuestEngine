@@ -1,7 +1,7 @@
 package cn.inrhor.questengine.api.quest
 
 import cn.inrhor.questengine.common.database.data.quest.TargetData
-import cn.inrhor.questengine.common.database.data.teamData
+import cn.inrhor.questengine.api.manager.DataManager.teamData
 import cn.inrhor.questengine.common.quest.enum.ModeType
 import cn.inrhor.questengine.script.kether.runEvalSet
 import cn.inrhor.questengine.utlis.time.noTimeout

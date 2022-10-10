@@ -6,8 +6,6 @@ import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.StorageData
 import cn.inrhor.questengine.common.database.data.TagsData
 import cn.inrhor.questengine.common.database.data.quest.*
-import cn.inrhor.questengine.common.database.data.storage
-import cn.inrhor.questengine.common.database.data.tagsData
 import org.bukkit.entity.Player
 import taboolib.common.io.newFile
 import taboolib.module.configuration.Configuration

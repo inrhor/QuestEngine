@@ -1,9 +1,9 @@
 package cn.inrhor.questengine.common.listener.quest
 
 import cn.inrhor.questengine.api.event.TargetEvent
-import cn.inrhor.questengine.common.database.data.completedTargets
-import cn.inrhor.questengine.common.database.data.targetData
-import cn.inrhor.questengine.common.database.data.teamData
+import cn.inrhor.questengine.api.manager.DataManager.completedTargets
+import cn.inrhor.questengine.api.manager.DataManager.targetData
+import cn.inrhor.questengine.api.manager.DataManager.teamData
 import cn.inrhor.questengine.common.quest.enum.ModeType
 import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.common.quest.manager.QuestManager.finishQuest
@@ -19,7 +19,7 @@ object TargetListener {
         val questID = t.questID
         if (ev.modeType == ModeType.COLLABORATION) {
             p.teamData()?.playerMembers(false)?.forEach {
-                it.targetData(questID, t.id).state = StateType.FINISH
+                it.targetData(questID, t.id)?.state = StateType.FINISH
             }
         }
         if (p.completedTargets(questID, ev.modeType)) {

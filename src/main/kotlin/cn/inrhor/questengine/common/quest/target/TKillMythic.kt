@@ -3,7 +3,7 @@ package cn.inrhor.questengine.common.quest.target
 import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.api.target.util.Schedule
-import cn.inrhor.questengine.common.database.data.doingTargets
+import cn.inrhor.questengine.api.manager.DataManager.doingTargets
 import ink.ptms.um.event.MobDeathEvent
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -20,9 +20,9 @@ object TKillMythic: TargetExtend<MobDeathEvent>() {
                 val k = killer?: return@tasker null
                 if (k !is Player ) return@tasker null
                 k.doingTargets(name).forEach {
-                    val target = it.getTargetFrame()
+                    val target = it.getTargetFrame()?: return@forEach
                     if (checkName(target, mob.id)) {
-                        Schedule.isNumber(k, name, "number", it)
+                        Schedule.isNumber(k, "number", it)
                     }
                 }
                 k
