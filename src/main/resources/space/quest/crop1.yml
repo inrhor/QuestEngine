@@ -2,8 +2,9 @@ quest:
   # 任务编号
   id: quest1
   name: "耕田之下的稻草人"
-  # 数据，通常API调用
-  data: []
+  # 数据，通常API调用，如写入物品材料供给Ui
+  data:
+    - ICON:BOOK
   # 笔记
   note:
     - "&8稻草人似乎需要你的帮助"
@@ -69,3 +70,6 @@ quest:
         {{<amount>[3]}}
       description:
         - "打破石头或箱子{{target schedule}}/3"
+      # 数据，通常API调用，如写入物品材料供给Ui
+      data:
+        - ICON:PAPER
