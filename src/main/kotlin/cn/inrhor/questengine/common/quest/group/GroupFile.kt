@@ -18,6 +18,7 @@ object GroupFile {
             val yaml = Configuration.loadFromFile(it, Type.YAML)
             yaml.getConfigurationSection("")?.getKeys(false)?.forEach { i->
                 val g: GroupFrame = yaml.getObject(i, false)
+                g.id = i
                 QuestManager.groupMap[i] = g
                 g.quest.forEach { q ->
                     val quest = q.getQuestFrame()
