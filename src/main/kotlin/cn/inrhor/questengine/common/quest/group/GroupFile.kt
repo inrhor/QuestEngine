@@ -6,16 +6,15 @@ import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestFrame
 import cn.inrhor.questengine.utlis.file.FileUtil
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.Configuration.Companion.getObject
-import taboolib.module.configuration.Type
 
 object GroupFile {
 
     fun load() {
-        val dialogFolder = FileUtil.getFile("space/dialog/", "DIALOG-NO_FILES", true,
+        val dialogFolder = FileUtil.getFile("space/group/", "GROUP-NO_FILES", true,
             "example")
 
         FileUtil.getFileList(dialogFolder).forEach{
-            val yaml = Configuration.loadFromFile(it, Type.YAML)
+            val yaml = Configuration.loadFromFile(it)
             yaml.getConfigurationSection("")?.getKeys(false)?.forEach { i->
                 val g: GroupFrame = yaml.getObject(i, false)
                 g.id = i
