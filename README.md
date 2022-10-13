@@ -11,3 +11,54 @@
 
 ---
 Minecraft - 面向异世界的任务引擎系统
+
+---
+### 附属
+- 任务笔记
+  - [UiUniverse](https://github.com/inrhor/UiUniverse)
+
+---
+### 相关链接
+- [文档](http://www.questengine.cn/)
+- [爱发电](https://afdian.net/item?plan_id=667f008029d611ed900252540025c377)
+
+---
+### Kts
+```
+repositories {
+    maven("https://jitpack.io")
+}
+
+dependencies {
+    compileOnly("com.github.inrhor:QuestEngine:版本")
+}
+```
+
+### Gradle
+```
+allprojects {
+    repositories {
+		    maven { url 'https://jitpack.io' }
+	  }
+}
+
+dependencies {
+    implementation 'com.github.inrhor:QuestEngine:版本'
+}
+```
+
+### Maven
+```
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
+<dependency>
+    <groupId>com.github.inrhor</groupId>
+    <artifactId>QuestEngine</artifactId>
+    <version>版本</version>
+</dependency>
+```
