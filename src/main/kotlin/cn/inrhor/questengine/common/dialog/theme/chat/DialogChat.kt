@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.dialog.theme.chat
 
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.api.dialog.theme.DialogTheme
+import cn.inrhor.questengine.api.manager.TemplateManager.getTemplate
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.dialog.DialogManager
 import cn.inrhor.questengine.common.dialog.DialogManager.refresh
@@ -55,7 +56,14 @@ class DialogChat(
     }
 
     fun textViewer(viewer: Player) {
-        val content = dialogModule.dialog
+        var content = dialogModule.dialog
+        val temp = dialogModule.template
+        if (temp.isNotEmpty()) {
+            val templateFrame = temp.getTemplate()
+            if (templateFrame != null) {
+                content = templateFrame.replyList(content)
+            }
+        }
         val list = mutableListOf<MutableList<DataText>>()
         for (element in content) {
             val c = element.replacePlaceholder(viewer).colored()

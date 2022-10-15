@@ -7,12 +7,15 @@ import cn.inrhor.questengine.common.dialog.DialogManager
  * 对话模块
  */
 class DialogModule(
-     var dialog: List<String> = listOf(),
-     var reply: MutableList<ReplyModule> = mutableListOf(),
-     var npcIDs: List<String> = listOf(),
-     var condition: String = "",
-     var space: SpaceDialogModule = SpaceDialogModule(),
-    var speed: Int = 2, var flags: List<String> = listOf()
+    var template: String = "",
+    var dialog: List<String> = listOf(),
+    var reply: MutableList<ReplyModule> = mutableListOf(),
+    var npcIDs: List<String> = listOf(),
+    var condition: String = "",
+    var space: SpaceDialogModule = SpaceDialogModule(),
+    var speed: Int = 2, var flags: List<String> = listOf(),
+    var replyChoose: String = "",
+    var replyDefault: String = ""
 ) {
 
     lateinit var dialogID: String

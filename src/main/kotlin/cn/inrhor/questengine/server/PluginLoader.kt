@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.server
 
 import cn.inrhor.questengine.QuestEngine
+import cn.inrhor.questengine.api.manager.TemplateManager
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.Database.Companion.database
 import cn.inrhor.questengine.common.database.data.DataStorage
@@ -9,6 +10,7 @@ import cn.inrhor.questengine.common.database.type.DatabaseManager
 import cn.inrhor.questengine.common.dialog.DialogFile
 import cn.inrhor.questengine.common.dialog.DialogManager
 import cn.inrhor.questengine.common.item.ItemManager
+import cn.inrhor.questengine.common.loader.TemplateLoader
 import cn.inrhor.questengine.common.quest.QuestFile
 import cn.inrhor.questengine.common.quest.group.GroupFile
 import cn.inrhor.questengine.common.quest.manager.QuestManager
@@ -24,21 +26,16 @@ import kotlin.system.measureTimeMillis
 
 object PluginLoader {
 
-    fun loadTask(logo: Boolean = true) {
-        if (logo) {
-            ConsoleMsg.logo()
-        }
+    fun loadTask() {
         val version = MinecraftVersion.major
         ConsoleMsg.loadSend(version)
         if (version <= 3) {
             disablePlugin()
             return
         }
-        UtilString.updateLang().forEach {
-            UpdateYaml.run("lang/$it.yml")
-        }
         val timeCost = measureTimeMillis {
             ItemManager.loadItem()
+            TemplateLoader.file()
             DialogFile.loadDialog()
             QuestFile.loadQuest()
             GroupFile.load()
@@ -52,7 +49,6 @@ object PluginLoader {
     }
 
     fun unloadTask() {
-        ConsoleMsg.logo()
         Bukkit.getScheduler().cancelTasks(QuestEngine.plugin)
         Bukkit.getOnlinePlayers().forEach {
             val data = it.getPlayerData()
@@ -66,11 +62,13 @@ object PluginLoader {
 
     @Awake(LifeCycle.ENABLE)
     fun init() {
+        ConsoleMsg.logo("a")
         loadTask()
     }
 
     @Awake(LifeCycle.DISABLE)
     fun cancel() {
+        ConsoleMsg.logo("c")
         unloadTask()
     }
 
@@ -78,6 +76,7 @@ object PluginLoader {
         DialogManager.clearMap()
         ItemManager.clearMap()
         QuestManager.clearQuestMap()
+        TemplateManager.clear()
     }
 
 }

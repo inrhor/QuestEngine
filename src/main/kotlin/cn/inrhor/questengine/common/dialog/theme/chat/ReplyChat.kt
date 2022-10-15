@@ -35,8 +35,12 @@ class ReplyChat(val dialogChat: DialogChat, val reply: List<ReplyModule>): Reply
             val r = replyList[i]
             val isEnd = i >= replyList.size-1
             if (has == dialogChat.scrollIndex) {
-                handleContent(viewers, r, r.tagChoose, isEnd)
-            }else handleContent(viewers, r, r.tagDefault, isEnd);
+                val choose = r.tagChoose.ifEmpty { dialogChat.dialogModule.replyChoose }
+                handleContent(viewers, r, choose, isEnd)
+            }else {
+                val def = r.tagDefault.ifEmpty { dialogChat.dialogModule.replyDefault }
+                handleContent(viewers, r, def, isEnd)
+            }
         }
     }
 

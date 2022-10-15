@@ -34,11 +34,7 @@ MODE-TYPE-COLLABORATION: "协同模式"
 QUEST-ACCEPT-WAY-AUTO: "自动接受"
 QUEST-ACCEPT-WAY-COMMON: "主动接受"
 
-
-PACKET-NULL_PACKET_ID: "&7&l[ &c&li &7&l]&c 不存在数据包ID： &r{0}"
-PACKET-ERROR_FILE: "&7&l[ &c&li &7&l]&c 数据包配置不存在或缺少键值： &r{0}"
-PACKET-NO_FILES: "{0}&r &6packet &8文件夹&c不存在，&8开始创建 &6packet &8文件夹"
-
+TEMPLATE-NO_FILES: "{0}&r &6template &8文件夹&c不存在，&8开始创建 &6template &8文件夹"
 
 ITEM-NO_FILES: "{0}&r &6item &8文件夹&c不存在，&8开始创建 &6item &8文件夹"
 ITEM-EXIST-ID: "&7&l[ &c&li &7&l]&c 物品ID已存在： &8{0}"
