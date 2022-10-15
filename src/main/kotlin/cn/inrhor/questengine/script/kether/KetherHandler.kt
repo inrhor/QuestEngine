@@ -12,7 +12,7 @@ import taboolib.platform.util.asLangText
 fun runEval(player: Player, script: String): Boolean {
     if (script.isEmpty()) return true
     return try {
-        KetherShell.eval(script, sender = adaptPlayer(player), namespace = listOf("QuestEngine")).thenApply {
+        KetherShell.eval(script, sender = adaptPlayer(player), namespace = listOf("QuestEngine", "adyeshach")).thenApply {
             Coerce.toBoolean(it)
         }.getNow(true)
     } catch (ex: Throwable) {
@@ -25,7 +25,7 @@ fun runEval(player: Player, script: String): Boolean {
 fun runEval(player: Player, script: List<String>): Boolean {
     if (script.isEmpty()) return true
     return try {
-        KetherShell.eval(script, sender = adaptPlayer(player), namespace = listOf("QuestEngine")).thenApply {
+        KetherShell.eval(script, sender = adaptPlayer(player), namespace = listOf("QuestEngine", "adyeshach")).thenApply {
             Coerce.toBoolean(it)
         }.getNow(true)
     } catch (ex: Throwable) {
@@ -55,7 +55,7 @@ fun backContains(player: Player, content: String, back: Boolean = true, eval: Bo
 fun testEval(player: Player, script: String): EvalType {
     if (script.isEmpty()) return EvalType.TRUE
     return try {
-        KetherShell.eval(script, sender = adaptPlayer(player), namespace = listOf("QuestEngine")).thenApply {
+        KetherShell.eval(script, sender = adaptPlayer(player), namespace = listOf("QuestEngine", "adyeshach")).thenApply {
             Coerce.toBoolean(it).evalType()
         }.getNow(null)
     } catch (ex: Throwable) {
@@ -67,7 +67,7 @@ fun testEval(player: Player, script: String): EvalType {
 
 fun feedbackEval(player: Player, script: String): String {
     return try {
-        KetherShell.eval(script, sender = adaptPlayer(player), namespace = listOf("QuestEngine")).thenApply {
+        KetherShell.eval(script, sender = adaptPlayer(player), namespace = listOf("QuestEngine", "adyeshach")).thenApply {
             ""
         }.getNow(null)
     } catch (ex: Exception) {
