@@ -32,6 +32,8 @@ object QuestManager {
      */
     val groupMap = mutableMapOf<String, GroupFrame>()
 
+    fun String.getGroupFrame(): GroupFrame? = groupMap[this]
+
     /**
      * 自动接受的任务模块内容
      */

@@ -8,7 +8,10 @@ import java.util.concurrent.CompletableFuture
 fun frameVoid(): CompletableFuture<Void> = CompletableFuture.completedFuture(null)
 
 fun ScriptFrame.selectQuestID() = variables().get<Any?>("@QenQuestID")
-    .orElse(null)?.toString()?: error("unknown quest uuid or id")
+    .orElse(null)?.toString()?: error("unknown quest id")
+
+fun ScriptFrame.selectGroupID() = variables().get<Any?>("@QenGroupID")
+    .orElse(null)?.toString()?: error("unknown group or id")
 
 fun ScriptFrame.selectTargetID() = variables().get<Any?>("@QenTargetID")
     .orElse(null)?.toString()?: error("unknown target id")

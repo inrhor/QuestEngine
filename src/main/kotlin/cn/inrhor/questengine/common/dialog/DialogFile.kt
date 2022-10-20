@@ -74,6 +74,15 @@ object DialogFile {
             if (!file.contains("$dialogID.type")) {
                 if (hookSection.contains("type")) dialogModule.type = hookSection.getString("type")?: "chat"
             }
+            if (!file.contains("$dialogID.template")) {
+                if (hookSection.contains("template")) dialogModule.template = hookSection.getString("template")?: ""
+            }
+            if (!file.contains("$dialogID.replyChoose")) {
+                if (hookSection.contains("replyChoose")) dialogModule.template = hookSection.getString("replyChoose")?: ""
+            }
+            if (!file.contains("$dialogID.replyDefault")) {
+                if (hookSection.contains("replyDefault")) dialogModule.template = hookSection.getString("replyDefault")?: ""
+            }
         }
         dialogModule.register()
     }

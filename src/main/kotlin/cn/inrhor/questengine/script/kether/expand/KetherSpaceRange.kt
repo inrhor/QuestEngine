@@ -21,7 +21,7 @@ class KetherSpaceRange(val x: Double, val y: Double, val z: Double, val location
     }
 
     internal object Parser {
-        @KetherParser(["spaceRange"])
+        @KetherParser(["spaceRange"], shared = true)
         fun parser() = scriptParser {
             val x = it.nextDouble()
             val y = it.nextDouble()

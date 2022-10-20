@@ -10,10 +10,10 @@ import taboolib.module.configuration.Configuration.Companion.getObject
 object GroupFile {
 
     fun load() {
-        val dialogFolder = FileUtil.getFile("space/group/", "GROUP-NO_FILES", true,
+        val folder = FileUtil.getFile("space/group/", "GROUP-NO_FILES", true,
             "example")
 
-        FileUtil.getFileList(dialogFolder).forEach{
+        FileUtil.getFileList(folder).forEach{
             val yaml = Configuration.loadFromFile(it)
             yaml.getConfigurationSection("")?.getKeys(false)?.forEach { i->
                 val g: GroupFrame = yaml.getObject(i, false)
