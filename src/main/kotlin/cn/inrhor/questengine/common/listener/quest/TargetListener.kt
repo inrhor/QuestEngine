@@ -10,6 +10,7 @@ import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.common.quest.enum.ModeType
 import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.common.quest.manager.QuestManager.finishQuest
+import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestFrame
 import cn.inrhor.questengine.script.kether.runEvalSet
 import org.bukkit.entity.Player
 import taboolib.common.platform.event.SubscribeEvent
@@ -22,6 +23,8 @@ object TargetListener {
         val t = ev.targetData
         t.state = StateType.FINISH
         val questID = t.questID
+        val quest = questID.getQuestFrame()?: return
+        val target = t.getTargetFrame()?: return
         if (ev.modeType == ModeType.COLLABORATION) {
             p.teamData()?.playerMembers(false)?.forEach {
                 it.targetData(questID, t.id)?.state = StateType.FINISH
@@ -30,6 +33,7 @@ object TargetListener {
         if (p.completedTargets(questID, ev.modeType)) {
             p.finishQuest(questID)
         }
+        runEval(ev.player, quest, target, QueueType.FINISH)
     }
 
     fun runEval(player: Player, quest: QuestFrame, target: TargetFrame, type: QueueType) {
