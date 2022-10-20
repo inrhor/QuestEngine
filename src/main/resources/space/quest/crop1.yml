@@ -73,3 +73,9 @@ quest:
       # 数据，通常API调用，如写入物品材料供给Ui
       data:
         - ICON:PAPER
+      trigger:
+        - id: a
+          type: TRACK
+          select: SELF
+          script: |
+            tell 请完成任务：打破石头或箱子3个

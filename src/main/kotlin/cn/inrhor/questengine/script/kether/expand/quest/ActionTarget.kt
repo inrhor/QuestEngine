@@ -2,6 +2,8 @@ package cn.inrhor.questengine.script.kether.expand.quest
 
 import cn.inrhor.questengine.api.manager.DataManager.targetData
 import cn.inrhor.questengine.common.quest.enum.StateType
+import cn.inrhor.questengine.common.quest.manager.QuestManager.finishTarget
+import cn.inrhor.questengine.common.quest.manager.QuestManager.trackTarget
 import cn.inrhor.questengine.script.kether.player
 import cn.inrhor.questengine.script.kether.selectQuestID
 import cn.inrhor.questengine.script.kether.selectTargetID
@@ -27,6 +29,16 @@ object ActionTarget {
             case("schedule") {
                 actionNow {
                     player().targetData(selectQuestID(), selectTargetID())?.schedule?: 0
+                }
+            }
+            case("track") {
+                actionNow {
+                    player().trackTarget(selectQuestID(), selectTargetID())
+                }
+            }
+            case("finish") {
+                actionNow {
+                    player().finishTarget(selectQuestID(), selectTargetID())
                 }
             }
             case("state") {

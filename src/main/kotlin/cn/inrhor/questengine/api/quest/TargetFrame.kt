@@ -6,7 +6,9 @@ import taboolib.common.util.VariableReader
 data class TargetFrame(
     var id: String, var event: String,
     var period: Int, var async: Boolean, var condition: String,
-    var node: String, val description: List<String>, val data: List<String>
+    var node: String, val description: List<String>,
+    val data: List<String>,
+    val trigger: MutableList<ControlFrame> = mutableListOf()
 ) {
     constructor():
             this("targetId", "targetName", 0, false,

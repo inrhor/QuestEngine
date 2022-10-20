@@ -12,6 +12,9 @@ internal object QuestCommand {
     val finish = QuestFinish.finish
 
     @CommandBody
+    val track = QuestTrack.track
+
+    @CommandBody
     val quit = QuestQuit.quit
 
 }

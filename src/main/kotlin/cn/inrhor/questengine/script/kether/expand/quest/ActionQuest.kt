@@ -6,6 +6,7 @@ import cn.inrhor.questengine.common.quest.manager.QuestManager.acceptQuest
 import cn.inrhor.questengine.common.quest.manager.QuestManager.finishQuest
 import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestFrame
 import cn.inrhor.questengine.common.quest.manager.QuestManager.quitQuest
+import cn.inrhor.questengine.common.quest.manager.QuestManager.trackQuest
 import cn.inrhor.questengine.script.kether.*
 import cn.inrhor.questengine.script.kether.player
 import cn.inrhor.questengine.utlis.time.remainDate
@@ -54,6 +55,11 @@ object ActionQuest {
             case("finish") {
                 actionNow {
                     player().finishQuest(selectQuestID())
+                }
+            }
+            case("track") {
+                actionNow {
+                    player().trackQuest(selectQuestID())
                 }
             }
             case("name") {

@@ -3,6 +3,7 @@ package cn.inrhor.questengine.common.quest.manager
 import cn.inrhor.questengine.api.event.QuestEvent
 import cn.inrhor.questengine.api.event.TargetEvent
 import cn.inrhor.questengine.api.manager.DataManager.questData
+import cn.inrhor.questengine.api.manager.DataManager.targetData
 import cn.inrhor.questengine.api.quest.ControlFrame
 import cn.inrhor.questengine.api.quest.GroupFrame
 import cn.inrhor.questengine.api.quest.QuestFrame
@@ -13,6 +14,7 @@ import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.api.manager.DataManager.teamData
 import cn.inrhor.questengine.common.quest.enum.ModeType
 import cn.inrhor.questengine.common.quest.enum.StateType
+import cn.inrhor.questengine.common.quest.manager.QuestManager.finishTarget
 import cn.inrhor.questengine.script.kether.runEval
 import org.bukkit.entity.Player
 import taboolib.common.io.deepDelete
@@ -206,8 +208,10 @@ object QuestManager {
      * 追踪任务
      */
     fun Player.trackQuest(questID: String) {
-        val q = questID.getQuestFrame()?: return
-        QuestEvent.Track(this, q).call()
+        val q = questData(questID)?: return
+        if (q.state != StateType.FINISH) return
+        val quest = q.id.getQuestFrame()?: return
+        QuestEvent.Track(this, quest).call()
     }
 
     /**
@@ -215,6 +219,25 @@ object QuestManager {
      */
     fun Player.finishTarget(targetData: TargetData, modeType: ModeType) {
         TargetEvent.Finish(this, targetData, modeType).call()
+    }
+
+    /**
+     * 完成目标
+     */
+    fun Player.finishTarget(questID: String, targetID: String) {
+        val targetData = targetData(questID, targetID)?: return
+        val quest = questID.getQuestFrame()?: return
+        finishTarget(targetData, quest.mode.type)
+    }
+
+    /**
+     * 追踪目标
+     */
+    fun Player.trackTarget(questID: String, targetID: String) {
+        val targetData = targetData(questID, targetID)?: return
+        if (targetData.state != StateType.FINISH) return
+        val quest = questID.getQuestFrame()?: return
+        TargetEvent.Track(this, targetData, quest).call()
     }
 
     /**
