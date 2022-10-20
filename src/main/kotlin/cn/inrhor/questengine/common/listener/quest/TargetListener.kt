@@ -25,6 +25,7 @@ object TargetListener {
         val questID = t.questID
         val quest = questID.getQuestFrame()?: return
         val target = t.getTargetFrame()?: return
+        runEval(ev.player, quest, target, QueueType.FINISH)
         if (ev.modeType == ModeType.COLLABORATION) {
             p.teamData()?.playerMembers(false)?.forEach {
                 it.targetData(questID, t.id)?.state = StateType.FINISH
@@ -33,7 +34,6 @@ object TargetListener {
         if (p.completedTargets(questID, ev.modeType)) {
             p.finishQuest(questID)
         }
-        runEval(ev.player, quest, target, QueueType.FINISH)
     }
 
     fun runEval(player: Player, quest: QuestFrame, target: TargetFrame, type: QueueType) {
