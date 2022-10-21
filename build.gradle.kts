@@ -36,17 +36,16 @@ taboolib {
         prefix("QuestEngine")
     }
     classifier = null
-    version = "6.0.9-79"
+    version = "6.0.9-114"
 }
 
 repositories {
     mavenCentral()
     maven("https://repo.dmulloy2.net/repository/public/") // ProtocolLib
-    maven("https://maven.enginehub.org/repo/") // WorldGuard
 }
 
 dependencies {
-    taboo("ink.ptms:um:1.0.0-beta-20")
+    taboo("ink.ptms:um:1.0.0-beta-23")
     compileOnly("ink.ptms.core:v11900:11900-minimize:mapped")
     compileOnly("ink.ptms.core:v11701:11701-minimize:mapped")
     compileOnly("ink.ptms.core:v11701:11701-minimize:universal")
@@ -60,10 +59,10 @@ dependencies {
     compileOnly("ink.ptms.core:v11000:11000")
     compileOnly("ink.ptms.core:v10900:10900")
     compileOnly("public:Citizens:1.0.0")
+    compileOnly("public:WorldGuard:7.0.7")
     compileOnly("ink.ptms:Adyeshach:1.4.21")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
-    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.0")
     compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 }
 
