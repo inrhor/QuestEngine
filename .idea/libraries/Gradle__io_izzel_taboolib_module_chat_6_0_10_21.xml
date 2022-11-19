@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: io.izzel.taboolib:module-chat:6.0.10-21">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../gradle-6.9.1/caches/modules-2/files-2.1/io.izzel.taboolib/module-chat/6.0.10-21/5f9c70045164b724b0d679d01cd5da5d4addd7a7/module-chat-6.0.10-21.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../gradle-6.9.1/caches/modules-2/files-2.1/io.izzel.taboolib/module-chat/6.0.10-21/712b90e7a53c0b5db9b1d9e8d2d05609cd6abf1/module-chat-6.0.10-21-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

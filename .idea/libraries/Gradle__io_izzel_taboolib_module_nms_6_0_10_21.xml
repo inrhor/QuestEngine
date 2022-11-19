@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: io.izzel.taboolib:module-nms:6.0.10-21">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../gradle-6.9.1/caches/modules-2/files-2.1/io.izzel.taboolib/module-nms/6.0.10-21/1c198ffa703b2419393ae420a86ce3a0a8d7d86a/module-nms-6.0.10-21.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../gradle-6.9.1/caches/modules-2/files-2.1/io.izzel.taboolib/module-nms/6.0.10-21/d3d6d69ddb70a5a7662dc6e0f4608241013038a5/module-nms-6.0.10-21-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -43,18 +43,28 @@ object DialogFile {
 
             if (cfs.contains("hook")) {
                 val id = cfs.getString("hook")!!
-                FileUtil.getFileList(folder).forEach{
-                    val hook = Configuration.loadFromFile(it)
-                    val ifs = hook.getConfigurationSection(id)
-                    if (ifs != null) {
-                        regDialog(dialogID, yaml, ifs, id)
-                        return@forEach
-                    }
+                val ifs = getHookSec(folder, id)
+                if (ifs != null) {
+                    regDialog(dialogID, yaml, ifs, id)
                 }
             }else {
                 regDialog(dialogID, yaml, cfs)
             }
         }
+    }
+
+    private fun getHookSec(folder: File, hookID: String): ConfigurationSection? {
+        FileUtil.getFileList(folder).forEach {
+            val hook = Configuration.loadFromFile(it)
+            val ifs = hook.getConfigurationSection(hookID)
+            if (ifs != null) {
+                val newHookID = ifs.getString("hook") ?: ""
+                return if (newHookID.isNotEmpty()) {
+                    getHookSec(folder, newHookID)
+                } else ifs
+            }
+        }
+        return null
     }
 
     /**
@@ -78,10 +88,10 @@ object DialogFile {
                 if (hookSection.contains("template")) dialogModule.template = hookSection.getString("template")?: ""
             }
             if (!file.contains("$dialogID.replyChoose")) {
-                if (hookSection.contains("replyChoose")) dialogModule.template = hookSection.getString("replyChoose")?: ""
+                if (hookSection.contains("replyChoose")) dialogModule.replyChoose = hookSection.getString("replyChoose")?: ""
             }
             if (!file.contains("$dialogID.replyDefault")) {
-                if (hookSection.contains("replyDefault")) dialogModule.template = hookSection.getString("replyDefault")?: ""
+                if (hookSection.contains("replyDefault")) dialogModule.replyDefault = hookSection.getString("replyDefault")?: ""
             }
         }
         dialogModule.register()

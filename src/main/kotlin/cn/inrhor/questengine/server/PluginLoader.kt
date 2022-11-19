@@ -26,6 +26,8 @@ import kotlin.system.measureTimeMillis
 
 object PluginLoader {
 
+    var authme = false
+
     fun loadTask() {
         val version = MinecraftVersion.major
         ConsoleMsg.loadSend(version)
@@ -42,6 +44,7 @@ object PluginLoader {
             releaseFile("team/chat.yml")
         }
         console().sendLang("LOADER-TIME_COST", UtilString.pluginTag, timeCost)
+        authme = Bukkit.getPluginManager().getPlugin("AuthMe") != null
         DatabaseManager.init()
         Bukkit.getOnlinePlayers().forEach {
             Database.playerPull(it)

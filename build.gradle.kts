@@ -1,7 +1,7 @@
 plugins {
     `java-library`
     `maven-publish`
-    id("io.izzel.taboolib") version "1.42"
+    id("io.izzel.taboolib") version "1.50"
     id("org.jetbrains.kotlin.jvm") version "1.5.31"
 }
 
@@ -36,12 +36,13 @@ taboolib {
         prefix("QuestEngine")
     }
     classifier = null
-    version = "6.0.9-114"
+    version = "6.0.10-21"
 }
 
 repositories {
     mavenCentral()
     maven("https://repo.dmulloy2.net/repository/public/") // ProtocolLib
+    maven("https://repo.codemc.org/repository/maven-public/")
 }
 
 dependencies {
@@ -61,6 +62,7 @@ dependencies {
     compileOnly("public:Citizens:1.0.0")
     compileOnly("public:WorldGuard:7.0.7")
     compileOnly("ink.ptms:Adyeshach:1.4.21")
+    compileOnly("fr.xephi:authme:5.6.0-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
     compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))

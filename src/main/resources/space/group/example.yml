@@ -7,7 +7,7 @@ new:
     - 这是一个任务组笔记
   # 关联任务
   quest:
-    - crop
+    - quest1
   # 数据，主要API调用，如写入物品材料供给Ui
   data:
     - ICON:BOOK

@@ -65,8 +65,8 @@ quest:
       event: break block
       node: |
         {{<block>
-        [stone]
-        [chest]}}
+        [STONE]
+        [CHEST]}}
         {{<amount>[3]}}
       description:
         - "打破石头或箱子{{target schedule}}/3"
@@ -79,3 +79,8 @@ quest:
           select: SELF
           script: |
             tell 请完成任务：打破石头或箱子3个
+        - id: b
+          type: FINISH
+          select: SELF
+          script: |
+            tell 完成目标啦

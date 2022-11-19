@@ -3,7 +3,6 @@ package cn.inrhor.questengine.utlis.file
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.utlis.UtilString
 import taboolib.common.platform.function.*
-import taboolib.module.configuration.ConfigFile
 import taboolib.module.configuration.Configuration
 import taboolib.module.lang.sendLang
 import java.io.File
@@ -39,13 +38,13 @@ object FileUtil {
             return@let files
         }
 
-    fun yaml(path: String, yaml: String): ConfigFile {
+    fun yaml(path: String, yaml: String): Configuration {
         val str = "$path/$yaml.yml"
         return releaseFile(str)
     }
 }
 
-fun releaseFile(child: String, update: Boolean = true): ConfigFile {
+fun releaseFile(child: String, update: Boolean = true): Configuration {
     val file = File(QuestEngine.plugin.dataFolder, child)
     if (!file.exists()) {
         QuestEngine.resource.releaseResourceFile(child, true)
