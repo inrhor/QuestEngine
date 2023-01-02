@@ -13,8 +13,8 @@ object ClickHolo {
         holoBox.dialogHolo.viewers.forEach {
             val loc = holoBox.dialogHolo.npcLoc
             runEval(it, replyModule.script.replace("{{npcLocation}}",
-                "where location *"+loc.world?.name
-                    +" *"+loc.x+" *"+loc.y+" *"+loc.z))
+                "where location "+loc.world?.name
+                    +" "+loc.x+" "+loc.y+" "+loc.z))
         }
     }
 
