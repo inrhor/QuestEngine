@@ -12,7 +12,7 @@ data class StorageData(val key: String, var value: String) {
 
 data class DataContainer(
     val quest: MutableMap<String, QuestData> = mutableMapOf(), var tags: TagsData = TagsData(),
-    var storage: MutableList<StorageData> = mutableListOf()
+    var storage: MutableList<StorageData> = mutableListOf(), var trackQuest: String = ""
 ) {
 
     /**

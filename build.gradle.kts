@@ -2,7 +2,7 @@ plugins {
     `java-library`
     `maven-publish`
     id("io.izzel.taboolib") version "1.50"
-    id("org.jetbrains.kotlin.jvm") version "1.5.31"
+    id("org.jetbrains.kotlin.jvm") version "1.5.10"
 }
 
 taboolib {
@@ -62,7 +62,7 @@ dependencies {
     compileOnly("public:Citizens:1.0.0")
     compileOnly("public:WorldGuard:7.0.7")
     compileOnly("ink.ptms:Adyeshach:1.4.21")
-    compileOnly("fr.xephi:authme:5.6.0-SNAPSHOT")
+    compileOnly("fr.xephi:authme:5.6.0-beta2")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
     compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))

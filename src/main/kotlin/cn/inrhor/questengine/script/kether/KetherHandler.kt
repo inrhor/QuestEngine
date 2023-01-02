@@ -6,8 +6,17 @@ import taboolib.common.platform.function.*
 import taboolib.common5.Coerce
 import taboolib.module.chat.colored
 import taboolib.module.kether.KetherShell
+import taboolib.module.kether.ScriptContext
 import taboolib.module.kether.printKetherErrorMessage
 import taboolib.platform.util.asLangText
+
+fun Player.eval(script: String, variable: (ScriptContext) -> Unit, get: (Any?) -> Any, def: Any): Any {
+    return KetherShell.eval(script, sender = adaptPlayer(this)) {
+        variable(this)
+    }.thenApply {
+        get(it)
+    }.getNow(def)
+}
 
 fun runEval(player: Player, script: String): Boolean {
     if (script.isEmpty()) return true
@@ -33,6 +42,16 @@ fun runEval(player: Player, script: List<String>): Boolean {
         ex.printKetherErrorMessage()
         false
     }
+}
+
+fun runEvalSet(players: Set<Player>, script: String, variable: (ScriptContext) -> Unit): Boolean {
+    if (script.isEmpty()) return true
+    players.forEach {
+        if (!(it.eval(script, variable, { a->
+            Coerce.toBoolean(a)
+            }, true) as Boolean)) return false
+    }
+    return true
 }
 
 fun runEvalSet(players: Set<Player>, script: String): Boolean {

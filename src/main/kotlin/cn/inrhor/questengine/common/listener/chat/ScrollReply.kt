@@ -62,14 +62,16 @@ object ScrollReply {
             if (it.type == DialogTheme.Type.Chat) {
                 val chat = it as DialogChat
                 val replyList = mutableListOf<ReplyModule>()
-                it.dialogModule.reply.forEach { r->
+                val dialog = it.dialogModule
+                dialog.reply.forEach { r->
                     if (runEvalSet(mutableSetOf(p), r.condition)) {
                         replyList.add(r)
                     }
                 }
                 val reply = replyList[chat.scrollIndex]
-                runEvalSet(it.viewers, reply.script)
-                it.end()
+                runEvalSet(it.viewers, reply.script) { s ->
+                    s.rootFrame().variables()["@QenDialogID"] = dialog.dialogID
+                }
                 ev.isCancelled = true
                 return
             }

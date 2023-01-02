@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.listener.quest
 
 import cn.inrhor.questengine.api.event.QuestEvent
+import cn.inrhor.questengine.api.manager.DataManager.setTrackingQuest
 import taboolib.common.platform.event.SubscribeEvent
 
 object QuestListener {
@@ -35,7 +36,9 @@ object QuestListener {
 
     @SubscribeEvent
     fun track(ev: QuestEvent.Track) {
-        ev.questFrame.runEval(ev.player, ev.queueType)
+        val frame = ev.questFrame
+        ev.player.setTrackingQuest(frame.id)
+        frame.runEval(ev.player, ev.queueType)
     }
 
 }
