@@ -134,7 +134,7 @@ object DataManager {
     /**
      * @return 正在追踪的任务
      */
-    fun Player.trackingQuest(): QuestData? = questData(getPlayerData().dataContainer.trackQuest)
+    fun Player.trackingQuest(): String = getPlayerData().dataContainer.trackQuest
 
     /**
      * 正在追踪任务的数据设定
