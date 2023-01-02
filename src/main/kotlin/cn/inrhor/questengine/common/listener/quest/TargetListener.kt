@@ -2,6 +2,8 @@ package cn.inrhor.questengine.common.listener.quest
 
 import cn.inrhor.questengine.api.event.TargetEvent
 import cn.inrhor.questengine.api.manager.DataManager.completedTargets
+import cn.inrhor.questengine.api.manager.DataManager.questData
+import cn.inrhor.questengine.api.manager.DataManager.setTrackingData
 import cn.inrhor.questengine.api.manager.DataManager.targetData
 import cn.inrhor.questengine.api.manager.DataManager.teamData
 import cn.inrhor.questengine.api.quest.QuestFrame
@@ -50,7 +52,12 @@ object TargetListener {
 
     @SubscribeEvent
     fun track(ev: TargetEvent.Track) {
-        val target = ev.targetData.getTargetFrame()?: return
+        val data = ev.targetData
+        val p = ev.player
+        val quest = p.questData(data.questID)?: return
+        p.setTrackingData(data.questID, data.id)
+        if (quest.state != StateType.DOING) return
+        val target = data.getTargetFrame()?: return
         runEval(ev.player, ev.questFrame, target, QueueType.TRACK)
     }
 

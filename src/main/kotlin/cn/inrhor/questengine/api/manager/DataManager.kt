@@ -4,6 +4,7 @@ import cn.inrhor.questengine.api.collaboration.TeamOpen
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.StorageData
 import cn.inrhor.questengine.common.database.data.TagsData
+import cn.inrhor.questengine.common.database.data.TrackData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.quest.enum.ModeType
@@ -134,12 +135,12 @@ object DataManager {
     /**
      * @return 正在追踪的任务
      */
-    fun Player.trackingQuest(): String = getPlayerData().dataContainer.trackQuest
+    fun Player.trackingData(): TrackData = getPlayerData().dataContainer.trackData
 
     /**
      * 正在追踪任务的数据设定
      */
-    fun Player.setTrackingQuest(questID: String) {
-        getPlayerData().dataContainer.trackQuest = questID
+    fun Player.setTrackingData(questID: String, targetID: String = "") {
+        getPlayerData().dataContainer.trackData = TrackData(questID, targetID)
     }
 }

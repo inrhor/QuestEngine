@@ -209,7 +209,6 @@ object QuestManager {
      */
     fun Player.trackQuest(questID: String) {
         val q = questData(questID)?: return
-        if (q.state != StateType.DOING) return
         val quest = q.id.getQuestFrame()?: return
         QuestEvent.Track(this, quest).call()
     }
@@ -235,7 +234,6 @@ object QuestManager {
      */
     fun Player.trackTarget(questID: String, targetID: String) {
         val targetData = targetData(questID, targetID)?: return
-        if (targetData.state != StateType.DOING) return
         val quest = questID.getQuestFrame()?: return
         TargetEvent.Track(this, targetData, quest).call()
     }
