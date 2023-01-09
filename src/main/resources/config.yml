@@ -1,0 +1,22 @@
+update:
+  # 更新语言文件
+  lang:
+    - "zh_CN"
+
+# 挂钩
+hook:
+  # 数据包方法可选: default, protocolLib
+  packet: "default"
+
+# 数据存储
+data:
+  # 存储类型 YAML MYSQL
+  type: YAML
+  mysql:
+    # 数据库设置
+    host: localhost
+    port: 3306
+    user: root
+    password: password
+    database: questengine
+    table: quest_engine

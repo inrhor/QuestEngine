@@ -1,0 +1,14 @@
+chat_animation:
+  type: chat_dialog
+  header:
+    - "{{[[static]][[%img_<0>%  %img_dialog%]]}}"
+    - "{{[[static]][[                 <1>]]}}"
+    - "{{[[static]][[               ]]}}"
+  addIndex: 2
+  add: "{{[[static]][[               ]]}}{{[[animation]][[__variable__]]}}"
+  footer:
+    - "{{[[static]][[               ]]}}"
+
+chat_common_animation:
+  type: chat_dialog
+  add: "{{[[animation]][[__variable__]]}}"

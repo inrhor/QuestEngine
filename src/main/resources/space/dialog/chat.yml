@@ -1,0 +1,53 @@
+# 对话ID
+chatDialog1:
+  # 交互NPC
+  npcIDs:
+    - "1"
+  # 对话需要满足的触发条件
+  condition: ""
+  # 播放速度(整数)
+  # 越少越快
+  speed: 2
+  # 对话空间设置
+  space:
+    # 是否启用
+    enable: true
+    # 检查条件，一旦不符合将终止对话
+    condition: |
+      spaceRange 30 30 30 {{location}}
+  # 可选对话类型
+  type: chat
+  # dialog模板
+  template: chat_common_animation
+  # 关于对话 如下是全息对话示例
+  dialog:
+    - "你好，"
+    - "我想拜托你一件事"
+  replyChoose: "&7&l[ &b&l! &7&l] &b"
+  replyDefault: "&7"
+  # 关于回复
+  reply:
+    -
+      # 回复ID
+      replyID: reply1
+      # 弹出该回复的条件，空或不填的话必弹出
+      # 支持 Kether 布尔值语句
+      condition: ""
+      content:
+        - "NB"
+      # 支持 Kether 语句
+      script: |
+        dialog select chatDialog1
+        dialog end
+    -
+      # 回复ID
+      replyID: reply2
+      # 弹出该回复的条件，空或不填的话必弹出
+      # 支持 Kether 布尔值语句
+      condition: ""
+      content:
+        - "OMG"
+      # 支持 Kether 语句
+      script: |
+        dialog select chatDialog1
+        dialog end

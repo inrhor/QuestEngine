@@ -1,0 +1,86 @@
+quest:
+  # 任务编号
+  id: quest1
+  name: "耕田之下的稻草人"
+  # 数据，通常API调用，如写入物品材料供给Ui
+  data:
+    - ICON:BOOK
+  # 笔记
+  note:
+    - "&8稻草人似乎需要你的帮助"
+    - ""
+    - "&8剩余时间: {{quest limitTime}}"
+  # 接受任务设置
+  accept:
+    # 是否自动接受
+    auto: false
+    # 接受任务条件
+    condition: ""
+  # 时间框架
+  time:
+    # 类型: ALWAYS, DAY, WEEKLY, MONTHLY, YEARLY, CUSTOM
+    type: WEEKLY
+    # monthly  duration: 20,00:00:00>31,15:30:00
+    # yearly  duration: 6,15,16:29:30>11,1,00:00:00
+    # custom  duration: s/m/h 5
+    duration: 2,00:00:00>2,23:59:59
+    # 是否重置，否则直接结束
+    reset: true
+  # 任务模式
+  mode:
+    # 可选如下
+    #   PERSONAL  单人
+    #   COLLABORATION  协作
+    type: PERSONAL
+    amount: -1
+    # 共享任务数据
+    shareData: true
+  # 控制模块
+  control:
+    - select: SELF
+      id: '2'
+      type: FINISH
+      script: |
+        subtitle color "&a第一篇完成"
+        waitTime 3s
+        subtitle color "即将开始下一篇任务"
+        waitTime 2s
+        quest accept quest2
+    - select: SELF
+      id: '1'
+      type: ACCEPT
+      script: |
+        subtitle color "&c稻草人: ..."
+        waitTime 2s
+        subtitle color "&c稻草人: ..."
+        waitTime 2s
+        subtitle 它似乎有些破损
+        waitTime 3s
+        title color "&a接受任务"
+        subtitle color "&f耕田之下的稻草人"
+  target:
+    -
+      # 目标编号
+      id: a
+      event: break block
+      node: |
+        {{<block>
+        [STONE]
+        [CHEST]}}
+        {{<amount>[3]}}
+      description:
+        - "打破石头或箱子{{target schedule}}/3"
+      # 数据，通常API调用，如写入物品材料供给Ui
+      data:
+        - ICON:PAPER
+      trigger:
+        - id: a
+          type: TRACK
+          select: SELF
+          script: |
+            tell 请完成任务：打破石头或箱子3个
+        - id: b
+          type: FINISH
+          select: SELF
+          script: |
+            tell 完成目标啦
