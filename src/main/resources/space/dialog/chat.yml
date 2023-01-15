@@ -37,7 +37,6 @@ chatDialog1:
         - "NB"
       # 支持 Kether 语句
       script: |
-        dialog select chatDialog1
         dialog end
     -
       # 回复ID
@@ -49,5 +48,4 @@ chatDialog1:
         - "OMG"
       # 支持 Kether 语句
       script: |
-        dialog select chatDialog1
         dialog end

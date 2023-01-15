@@ -17,7 +17,7 @@ class ActionNavigation {
     class Create(val location: ParsedAction<*>): ScriptAction<Void>() {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {
             return frame.newFrame(location).run<Location>().thenAccept {
-                frame.player().uniqueId.getPlayerData().navData[frame.selectNavID()] = NavData(it.add(0.0, 2.0, 0.0))
+                frame.player().uniqueId.getPlayerData().navData[frame.selectNavID()] = NavData(it)
             }
         }
     }
@@ -43,12 +43,6 @@ class ActionNavigation {
         }
     }
 
-    /**
-     * nav select [id]
-     * nav create target world 99 9 66
-     * nav stop/clear
-     * nav start effect [effect]
-     */
     companion object {
         @KetherParser(["nav"], shared = true)
         fun parser() = scriptParser {
@@ -81,6 +75,14 @@ class ActionNavigation {
                         }
                         else -> {
                             Nav(state)
+                        }
+                    }
+                }
+                case("stopAll") {
+                    actionNow {
+                        val data = player().uniqueId.getPlayerData()
+                        data.navData.forEach { (_, v) ->
+                            v.stop()
                         }
                     }
                 }

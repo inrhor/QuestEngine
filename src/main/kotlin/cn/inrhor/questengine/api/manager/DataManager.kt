@@ -7,6 +7,7 @@ import cn.inrhor.questengine.common.database.data.TagsData
 import cn.inrhor.questengine.common.database.data.TrackData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
+import cn.inrhor.questengine.common.nav.NavData
 import cn.inrhor.questengine.common.quest.enum.ModeType
 import cn.inrhor.questengine.common.quest.enum.StateType
 import org.bukkit.entity.Player
@@ -142,5 +143,12 @@ object DataManager {
      */
     fun Player.setTrackingData(questID: String, targetID: String = "") {
         getPlayerData().dataContainer.trackData = TrackData(questID, targetID)
+    }
+
+    /**
+     * 获取所有导航数据
+     */
+    fun Player.getNavAllData(): MutableCollection<NavData> {
+        return getPlayerData().navData.values
     }
 }

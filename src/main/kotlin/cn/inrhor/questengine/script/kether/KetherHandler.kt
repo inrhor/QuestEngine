@@ -11,7 +11,7 @@ import taboolib.module.kether.printKetherErrorMessage
 import taboolib.platform.util.asLangText
 
 fun Player.eval(script: String, variable: (ScriptContext) -> Unit, get: (Any?) -> Any, def: Any): Any {
-    return KetherShell.eval(script, sender = adaptPlayer(this)) {
+    return KetherShell.eval(script, sender = adaptPlayer(this), namespace = listOf("QuestEngine", "adyeshach")) {
         variable(this)
     }.thenApply {
         get(it)
