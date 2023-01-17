@@ -138,7 +138,7 @@ data class TimeAddon(var type: Type = Type.ALWAYS, var duration: String = "", va
                     a[0], a[1], a[2], b[0], b[1], b[2]
                 )
             }
-            else -> player.asLangText("QUEST-ALWAYS")
+            else -> duration
         }
     }
 

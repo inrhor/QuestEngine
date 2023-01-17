@@ -12,6 +12,8 @@ data class StorageData(val key: String, var value: String) {
 
 data class TrackData(val questID: String = "", val targetID: String = "")
 
+class InputData(vararg value: String)
+
 data class DataContainer(
     val quest: MutableMap<String, QuestData> = mutableMapOf(), var tags: TagsData = TagsData(),
     var storage: MutableList<StorageData> = mutableListOf(), var trackData: TrackData = TrackData()

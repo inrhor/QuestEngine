@@ -63,7 +63,7 @@ class ItemMatch(val itemType: ItemType = ItemType.MINECRAFT,
                 return false
             }
         }
-        if (take) itemStack.amount -= 1
+        if (take) itemStack.amount -= amount?: 0
         return true
     }
 

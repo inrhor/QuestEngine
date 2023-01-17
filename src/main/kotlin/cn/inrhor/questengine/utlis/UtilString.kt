@@ -16,9 +16,16 @@ object UtilString {
     }
 }
 
-fun String.newLineList(): MutableList<String> {
+fun String.newLineList(color: String = ""): MutableList<String> {
     val l = this.split("\n").toMutableList()
     l.remove("")
+    if (color.isNotEmpty()) {
+        val m = mutableListOf<String>()
+        l.forEach {
+            m.add("$color$it")
+        }
+        return m
+    }
     return l
 }
 
