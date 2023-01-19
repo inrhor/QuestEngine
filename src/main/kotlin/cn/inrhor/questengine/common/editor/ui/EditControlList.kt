@@ -7,6 +7,7 @@ import cn.inrhor.questengine.common.editor.ui.EditHome.addButton
 import cn.inrhor.questengine.script.kether.evalStringList
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import taboolib.library.xseries.XMaterial
 import taboolib.module.ui.ClickEvent
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
@@ -37,7 +38,7 @@ object EditControlList {
             slots(listOf(10, 11, 12, 13, 14, 15, 16,
                 19, 20, 21, 22, 23, 24, 25,
                 28, 29, 30, 31, 32, 33, 34))
-            addButton(player, 8, Material.BARRIER, back, id) {
+            addButton(player, 8, XMaterial.BARRIER, back, id) {
                 action()
             }
             elements { questFrame.control }
@@ -46,6 +47,9 @@ object EditControlList {
                     name = "§f                                        "
                     lore.addAll(player.evalStringList(player.asLangTextList("EDIT_CONTROL_LIST", element.id)) {
                         it.rootFrame().variables().set("@QenQuestID", id)
+                        if (targetFrame != null) {
+                            it.rootFrame().variables().set("@QenTargetID", targetFrame.id)
+                        }
                     })
                 }
             }

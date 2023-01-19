@@ -86,31 +86,24 @@ fun runEvalSet(players: Set<Player>, script: String): Boolean {
     return true
 }
 
-fun backContains(player: Player, content: String, back: Boolean = true, eval: Boolean = true): EvalType {
-    if (eval) {
-        return testEval(player, content)
-    }else {
-        if (back) return EvalType.TRUE else EvalType.FALSE
-    }
-    return EvalType.FALSE
-}
-
-fun testEval(player: Player, script: String): EvalType {
+fun testEval(player: Player, script: String, variable: (ScriptContext) -> Unit = {}): EvalType {
     if (script.isEmpty()) return EvalType.TRUE
     return try {
-        KetherShell.eval(script, sender = adaptPlayer(player), namespace = listOf("QuestEngine", "adyeshach")).thenApply {
+        KetherShell.eval(script, sender = adaptPlayer(player), namespace = listOf("QuestEngine", "adyeshach")){
+            variable(this)
+        }.thenApply {
             Coerce.toBoolean(it).evalType()
         }.getNow(null)
     } catch (ex: Throwable) {
-        console().sendMessage("&cError Script: $script".colored())
-        ex.printKetherErrorMessage()
         EvalType.ERROR
     }
 }
 
-fun feedbackEval(player: Player, script: String): String {
+fun errorEval(player: Player, script: String, variable: (ScriptContext) -> Unit = {}): String {
     return try {
-        KetherShell.eval(script, sender = adaptPlayer(player), namespace = listOf("QuestEngine", "adyeshach")).thenApply {
+        KetherShell.eval(script, sender = adaptPlayer(player), namespace = listOf("QuestEngine", "adyeshach")){
+            variable(this)
+        }.thenApply {
             ""
         }.getNow(null)
     } catch (ex: Exception) {
@@ -119,9 +112,16 @@ fun feedbackEval(player: Player, script: String): String {
 }
 
 enum class EvalType {
-    TRUE, FALSE, ERROR
+    TRUE, FALSE, ERROR;
+
+    fun errorInfo(player: Player, script: String, variable: (ScriptContext) -> Unit = {}): String {
+        return errorEval(player, script) {
+            variable(it)
+        }
+    }
+
+    fun lang(player: Player, content: String): String {
+        return player.asLangText("${content}_$this")
+    }
 }
 fun Boolean.evalType() = if (this) EvalType.TRUE else EvalType.FALSE
-fun EvalType.lang(player: Player, content: String): String {
-    return player.asLangText("$content-$this")
-}

@@ -65,10 +65,85 @@ TAGS-LIST-FORMAT: "&f     - &7{0}"
 COMMAND-SUCCESSFUL_RELOAD: "&7&l[ &c&li &7&l]&f 已重载 &3&lQuestEngine &f配置文件"
 COMMAND-ITEM-SAVE: "&7&l[ &c&li &7&l]&f 保存了物品配置： &8{0}"
 
-EDIT-INPUT-QUEST-ID:
-  - "&f"
-  - "&c&l  i  &7请在聊天框输入任务编号"
-  - "&f"
+EDIT_BOOK_QUEST_ID: "添加任务-任务编号"
+EDIT_BOOK_QUEST_PATH: "添加任务-任务路径"
+EDIT_BOOK_QUEST_NAME: "添加任务-任务名称"
+EDIT_INPUT_ADD_QUEST_ID:
+  - "下一行输入任务编号"
+EDIT_INPUT_ADD_QUEST_PATH:
+  - "下一行编辑文件路径"
+  - "default\\example.yml"
+EDIT_INPUT_ADD_QUEST_NAME:
+  - "下一行输入任务名称"
+
+EDIT_BOOK_QUEST_RENAME: "编辑任务-任务名称"
+EDIT_INPUT_QUEST_RENAME:
+  - "下一行编辑任务名称"
+  - "{0}"
+
+EDIT_INPUT_TIME_START:
+  - "下一行编辑起始时间"
+  - "时:分:秒"
+  - "-------------------"
+  - "格式提示 00:00:00"
+
+EDIT_INPUT_TIME_END:
+  - "下一行编辑终止时间"
+  - "时:分:秒"
+  - "-------------------"
+  - "格式提示 23:59:59"
+
+EDIT_INPUT_WEEK_START:
+  - "下一行编辑起始的星期"
+  - "?"
+  - "-------------------"
+  - "1为上周日，2为本周一，3为本周二，以此类推"
+
+EDIT_INPUT_WEEK_END:
+  - "下一行编辑终止的星期"
+  - "?"
+  - "-------------------"
+  - "1为上周日，2为本周一，3为本周二，以此类推"
+
+EDIT_INPUT_MONTH_START:
+  - "下一行编辑起始的日份"
+  - "?"
+
+EDIT_INPUT_MONTH_END:
+  - "下一行编辑终止的日份"
+  - "?"
+
+EDIT_INPUT_YEAR_START:
+  - "下一行编辑起始的月日"
+  - "月份,日份"
+  - "-------------------"
+  - "格式提示 6,15"
+
+EDIT_INPUT_YEAR_END:
+  - "下一行编辑终止的月日"
+  - "月份,日份"
+  - "-------------------"
+  - "格式提示 11,1"
+
+EDIT_INPUT_TIME_CUSTOM:
+  - "下一行编辑时间段"
+  - "时间单位 数字"
+  - "-------------------"
+  - "格式提示： m 5"
+  - "s 10 代表10秒"
+  - "m 5 代表5分钟"
+  - "h 6 代表6小时"
+
+EDIT_BOOK_QUEST_NOTE: "编辑任务-任务笔记描述"
+
+EDIT_BOOK_QUEST_ACCEPT_CONDITION: "编辑任务-任务接受条件"
+
+EDIT_BOOK_TIME_DURATION: "编辑任务-时间组件"
+
+EDIT_BOOK_OPEN: "&7右键打开并编辑"
+EDIT_BOOK_DELETE: "&c编辑后销毁书本"
+EDIT_BOOK_KEEP: "&a编辑后保留书本"
+
 EDIT_UI_HOME: "任务编辑器 | 主页面"
 EDIT_UI_QUEST: "任务编辑器 | 任务"
 EDIT_UI_QUEST_LIST: "任务编辑器 | 任务列表"
@@ -78,6 +153,9 @@ EDIT_UI_TARGET_CONTROL: "任务编辑器 | 目标控制框架列表"
 EDIT_UI_CONTROL: "任务编辑器 | 控制框架"
 EDIT_UI_TARGET_LIST: "任务编辑器 | 目标条目列表"
 EDIT_UI_TARGET: "任务编辑器 | 目标条目"
+EDIT_UI_QUEST_ACCEPT: "任务编辑器 | 任务接受模式"
+EDIT_UI_QUEST_TIME: "任务编辑器 | 时间组件"
+EDIT_UI_QUEST_TIME_TYPE: "任务编辑器 | 选择时间类型"
 
 EDIT_UI_ADD_QUEST:
   - "     &8&o点击添加任务"
@@ -85,7 +163,7 @@ EDIT_UI_ADD_QUEST:
 EDIT_UI_LIST_QUEST:
   - "     &8&o点击查看任务列表"
   - "&f"
-EDIT_UI_EDIT_QUEST:
+EDIT_UI_QUEST_GROUP:
   - "     &8&o点击编辑任务组"
   - "&f"
 
@@ -201,6 +279,85 @@ EDIT_TARGET_TRIGGER:
   - "     &8&o设置触发器控制框架"
   - "&f"
 
+EDIT_QUEST_ACCEPT_TOGGLE:
+  - "     &6接受模式：&f{0}"
+  - "&f"
+  - "     &8&o点击切换接受模式"
+  - "&f"
+
+EDIT_QUEST_ACCEPT_CONDITION:
+  - "     &6接受任务条件："
+  - "&f"
+  - "__List__"
+  - "&f"
+  - "     &6条件返回值：&f{0}"
+  - "&f"
+  - "     &8&o点击编辑脚本"
+  - "&f"
+
+EDIT_QUEST_TIME_TYPE:
+  - "     &6时间类型：&f{0}"
+  - "&f"
+  - "     &8&o点击选择时间类型"
+  - "&f"
+
+EDIT_QUEST_TIME_DURATION:
+  - "     &6时间设定：&f{0}"
+  - "&f"
+  - "     &6原格式：&f{1}"
+  - "&f"
+  - "     &8&o点击编辑时间设定"
+  - "&f"
+
+EDIT_QUEST_TIME_RESET:
+  - "     &6是否周期性重置任务：&f{0}"
+  - "&f"
+  - "     &f解释：&7如果开启，任务将在下一周期自动"
+  - "  &7重置任务。否则超出限时后任务状态永远是完"
+  - "  &7成或者失败状态"
+  - "&f"
+  - "     &8&o点击切换"
+  - "&f"
+
+EDIT_BACK_TIME_EDIT:
+  - "     &8&o返回编辑任务时间组件 &f[[quest name]]"
+  - "&f"
+EDIT_QUEST_TIME_ALWAYS:
+  - "     &a不限时"
+  - "&f"
+  - "     &8&o点击选定"
+  - "&f"
+EDIT_QUEST_TIME_DAY:
+  - "     &a每天"
+  - "&f"
+  - "     &8&o点击选定"
+  - "&f"
+EDIT_QUEST_TIME_WEEKLY:
+  - "     &a每周"
+  - "&f"
+  - "     &8&o点击选定"
+  - "&f"
+EDIT_QUEST_TIME_MONTHLY:
+  - "     &a每月"
+  - "&f"
+  - "     &8&o点击选定"
+  - "&f"
+EDIT_QUEST_TIME_YEARLY:
+  - "     &a每年"
+  - "&f"
+  - "     &8&o点击选定"
+  - "&f"
+EDIT_QUEST_TIME_CUSTOM:
+  - "     &a时间段"
+  - "&f"
+  - "     &8&o点击选定"
+  - "&f"
+
+CONDITION_RETURN_TRUE: "&7&l[ &a条件满足 &7&l]"
+CONDITION_RETURN_FALSE: "&7&l[ &c条件不满足 &7&l]"
+CONDITION_RETURN_ERROR: "&7&l[ &c语句错误 &7&l]"
+ERROR_INFO: "     &c错误信息："
+
 SELECT_TYPE_SELF: "对自己"
 SELECT_TYPE_TEAM: "对自己"
 SELECT_TYPE_ALL: "对自己"
@@ -223,6 +380,13 @@ TIME-FRAME-WEEKLY: "&8每周&f{0} {1}到&8每周&f{2} {3}"
 TIME-FRAME-MONTHLY: "&8每月&f{0}&8日&f{1}到&8每月&f{2}&8日&f{3}"
 TIME-FRAME-YEARLY: "&8每年&f{0}&8月&f{1}&8日&f{2}到&8每年&f{3}&8月&f{4}&8日&f{5}"
 TIME-FRAME-DAY: "&8每天&f{0}到&f{1}"
+
+TIME_TYPE_DAY: "DAY(每天一次)"
+TIME_TYPE_WEEKLY: "WEEKLY(每周一次)"
+TIME_TYPE_MONTHLY: "MONTHLY(每月一次)"
+TIME_TYPE_YEARLY: "YEARLY(每年一次)"
+TIME_TYPE_ALWAYS: "ALWAYS(无时限)"
+TIME_TYPE_CUSTOM: "CUSTOM(时间段)"
 
 OPEN-ON: "开启"
 OPEN-OFF: "关闭"

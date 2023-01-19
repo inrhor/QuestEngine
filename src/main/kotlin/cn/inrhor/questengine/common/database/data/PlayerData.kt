@@ -18,6 +18,5 @@ data class PlayerData(
     var dataContainer: DataContainer = DataContainer(),
     val chatCache: ChatCache = ChatCache(),
     val navData: MutableMap<String, NavData> = mutableMapOf(),
-    val flagsDialog: MutableSet<FlagsDialog> = mutableSetOf(),
-    var input: InputData? = null
+    val flagsDialog: MutableSet<FlagsDialog> = mutableSetOf()
 )
