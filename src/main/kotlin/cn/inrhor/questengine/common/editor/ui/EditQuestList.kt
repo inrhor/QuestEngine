@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.editor.ui
 
 import cn.inrhor.questengine.api.quest.QuestFrame
 import cn.inrhor.questengine.common.editor.ui.EditHome.addButton
+import cn.inrhor.questengine.common.editor.ui.EditHome.pageItem
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.script.kether.evalStringList
 import org.bukkit.entity.Player
@@ -20,7 +21,7 @@ object EditQuestList {
             slots(listOf(10, 11, 12, 13, 14, 15, 16,
                 19, 20, 21, 22, 23, 24, 25,
                 28, 29, 30, 31, 32, 33, 34))
-            addButton(player, 8, XMaterial.BARRIER, "EDIT_BACK_QUEST_HOME") {
+            addButton(player, 8, XMaterial.ARROW, "EDIT_BACK_QUEST_HOME") {
                 EditHome.open(player)
             }
             elements { QuestManager.getQuestMap().values.toList() }
@@ -35,6 +36,7 @@ object EditQuestList {
             onClick { _, element ->
                 EditQuest.openEdit(player, element)
             }
+            pageItem(player)
         }
     }
 

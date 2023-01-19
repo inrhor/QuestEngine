@@ -17,7 +17,7 @@ object EditTarget {
         player.openMenu<Basic>(player.asLangText("EDIT_UI_TARGET")) {
             rows(6)
             map("--------B", "--#WC")
-            addButton(player, 'B', XMaterial.BARRIER, "EDIT_BACK_TARGET_LIST", id) {
+            addButton(player, 'B', XMaterial.ARROW, "EDIT_BACK_TARGET_LIST", id) {
                 EditTargetList.open(player, questFrame)
             }
             addButton(player, '#', XMaterial.IRON_AXE,
@@ -25,7 +25,7 @@ object EditTarget {
 
             }
             addButton(player, 'W', XMaterial.WRITABLE_BOOK,
-                "EDIT_TARGET_NOTE", id, targetFrame.description) {
+                "EDIT_TARGET_NOTE", id, addList = targetFrame.description) {
 
             }
             addButton(player, 'C', XMaterial.PAINTING,

@@ -68,6 +68,22 @@ COMMAND-ITEM-SAVE: "&7&l[ &c&li &7&l]&f 保存了物品配置： &8{0}"
 EDIT_BOOK_QUEST_ID: "添加任务-任务编号"
 EDIT_BOOK_QUEST_PATH: "添加任务-任务路径"
 EDIT_BOOK_QUEST_NAME: "添加任务-任务名称"
+EDIT_BOOK_QUEST_NOTE: "编辑任务-任务笔记描述"
+EDIT_BOOK_QUEST_ACCEPT_CONDITION: "编辑任务-任务接受条件"
+EDIT_BOOK_QUEST_MODE: "编辑任务-任务模式"
+EDIT_BOOK_QUEST_CONTROL: "编辑任务-触发器控制框架"
+
+PREVIOUS_PAGE: "&a&l上一页"
+NEXT_PAGE: "&a&l下一页"
+CLOSE_UI: "&c&l关闭"
+
+EDIT_BOOK_OPEN: "&7右键打开并编辑"
+EDIT_BOOK_DELETE: "&c编辑后销毁书本"
+EDIT_BOOK_KEEP: "&a编辑后保留书本"
+
+EDIT_INPUT_ADD_CONTROL:
+  - "下一行输入控制框架编号"
+
 EDIT_INPUT_ADD_QUEST_ID:
   - "下一行输入任务编号"
 EDIT_INPUT_ADD_QUEST_PATH:
@@ -134,28 +150,22 @@ EDIT_INPUT_TIME_CUSTOM:
   - "m 5 代表5分钟"
   - "h 6 代表6小时"
 
-EDIT_BOOK_QUEST_NOTE: "编辑任务-任务笔记描述"
-
-EDIT_BOOK_QUEST_ACCEPT_CONDITION: "编辑任务-任务接受条件"
-
-EDIT_BOOK_TIME_DURATION: "编辑任务-时间组件"
-
-EDIT_BOOK_OPEN: "&7右键打开并编辑"
-EDIT_BOOK_DELETE: "&c编辑后销毁书本"
-EDIT_BOOK_KEEP: "&a编辑后保留书本"
-
 EDIT_UI_HOME: "任务编辑器 | 主页面"
 EDIT_UI_QUEST: "任务编辑器 | 任务"
 EDIT_UI_QUEST_LIST: "任务编辑器 | 任务列表"
 EDIT_UI_QUEST_NOTE: "任务编辑器 | 任务笔记"
-EDIT_UI_QUEST_CONTROL: "任务编辑器 | 任务控制框架列表"
-EDIT_UI_TARGET_CONTROL: "任务编辑器 | 目标控制框架列表"
+EDIT_UI_QUEST_CONTROL_LIST: "任务编辑器 | 任务控制框架列表"
+EDIT_UI_QUEST_CONTROL: "任务编辑器 | 任务控制框架"
+EDIT_UI_TARGET_CONTROL_LIST: "任务编辑器 | 目标控制框架列表"
+EDIT_UI_TARGET_CONTROL: "任务编辑器 | 目标控制框架"
 EDIT_UI_CONTROL: "任务编辑器 | 控制框架"
+EDIT_UI_CONTROL_TYPE: "任务编辑器 | 控制框架选择触发器"
 EDIT_UI_TARGET_LIST: "任务编辑器 | 目标条目列表"
 EDIT_UI_TARGET: "任务编辑器 | 目标条目"
 EDIT_UI_QUEST_ACCEPT: "任务编辑器 | 任务接受模式"
 EDIT_UI_QUEST_TIME: "任务编辑器 | 时间组件"
 EDIT_UI_QUEST_TIME_TYPE: "任务编辑器 | 选择时间类型"
+EDIT_UI_QUEST_MODE: "任务编辑器 | 任务模式"
 
 EDIT_UI_ADD_QUEST:
   - "     &8&o点击添加任务"
@@ -232,8 +242,22 @@ EDIT_CONTROL_LIST:
   - "     &8&o点击编辑控制框架内容"
   - "&f"
 
+EDIT_CONTROL_ADD:
+  - "     &8&o点击添加触发器控制框架"
+  - "&f"
+
+EDIT_BACK_QUEST_CONTROL_EDIT:
+  - "     &8&o返回任务控制框架 &f{0}"
+  - "&f"
+EDIT_BACK_TARGET_CONTROL_EDIT:
+  - "     &8&o返回目标控制框架 &f{0}"
+  - "&f"
+
 EDIT_BACK_QUEST_CONTROL_LIST:
-  - "     &8&o返回任务控制框架列表 &f[[quest name]]"
+  - "     &8&o返回任务控制框架列表 &f{0}"
+  - "&f"
+EDIT_BACK_TARGET_CONTROL_LIST:
+  - "     &8&o返回目标控制框架列表 &f{0}"
   - "&f"
 EDIT_CONTROL_SELECT:
   - "     &6执行脚本的对象：&f{0}"
@@ -252,6 +276,9 @@ EDIT_CONTROL_SCRIPT:
   - "&f"
   - "     &8&o左键点击编辑脚本"
   - "     &8&o右键点击预览脚本"
+  - "&f"
+EDIT_CONTROL_DELETE:
+  - "     &c&l点击删除该控制框架"
   - "&f"
 
 EDIT_TARGET_LIST:
@@ -349,6 +376,52 @@ EDIT_QUEST_TIME_YEARLY:
   - "&f"
 EDIT_QUEST_TIME_CUSTOM:
   - "     &a时间段"
+  - "&f"
+  - "     &8&o点击选定"
+  - "&f"
+
+EDIT_QUEST_MODE_TYPE:
+  - "     &6模式：&f{0}"
+  - "&f"
+  - "     &8&o点击切换模式"
+  - "&f"
+EDIT_QUEST_MODE_AMOUNT:
+  - "     &6成员上限：&f{0}"
+  - "&f"
+  - "     &8&o点击编辑成员上限&f(&7协同模式下可编辑&f)"
+  - "&f"
+EDIT_QUEST_MODE_SHARE:
+  - "     &6共享数据：&f{0}"
+  - "&f"
+  - "     &8&o点击切换&f(&7协同模式下可切换&f)"
+  - "&f"
+
+EDIT_BACK_TARGET_EDIT:
+  - "     &8&o返回编辑目标 &f[[target name]]"
+  - "&f"
+
+EDIT_CONTROL_TYPE_ACCEPT:
+  - "     &a接受"
+  - "&f"
+  - "     &8&o点击选定"
+  - "&f"
+EDIT_CONTROL_TYPE_FINISH:
+  - "     &b完成"
+  - "&f"
+  - "     &8&o点击选定"
+  - "&f"
+EDIT_CONTROL_TYPE_FAIL:
+  - "     &c失败"
+  - "&f"
+  - "     &8&o点击选定"
+  - "&f"
+EDIT_CONTROL_TYPE_QUIT:
+  - "     &f放弃"
+  - "&f"
+  - "     &8&o点击选定"
+  - "&f"
+EDIT_CONTROL_TYPE_RESET:
+  - "     &6重置"
   - "&f"
   - "     &8&o点击选定"
   - "&f"

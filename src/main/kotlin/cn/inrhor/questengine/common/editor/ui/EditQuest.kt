@@ -3,6 +3,7 @@ package cn.inrhor.questengine.common.editor.ui
 import cn.inrhor.questengine.api.quest.QuestFrame
 import cn.inrhor.questengine.common.editor.ui.EditHome.addButton
 import cn.inrhor.questengine.common.editor.ui.quest.EditQuestAccept
+import cn.inrhor.questengine.common.editor.ui.quest.EditQuestMode
 import cn.inrhor.questengine.common.editor.ui.quest.EditQuestTime
 import cn.inrhor.questengine.common.quest.manager.QuestManager.existQuestFrame
 import cn.inrhor.questengine.common.quest.manager.QuestManager.register
@@ -75,7 +76,7 @@ object EditQuest {
         player.openMenu<Basic>(player.asLangText("EDIT_UI_QUEST")) {
             rows(6)
             map("--------B", "--N#RC@", "--*P")
-            addButton(player, 'B', XMaterial.BARRIER, "EDIT_BACK_QUEST_LIST", id) {
+            addButton(player, 'B', XMaterial.ARROW, "EDIT_BACK_QUEST_LIST", id) {
                 EditQuestList.open(player)
             }
             addButton(player, 'N', XMaterial.NAME_TAG, player.asLangTextList("EDIT_QUEST_RENAME", questFrame.name), id) {
@@ -100,7 +101,7 @@ object EditQuest {
                     mode.type.lang(player),
                     mode.amount,
                     mode.shareData.lang(player)), id) {
-
+                EditQuestMode.open(player, questFrame)
             }
             addButton(player, '*', XMaterial.PAINTING, "EDIT_QUEST_CONTROL", id) {
                 EditControlList.quest(player, questFrame)
@@ -125,11 +126,11 @@ object EditQuest {
         player.openMenu<Basic>(player.asLangText("EDIT_UI_QUEST_NOTE")) {
             rows(6)
             map("--------B", "--RW")
-            addButton(player, 'B', XMaterial.BARRIER, "EDIT_BACK_QUEST_EDIT", id) {
+            addButton(player, 'B', XMaterial.ARROW, "EDIT_BACK_QUEST_EDIT", id) {
                 openEdit(player, questFrame)
             }
-            addButton(player, 'R', XMaterial.BOOK, "EDIT_QUEST_NOTE_PREVIEW", id, questFrame.note)
-            addButton(player, 'W', XMaterial.WRITABLE_BOOK, "EDIT_QUEST_NOTE_EDIT", id, questFrame.note) {
+            addButton(player, 'R', XMaterial.BOOK, "EDIT_QUEST_NOTE_PREVIEW", id, addList = questFrame.note)
+            addButton(player, 'W', XMaterial.WRITABLE_BOOK, "EDIT_QUEST_NOTE_EDIT", id, addList = questFrame.note) {
                 editNote(player, questFrame)
             }
         }

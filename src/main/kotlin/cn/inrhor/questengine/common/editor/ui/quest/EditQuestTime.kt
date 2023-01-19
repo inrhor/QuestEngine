@@ -23,7 +23,7 @@ object EditQuestTime {
         player.openMenu<Basic>(player.asLangText("EDIT_UI_QUEST_TIME")) {
             rows(6)
             map("--------B", "--TDR")
-            addButton(player, 'B', XMaterial.BARRIER, "EDIT_BACK_QUEST_EDIT", id) {
+            addButton(player, 'B', XMaterial.ARROW, "EDIT_BACK_QUEST_EDIT", id) {
                 EditQuest.openEdit(player, questFrame)
             }
             addButton(player, 'T', XMaterial.LEAD,
@@ -48,7 +48,7 @@ object EditQuestTime {
         player.openMenu<Basic>(player.asLangText("EDIT_UI_QUEST_TIME_TYPE")) {
             rows(6)
             map("--------B", "--ADWMY", "--C")
-            addButton(player, 'B', XMaterial.BARRIER, "EDIT_BACK_TIME_EDIT", id) {
+            addButton(player, 'B', XMaterial.ARROW, "EDIT_BACK_TIME_EDIT", id) {
                 open(player, questFrame)
             }
             addButton(player, 'A', XMaterial.GREEN_WOOL, "EDIT_QUEST_TIME_ALWAYS", id) {

@@ -44,7 +44,7 @@ object EditQuestAccept {
         player.openMenu<Basic>(player.asLangText("EDIT_UI_QUEST_ACCEPT")) {
             rows(6)
             map("--------B", "--E#")
-            addButton(player, 'B', XMaterial.BARRIER, "EDIT_BACK_QUEST_EDIT", id) {
+            addButton(player, 'B', XMaterial.ARROW, "EDIT_BACK_QUEST_EDIT", id) {
                 EditQuest.openEdit(player, questFrame)
             }
             addButton(player, 'E', XMaterial.TORCH,
@@ -55,7 +55,7 @@ object EditQuestAccept {
             }
             addButton(player, '#', XMaterial.REDSTONE_TORCH,
                 player.asLangTextList("EDIT_QUEST_ACCEPT_CONDITION",
-                    back.lang(player, "CONDITION_RETURN")), id, coList) {
+                    back.lang(player, "CONDITION_RETURN")), id, addList = coList) {
                 editCondition(player, questFrame)
             }
         }

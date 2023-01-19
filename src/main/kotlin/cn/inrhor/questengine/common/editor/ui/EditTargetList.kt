@@ -3,6 +3,7 @@ package cn.inrhor.questengine.common.editor.ui
 import cn.inrhor.questengine.api.quest.QuestFrame
 import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.common.editor.ui.EditHome.addButton
+import cn.inrhor.questengine.common.editor.ui.EditHome.pageItem
 import cn.inrhor.questengine.script.kether.evalStringList
 import org.bukkit.entity.Player
 import taboolib.library.xseries.XMaterial
@@ -21,7 +22,7 @@ object EditTargetList {
             slots(listOf(10, 11, 12, 13, 14, 15, 16,
                 19, 20, 21, 22, 23, 24, 25,
                 28, 29, 30, 31, 32, 33, 34))
-            addButton(player, 8, XMaterial.BARRIER, "EDIT_BACK_QUEST_EDIT", id) {
+            addButton(player, 8, XMaterial.ARROW, "EDIT_BACK_QUEST_EDIT", id) {
                EditQuest.openEdit(player, questFrame)
             }
             elements { questFrame.target }
@@ -37,6 +38,7 @@ object EditTargetList {
             onClick { _, element ->
                 EditTarget.open(player, questFrame, element)
             }
+            pageItem(player)
         }
     }
 

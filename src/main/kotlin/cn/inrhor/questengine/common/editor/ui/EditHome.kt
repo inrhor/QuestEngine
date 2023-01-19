@@ -6,17 +6,18 @@ import taboolib.library.xseries.XMaterial
 import taboolib.module.ui.ClickEvent
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Basic
+import taboolib.module.ui.type.Linked
 import taboolib.platform.util.asLangText
 import taboolib.platform.util.asLangTextList
 import taboolib.platform.util.buildItem
 
 object EditHome {
 
-    fun Basic.addButton(player: Player, icon: Char, material: XMaterial, lang: String, questID: String = "null", addList: List<String> = listOf(), action: ClickEvent.() -> Unit = {}) {
-        addButton(player, icon, material, player.asLangTextList(lang), questID, addList, action)
+    fun Basic.addButton(player: Player, icon: Char, material: XMaterial, lang: String, questID: String = "null", targetID: String = "null", addList: List<String> = listOf(), action: ClickEvent.() -> Unit = {}) {
+        addButton(player, icon, material, player.asLangTextList(lang), questID, targetID, addList, action)
     }
 
-    fun Basic.addButton(player: Player, icon: Char, material: XMaterial, lang: List<String>, questID: String = "null", addList: List<String> = listOf(), action: ClickEvent.() -> Unit = {}) {
+    fun Basic.addButton(player: Player, icon: Char, material: XMaterial, lang: List<String>, questID: String = "null", targetID: String = "null", addList: List<String> = listOf(), action: ClickEvent.() -> Unit = {}) {
         set(icon, buildItem(material) {
             name = "§f                                        "
             val m = mutableListOf<String>()
@@ -29,17 +30,19 @@ object EditHome {
             }
             lore.addAll(player.evalStringList(m){
                 it.rootFrame().variables().set("@QenQuestID", questID)
+                it.rootFrame().variables().set("@QenTargetID", targetID)
             })
         }) {
             action()
         }
     }
 
-    fun Basic.addButton(player: Player, icon: Int, material: XMaterial, lang: String, questID: String = "null", action: ClickEvent.() -> Unit = {}) {
+    fun Basic.addButton(player: Player, icon: Int, material: XMaterial, lang: String, questID: String = "null", targetID: String = "null", action: ClickEvent.() -> Unit = {}) {
         set(icon, buildItem(material) {
             name = "§f                                        "
             lore.addAll(player.evalStringList(player.asLangTextList(lang)){
                 it.rootFrame().variables().set("@QenQuestID", questID)
+                it.rootFrame().variables().set("@QenTargetID", targetID)
             })
         }) {
             action()
@@ -59,6 +62,24 @@ object EditHome {
             addButton(player, '#', XMaterial.BOOKSHELF, "EDIT_UI_QUEST_GROUP") {
 
             }
+        }
+    }
+
+    fun Linked<*>.pageItem(player: Player) {
+        setPreviousPage(48) { _, _ ->
+            buildItem(XMaterial.SLIME_BALL) {
+                name = player.asLangText("PREVIOUS_PAGE")
+            }
+        }
+        setNextPage(50) { _, _ ->
+            buildItem(XMaterial.SLIME_BALL) {
+                name = player.asLangText("NEXT_PAGE")
+            }
+        }
+        set(49, buildItem(XMaterial.BARRIER) {
+            name = player.asLangText("CLOSE_UI")
+        }) {
+            player.closeInventory()
         }
     }
 
