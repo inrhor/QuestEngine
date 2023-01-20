@@ -123,3 +123,20 @@ fun String.replaceWithOrder(vararg args: Any): String {
     }
     return builder.toString()
 }
+
+/**
+ * 对string进行换行，每行最多50个字符
+ */
+fun String.lineSplit(list: MutableList<String> = mutableListOf(), max: Int = 40): MutableList<String> {
+    val line = length/max
+    for (i in 0..line) {
+        val start = i*max
+        val end = (i+1)*max
+        if (end > length) {
+            list.add("§f"+substring(start, length))
+        }else {
+            list.add("§f"+substring(start, end))
+        }
+    }
+    return list
+}

@@ -6,6 +6,7 @@ import cn.inrhor.questengine.common.editor.ui.EditQuest
 import cn.inrhor.questengine.common.quest.manager.QuestManager.saveFile
 import cn.inrhor.questengine.script.kether.testEval
 import cn.inrhor.questengine.utlis.Input.inputBook
+import cn.inrhor.questengine.utlis.lineSplit
 import cn.inrhor.questengine.utlis.newLineList
 import org.bukkit.entity.Player
 import taboolib.library.xseries.XMaterial
@@ -16,6 +17,16 @@ import taboolib.platform.util.asLangTextList
 
 object EditQuestAccept {
 
+    fun errorAddList(player: Player, errorInfo: String, list:  MutableList<String>): MutableList<String> {
+        if (errorInfo.isNotEmpty()) {
+            list.add("")
+            list.add(player.asLangText("ERROR_INFO"))
+            // 对string进行换行，每行最多50个字符
+            errorInfo.lineSplit(list)
+        }
+        return list
+    }
+
     fun open(player: Player, questFrame: QuestFrame) {
         val id = questFrame.id
         val accept = questFrame.accept
@@ -24,23 +35,8 @@ object EditQuestAccept {
         val backInfo = back.errorInfo(player, co) {
             it.rootFrame().variables().set("@QenQuestID", id)
         }
-        val coList = co.newLineList("&f")
-        if (backInfo.isNotEmpty()) {
-            coList.add("")
-            coList.add(player.asLangText("ERROR_INFO"))
-            // 对string进行换行，每行最多50个字符
-            val length = backInfo.length
-            val line = length/50
-            for (i in 0..line) {
-                val start = i*50
-                val end = (i+1)*50
-                if (end > length) {
-                    coList.add("§f"+backInfo.substring(start, length))
-                }else {
-                    coList.add("§f"+backInfo.substring(start, end))
-                }
-            }
-        }
+        val list = co.lineSplit().joinToString("\n").newLineList("&f")
+        val coList = errorAddList(player, backInfo, list)
         player.openMenu<Basic>(player.asLangText("EDIT_UI_QUEST_ACCEPT")) {
             rows(6)
             map("--------B", "--E#")

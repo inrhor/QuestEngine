@@ -160,6 +160,7 @@ EDIT_UI_TARGET_CONTROL_LIST: "任务编辑器 | 目标控制框架列表"
 EDIT_UI_TARGET_CONTROL: "任务编辑器 | 目标控制框架"
 EDIT_UI_CONTROL: "任务编辑器 | 控制框架"
 EDIT_UI_CONTROL_TYPE: "任务编辑器 | 控制框架选择触发器"
+EDIT_UI_CONTROL_SELECT: "任务编辑器 | 控制框架选择对象"
 EDIT_UI_TARGET_LIST: "任务编辑器 | 目标条目列表"
 EDIT_UI_TARGET: "任务编辑器 | 目标条目"
 EDIT_UI_QUEST_ACCEPT: "任务编辑器 | 任务接受模式"
@@ -270,6 +271,14 @@ EDIT_CONTROL_TYPE:
   - "     &8&o点击选择触发脚本方式"
   - "&f"
 EDIT_CONTROL_SCRIPT:
+  - "     &6脚本："
+  - "&f"
+  - "__List__"
+  - "&f"
+  - "     &8&o左键点击编辑脚本"
+  - "     &8&o右键点击预览脚本"
+  - "&f"
+EDIT_CONTROL_SCRIPT_ERROR:
   - "     &6脚本："
   - "&f"
   - "__List__"
@@ -426,14 +435,30 @@ EDIT_CONTROL_TYPE_RESET:
   - "     &8&o点击选定"
   - "&f"
 
+EDIT_CONTROL_SELECT_SELF:
+  - "     &a脚本对触发者执行"
+  - "&f"
+  - "     &8&o点击选定"
+  - "&f"
+EDIT_CONTROL_SELECT_TEAM:
+  - "     &b脚本对队伍所有成员执行"
+  - "&f"
+  - "     &8&o点击选定"
+  - "&f"
+EDIT_CONTROL_SELECT_ALL:
+  - "     &6脚本对在线所有玩家执行"
+  - "&f"
+  - "     &8&o点击选定"
+  - "&f"
+
 CONDITION_RETURN_TRUE: "&7&l[ &a条件满足 &7&l]"
 CONDITION_RETURN_FALSE: "&7&l[ &c条件不满足 &7&l]"
 CONDITION_RETURN_ERROR: "&7&l[ &c语句错误 &7&l]"
 ERROR_INFO: "     &c错误信息："
 
 SELECT_TYPE_SELF: "对自己"
-SELECT_TYPE_TEAM: "对自己"
-SELECT_TYPE_ALL: "对自己"
+SELECT_TYPE_TEAM: "对队伍所有成员"
+SELECT_TYPE_ALL: "对所有在线玩家"
 
 QUEUE_TYPE_ACCEPT: "接受时"
 QUEUE_TYPE_FINISH: "完成时"
