@@ -65,6 +65,8 @@ TAGS-LIST-FORMAT: "&f     - &7{0}"
 COMMAND-SUCCESSFUL_RELOAD: "&7&l[ &c&li &7&l]&f 已重载 &3&lQuestEngine &f配置文件"
 COMMAND-ITEM-SAVE: "&7&l[ &c&li &7&l]&f 保存了物品配置： &8{0}"
 
+EXIT_TARGET_ID: "&c&l i &f当前任务 &7{0} &f已有相同的目标编号"
+
 EDIT_BOOK_QUEST_ID: "添加任务-任务编号"
 EDIT_BOOK_QUEST_PATH: "添加任务-任务路径"
 EDIT_BOOK_QUEST_NAME: "添加任务-任务名称"
@@ -72,6 +74,7 @@ EDIT_BOOK_QUEST_NOTE: "编辑任务-任务笔记描述"
 EDIT_BOOK_QUEST_ACCEPT_CONDITION: "编辑任务-任务接受条件"
 EDIT_BOOK_QUEST_MODE: "编辑任务-任务模式"
 EDIT_BOOK_QUEST_CONTROL: "编辑任务-触发器控制框架"
+EDIT_BOOK_QUEST_TARGET: "编辑任务-目标编号"
 
 PREVIOUS_PAGE: "&a&l上一页"
 NEXT_PAGE: "&a&l下一页"
@@ -80,6 +83,9 @@ CLOSE_UI: "&c&l关闭"
 EDIT_BOOK_OPEN: "&7右键打开并编辑"
 EDIT_BOOK_DELETE: "&c编辑后销毁书本"
 EDIT_BOOK_KEEP: "&a编辑后保留书本"
+
+EDIT_INPUT_ADD_TARGET:
+  - "下一行输入目标编号"
 
 EDIT_INPUT_ADD_CONTROL:
   - "下一行输入控制框架编号"
@@ -167,6 +173,8 @@ EDIT_UI_QUEST_ACCEPT: "任务编辑器 | 任务接受模式"
 EDIT_UI_QUEST_TIME: "任务编辑器 | 时间组件"
 EDIT_UI_QUEST_TIME_TYPE: "任务编辑器 | 选择时间类型"
 EDIT_UI_QUEST_MODE: "任务编辑器 | 任务模式"
+EDIT_UI_TARGET_EVENT_LIST: "任务编辑器 | 选择目标事件"
+EDIT_UI_TARGET_EVENT_NODE: "任务编辑器 | 目标事件节点"
 
 EDIT_UI_ADD_QUEST:
   - "     &8&o点击添加任务"
@@ -295,6 +303,9 @@ EDIT_TARGET_LIST:
   - "&f"
   - "     &8&o点击编辑目标条目"
   - "&f"
+EDIT_TARGET_ADD:
+  - "     &8&o点击添加目标条目"
+  - "&f"
 
 EDIT_BACK_TARGET_LIST:
   - "     &8&o返回目标条目列表 &f[[quest name]]"
@@ -406,7 +417,11 @@ EDIT_QUEST_MODE_SHARE:
   - "&f"
 
 EDIT_BACK_TARGET_EDIT:
-  - "     &8&o返回编辑目标 &f[[target name]]"
+  - "     &8&o返回编辑目标 &f[[target id]]"
+  - "&f"
+
+EDIT_BACK_EVENT_EDIT:
+  - "     &8&o返回编辑目标事件节点 &f[[target id]]"
   - "&f"
 
 EDIT_CONTROL_TYPE_ACCEPT:
@@ -451,6 +466,61 @@ EDIT_CONTROL_SELECT_ALL:
   - "     &8&o点击选定"
   - "&f"
 
+EDIT_TARGET_EVENT_CHANGE:
+  - "     &6选择事件"
+  - "&f"
+  - "     &8&o点击进行选择事件"
+  - "&f"
+EDIT_TARGET_SELECT_EVENT:
+  - "     &6事件：&f{0}"
+  - "&f"
+  - "     &8&o点击选定"
+  - "&f"
+EDIT_EVENT_NODE_AMOUNT:
+  - "     &6次数：&f{0}"
+  - "&f"
+  - "     &8&o点击编辑"
+  - "&f"
+EDIT_EVENT_NODE_NUMBER:
+  - "     &6次数：&f{0}"
+  - "&f"
+  - "     &8&o点击编辑"
+  - "&f"
+EDIT_EVENT_NODE_MOBS:
+  - "     &6MythicMobs实体编号："
+  - "__List__"
+  - "&f"
+  - "     &8&o点击编辑"
+  - "&f"
+EDIT_EVENT_NODE_NEED:
+  - "     &6所需条件："
+  - "__List__"
+  - "&f"
+  - "     &8&o点击编辑"
+  - "&f"
+EDIT_EVENT_NODE_COST:
+  - "     &6经济费用：&f{0}"
+  - "&f"
+  - "     &8&o点击编辑"
+  - "&f"
+EDIT_EVENT_NODE_MESSAGE:
+  - "     &6消息："
+  - "__List__"
+  - "&f"
+  - "     &8&o点击编辑"
+  - "&f"
+EDIT_EVENT_NODE_CONTENT:
+  - "     &6内容："
+  - "__List__"
+  - "&f"
+  - "     &8&o点击编辑"
+  - "&f"
+EDIT_EVENT_NODE_ENTITY:
+  - "     &6实体类型：&f{0}"
+  - "&f"
+  - "     &8&o点击编辑"
+  - "&f"
+
 CONDITION_RETURN_TRUE: "&7&l[ &a条件满足 &7&l]"
 CONDITION_RETURN_FALSE: "&7&l[ &c条件不满足 &7&l]"
 CONDITION_RETURN_ERROR: "&7&l[ &c语句错误 &7&l]"
@@ -488,3 +558,18 @@ TIME_TYPE_CUSTOM: "CUSTOM(时间段)"
 
 OPEN-ON: "开启"
 OPEN-OFF: "关闭"
+
+TARGET_SELECT_NULL: "&7null &f(&7无事件&f)"
+TARGET_SELECT_BREAK_BLOCK: "&7{0} &f(&7破坏方块&f)"
+TARGET_SELECT_TASK: "&7{0} &f(&7定时器&f)"
+TARGET_SELECT_PLACE_BLOCK: "&7{0} &f(&7放置方块&f)"
+TARGET_SELECT_PASS_COLLECTION_PACKET: "&7{0} &f(&7交互允许数据包实体&f)"
+TARGET_SELECT_ENCHANT_ITEM: "&7{0} &f(&7附魔物品&f)"
+TARGET_SELECT_LEFT_NPC: "&7{0} &f(&7左键CitizensNPC&f)"
+TARGET_SELECT_RIGHT_NPC: "&7{0} &f(&7右键CitizensNPC&f)"
+TARGET_SELECT_PLAYER_CHAT: "&7{0} &f(&7玩家聊天&f)"
+TARGET_SELECT_PLAYER_KILL_ENTITY: "&7{0} &f(&7玩家击杀实体&f)"
+TARGET_SELECT_PLAYER_SEND_COMMAND: "&7{0} &f(&7玩家发送命令&f)"
+TARGET_SELECT_PLAYER_DEATH: "&7{0} &f(&7玩家死亡&f)"
+TARGET_SELECT_PLAYER_JOIN_SERVER: "&7{0} &f(&7进入服务器&f)"
+TARGET_SELECT_PLAYER_QUIT_SERVER: "&7{0} &f(&7退出服务器&f)"

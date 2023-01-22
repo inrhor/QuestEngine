@@ -24,6 +24,11 @@ object ActionTarget {
                     }
                 }
             }
+            case("id") {
+                actionNow {
+                    selectTargetID()
+                }
+            }
             case("schedule") {
                 actionNow {
                     player().targetData(selectQuestID(), selectTargetID())?.schedule?: 0

@@ -4,15 +4,12 @@ import cn.inrhor.questengine.utlis.variableReader
 import taboolib.common.util.VariableReader
 
 data class TargetFrame(
-    var id: String, var event: String,
-    var period: Int, var async: Boolean, var condition: String,
-    var node: String, val description: List<String>,
-    val data: List<String>,
+    var id: String = "null", var event: String = "null",
+    var period: Int = 0, var async: Boolean = false, var condition: String = "",
+    var node: String = "", val description: List<String> = listOf(),
+    val data: List<String> = listOf(),
     val trigger: MutableList<ControlFrame> = mutableListOf()
 ) {
-    constructor():
-            this("targetId", "targetName", 0, false,
-                "", "", listOf(), listOf())
 
     @Transient
     val nodeMap: MutableMap<String, MutableList<String>> = mutableMapOf()
@@ -48,10 +45,10 @@ data class TargetFrame(
         node += "}}"
     }
 
-    fun nodeMeta(meta: String): MutableList<String>? {
+    fun nodeMeta(meta: String): MutableList<String> {
         if (nodeMap.containsKey(meta)) {
             return nodeMap[meta]!!
         }
-        return null
+        return mutableListOf()
     }
 }

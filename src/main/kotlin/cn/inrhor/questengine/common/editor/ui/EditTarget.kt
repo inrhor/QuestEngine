@@ -3,6 +3,7 @@ package cn.inrhor.questengine.common.editor.ui
 import cn.inrhor.questengine.api.quest.QuestFrame
 import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.common.editor.ui.EditHome.addButton
+import cn.inrhor.questengine.common.editor.ui.target.EditTargetEvent
 import org.bukkit.entity.Player
 import taboolib.library.xseries.XMaterial
 import taboolib.module.ui.openMenu
@@ -22,7 +23,7 @@ object EditTarget {
             }
             addButton(player, '#', XMaterial.IRON_AXE,
                 player.asLangTextList("EDIT_TARGET_EVENT", targetFrame.event), id) {
-
+                EditTargetEvent.open(player, questFrame, targetFrame)
             }
             addButton(player, 'W', XMaterial.WRITABLE_BOOK,
                 "EDIT_TARGET_NOTE", id, addList = targetFrame.description) {

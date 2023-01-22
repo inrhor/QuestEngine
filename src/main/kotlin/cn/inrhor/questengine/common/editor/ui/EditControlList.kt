@@ -29,7 +29,9 @@ object EditControlList {
     fun target(player: Player, questFrame: QuestFrame, targetFrame: TargetFrame) {
         use(player, questFrame,
             "EDIT_UI_TARGET_CONTROL_LIST",
-            "EDIT_BACK_TARGET_EDIT", targetFrame)
+            "EDIT_BACK_TARGET_EDIT", targetFrame) {
+            EditTarget.open(player, questFrame, targetFrame)
+        }
     }
 
     private fun use(player: Player, questFrame: QuestFrame, titleLang: String, back: String, targetFrame: TargetFrame? = null, action: ClickEvent.() -> Unit = {}) {
@@ -44,7 +46,7 @@ object EditControlList {
             addButton(player, 8, XMaterial.ARROW, back, id, t) {
                 action()
             }
-            elements { questFrame.control }
+            elements { targetFrame?.trigger?: questFrame.control }
             onGenerate { _, element, _, _ ->
                 buildItem(Material.COMPARATOR) {
                     name = "§f                                        "
