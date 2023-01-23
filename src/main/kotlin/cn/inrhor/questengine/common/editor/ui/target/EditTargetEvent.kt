@@ -12,9 +12,13 @@ import cn.inrhor.questengine.common.editor.ui.EditHome.pageItem
 import cn.inrhor.questengine.common.editor.ui.EditTarget
 import cn.inrhor.questengine.common.quest.manager.QuestManager.saveFile
 import cn.inrhor.questengine.script.kether.evalStringList
+import cn.inrhor.questengine.utlis.Input.inputBook
+import cn.inrhor.questengine.utlis.lineSplit
+import cn.inrhor.questengine.utlis.newLineList
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.info
 import taboolib.library.xseries.XMaterial
+import taboolib.module.chat.colored
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Linked
 import taboolib.platform.util.asLangText
@@ -45,23 +49,50 @@ object EditTargetEvent {
             onGenerate { player, element, _, _ ->
                 val node = element.node
                 val value = targetFrame.nodeMeta(node)
-                val lang: List<String> = if (element.nodeType == TargetNodeType.LIST) {
-                    val list = mutableListOf<String>()
-                    player.asLangTextList("EDIT_EVENT_NODE_${node.uppercase()}").forEach {
-                        info("list   $it  check  "+(it == "__List__"))
-                        if (it == "__List__") {
-                            list.addAll(value)
-                        } else {
-                            list.add(it)
+                val lang: List<String> = when (element.nodeType) {
+                    TargetNodeType.LIST -> {
+                        val list = mutableListOf<String>()
+                        player.asLangTextList("EDIT_EVENT_NODE_${node.uppercase()}").forEach {
+                            if (it == "__List__") {
+                                list.addAll(value)
+                            } else {
+                                list.add(it)
+                            }
                         }
+                        list
                     }
-                    list
-                }else {
-                    player.asLangTextList("EDIT_EVENT_NODE_${node.uppercase()}", value)
+                    TargetNodeType.STRING -> {
+                        val list = mutableListOf<String>()
+                        player.asLangTextList("EDIT_EVENT_NODE_${node.uppercase()}").forEach {
+                            if (it == "__List__") {
+                                list.addAll(if (value.isNotEmpty())value.joinToString(" ").lineSplit().joinToString("\n").newLineList("&f").colored() else value)
+                            } else {
+                                list.add(it)
+                            }
+                        }
+                        list
+                    }
+                    else -> {
+                        player.asLangTextList("EDIT_EVENT_NODE_${node.uppercase()}", value)
+                    }
                 }
                 buildItem(element.material) {
                     name = "§f                                        "
                     lore.addAll(lang)
+                }
+            }
+            onClick { _, element ->
+                if (element.node == "task") {
+                    player.closeInventory()
+                    player.inputBook(player.asLangText("EDIT_BOOK_EVENT_TASK_ID"), true,
+                        player.asLangTextList("EDIT_INPUT_EVENT_TASK_ID")) {
+                        if (it.size >= 2) {
+                            targetFrame.event = "task ${it[1]}"
+                            questFrame.saveFile()
+                        }
+                    }
+                }else {
+
                 }
             }
             pageItem(player)
@@ -95,10 +126,22 @@ object EditTargetEvent {
                 }
             }
             onClick { _, element ->
-                targetFrame.event = element.name
-                targetFrame.node = ""
-                questFrame.saveFile()
-                open(player, questFrame, targetFrame)
+                    if (element.name == "task") {
+                        player.closeInventory()
+                        player.inputBook(player.asLangText("EDIT_BOOK_EVENT_TASK_ID"), true,
+                            player.asLangTextList("EDIT_INPUT_EVENT_TASK_ID")) {
+                            if (it.size >= 2) {
+                                targetFrame.event = "task ${it[1]}"
+                                questFrame.saveFile()
+                                open(player, questFrame, targetFrame)
+                            }
+                        }
+                    }else {
+                        targetFrame.event = element.name
+                        targetFrame.node = ""
+                        questFrame.saveFile()
+                        open(player, questFrame, targetFrame)
+                    }
             }
             pageItem(player)
         }

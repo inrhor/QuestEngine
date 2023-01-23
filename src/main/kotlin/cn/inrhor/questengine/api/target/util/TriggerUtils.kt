@@ -45,7 +45,7 @@ object TriggerUtils {
      * 物品匹配器
      */
     fun itemTrigger(target: TargetFrame, itemStack: ItemStack): Boolean {
-        val content = target.nodeMeta("item")?: return true
+        val content = target.nodeMeta("item")
         content.forEach {
             if (ItemMatch(Demand(it)).check(itemStack)) return true
         }
