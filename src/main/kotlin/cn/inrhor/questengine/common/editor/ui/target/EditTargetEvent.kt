@@ -81,19 +81,53 @@ object EditTargetEvent {
                     lore.addAll(lang)
                 }
             }
-            onClick { _, element ->
-                if (element.node == "task") {
-                    player.closeInventory()
-                    player.inputBook(player.asLangText("EDIT_BOOK_EVENT_TASK_ID"), true,
-                        player.asLangTextList("EDIT_INPUT_EVENT_TASK_ID")) {
-                        if (it.size >= 2) {
-                            targetFrame.event = "task ${it[1]}"
-                            questFrame.saveFile()
+            val name = targetFrame.event
+            if (name.uppercase().startsWith("TASK ")) {
+                map("", "---EAPC")
+                addButton(player, 'E', XMaterial.REDSTONE_BLOCK,
+                    player.asLangTextList("EDIT_EVENT_TASK", name), id, t) {
+                        player.closeInventory()
+                        player.inputBook(player.asLangText("EDIT_BOOK_EVENT_TASK_ID"), true,
+                            player.asLangTextList("EDIT_INPUT_EVENT_TASK_ID")) {
+                            if (it.size >= 2) {
+                                targetFrame.event = "task ${it[1]}"
+                                questFrame.saveFile()
+                                open(player, questFrame, targetFrame)
+                            }
                         }
-                    }
-                }else {
-
                 }
+                addButton(player, 'A', XMaterial.REDSTONE_BLOCK,
+                    player.asLangTextList("EDIT_EVENT_ASYNC", targetFrame.async), id, t) {
+                    targetFrame.async = !targetFrame.async
+                    questFrame.saveFile()
+                    open(player, questFrame, targetFrame)
+                }
+                val p = targetFrame.period
+                addButton(player, 'P', XMaterial.REDSTONE_BLOCK,
+                    player.asLangTextList("EDIT_EVENT_PERIOD", p), id, t) {
+                    player.closeInventory()
+                    player.inputBook(player.asLangText("EDIT_BOOK_EVENT_TASK_PERIOD"), true,
+                        player.asLangTextList("EDIT_INPUT_EVENT_TASK_PERIOD", p)) {
+                        targetFrame.period = it[1].toInt()
+                        questFrame.saveFile()
+                        open(player, questFrame, targetFrame)
+                    }
+                }
+                val c = targetFrame.condition
+                addButton(player, 'C', XMaterial.REDSTONE_BLOCK,
+                    "EDIT_EVENT_CONDITION", id, t,
+                    c.lineSplit().joinToString("\n").newLineList("&f")) {
+                    player.closeInventory()
+                    player.inputBook(player.asLangText("EDIT_BOOK_EVENT_TASK_CONDITION"), true,
+                        c.newLineList()) {
+                        targetFrame.condition = it.joinToString("\n")
+                        questFrame.saveFile()
+                        open(player, questFrame, targetFrame)
+                    }
+                }
+            }
+            onClick { _, element ->
+
             }
             pageItem(player)
         }

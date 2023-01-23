@@ -76,6 +76,8 @@ EDIT_BOOK_QUEST_MODE: "编辑任务-任务模式"
 EDIT_BOOK_QUEST_CONTROL: "编辑任务-触发器控制框架"
 EDIT_BOOK_QUEST_TARGET: "编辑任务-目标编号"
 EDIT_BOOK_EVENT_TASK_ID: "编辑任务-定时器事件编号"
+EDIT_BOOK_EVENT_TASK_PERIOD: "编辑任务-定时器事件时间"
+EDIT_BOOK_EVENT_TASK_CONDITION: "编辑任务-定时器事件条件"
 
 PREVIOUS_PAGE: "&a&l上一页"
 NEXT_PAGE: "&a&l下一页"
@@ -159,6 +161,9 @@ EDIT_INPUT_TIME_CUSTOM:
 
 EDIT_INPUT_EVENT_TASK_ID:
   - "下一行输入定时器编号"
+EDIT_INPUT_EVENT_TASK_PERIOD:
+  - "下行编辑时间(20等于1秒)"
+  - "{0}"
 
 EDIT_UI_HOME: "任务编辑器 | 主页面"
 EDIT_UI_QUEST: "任务编辑器 | 任务"
@@ -584,6 +589,27 @@ EDIT_EVENT_NODE_EXP:
   - "&f"
 EDIT_EVENT_NODE_MATRIX:
   - "     &6合成配方："
+  - "__List__"
+  - "&f"
+  - "     &8&o点击编辑"
+  - "&f"
+EDIT_EVENT_TASK:
+  - "     &6定时器：&f{0}"
+  - "&f"
+  - "     &8&o点击编辑定时器编号"
+  - "&f"
+EDIT_EVENT_ASYNC:
+  - "     &6是否同步(非异步)：&f{0}"
+  - "&f"
+  - "     &8&o点击切换"
+  - "&f"
+EDIT_EVENT_PERIOD:
+  - "     &6定时器时间：&f{0}"
+  - "&f"
+  - "     &8&o点击编辑"
+  - "&f"
+EDIT_EVENT_CONDITION:
+  - "     &6定时器循环检查条件："
   - "__List__"
   - "&f"
   - "     &8&o点击编辑"
