@@ -53,7 +53,8 @@ class DatabaseLocal: Database() {
             pData.dataContainer.trackData = data.getObject("track", false)
         }
         if (data.contains("tags")) {
-            pData.dataContainer.tags = TagsData(data.getStringList("tags").toMutableSet())
+            // 历史遗留问题
+            pData.dataContainer.tags = TagsData(data.getStringList("tags.tags").toMutableSet())
         }
         if (data.contains("storage")) {
             data.getConfigurationSection("storage")?.getKeys(false)?.forEach {

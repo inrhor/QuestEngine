@@ -242,10 +242,14 @@ object QuestManager {
      * @return 目标模块
      */
     fun String.getTargetFrame(questID: String): TargetFrame? {
-        questID.getQuestFrame()?.target?.forEach {
-            if (it.id == this) return it
-        }
-        return null
+        return questID.getQuestFrame()?.target?.find { it.id == this }
+    }
+
+    /**
+     * @return 目标模块
+     */
+    fun QuestFrame.getTargetFrame(targetID: String): TargetFrame? {
+        return target.find { it.id == targetID }
     }
 
 }

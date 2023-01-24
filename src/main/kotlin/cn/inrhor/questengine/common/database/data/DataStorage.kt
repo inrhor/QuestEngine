@@ -22,11 +22,9 @@ object DataStorage {
     }
 
     fun UUID.getPlayerData(): PlayerData {
-        var pData = playerDataStorage[this]
-        if (pData == null) {
-            pData = PlayerData(this)
+        return playerDataStorage[this]?: PlayerData(this).also {
+            playerDataStorage[this] = it
             Bukkit.getPlayer(this)?.sendLang("DATA-NULL_DATA")
         }
-        return pData
     }
 }

@@ -1,6 +1,7 @@
 
 package cn.inrhor.questengine.script.kether
 
+import cn.inrhor.questengine.utlis.variableReader
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.*
 import taboolib.common5.Coerce
@@ -8,6 +9,7 @@ import taboolib.module.chat.colored
 import taboolib.module.kether.KetherShell
 import taboolib.module.kether.ScriptContext
 import taboolib.module.kether.printKetherErrorMessage
+import taboolib.platform.compat.replacePlaceholder
 import taboolib.platform.util.asLangText
 
 fun Player.eval(script: String, variable: (ScriptContext) -> Unit, get: (Any?) -> Any, def: Any): Any {
@@ -54,6 +56,28 @@ fun runEvalSet(players: Set<Player>, script: String, variable: (ScriptContext) -
     return true
 }
 
+fun Player.evalStringList(script: List<String>, variable: (ScriptContext) -> Unit): List<String> {
+    val list = mutableListOf<String>()
+    script.forEach {
+        list.add(evalString(it) { a ->
+            variable(a)
+        })
+    }
+    return list
+}
+
+fun Player.evalString(script: String, variable: (ScriptContext) -> Unit): String {
+    var text = script
+    script.variableReader("[[", "]]").forEach { e ->
+        text = text.replace("[[$e]]", eval(e, {
+            variable(it
+            )}, {
+            Coerce.toString(it)
+        }, script).toString())
+    }
+    return text.replacePlaceholder(this).colored()
+}
+
 fun runEvalSet(players: Set<Player>, script: String): Boolean {
     if (script.isEmpty()) return true
     players.forEach {
@@ -62,31 +86,24 @@ fun runEvalSet(players: Set<Player>, script: String): Boolean {
     return true
 }
 
-fun backContains(player: Player, content: String, back: Boolean = true, eval: Boolean = true): EvalType {
-    if (eval) {
-        return testEval(player, content)
-    }else {
-        if (back) return EvalType.TRUE else EvalType.FALSE
-    }
-    return EvalType.FALSE
-}
-
-fun testEval(player: Player, script: String): EvalType {
+fun testEval(player: Player, script: String, variable: (ScriptContext) -> Unit = {}): EvalType {
     if (script.isEmpty()) return EvalType.TRUE
     return try {
-        KetherShell.eval(script, sender = adaptPlayer(player), namespace = listOf("QuestEngine", "adyeshach")).thenApply {
+        KetherShell.eval(script, sender = adaptPlayer(player), namespace = listOf("QuestEngine", "adyeshach")){
+            variable(this)
+        }.thenApply {
             Coerce.toBoolean(it).evalType()
         }.getNow(null)
     } catch (ex: Throwable) {
-        console().sendMessage("&cError Script: $script".colored())
-        ex.printKetherErrorMessage()
         EvalType.ERROR
     }
 }
 
-fun feedbackEval(player: Player, script: String): String {
+fun errorEval(player: Player, script: String, variable: (ScriptContext) -> Unit = {}): String {
     return try {
-        KetherShell.eval(script, sender = adaptPlayer(player), namespace = listOf("QuestEngine", "adyeshach")).thenApply {
+        KetherShell.eval(script, sender = adaptPlayer(player), namespace = listOf("QuestEngine", "adyeshach")){
+            variable(this)
+        }.thenApply {
             ""
         }.getNow(null)
     } catch (ex: Exception) {
@@ -95,9 +112,16 @@ fun feedbackEval(player: Player, script: String): String {
 }
 
 enum class EvalType {
-    TRUE, FALSE, ERROR
+    TRUE, FALSE, ERROR;
+
+    fun errorInfo(player: Player, script: String, variable: (ScriptContext) -> Unit = {}): String {
+        return errorEval(player, script) {
+            variable(it)
+        }
+    }
+
+    fun lang(player: Player, content: String): String {
+        return player.asLangText("${content}_$this")
+    }
 }
 fun Boolean.evalType() = if (this) EvalType.TRUE else EvalType.FALSE
-fun EvalType.lang(player: Player, content: String): String {
-    return player.asLangText("$content-$this")
-}

@@ -16,9 +16,16 @@ object UtilString {
     }
 }
 
-fun String.newLineList(): MutableList<String> {
+fun String.newLineList(color: String = ""): MutableList<String> {
     val l = this.split("\n").toMutableList()
     l.remove("")
+    if (color.isNotEmpty()) {
+        val m = mutableListOf<String>()
+        l.forEach {
+            m.add("$color$it")
+        }
+        return m
+    }
     return l
 }
 
@@ -115,4 +122,21 @@ fun String.replaceWithOrder(vararg args: Any): String {
         i++
     }
     return builder.toString()
+}
+
+/**
+ * 对string进行换行，每行最多50个字符
+ */
+fun String.lineSplit(list: MutableList<String> = mutableListOf(), max: Int = 40): MutableList<String> {
+    val line = length/max
+    for (i in 0..line) {
+        val start = i*max
+        val end = (i+1)*max
+        if (end > length) {
+            list.add("§f"+substring(start, length))
+        }else {
+            list.add("§f"+substring(start, end))
+        }
+    }
+    return list
 }

@@ -63,6 +63,7 @@ quest:
       # 目标编号
       id: a
       event: break block
+      # 打破其中方块(石头，箱子)，数量要求3
       node: |
         {{<block>
         [STONE]
