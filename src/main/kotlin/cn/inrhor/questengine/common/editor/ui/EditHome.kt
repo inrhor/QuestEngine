@@ -52,7 +52,10 @@ object EditHome {
     fun open(player: Player) {
         player.openMenu<Basic>(player.asLangText("EDIT_UI_HOME")) {
             rows(6)
-            map("", "", "--X-@-#", "", "", "")
+            map("--------B", "", "--X-@-#")
+            addButton(player, 'B', XMaterial.ARROW, "HOME_CLOSE_UI") {
+                player.closeInventory()
+            }
             addButton(player, 'X', XMaterial.BOOK, "EDIT_UI_ADD_QUEST") {
                 EditQuest.addQuest(player)
             }
@@ -60,7 +63,7 @@ object EditHome {
                 EditQuestList.open(player)
             }
             addButton(player, '#', XMaterial.BOOKSHELF, "EDIT_UI_QUEST_GROUP") {
-
+                EditGroupList.open(player)
             }
         }
     }

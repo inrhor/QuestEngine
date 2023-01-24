@@ -16,7 +16,6 @@ import cn.inrhor.questengine.utlis.Input.inputBook
 import cn.inrhor.questengine.utlis.lineSplit
 import cn.inrhor.questengine.utlis.newLineList
 import org.bukkit.entity.Player
-import taboolib.common.platform.function.info
 import taboolib.library.xseries.XMaterial
 import taboolib.module.chat.colored
 import taboolib.module.ui.openMenu
@@ -54,7 +53,7 @@ object EditTargetEvent {
                         val list = mutableListOf<String>()
                         player.asLangTextList("EDIT_EVENT_NODE_${node.uppercase()}").forEach {
                             if (it == "__List__") {
-                                list.addAll(value)
+                                list.addAll(value.joinToString("\n").newLineList("&f").colored())
                             } else {
                                 list.add(it)
                             }
@@ -73,7 +72,7 @@ object EditTargetEvent {
                         list
                     }
                     else -> {
-                        player.asLangTextList("EDIT_EVENT_NODE_${node.uppercase()}", value)
+                        player.asLangTextList("EDIT_EVENT_NODE_${node.uppercase()}", if (value.isNotEmpty())value[0]else "")
                     }
                 }
                 buildItem(element.material) {
@@ -127,7 +126,17 @@ object EditTargetEvent {
                 }
             }
             onClick { _, element ->
-
+                player.closeInventory()
+                val n = element.node
+                val list = targetFrame.nodeMeta(n)
+                player.inputBook(player.asLangText("EDIT_BOOK_EVENT_NODE"), true,
+                    list) {
+                    list.clear()
+                    list.addAll(it)
+                    targetFrame.reloadNode(n, list)
+                    questFrame.saveFile()
+                    open(player, questFrame, targetFrame)
+                }
             }
             pageItem(player)
         }

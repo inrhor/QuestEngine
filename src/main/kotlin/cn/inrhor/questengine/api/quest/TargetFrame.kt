@@ -6,7 +6,7 @@ import taboolib.common.util.VariableReader
 data class TargetFrame(
     var id: String = "null", var event: String = "null",
     var period: Int = 0, var async: Boolean = false, var condition: String = "",
-    var node: String = "", val description: List<String> = listOf(),
+    var node: String = "", var description: List<String> = listOf(),
     val data: List<String> = listOf(),
     val trigger: MutableList<ControlFrame> = mutableListOf()
 ) {
@@ -34,7 +34,11 @@ data class TargetFrame(
         node = ""
         nodeMap.remove(newNode)
         nodeMap.forEach { (t, u) ->
-            node +="{{<$t>\n[$u]\n}}"
+            node += "{{<$t>"
+            u.forEach { uu ->
+                node += "[$uu]"
+            }
+            node += "}}\n"
         }
         nodeMap[newNode] = newList
         if (newList.isEmpty()) return

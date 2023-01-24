@@ -78,10 +78,15 @@ EDIT_BOOK_QUEST_TARGET: "编辑任务-目标编号"
 EDIT_BOOK_EVENT_TASK_ID: "编辑任务-定时器事件编号"
 EDIT_BOOK_EVENT_TASK_PERIOD: "编辑任务-定时器事件时间"
 EDIT_BOOK_EVENT_TASK_CONDITION: "编辑任务-定时器事件条件"
+EDIT_BOOK_EVENT_NODE: "编辑任务-目标事件编辑"
+EDIT_BOOK_TARGET_NOTE: "编辑任务-目标笔记描述"
 
 PREVIOUS_PAGE: "&a&l上一页"
 NEXT_PAGE: "&a&l下一页"
 CLOSE_UI: "&c&l关闭"
+HOME_CLOSE_UI:
+  - "&c&l关闭"
+  - "&f"
 
 EDIT_BOOK_OPEN: "&7右键打开并编辑"
 EDIT_BOOK_DELETE: "&c编辑后销毁书本"
@@ -184,6 +189,7 @@ EDIT_UI_QUEST_TIME_TYPE: "任务编辑器 | 选择时间类型"
 EDIT_UI_QUEST_MODE: "任务编辑器 | 任务模式"
 EDIT_UI_TARGET_EVENT_LIST: "任务编辑器 | 选择目标事件"
 EDIT_UI_TARGET_EVENT_NODE: "任务编辑器 | 目标事件节点"
+EDIT_UI_GROUP_LIST: "任务编辑器 | 任务组列表"
 
 EDIT_UI_ADD_QUEST:
   - "     &8&o点击添加任务"
@@ -239,6 +245,12 @@ EDIT_QUEST_LIST:
   - "     &f[[quest name]]"
   - "&f"
   - "     &8&o点击编辑任务"
+  - "&f"
+
+EDIT_GROUP_LIST:
+  - "     &7(&f{0}&7) &f{1}"
+  - "&f"
+  - "     &8&o点击编辑任务组"
   - "&f"
 
 EDIT_BACK_QUEST_EDIT:
@@ -499,13 +511,13 @@ EDIT_EVENT_NODE_MOBS:
   - "     &6MythicMobs实体编号："
   - "__List__"
   - "&f"
-  - "     &8&o点击编辑"
+  - "     &8&o点击编辑&f(&c多行支持&f)"
   - "&f"
 EDIT_EVENT_NODE_NEED:
   - "     &6所需条件："
   - "__List__"
   - "&f"
-  - "     &8&o点击编辑"
+  - "     &8&o点击编辑&f(&c多行支持&f)"
   - "&f"
 EDIT_EVENT_NODE_COST:
   - "     &6经济费用：&f{0}"
@@ -516,30 +528,31 @@ EDIT_EVENT_NODE_ITEM:
   - "     &6物品："
   - "__List__"
   - "&f"
-  - "     &8&o点击编辑"
+  - "     &8&o点击编辑&f(&c多行支持&f)"
   - "&f"
 EDIT_EVENT_NODE_MESSAGE:
   - "     &6消息："
   - "__List__"
   - "&f"
-  - "     &8&o点击编辑"
+  - "     &8&o点击编辑&f(&c多行支持&f)"
   - "&f"
 EDIT_EVENT_NODE_CONTENT:
   - "     &6内容："
   - "__List__"
   - "&f"
-  - "     &8&o点击编辑"
+  - "     &8&o点击编辑&f(&c多行支持&f)"
   - "&f"
 EDIT_EVENT_NODE_ENTITY:
-  - "     &6实体类型：&f{0}"
+  - "     &6实体类型："
+  - "__List__"
   - "&f"
-  - "     &8&o点击编辑"
+  - "     &8&o点击编辑&f(&c多行支持&f)"
   - "&f"
 EDIT_EVENT_NODE_CONDITION:
   - "     &6条件："
   - "__List__"
   - "&f"
-  - "     &8&o点击编辑"
+  - "     &8&o点击编辑&f(&c多行支持&f)"
   - "&f"
 EDIT_EVENT_NODE_CHECK:
   - "     &6检查条件次数：&f{0}"
@@ -550,37 +563,37 @@ EDIT_EVENT_NODE_BLOCK:
   - "     &6方块："
   - "__List__"
   - "&f"
-  - "     &8&o点击编辑"
+  - "     &8&o点击编辑&f(&c多行支持&f)"
   - "&f"
 EDIT_EVENT_NODE_ID:
   - "     &6NPC ID："
   - "__List__"
   - "&f"
-  - "     &8&o点击编辑"
+  - "     &8&o点击编辑&f(&c多行支持&f)"
   - "&f"
 EDIT_EVENT_NODE_CAUSE:
   - "     &6死亡原因："
   - "__List__"
   - "&f"
-  - "     &8&o点击编辑"
+  - "     &8&o点击编辑&f(&c多行支持&f)"
   - "&f"
 EDIT_EVENT_NODE_ENTITYLIST:
   - "     &6捕获到的实体类型："
   - "__List__"
   - "&f"
-  - "     &8&o点击编辑"
+  - "     &8&o点击编辑&f(&c多行支持&f)"
   - "&f"
 EDIT_EVENT_NODE_HOOK:
   - "     &6钓鱼钩住的实体类型："
   - "__List__"
   - "&f"
-  - "     &8&o点击编辑"
+  - "     &8&o点击编辑&f(&c多行支持&f)"
   - "&f"
 EDIT_EVENT_NODE_STATE:
   - "     &6钓鱼状态："
   - "__List__"
   - "&f"
-  - "     &8&o点击编辑"
+  - "     &8&o点击编辑&f(&c多行支持&f)"
   - "&f"
 EDIT_EVENT_NODE_EXP:
   - "     &6所获经验(整数)：&f{0}"
@@ -591,7 +604,7 @@ EDIT_EVENT_NODE_MATRIX:
   - "     &6合成配方："
   - "__List__"
   - "&f"
-  - "     &8&o点击编辑"
+  - "     &8&o点击编辑&f(&c多行支持&f)"
   - "&f"
 EDIT_EVENT_TASK:
   - "     &6定时器：&f{0}"
