@@ -3,6 +3,7 @@ package cn.inrhor.questengine.common.dialog.theme.hologram.core
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.api.dialog.theme.DialogTheme
 import cn.inrhor.questengine.api.dialog.ReplyModule
+import cn.inrhor.questengine.api.event.DialogEvent
 import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.dialog.theme.hologram.HologramData
@@ -33,6 +34,7 @@ class DialogHologram(
         viewers.forEach {
             val pData = it.getPlayerData()
             pData.dialogData.addDialog(dialogModule.dialogID, this)
+            DialogEvent(it, dialogModule).call()
         }
     }
 

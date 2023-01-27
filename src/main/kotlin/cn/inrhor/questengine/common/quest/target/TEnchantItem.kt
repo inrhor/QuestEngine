@@ -16,7 +16,7 @@ object TEnchantItem: TargetExtend<EnchantItemEvent>() {
         tasker{
             enchanter.doingTargets(name).forEach {
                 val target = it.getTargetFrame()?: return@forEach
-                if (itemTrigger(target, item) &&
+                if (itemTrigger(target, item, inventory) &&
                     numberTrigger(target, "cost", expLevelCost.toDouble())) {
                     Schedule.isNumber(enchanter, "number", it)
                 }

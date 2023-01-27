@@ -23,15 +23,15 @@ object TPlayerFish: TargetExtend<PlayerFishEvent>() {
     fun fish(player: Player, name: String, entity: Entity?, hook: FishHook, state: PlayerFishEvent.State, exp: Int) {
         player.doingTargets(name).forEach {
             val target = it.getTargetFrame()?: return@forEach
-            val e = target.nodeMeta("entitylist")?: listOf()
+            val e = target.nodeMeta("entitylist")
             val es = e.toList()
-            val h = target.nodeMeta("hook")?: listOf()
+            val h = target.nodeMeta("hook")
             val hs = h.toList()
-            val s = target.nodeMeta("state")?: listOf()
+            val s = target.nodeMeta("state")
             val ss = s.toList()
-            val p = target.nodeMeta("exp")?: listOf("0")
+            val p = target.nodeMeta("exp", "0")
             val ps = p[0].toInt()
-            val am = target.nodeMeta("amount")?: listOf("1")
+            val am = target.nodeMeta("amount", "1")
             val amount = am[0].toInt()
             if (es.isNotEmpty() && entity != null) {
                 if (!es.contains(entity.type.toString())) return

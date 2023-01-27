@@ -1,21 +1,23 @@
 package cn.inrhor.questengine.common.quest.target
 
 import cn.inrhor.questengine.api.event.DialogEvent
+import cn.inrhor.questengine.api.event.ReplyEvent
 import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.api.target.util.Schedule
 import cn.inrhor.questengine.api.manager.DataManager.doingTargets
+import cn.inrhor.questengine.common.quest.target.TDialog.dialogTrigger
 
-object TDialog: TargetExtend<DialogEvent>() {
+object TDialogReply: TargetExtend<ReplyEvent>() {
 
-    override val name = "player dialog"
+    override val name = "player reply"
 
     init {
-        event = DialogEvent::class
+        event = ReplyEvent::class
         tasker{
             player.doingTargets(name).forEach {
                 val t = it.getTargetFrame()?: return@forEach
-                if (dialogTrigger(dialogModule.dialogID, t)) {
+                if (replyTrigger(dialogModule.dialogID, replyModule.replyID, t)) {
                     Schedule.isNumber(player, "number", it)
                 }
             }
@@ -26,9 +28,10 @@ object TDialog: TargetExtend<DialogEvent>() {
     /**
      * 对话触发
      */
-    fun dialogTrigger(dialog: String, target: TargetFrame): Boolean {
-        val condition = target.nodeMeta(dialog)
-        return condition.contains(dialog)
+    fun replyTrigger(dialog: String, replyID: String, target: TargetFrame): Boolean {
+        if (!dialogTrigger(dialog, target)) return false
+        val condition = target.nodeMeta("reply")
+        return condition.contains(replyID)
     }
 
 }

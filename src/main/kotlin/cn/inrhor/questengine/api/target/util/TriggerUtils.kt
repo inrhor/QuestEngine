@@ -5,13 +5,14 @@ import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.script.kether.runEval
 import cn.inrhor.questengine.utlis.bukkit.ItemMatch
 import org.bukkit.entity.Player
+import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import taboolib.common5.Demand
 
 object TriggerUtils {
 
     fun idTrigger(target: TargetFrame, id: String): Boolean {
-        val idCon = target.nodeMeta("id")?: return false
+        val idCon = target.nodeMeta("id")
         idCon.forEach {
             if (id == it) return true
         }
@@ -44,10 +45,10 @@ object TriggerUtils {
     /**
      * 物品匹配器
      */
-    fun itemTrigger(target: TargetFrame, itemStack: ItemStack): Boolean {
+    fun itemTrigger(target: TargetFrame, itemStack: ItemStack, inventory: Inventory): Boolean {
         val content = target.nodeMeta("item")
         content.forEach {
-            if (ItemMatch(Demand(it)).check(itemStack)) return true
+            if (ItemMatch(Demand(it)).check(itemStack, inventory)) return true
         }
         return false
     }

@@ -1,26 +1,21 @@
 package cn.inrhor.questengine.common.quest.target
 
+import cn.inrhor.questengine.api.event.DialogEvent
 import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.api.target.util.Schedule
 import cn.inrhor.questengine.api.manager.DataManager.doingTargets
-import cn.inrhor.questengine.script.kether.runEval
 
-import org.bukkit.entity.Player
-import org.bukkit.event.player.AsyncPlayerChatEvent
+object TDialog: TargetExtend<DialogEvent>() {
 
-object TPlayerChat: TargetExtend<AsyncPlayerChatEvent>() {
-
-    override val name = "player chat"
-
-    override val isAsync = true
+    override val name = "player dialog"
 
     init {
-        event = AsyncPlayerChatEvent::class
+        event = DialogEvent::class
         tasker{
             player.doingTargets(name).forEach {
                 val t = it.getTargetFrame()?: return@forEach
-                if (targetTrigger(player, "message", message, t)) {
+                if (dialogTrigger(dialogModule.dialogID, t)) {
                     Schedule.isNumber(player, "number", it)
                 }
             }
@@ -29,14 +24,11 @@ object TPlayerChat: TargetExtend<AsyncPlayerChatEvent>() {
     }
 
     /**
-     * 匹配文字
-     *
-     * @param tag 键
-     * @param content 需要的匹配内容
+     * 对话触发
      */
-    fun targetTrigger(player: Player, tag: String, content: String, target: TargetFrame): Boolean {
-        val condition = target.nodeMeta(tag)
-        return runEval(player, "strMatch type ${condition[0]} '$content'")
+    fun dialogTrigger(dialog: String, target: TargetFrame): Boolean {
+        val condition = target.nodeMeta("dialog")
+        return condition.contains(dialog)
     }
 
 }

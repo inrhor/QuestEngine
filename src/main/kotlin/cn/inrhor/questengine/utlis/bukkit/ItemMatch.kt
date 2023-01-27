@@ -3,9 +3,10 @@ package cn.inrhor.questengine.utlis.bukkit
 import io.lumine.mythic.lib.api.item.NBTItem
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import taboolib.common5.Demand
-import taboolib.platform.util.isNotAir
+import taboolib.platform.util.checkItem
 
 class ItemMatch(val itemType: ItemType = ItemType.MINECRAFT,
                 val material: Material?,
@@ -23,8 +24,7 @@ class ItemMatch(val itemType: ItemType = ItemType.MINECRAFT,
         d.get("id"),
         d.get("amount")?.toInt())
 
-    fun check(itemStack: ItemStack, take: Boolean = false): Boolean {
-        if (amount != null && itemStack.amount < amount) return false
+    fun check(itemStack: ItemStack, inventory: Inventory, invSlot: InvSlot = InvSlot.ALL, take: Boolean = false): Boolean {
         if (itemType == ItemType.MINECRAFT) {
             if (material != null && itemStack.type != material) return false
             val meta = itemStack.itemMeta
@@ -63,22 +63,24 @@ class ItemMatch(val itemType: ItemType = ItemType.MINECRAFT,
                 return false
             }
         }
-        if (take) itemStack.amount -= amount?: 0
+        if (amount != null) {
+            if (invSlot == InvSlot.MANDHAND) {
+                if (itemStack.amount < amount) {
+                    return false
+                }else {
+                    if (take) {
+                        itemStack.amount -= amount
+                    }
+                }
+            } else {
+                if (!inventory.checkItem(itemStack, amount, take)) return false
+            }
+        }
         return true
     }
 
     fun slotHas(player: Player, invSlot: InvSlot = InvSlot.ALL, take: Boolean = false): Boolean {
-        when (invSlot) {
-            InvSlot.MANDHAND -> return check(player.inventory.itemInMainHand, take)
-            else -> {
-                player.inventory.forEach {
-                    if (it.isNotAir()) {
-                        if (check(it, take)) return true
-                    }
-                }
-            }
-        }
-        return false
+        return check(player.inventory.itemInMainHand, player.inventory, invSlot, take)
     }
 
 }

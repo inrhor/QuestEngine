@@ -50,6 +50,10 @@ object RegisterTarget {
             TargetNode(XMaterial.NAME_TAG, "state"), TargetNode(XMaterial.EXPERIENCE_BOTTLE, "exp", TargetNodeType.INT), amount)
         add("craft item", XMaterial.CRAFTING_TABLE, item, amount,
             TargetNode(XMaterial.BOOK, "matrix"))
+        val dialog = TargetNode(XMaterial.CARROT, "dialog", TargetNodeType.LIST)
+        val reply = TargetNode(XMaterial.POTATO, "reply", TargetNodeType.LIST)
+        add("player dialog", XMaterial.MAP, dialog, number)
+        add("player reply", XMaterial.COMPASS, dialog, reply, number)
     }
 
     fun add(name: String, material: XMaterial = XMaterial.LIME_WOOL, vararg targetNode: TargetNode) {

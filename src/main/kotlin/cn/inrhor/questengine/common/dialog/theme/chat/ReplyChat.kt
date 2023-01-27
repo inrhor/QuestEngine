@@ -15,9 +15,10 @@ import taboolib.platform.compat.replacePlaceholder
 class ReplyChat(val dialogChat: DialogChat, val reply: List<ReplyModule>): ReplyTheme {
 
     override fun play() {
+        val dialog = dialogChat.dialogModule
         dialogChat.viewers.forEach {
             val pData = it.getPlayerData()
-            pData.dialogData.addReply(dialogChat.dialogModule.dialogID, this)
+            pData.dialogData.addReply(dialog.dialogID, this)
         }
         sendReply(dialogChat.viewers)
         DialogManager.sendBarHelp(dialogChat)

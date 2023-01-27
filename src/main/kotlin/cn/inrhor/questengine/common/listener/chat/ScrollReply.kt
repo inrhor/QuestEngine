@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.listener.chat
 
 import cn.inrhor.questengine.api.dialog.ReplyModule
 import cn.inrhor.questengine.api.dialog.theme.DialogTheme
+import cn.inrhor.questengine.api.event.ReplyEvent
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.dialog.DialogManager.setId
 import cn.inrhor.questengine.common.dialog.theme.chat.DialogChat
@@ -68,8 +69,12 @@ object ScrollReply {
                         replyList.add(r)
                     }
                 }
+                val viewers = it.viewers
                 val reply = replyList[chat.scrollIndex]
-                runEvalSet(it.viewers, reply.script) { s ->
+                viewers.forEach { v->
+                    ReplyEvent(v, dialog, reply).call()
+                }
+                runEvalSet(viewers, reply.script) { s ->
                     s.rootFrame().variables()["@QenDialogID"] = dialog.dialogID
                 }
                 ev.isCancelled = true

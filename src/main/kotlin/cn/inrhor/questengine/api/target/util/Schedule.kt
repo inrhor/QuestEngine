@@ -28,7 +28,7 @@ object Schedule {
      * 目标计数meta数量，并触发进度结算
      */
     fun isNumber(player: Player, meta: String, targetData: TargetData) {
-        val con = targetData.getTargetFrame()?.nodeMeta(meta)?: return
+        val con = targetData.getTargetFrame()?.nodeMeta(meta, "1")?: return
         run(player, targetData, con[0].toInt())
     }
 

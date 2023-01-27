@@ -37,8 +37,9 @@ object TKillEntity: TargetExtend<EntityDeathEvent>() {
     }
 
     private fun checkCondition(player: Player, target: TargetFrame, entity: Entity, dropExp: Int): Boolean {
-        val condition = target.nodeMeta("condition")?: return true
-        val checkNumber = (target.nodeMeta("check")?: listOf("0"))[0].toInt()
+        val condition = target.nodeMeta("condition")
+        if (condition.isEmpty()) return true
+        val checkNumber = target.nodeMeta("check", "0")[0].toInt()
         var i = 0
         condition.forEach {
             if (!checkNumber(checkNumber, i)) return true

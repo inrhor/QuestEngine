@@ -42,7 +42,7 @@ object ChatCacheListener {
             if (pData.chatCache.enable) {
                 val components = ev.packet.read<Array<BaseComponent>>("components") ?: return
                 val text = TextComponent.toPlainText(*components).uncolored()
-                if (text != ev.player.asLangText("DIALOG-CHAT-HELP").uncolored()) {
+                if (!text.contains(ev.player.asLangText("DIALOG-CHAT-HELP").uncolored())) {
                     ev.isCancelled = true
                 }
                 return

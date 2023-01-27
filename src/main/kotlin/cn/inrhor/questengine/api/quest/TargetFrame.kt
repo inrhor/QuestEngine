@@ -49,10 +49,10 @@ data class TargetFrame(
         node += "}}"
     }
 
-    fun nodeMeta(meta: String): MutableList<String> {
+    fun nodeMeta(meta: String, def: String = ""): MutableList<String> {
         if (nodeMap.containsKey(meta)) {
             return nodeMap[meta]!!
         }
-        return mutableListOf()
+        return if (def.isEmpty()) mutableListOf() else mutableListOf(def)
     }
 }
