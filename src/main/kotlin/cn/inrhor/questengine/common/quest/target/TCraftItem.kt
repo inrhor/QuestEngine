@@ -48,7 +48,7 @@ object TCraftItem: TargetExtend<CraftItemEvent>() {
 
     fun itemsMatch(inventory: Inventory, s: List<String>, itemStack: ItemStack): Boolean {
         s.forEach {
-            if (ItemMatch(Demand(it)).check(itemStack, inventory)) return true
+            if (ItemMatch(Demand(it)).checkItem(itemStack, inventory)) return true
         }
         return false
     }

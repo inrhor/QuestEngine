@@ -14,7 +14,7 @@ class ItemMatch(val itemType: ItemType = ItemType.MINECRAFT,
                 val loreContains: String?,
                 val customModelData: Int?,
                 val mmoItemID: String?,
-                val amount: Int?) {
+                val amount: Int = 1) {
 
     constructor(d: Demand): this(ItemType.valueOf(d.namespace),
         d.get("material")?.uppercase()?.let { Material.valueOf(it) },
@@ -22,65 +22,77 @@ class ItemMatch(val itemType: ItemType = ItemType.MINECRAFT,
         d.get("loreContains"),
         d.get("customModelData")?.toInt(),
         d.get("id"),
-        d.get("amount")?.toInt())
+        d.get("amount")?.toInt()?: 1)
 
-    fun check(itemStack: ItemStack, inventory: Inventory, invSlot: InvSlot = InvSlot.ALL, take: Boolean = false): Boolean {
+    private fun check(itemStack: ItemStack): ItemStack? {
         if (itemType == ItemType.MINECRAFT) {
-            if (material != null && itemStack.type != material) return false
+            if (material != null && itemStack.type != material) return null
             val meta = itemStack.itemMeta
             if (displayName != null) {
                 if (meta?.displayName == null) {
-                    return false
+                    return null
                 } else {
                     if (meta.displayName != displayName) {
-                        return false
+                        return null
                     }
                 }
             }
             if (loreContains != null) {
                 if (meta?.lore == null) {
-                    return false
+                    return null
                 } else {
                     if (!meta.lore!!.contains(loreContains)) {
-                        return false
+                        return null
                     }
                 }
             }
             if (customModelData != null) {
                 if (meta == null) {
-                    return false
+                    return null
                 } else {
                     if (!meta.hasCustomModelData()) {
-                        return false
+                        return null
                     } else {
-                        if (meta.customModelData != customModelData) return false
+                        if (meta.customModelData != customModelData) return null
                     }
                 }
             }
         }else if (itemType == ItemType.MMOITEMS) {
             // 判断itemStack是否为根据mmoitems id mmoitem 某一个物品
             if (NBTItem.get(itemStack).getString("MMOITEMS_ITEM_ID") != mmoItemID) {
-                return false
+                return null
             }
         }
-        if (amount != null) {
-            if (invSlot == InvSlot.MANDHAND) {
-                if (itemStack.amount < amount) {
-                    return false
-                }else {
-                    if (take) {
-                        itemStack.amount -= amount
+        return itemStack
+    }
+
+    fun checkItem(itemStack: ItemStack, inventory: Inventory, take: Boolean = false): Boolean {
+        if (inventory.checkItem(itemStack, amount, take)) return true
+        return false
+    }
+
+    fun checkPlayerItem(player: Player, inventory: Inventory, invSlot: InvSlot = InvSlot.ALL, take: Boolean = false): Boolean {
+        if (invSlot == InvSlot.ALL) {
+            inventory.forEach {
+                if (it != null) {
+                    val itemStack = check(it)
+                    if (itemStack != null) {
+                        if (inventory.checkItem(itemStack, amount, take)) return true
                     }
                 }
-            } else {
-                if (!inventory.checkItem(itemStack, amount, take)) return false
+            }
+        }else {
+            val itemStack = player.equipment?.itemInMainHand?: return false
+            if (itemStack.amount >= amount) {
+                itemStack.amount -= amount
+                return true
             }
         }
-        return true
+        return false
     }
 
     fun slotHas(player: Player, invSlot: InvSlot = InvSlot.ALL, take: Boolean = false): Boolean {
-        return check(player.inventory.itemInMainHand, player.inventory, invSlot, take)
+        return checkPlayerItem(player, player.inventory, invSlot, take)
     }
 
 }
@@ -90,5 +102,5 @@ enum class ItemType {
 }
 
 enum class InvSlot {
-    ALL, MANDHAND
+    ALL, MAINHAND
 }

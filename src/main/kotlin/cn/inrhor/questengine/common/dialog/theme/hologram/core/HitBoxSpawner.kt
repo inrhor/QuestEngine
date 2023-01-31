@@ -5,7 +5,6 @@ import cn.inrhor.questengine.api.dialog.ReplyModule
 import cn.inrhor.questengine.api.hologram.HoloDisplay
 import cn.inrhor.questengine.api.hologram.HoloIDManager
 import cn.inrhor.questengine.api.packet.destroyEntity
-import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.dialog.theme.hologram.HitBoxData
 import cn.inrhor.questengine.common.dialog.theme.hologram.HologramData
@@ -18,7 +17,7 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.submit
-import taboolib.module.effect.Cube
+import taboolib.module.effect.shape.Cube
 import taboolib.platform.util.toProxyLocation
 
 /**
