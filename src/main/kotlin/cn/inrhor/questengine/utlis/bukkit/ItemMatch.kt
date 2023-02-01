@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.utlis.bukkit
 
+import dev.lone.itemsadder.api.CustomStack
 import io.lumine.mythic.lib.api.item.NBTItem
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -13,7 +14,7 @@ class ItemMatch(val itemType: ItemType = ItemType.MINECRAFT,
                 val displayName: String?,
                 val loreContains: String?,
                 val customModelData: Int?,
-                val mmoItemID: String?,
+                val itemId: String?,
                 val amount: Int = 1) {
 
     constructor(d: Demand): this(ItemType.valueOf(d.namespace),
@@ -59,7 +60,12 @@ class ItemMatch(val itemType: ItemType = ItemType.MINECRAFT,
             }
         }else if (itemType == ItemType.MMOITEMS) {
             // 判断itemStack是否为根据mmoitems id mmoitem 某一个物品
-            if (NBTItem.get(itemStack).getString("MMOITEMS_ITEM_ID") != mmoItemID) {
+            if (NBTItem.get(itemStack).getString("MMOITEMS_ITEM_ID") != itemId) {
+                return null
+            }
+        }else if (itemType == ItemType.ITEMSADDER) {
+            val i = CustomStack.byItemStack(itemStack)
+            if (i?.id != itemId) {
                 return null
             }
         }
@@ -98,7 +104,7 @@ class ItemMatch(val itemType: ItemType = ItemType.MINECRAFT,
 }
 
 enum class ItemType {
-    MINECRAFT, MMOITEMS
+    MINECRAFT, MMOITEMS, ITEMSADDER
 }
 
 enum class InvSlot {

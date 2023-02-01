@@ -11,8 +11,8 @@ import taboolib.common5.Demand
 
 object TriggerUtils {
 
-    fun idTrigger(target: TargetFrame, id: String): Boolean {
-        val idCon = target.nodeMeta("id")
+    fun idTrigger(target: TargetFrame, id: String, meta: String = "id"): Boolean {
+        val idCon = target.nodeMeta(meta)
         idCon.forEach {
             if (id == it) return true
         }
@@ -25,7 +25,7 @@ object TriggerUtils {
      * @return 布尔值，空或满足返回true
      */
     fun booleanTrigger(player: Player, targetData: TargetData, target: TargetFrame, run: Boolean = true, amount: Int = 1): Boolean {
-        val needCondition = target.nodeMeta("need")?: mutableListOf()
+        val needCondition = target.nodeMeta("need")
         if (needCondition.isEmpty() || runEval(player, needCondition)) {
             if (run) Schedule.run(player, targetData, amount)
             return true

@@ -19,6 +19,7 @@ object RegisterTarget {
         val number = TargetNode(XMaterial.ORANGE_DYE, "number", TargetNodeType.INT)
         val adyId = IdNode(more = arrayOf("Adyeshach"))
         val npcId = IdNode(more = arrayOf("Citizens"))
+        val room = IdNode("room", "Csg-Plus")
         val mobs = TargetNode(XMaterial.ZOMBIE_HEAD, "mobs")
         val need = TargetNode(XMaterial.CYAN_DYE, "need")
         val item =TargetNode(XMaterial.MAP, "item")
@@ -36,6 +37,8 @@ object RegisterTarget {
         add("right npc", XMaterial.ZOMBIE_HEAD, npcId, need)
         add("left ady", XMaterial.SKELETON_SKULL, adyId, need)
         add("right ady", XMaterial.CREEPER_HEAD, adyId, need)
+        add("join csg", XMaterial.IRON_SWORD, room, need)
+        add("quit csg", XMaterial.IRON_BOOTS, room, need)
         add("player kill mythicmobs", XMaterial.WITHER_SKELETON_SKULL, mobs, number)
         add("player chat", XMaterial.PAPER, TargetNode(XMaterial.WHITE_DYE, "message", TargetNodeType.STRING), number)
         add("player send command", XMaterial.COMMAND_BLOCK,

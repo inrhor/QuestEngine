@@ -33,6 +33,7 @@ taboolib {
             name("PlaceholderAPI").optional(true)
             name("BigDoors").optional(true)
             name("WorldGuard").optional(true)
+            name("Csg-Plus").optional(true)
         }
         prefix("QuestEngine")
     }
@@ -42,6 +43,7 @@ taboolib {
 
 repositories {
     mavenCentral()
+    maven("https://jitpack.io") // ItemsAdder
     maven("https://repo.dmulloy2.net/repository/public/") // ProtocolLib
     maven("https://repo.codemc.org/repository/maven-public/")
     maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
@@ -68,6 +70,7 @@ dependencies {
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
     compileOnly("io.lumine:MythicLib-dist:1.5.1-SNAPSHOT")
+    compileOnly("com.github.LoneDev6:api-itemsadder:3.2.5")
     compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 }
 

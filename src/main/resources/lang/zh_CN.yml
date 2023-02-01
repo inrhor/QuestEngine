@@ -617,6 +617,11 @@ EDIT_EVENT_NODE_REPLY:
   - "&f"
   - "     &8&o点击编辑&f(&c多行支持&f)"
   - "&f"
+EDIT_EVENT_NODE_ROOM:
+  - "     &6房间编号：&f{0}"
+  - "&f"
+  - "     &8&o点击编辑"
+  - "&f"
 
 EDIT_EVENT_TASK:
   - "     &6定时器：&f{0}"
@@ -688,6 +693,8 @@ TARGET_SELECT_LEFT_NPC: "&7{0} &f(&7左键CitizensNPC&f)"
 TARGET_SELECT_RIGHT_NPC: "&7{0} &f(&7右键CitizensNPC&f)"
 TARGET_SELECT_LEFT_ADY: "&7{0} &f(&7左键Adyeshach&f)"
 TARGET_SELECT_RIGHT_ADY: "&7{0} &f(&7右键Adyeshach&f)"
+TARGET_SELECT_JOIN_CSG: "&7{0} &f(&7加入Csg-Plus副本&f)"
+TARGET_SELECT_QUIT_CSG: "&7{0} &f(&7退出Csg-Plus副本&f)"
 TARGET_SELECT_PLAYER_CHAT: "&7{0} &f(&7玩家聊天&f)"
 TARGET_SELECT_PLAYER_KILL_ENTITY: "&7{0} &f(&7玩家击杀实体&f)"
 TARGET_SELECT_PLAYER_KILL_MYTHICMOBS: "&7{0} &f(&7玩家击杀MythicMobs实体&f)"

@@ -15,6 +15,9 @@ class IdNode(node: String = "id", vararg val more: String) : TargetNode(XMateria
             "Adyeshach" -> {
                 AdyeshachAPI.getEntityFromId(content) != null
             }
+            "Csg-Plus" -> {
+                true
+            }
             else -> false
         }
     }
