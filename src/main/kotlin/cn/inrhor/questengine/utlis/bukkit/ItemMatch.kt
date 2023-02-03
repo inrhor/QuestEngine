@@ -1,5 +1,7 @@
 package cn.inrhor.questengine.utlis.bukkit
 
+import cn.inrhor.questengine.utlis.ItemUtil.getAmount
+import cn.inrhor.questengine.utlis.ItemUtil.take
 import dev.lone.itemsadder.api.CustomStack
 import io.lumine.mythic.lib.api.item.NBTItem
 import org.bukkit.Material
@@ -79,13 +81,41 @@ class ItemMatch(val itemType: ItemType = ItemType.MINECRAFT,
 
     fun checkPlayerItem(player: Player, inventory: Inventory, invSlot: InvSlot = InvSlot.ALL, take: Boolean = false): Boolean {
         if (invSlot == InvSlot.ALL) {
-            inventory.forEach {
-                if (it != null) {
-                    val itemStack = check(it)
-                    if (itemStack != null) {
-                        if (inventory.checkItem(itemStack, amount, take)) return true
+            if (itemType != ItemType.MINECRAFT) {
+                inventory.forEach {
+                    if (it != null) {
+                        val itemStack = check(it)
+                        if (itemStack != null) {
+                            if (inventory.checkItem(itemStack, amount, take)) return true
+                        }
                     }
                 }
+            }else {
+                val items = mutableListOf<ItemStack>()
+                inventory.forEach {
+                    val am = items.getAmount()
+                    if (am >= amount) {
+                        if (take) {
+                            items.take(amount)
+                        }
+                        return true
+                    }else {
+                        if (it != null) {
+                            val itemStack = check(it)
+                            if (itemStack != null) {
+                                items.add(itemStack)
+                            }
+                        }
+                    }
+                }
+                val am = items.getAmount()
+                if (am >= amount) {
+                    if (take) {
+                        items.take(amount)
+                    }
+                    return true
+                }
+                return false
             }
         }else {
             val itemStack = player.equipment?.itemInMainHand?: return false
