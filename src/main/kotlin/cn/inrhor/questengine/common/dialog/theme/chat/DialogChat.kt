@@ -5,6 +5,7 @@ import cn.inrhor.questengine.api.dialog.DialogType
 import cn.inrhor.questengine.api.dialog.theme.DialogTheme
 import cn.inrhor.questengine.api.event.DialogEvent
 import cn.inrhor.questengine.api.manager.TemplateManager.getTemplate
+import cn.inrhor.questengine.api.packet.entityRotation
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.dialog.DialogManager
@@ -81,13 +82,15 @@ class DialogChat(
         }
         if (flag.hasFlag(FlagDialog.KEEP_VIEW)) {
             val loc = viewer.location.clone()
-            submit(async = true, period = 10L) {
+            submit {
+                viewer.walkSpeed = 0.0F
+            }
+            submit(async = true, period = 20L) {
                 if (!viewers.contains(viewer)) {
                     cancel()
                     return@submit
                 }
-
-                NMS.INSTANCE.entityRotation(viewers, viewer.entityId, loc.yaw)
+                entityRotation(viewers, viewer.entityId, loc.yaw)
             }
         }
     }

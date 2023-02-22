@@ -38,6 +38,13 @@ fun spawnEntity(players: MutableSet<Player>, entityId: Int, entityType: String, 
     }
 }
 
+fun entityRotation(players: MutableSet<Player>, entityId: Int, yaw: Float) {
+    when (PacketUtil.hookPacket) {
+        HookPacket.DEFAULT -> getPackets().entityRotation(players, entityId, yaw)
+        HookPacket.PROTOCOLLIB -> HookProtocolLib.entityRotation(players, entityId, yaw)
+    }
+}
+
 fun spawnAS(players: MutableSet<Player>, entityId: Int, location: Location) {
     when (PacketUtil.hookPacket) {
         HookPacket.DEFAULT -> getPackets().spawnAS(players, entityId, location)

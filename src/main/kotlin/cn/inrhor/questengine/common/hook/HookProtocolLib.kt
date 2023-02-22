@@ -14,11 +14,21 @@ import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
+import taboolib.common5.cbyte
 import taboolib.module.chat.colored
 import taboolib.module.nms.MinecraftVersion
 import java.util.*
 
 object HookProtocolLib {
+
+    fun entityRotation(players: MutableSet<Player>, entityId: Int, yaw: Float) {
+        val a = ((yaw%360)*256/360).cbyte
+        val pc = PacketContainer(PacketType.Play.Server.ENTITY_LOOK)
+        pc.integers.write(0, entityId)
+        pc.bytes
+            .write(0, a)
+        sendPacket(players, pc)
+    }
 
     private fun sendPacket(player: Player, packet: PacketContainer) {
         ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet)

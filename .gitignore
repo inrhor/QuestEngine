@@ -1847,3 +1847,5 @@ build/libs/QuestEngine-3.2.0.jar
 .gradle/checksums/checksums.lock
 .gradle/checksums/md5-checksums.bin
 .gradle/checksums/sha1-checksums.bin
+build/classes/java/main/cn/inrhor/questengine/common/dialog/theme/chat/DialogChat$executeFlag$3.class
+build/classes/kotlin/main/cn/inrhor/questengine/common/dialog/theme/chat/DialogChat$executeFlag$3.class
