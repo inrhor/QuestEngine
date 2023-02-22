@@ -5,7 +5,7 @@ import cn.inrhor.questengine.api.dialog.DialogType
 import cn.inrhor.questengine.api.dialog.theme.DialogTheme
 import cn.inrhor.questengine.api.event.DialogEvent
 import cn.inrhor.questengine.api.manager.TemplateManager.getTemplate
-import cn.inrhor.questengine.api.packet.entityRotation
+import cn.inrhor.questengine.api.packet.*
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.dialog.DialogManager
@@ -53,6 +53,15 @@ class DialogChat(
      */
     fun executeFlag(viewer: Player, pData: PlayerData, play: Boolean = true) {
         val flag = dialogModule.flag
+        if (flag.hasFlag(FlagDialog.WS)) {
+            val a = Math.random().toInt()
+            if (play) {
+                spawnAS(viewers, a, viewer.location.clone().add(0.0,-1.0, 0.0))
+                updatePassengers(viewers, a, viewer.entityId)
+            }else {
+                destroyEntity(viewers, a)
+            }
+        }
         if (!flag.hasFlag(FlagDialog.NO_SCREEN)) {
             if (play) {
                 pData.chatCache.open()

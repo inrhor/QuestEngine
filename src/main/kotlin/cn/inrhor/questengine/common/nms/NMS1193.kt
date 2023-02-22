@@ -1,4 +1,4 @@
-package cn.inrhor.imipetcore.common.nms
+package cn.inrhor.questengine.common.nms
 
 import taboolib.common.util.unsafeLazy
 import taboolib.module.nms.nmsProxy

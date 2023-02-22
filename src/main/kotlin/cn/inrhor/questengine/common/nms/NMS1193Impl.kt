@@ -1,4 +1,4 @@
-package cn.inrhor.imipetcore.common.nms
+package cn.inrhor.questengine.common.nms
 
 import net.minecraft.core.IRegistry
 import net.minecraft.world.entity.EntityTypes

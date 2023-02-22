@@ -1,5 +1,7 @@
 package cn.inrhor.questengine.common.nms
 
+import cn.inrhor.questengine.common.nms.DataSerializerUtil.createDataSerializer
+import net.minecraft.network.PacketDataSerializer
 import net.minecraft.network.protocol.game.PacketPlayOutEntity
 import net.minecraft.server.v1_16_R1.*
 import org.bukkit.Location
@@ -9,6 +11,8 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import taboolib.common.reflect.Reflex.Companion.setProperty
 import taboolib.common5.cbyte
+import taboolib.library.reflex.Reflex.Companion.getProperty
+import taboolib.library.reflex.Reflex.Companion.invokeMethod
 import taboolib.library.reflex.Reflex.Companion.unsafeInstance
 import taboolib.module.chat.colored
 import taboolib.module.nms.MinecraftVersion
@@ -55,21 +59,48 @@ class NMSImpl : NMS() {
         return any
     }
 
+    private fun getEntityType(entityTypes: String): Any {
+        return net.minecraft.server.v1_16_R1.EntityTypes::class.java.getProperty<Any>(entityTypes.uppercase(), isStatic = true)!!
+    }
+
     override fun spawnEntity(players: MutableSet<Player>, entityId: Int, entityType: String, location: Location) {
         if (isUniversal) {
-            packetSend(
-                players,
-                PacketPlayOutSpawnEntity::class.java.unsafeInstance(),
-                "id" to entityId,
-                "uuid" to UUID.randomUUID(),
-                "x" to location.x,
-                "y" to location.y,
-                "z" to location.z,
-                "type" to if (version >= 6) returnTypeNMS(entityType) else returnInt(
-                    entityType
-                ),
-                "data" to 0
-            )
+            if (version > 10) {
+                packetSend(
+                    players,
+                    net.minecraft.network.protocol.game.PacketPlayOutSpawnEntity(
+                        createDataSerializer {
+                            writeVarInt(entityId)
+                            writeUUID(UUID.randomUUID())
+                            when (minor) {
+                                0, 1, 2 -> writeVarInt(Class.forName("net.minecraft.core.IRegistry").getProperty<Any>("ENTITY_TYPE", isStatic = true)!!.invokeMethod<Int>("getId", getEntityType(entityType) as net.minecraft.world.entity.EntityTypes<*>)!!)
+                                3 -> writeVarInt(NMS1193.INSTANCE.entityTypeGetId(getEntityType(entityType)))
+                            }
+                            writeDouble(location.x)
+                            writeDouble(location.y)
+                            writeDouble(location.z)
+                            writeVarInt(0)
+                            writeShort(0)
+                            writeShort(0)
+                            writeShort(0)
+                        }.build() as PacketDataSerializer
+                    )
+                )
+            }else {
+                packetSend(
+                    players,
+                    PacketPlayOutSpawnEntity::class.java.unsafeInstance(),
+                    "id" to entityId,
+                    "uuid" to UUID.randomUUID(),
+                    "x" to location.x,
+                    "y" to location.y,
+                    "z" to location.z,
+                    "type" to if (version >= 6) returnTypeNMS(entityType) else returnInt(
+                        entityType
+                    ),
+                    "data" to 0
+                )
+            }
         } else {
             packetSend(
                 players,
@@ -87,30 +118,7 @@ class NMSImpl : NMS() {
     }
 
     override fun spawnAS(players: MutableSet<Player>, entityId: Int, location: Location) {
-        if (isUniversal) {
-            packetSend(
-                players,
-                PacketPlayOutSpawnEntity::class.java.unsafeInstance(),
-                "id" to entityId,
-                "uuid" to UUID.randomUUID(),
-                "x" to location.x,
-                "y" to location.y,
-                "z" to location.z,
-                "type" to EntityTypes.ARMOR_STAND,
-                "data" to 0
-            )
-        } else {
-            packetSend(
-                players,
-                PacketPlayOutSpawnEntity(),
-                "a" to entityId,
-                "b" to UUID.randomUUID(),
-                "c" to location.x,
-                "d" to location.y,
-                "e" to location.z,
-                "k" to if (version >= 6) EntityTypes.ARMOR_STAND else 78
-            )
-        }
+        spawnEntity(players, entityId, "ARMOR_STAND", location)
     }
 
     override fun initAS(players: MutableSet<Player>, entityId: Int, showName: Boolean, isSmall: Boolean, marker: Boolean) {
@@ -155,14 +163,16 @@ class NMSImpl : NMS() {
     }
 
     override fun destroyEntity(player: Player, entityId: Int) {
-        if (version >= 9 && minor == 0) {
+        if (isUniversal) {
             packetSend(
                 player,
-                PacketPlayOutEntityDestroy::class.java.unsafeInstance(),
-                "a" to entityId
+                net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy(entityId)
             )
         }else {
-            packetSend(player, PacketPlayOutEntityDestroy(entityId))
+            packetSend(
+                player,
+                PacketPlayOutEntityDestroy(entityId)
+            )
         }
     }
 
