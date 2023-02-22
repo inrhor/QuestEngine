@@ -8,6 +8,8 @@ import taboolib.module.nms.nmsProxy
 
 abstract class NMS {
 
+    abstract fun entityRotation(players: MutableSet<Player>, entityId: Int, yaw: Float)
+
     abstract fun spawnEntity(players: MutableSet<Player>, entityId: Int, entityType: String, location: Location)
 
     /**

@@ -34,18 +34,21 @@ taboolib {
             name("BigDoors").optional(true)
             name("WorldGuard").optional(true)
             name("Csg-Plus").optional(true)
+            name("ItemsAdder").optional(true)
+            name("MMOItems").optional(true)
+            name("AuthMe").optional(true)
         }
         prefix("QuestEngine")
     }
     classifier = null
-    version = "6.0.10-80"
+    version = "6.0.10-91"
 }
 
 repositories {
     mavenCentral()
     maven("https://jitpack.io") // ItemsAdder
     maven("https://repo.dmulloy2.net/repository/public/") // ProtocolLib
-    maven("https://repo.codemc.org/repository/maven-public/")
+    maven("https://repo.codemc.org/repository/maven-public/") // authMe
     maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
 }
 

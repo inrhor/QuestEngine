@@ -49,3 +49,8 @@ chatDialog1:
       # 支持 Kether 语句
       script: |
         dialog end
+  flag:
+    - KEEP_CONTENT
+    - BLINDNESS
+    - SLOW
+    - KEEP_VIEW

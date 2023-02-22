@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.api.dialog.theme
 
 import cn.inrhor.questengine.api.dialog.DialogModule
+import cn.inrhor.questengine.api.dialog.DialogType
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -9,11 +10,7 @@ import org.bukkit.inventory.ItemStack
 /**
  * 对话主题抽象
  */
-abstract class DialogTheme(var type: Type = Type.Chat) {
-
-    enum class Type {
-        Holo, Chat
-    }
+abstract class DialogTheme(var type: DialogType = DialogType.CHAT) {
 
     abstract val dialogModule: DialogModule
 

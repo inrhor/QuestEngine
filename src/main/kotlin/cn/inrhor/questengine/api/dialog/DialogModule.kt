@@ -7,24 +7,26 @@ import cn.inrhor.questengine.common.dialog.DialogManager
  * 对话模块
  */
 class DialogModule(
+    var dialogID: String = "null",
+    var type: DialogType = DialogType.CHAT,
     var template: String = "",
     var dialog: List<String> = listOf(),
     var reply: MutableList<ReplyModule> = mutableListOf(),
     var npcIDs: List<String> = listOf(),
     var condition: String = "",
     var space: SpaceDialogModule = SpaceDialogModule(),
-    var speed: Int = 1, var flags: List<String> = listOf(),
+    var speed: Int = 1, var flag: List<String> = listOf(),
     var replyChoose: String = "",
     var replyDefault: String = ""
 ) {
 
-    lateinit var dialogID: String
-
-     var type: String = "chat"
-
    fun register() {
        DialogManager.register(dialogID, this)
    }
+}
+
+enum class DialogType {
+    ALL, CHAT, HOLO
 }
 
 /**

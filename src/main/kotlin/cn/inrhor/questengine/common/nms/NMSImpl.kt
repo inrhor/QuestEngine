@@ -1,5 +1,8 @@
 package cn.inrhor.questengine.common.nms
 
+import cn.inrhor.questengine.utlis.PositionUtil.rotate
+import net.minecraft.network.protocol.game.PacketPlayOutEntity
+import net.minecraft.network.protocol.game.PacketPlayOutEntityHeadRotation
 import net.minecraft.server.v1_16_R1.*
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack
@@ -7,7 +10,8 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import taboolib.common.reflect.Reflex.Companion.setProperty
-import taboolib.common.reflect.Reflex.Companion.unsafeInstance
+import taboolib.common5.cbyte
+import taboolib.library.reflex.Reflex.Companion.unsafeInstance
 import taboolib.module.chat.colored
 import taboolib.module.nms.MinecraftVersion
 import taboolib.platform.compat.replacePlaceholder
@@ -238,6 +242,26 @@ class NMSImpl : NMS() {
                 PacketPlayOutEntityMetadata(),
                 "a" to entityId,
                 "b" to objects.map { it as DataWatcher.Item<*> }.toList()
+            )
+        }
+    }
+
+    override fun entityRotation(players: MutableSet<Player>, entityId: Int, yaw: Float) {
+        val a = ((yaw%360)*256/360).cbyte
+        if (isUniversal) {
+            packetSend(
+                players,
+                PacketPlayOutEntity.PacketPlayOutEntityLook::class.java.unsafeInstance(),
+                "entityId" to entityId,
+                "yRot" to a
+            )
+        }else {
+            packetSend(
+                players,
+                net.minecraft.server.v1_12_R1.PacketPlayOutEntity.PacketPlayOutEntityLook::class
+                    .java.unsafeInstance(),
+                "a" to entityId,
+                "e" to a
             )
         }
     }

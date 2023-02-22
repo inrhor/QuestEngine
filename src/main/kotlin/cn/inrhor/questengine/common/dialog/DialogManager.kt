@@ -1,8 +1,10 @@
 package cn.inrhor.questengine.common.dialog
 
 import cn.inrhor.questengine.api.dialog.DialogModule
+import cn.inrhor.questengine.api.dialog.DialogType
 import cn.inrhor.questengine.api.dialog.theme.DialogTheme
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
+import cn.inrhor.questengine.common.database.data.DialogData
 import cn.inrhor.questengine.common.dialog.theme.chat.DialogChat
 import cn.inrhor.questengine.common.dialog.theme.hologram.core.DialogHologram
 import cn.inrhor.questengine.script.kether.runEval
@@ -98,7 +100,7 @@ object DialogManager {
 
     fun sendDialog(players: MutableSet<Player>, npcLoc: Location, npcID: String) {
         val dialogModule = returnNpcDialog(players, npcID) ?: return
-        if (dialogModule.type == "holo") {
+        if (dialogModule.type == DialogType.HOLO) {
             sendDialogHolo(players, dialogModule, npcLoc)
         }else sendDialogChat(players, dialogModule, npcLoc)
     }
@@ -106,7 +108,7 @@ object DialogManager {
     fun sendDialog(player: Player, dialogID: String, loc: Location = player.location) {
         if (hasDialog(player, dialogID)) return
         val dialogModule = get(dialogID)?: return
-        if (dialogModule.type == "holo") {
+        if (dialogModule.type == DialogType.HOLO) {
             sendDialogHolo(player, dialogModule, loc)
         }else sendDialogChat(mutableSetOf(player), dialogModule, loc)
     }
@@ -162,6 +164,24 @@ object DialogManager {
                         " "+loc.x+" "+loc.y+" "+loc.z))) return false
         }
         return true
+    }
+
+    /**
+     * 终止玩家部分对话
+     */
+    fun DialogData.end(dialogType: DialogType = DialogType.ALL) {
+        val dialog = dialogMap.values
+        if (dialogType == DialogType.ALL) {
+            dialog.forEach {
+                it.end()
+            }
+        }else {
+            dialog.forEach {
+                if (it.type == dialogType) {
+                    it.end()
+                }
+            }
+        }
     }
 
     /**

@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.dialog
 
 import cn.inrhor.questengine.api.dialog.DialogModule
+import cn.inrhor.questengine.api.dialog.DialogType
 import cn.inrhor.questengine.api.dialog.SpaceDialogModule
 import cn.inrhor.questengine.utlis.UtilString
 import cn.inrhor.questengine.utlis.file.FileUtil
@@ -77,12 +78,14 @@ object DialogFile {
             if (!file.contains("$dialogID.dialog")) dialogModule.dialog = hookSection.getStringList("dialog")
             if (!file.contains("$dialogID.npcIDs")) dialogModule.npcIDs = hookSection.getStringList("npcIDs")
             if (!file.contains("$dialogID.condition")) dialogModule.condition = hookSection.getString("condition")?: ""
-            if (!file.contains("$dialogID.space")) dialogModule.space = if (hookSection.contains("space")) hookSection.getObject("space", false) else SpaceDialogModule()
+            if (!file.contains("$dialogID.space")) dialogModule.space = if (hookSection.contains
+                    ("space")) hookSection.getObject("space", false) else SpaceDialogModule()
             if (!file.contains("$dialogID.reply")) {
                 if (hookSection.contains("reply")) waitMap[dialogID] = hookID else dialogModule.reply = mutableListOf()
             }
             if (!file.contains("$dialogID.type")) {
-                if (hookSection.contains("type")) dialogModule.type = hookSection.getString("type")?: "chat"
+                if (hookSection.contains("type")) dialogModule.type = DialogType.valueOf((hookSection
+                    .getString("type")?: "chat").uppercase())
             }
             if (!file.contains("$dialogID.template")) {
                 if (hookSection.contains("template")) dialogModule.template = hookSection.getString("template")?: ""

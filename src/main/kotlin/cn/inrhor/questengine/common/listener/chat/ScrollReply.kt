@@ -1,17 +1,15 @@
 package cn.inrhor.questengine.common.listener.chat
 
+import cn.inrhor.questengine.api.dialog.DialogType
 import cn.inrhor.questengine.api.dialog.ReplyModule
-import cn.inrhor.questengine.api.dialog.theme.DialogTheme
 import cn.inrhor.questengine.api.event.ReplyEvent
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
-import cn.inrhor.questengine.common.dialog.DialogManager.setId
 import cn.inrhor.questengine.common.dialog.theme.chat.DialogChat
 import cn.inrhor.questengine.script.kether.runEvalSet
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
-import taboolib.common.platform.function.adaptPlayer
 
 object ScrollReply {
 
@@ -20,7 +18,7 @@ object ScrollReply {
         val p = ev.player
         val pData = p.getPlayerData()
         pData.dialogData.dialogMap.values.forEach {
-            if (it.type == DialogTheme.Type.Chat) {
+            if (it.type == DialogType.CHAT) {
                 val chat = it as DialogChat
                 if (chat.playing) return
                 val index = it.scrollIndex
@@ -46,8 +44,6 @@ object ScrollReply {
                 }
                 if (select != index) {
                     it.scrollIndex = select
-                    it.json.setId().sendTo(adaptPlayer(p))
-                    it.replyChat.sendReply(mutableSetOf(p), replyList)
                 }
                 return
             }
@@ -60,8 +56,9 @@ object ScrollReply {
         val p = ev.player
         val pData = p.getPlayerData()
         pData.dialogData.dialogMap.values.forEach {
-            if (it.type == DialogTheme.Type.Chat) {
+            if (it.type == DialogType.CHAT) {
                 val chat = it as DialogChat
+                if (chat.playing) return
                 val replyList = mutableListOf<ReplyModule>()
                 val dialog = it.dialogModule
                 dialog.reply.forEach { r->

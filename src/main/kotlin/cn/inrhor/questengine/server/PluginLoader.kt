@@ -35,15 +35,19 @@ object PluginLoader {
             disablePlugin()
             return
         }
-        val timeCost = measureTimeMillis {
-            ItemManager.loadItem()
-            TemplateLoader.file()
-            DialogFile.loadDialog()
-            QuestFile.loadQuest()
-            GroupFile.load()
-            releaseFile("team/chat.yml")
+        try {
+            val timeCost = measureTimeMillis {
+                ItemManager.loadItem()
+                TemplateLoader.file()
+                DialogFile.loadDialog()
+                QuestFile.loadQuest()
+                GroupFile.load()
+                releaseFile("team/chat.yml")
+            }
+            console().sendLang("LOADER-TIME_COST", UtilString.pluginTag, timeCost)
+        }catch (ex: Exception) {
+            ex.printStackTrace()
         }
-        console().sendLang("LOADER-TIME_COST", UtilString.pluginTag, timeCost)
         authme = Bukkit.getPluginManager().getPlugin("AuthMe") != null
         DatabaseManager.init()
         Bukkit.getOnlinePlayers().forEach {

@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.common.database.data
 
 import cn.inrhor.questengine.api.collaboration.TeamOpen
-import cn.inrhor.questengine.common.dialog.FlagsDialog
 import cn.inrhor.questengine.common.dialog.theme.chat.ChatCache
 import cn.inrhor.questengine.common.nav.NavData
 import java.util.*
@@ -17,6 +16,5 @@ data class PlayerData(
     val dialogData: DialogData = DialogData(),
     var dataContainer: DataContainer = DataContainer(),
     val chatCache: ChatCache = ChatCache(),
-    val navData: MutableMap<String, NavData> = mutableMapOf(),
-    val flagsDialog: MutableSet<FlagsDialog> = mutableSetOf()
+    val navData: MutableMap<String, NavData> = mutableMapOf()
 )

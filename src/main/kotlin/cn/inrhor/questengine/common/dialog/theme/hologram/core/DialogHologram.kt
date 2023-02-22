@@ -39,10 +39,6 @@ class DialogHologram(
     }
 
     override fun end() {
-        viewers.forEach {
-            val pData = it.getPlayerData()
-            pData.flagsDialog.clear()
-        }
         end = true
         holoData.remove(viewers)
     }
