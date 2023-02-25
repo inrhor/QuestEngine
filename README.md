@@ -26,26 +26,13 @@ Minecraft - 面向异世界的任务引擎系统
 ### Kts
 ```
 repositories {
-    maven("https://jitpack.io")
-}
-
-dependencies {
-    compileOnly("com.github.inrhor:QuestEngine:版本")
-}
-```
-
-### Gradle
-```
-allprojects {
-  repositories {
     maven {
         url = uri("http://106.13.64.5:8081/repository/maven-public/")
         isAllowInsecureProtocol = true
     }
-  }
 }
 
 dependencies {
-    implementation 'dev:QuestEngine:版本'
+    compileOnly("dev:QuestEngine:版本")
 }
 ```
