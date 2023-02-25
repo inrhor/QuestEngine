@@ -12,7 +12,6 @@ DIALOG-EXIST_DIALOG_ID: "{0}&r &6{1} &8已有相同已注册的对话ID"
 DIALOG-NO_EXIST_DIALOG_ID: "{0}&r &6{1} &c不存在该对话ID"
 DIALOG-CHAT-HELP: "&c&l使用滚轮选择  按 &f&lF&c&l 键确定"
 
-
 QUEST-NO_FILES: "{0}&r &6quest &8文件夹&c不存在，&8开始创建 &6quest &8文件夹"
 QUEST-TIME_S: "秒"
 QUEST-TIME_MINUTE: "分"

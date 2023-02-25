@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.nms
 
 import cn.inrhor.questengine.common.nms.DataSerializerUtil.createDataSerializer
+import com.mojang.brigadier.StringReader
 import net.minecraft.network.PacketDataSerializer
 import net.minecraft.network.protocol.game.PacketPlayOutEntity
 import net.minecraft.server.v1_16_R1.*
@@ -9,10 +10,10 @@ import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
-import taboolib.common.reflect.Reflex.Companion.setProperty
 import taboolib.common5.cbyte
 import taboolib.library.reflex.Reflex.Companion.getProperty
 import taboolib.library.reflex.Reflex.Companion.invokeMethod
+import taboolib.library.reflex.Reflex.Companion.setProperty
 import taboolib.library.reflex.Reflex.Companion.unsafeInstance
 import taboolib.module.chat.colored
 import taboolib.module.nms.MinecraftVersion
@@ -37,6 +38,8 @@ class NMSImpl : NMS() {
     private val version = MinecraftVersion.major
 
     private val minor = MinecraftVersion.minor
+
+    private val majorLegacy = MinecraftVersion.majorLegacy
 
     private val isUniversal = MinecraftVersion.isUniversal
 
@@ -66,6 +69,8 @@ class NMSImpl : NMS() {
     override fun spawnEntity(players: MutableSet<Player>, entityId: Int, entityType: String, location: Location) {
         if (isUniversal) {
             if (version > 10) {
+                val yaw = (location.yaw * 256.0f / 360.0f).toInt().toByte()
+                val pitch = (location.pitch * 256.0f / 360.0f).toInt().toByte()
                 packetSend(
                     players,
                     net.minecraft.network.protocol.game.PacketPlayOutSpawnEntity(
@@ -73,12 +78,20 @@ class NMSImpl : NMS() {
                             writeVarInt(entityId)
                             writeUUID(UUID.randomUUID())
                             when (minor) {
-                                0, 1, 2 -> writeVarInt(Class.forName("net.minecraft.core.IRegistry").getProperty<Any>("ENTITY_TYPE", isStatic = true)!!.invokeMethod<Int>("getId", getEntityType(entityType) as net.minecraft.world.entity.EntityTypes<*>)!!)
-                                3 -> writeVarInt(NMS1193.INSTANCE.entityTypeGetId(getEntityType(entityType)))
+                                0, 1, 2 -> writeVarInt(Class
+                                    .forName("net.minecraft.core.IRegistry")
+                                    .getProperty<Any>("ENTITY_TYPE", isStatic = true)!!
+                                    .invokeMethod<Int>("getId", getEntityType(entityType) as 
+                                            net.minecraft.world.entity.EntityTypes<*>)!!)
+                                3 -> writeVarInt(NMS1193.INSTANCE.entityTypeGetId(getEntityType(
+                                    entityType)))
                             }
                             writeDouble(location.x)
                             writeDouble(location.y)
                             writeDouble(location.z)
+                            writeByte(pitch)
+                            writeByte(yaw)
+                            writeByte(yaw)
                             writeVarInt(0)
                             writeShort(0)
                             writeShort(0)
@@ -133,30 +146,7 @@ class NMSImpl : NMS() {
     }
 
     override fun spawnItem(players: MutableSet<Player>, entityId: Int, location: Location, itemStack: ItemStack) {
-        if (isUniversal) {
-            packetSend(
-                players,
-                PacketPlayOutSpawnEntity::class.java.unsafeInstance(),
-                "id" to entityId,
-                "uuid" to UUID.randomUUID(),
-                "x" to location.x,
-                "y" to location.y,
-                "z" to location.z,
-                "type" to EntityTypes.ITEM,
-                "data" to 0
-            )
-        } else {
-            packetSend(
-                players,
-                PacketPlayOutSpawnEntity(),
-                "a" to entityId,
-                "b" to UUID.randomUUID(),
-                "c" to location.x,
-                "d" to location.y,
-                "e" to location.z,
-                "k" to if (version >= 6) EntityTypes.ITEM else 2
-            )
-        }
+        spawnEntity(players, entityId, "ITEM", location)
         updateEntityMetadata(players, entityId,
             getMetaEntityGravity(false),
             getMetaEntityItemStack(itemStack))
@@ -237,19 +227,26 @@ class NMSImpl : NMS() {
     }
 
     override fun updateEntityMetadata(players: MutableSet<Player>, entityId: Int, vararg objects: Any) {
-        if (isUniversal) {
+        if (majorLegacy >= 11903) {
+            packetSend(
+                players,
+                NMS1193.INSTANCE.packetPlayOutEntityMetadata(entityId, objects.toList())
+            )
+        }else if (isUniversal) {
+            packetSend(players,
+                net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata(
+                    createDataSerializer {
+                        writeVarInt(entityId)
+                        writeMetadata(objects.map { it as net.minecraft.network.syncher
+                            .DataWatcher.Item<*> }.toList())
+                    }.build() as PacketDataSerializer,
+                ))
+        }else {
             packetSend(
                 players,
                 PacketPlayOutEntityMetadata::class.java.unsafeInstance(),
                 "id" to entityId,
                 "packedItems" to objects.map { it as DataWatcher.Item<*> }.toList()
-            )
-        } else {
-            packetSend(
-                players,
-                PacketPlayOutEntityMetadata(),
-                "a" to entityId,
-                "b" to objects.map { it as DataWatcher.Item<*> }.toList()
             )
         }
     }
@@ -277,27 +274,39 @@ class NMSImpl : NMS() {
     /*
         这 updateEntityMetadata 有毒
      */
-
     override fun updateEntityMetadata(player: Player, entityId: Int, vararg objects: Any) {
-        if (isUniversal) {
+        if (majorLegacy >= 11903) {
+            packetSend(
+                player,
+                NMS1193.INSTANCE.packetPlayOutEntityMetadata(entityId, objects.toList())
+            )
+        }else if (isUniversal) {
+            packetSend(player,
+                net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata(
+                    createDataSerializer {
+                        writeVarInt(entityId)
+                        writeMetadata(objects.map { it as net.minecraft.network.syncher
+                        .DataWatcher.Item<*> }.toList())
+                    }.build() as PacketDataSerializer,
+                ))
+        }else {
             packetSend(
                 player,
                 PacketPlayOutEntityMetadata::class.java.unsafeInstance(),
                 "id" to entityId,
                 "packedItems" to objects.map { it as DataWatcher.Item<*> }.toList()
             )
-        } else {
-            packetSend(
-                player,
-                PacketPlayOutEntityMetadata(),
-                "a" to entityId,
-                "b" to objects.map { it as DataWatcher.Item<*> }.toList())
         }
     }
 
     override fun getMetaEntityItemStack(itemStack: ItemStack): Any {
         val index = if (version >= 9) 8 else if (version >= 6) 7 else 6
         return when {
+            version > 10 -> net.minecraft.network.syncher.DataWatcher.Item(
+                net.minecraft.network.syncher.DataWatcherObject(index, net.minecraft.network.syncher
+                    .DataWatcherRegistry.ITEM_STACK), org.bukkit.craftbukkit.v1_19_R2.inventory.CraftItemStack
+                        .asNMSCopy(itemStack)
+            )
             version >= 5 -> DataWatcher.Item(DataWatcherObject(index,
                 DataWatcherRegistry.g),
                 CraftItemStack.asNMSCopy(itemStack))
@@ -334,7 +343,12 @@ class NMSImpl : NMS() {
     }
 
     private fun getMetaEntityValue(index: Int, value: Boolean): Any {
-        return if (version >= 5) {
+        return if (version > 10) {
+            net.minecraft.network.syncher.DataWatcher.Item(
+                net.minecraft.network.syncher.DataWatcherObject(index, net.minecraft.network.syncher
+                    .DataWatcherRegistry.BOOLEAN), value
+            )
+        }else if (version >= 5) {
             DataWatcher.Item(DataWatcherObject(index, DataWatcherRegistry.i), value)
         }else {
             net.minecraft.server.v1_11_R1.DataWatcher.Item(
@@ -344,7 +358,13 @@ class NMSImpl : NMS() {
     }
 
     override fun getMetaEntityCustomName(name: String): Any {
-        return if (version >= 5) {
+        return if (version > 10) {
+            net.minecraft.network.syncher.DataWatcher.Item(
+                net.minecraft.network.syncher
+                    .DataWatcherObject<Optional<net.minecraft.network.chat.IChatBaseComponent>>(2,
+                    net.minecraft.network.syncher.DataWatcherRegistry.OPTIONAL_COMPONENT),
+                Optional.ofNullable(org.bukkit.craftbukkit.v1_19_R2.util.CraftChatMessage.fromString(name)[0]))
+        }else if (version >= 5) {
             DataWatcher.Item<Optional<IChatBaseComponent>>(
                 DataWatcherObject(2, DataWatcherRegistry.f),
                 Optional.of(ChatComponentText(name)))

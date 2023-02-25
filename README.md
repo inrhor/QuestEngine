@@ -38,27 +38,14 @@ dependencies {
 ```
 allprojects {
   repositories {
-    maven { url 'https://jitpack.io' }
+    maven {
+        url = uri("http://106.13.64.5:8081/repository/maven-public/")
+        isAllowInsecureProtocol = true
+    }
   }
 }
 
 dependencies {
-    implementation 'com.github.inrhor:QuestEngine:版本'
+    implementation 'dev:QuestEngine:版本'
 }
-```
-
-### Maven
-```
-<repositories>
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
-</repositories>
-
-<dependency>
-    <groupId>com.github.inrhor</groupId>
-    <artifactId>QuestEngine</artifactId>
-    <version>版本</version>
-</dependency>
 ```

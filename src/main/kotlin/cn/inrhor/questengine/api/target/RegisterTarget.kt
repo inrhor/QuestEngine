@@ -22,17 +22,21 @@ object RegisterTarget {
         val room = IdNode("room", "Csg-Plus")
         val mobs = TargetNode(XMaterial.ZOMBIE_HEAD, "mobs")
         val need = TargetNode(XMaterial.CYAN_DYE, "need")
-        val item =TargetNode(XMaterial.MAP, "item")
+        val item = TargetNode(XMaterial.MAP, "item")
         add("null", XMaterial.BOOK)
         add("task", XMaterial.REDSTONE_BLOCK)
         add("break block", XMaterial.STONE_PICKAXE, block, amount)
         add("place block", XMaterial.GRASS_BLOCK, block, amount)
-        add("enchant item", XMaterial.ENCHANTING_TABLE,
-            TargetNode(XMaterial.GOLD_INGOT, "cost", TargetNodeType.DOUBLE), number, item)
-        add("player kill entity", XMaterial.GOLDEN_SWORD, number,
+        add(
+            "enchant item", XMaterial.ENCHANTING_TABLE,
+            TargetNode(XMaterial.GOLD_INGOT, "cost", TargetNodeType.DOUBLE), number, item
+        )
+        add(
+            "player kill entity", XMaterial.GOLDEN_SWORD, number,
             TargetNode(XMaterial.SKELETON_SKULL, "entity", TargetNodeType.STRING),
             TargetNode(XMaterial.FLINT_AND_STEEL, "check", TargetNodeType.INT),
-            TargetNode(XMaterial.WRITABLE_BOOK, "condition", TargetNodeType.LIST))
+            TargetNode(XMaterial.WRITABLE_BOOK, "condition", TargetNodeType.LIST)
+        )
         add("left npc", XMaterial.PLAYER_HEAD, npcId, need)
         add("right npc", XMaterial.ZOMBIE_HEAD, npcId, need)
         add("left ady", XMaterial.SKELETON_SKULL, adyId, need)
@@ -40,31 +44,49 @@ object RegisterTarget {
         add("join csg", XMaterial.IRON_SWORD, room, need)
         add("quit csg", XMaterial.IRON_BOOTS, room, need)
         add("player kill mythicmobs", XMaterial.WITHER_SKELETON_SKULL, mobs, number)
-        add("player chat", XMaterial.PAPER, TargetNode(XMaterial.WHITE_DYE, "message", TargetNodeType.STRING), number)
-        add("player send command", XMaterial.COMMAND_BLOCK,
-            TargetNode(XMaterial.WHITE_DYE, "content", TargetNodeType.STRING), number)
+        add(
+            "player chat",
+            XMaterial.PAPER,
+            TargetNode(XMaterial.WHITE_DYE, "message", TargetNodeType.STRING),
+            number
+        )
+        add(
+            "player send command", XMaterial.COMMAND_BLOCK,
+            TargetNode(XMaterial.WHITE_DYE, "content", TargetNodeType.STRING), number
+        )
         add("player death", XMaterial.LEATHER_HELMET, CauseNode(), number)
         add("player join server", XMaterial.WATER_BUCKET, number)
         add("player quit server", XMaterial.LAVA_BUCKET, number)
         add("player respawn", XMaterial.BEACON, number, need)
-        add("player fish", XMaterial.FISHING_ROD,
+        add(
+            "player fish",
+            XMaterial.FISHING_ROD,
             TargetNode(XMaterial.CARROT, "entitylist"),
             TargetNode(XMaterial.WOODEN_AXE, "hook"),
-            TargetNode(XMaterial.NAME_TAG, "state"), TargetNode(XMaterial.EXPERIENCE_BOTTLE, "exp", TargetNodeType.INT), amount)
-        add("craft item", XMaterial.CRAFTING_TABLE, item, amount,
-            TargetNode(XMaterial.BOOK, "matrix"))
+            TargetNode(XMaterial.NAME_TAG, "state"),
+            TargetNode(XMaterial.EXPERIENCE_BOTTLE, "exp", TargetNodeType.INT),
+            amount
+        )
+        add(
+            "craft item", XMaterial.CRAFTING_TABLE, item, amount,
+            TargetNode(XMaterial.BOOK, "matrix")
+        )
         val dialog = TargetNode(XMaterial.CARROT, "dialog", TargetNodeType.LIST)
         val reply = TargetNode(XMaterial.POTATO, "reply", TargetNodeType.LIST)
         add("player dialog", XMaterial.MAP, dialog, number)
         add("player reply", XMaterial.COMPASS, dialog, reply, number)
     }
 
-    fun add(name: String, material: XMaterial = XMaterial.LIME_WOOL, vararg targetNode: TargetNode) {
-        saveTarget.add(TargetStorage(name, material, *targetNode.toMutableList()))
+    fun add(
+        name: String,
+        material: XMaterial = XMaterial.LIME_WOOL,
+        vararg targetNode: TargetNode
+    ) {
+        saveTarget.add(TargetStorage(name, material, targetNode.toMutableList()))
     }
 
     fun getNodeList(name: String): MutableList<TargetNode> {
-        return saveTarget.find { it.name == name }?.nodes?: mutableListOf()
+        return saveTarget.find { it.name == name }?.nodes ?: mutableListOf()
     }
 
     fun getNode(name: String, node: String): TargetNode? {
@@ -75,7 +97,11 @@ object RegisterTarget {
 
 }
 
-class TargetStorage(val name: String, val material: XMaterial, val nodes: MutableList<TargetNode> = mutableListOf()) {
+class TargetStorage(
+    val name: String,
+    val material: XMaterial,
+    val nodes: MutableList<TargetNode> = mutableListOf()
+) {
 
     private fun spStr(): String = "TARGET_SELECT_${name.replace(" ", "_").uppercase()}"
 
@@ -84,10 +110,14 @@ class TargetStorage(val name: String, val material: XMaterial, val nodes: Mutabl
 }
 
 enum class TargetNodeType {
-    STRING,INT,DOUBLE,BOOLEAN,LIST
+    STRING, INT, DOUBLE, BOOLEAN, LIST
 }
 
-open class TargetNode(val material: XMaterial, val node: String, val nodeType: TargetNodeType = TargetNodeType.LIST) {
+open class TargetNode(
+    val material: XMaterial,
+    val node: String,
+    val nodeType: TargetNodeType = TargetNodeType.LIST
+) {
 
     open fun contains(content: String, player: Player): Boolean {
         return runEval(player, content)

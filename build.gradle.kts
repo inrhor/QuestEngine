@@ -2,25 +2,25 @@ plugins {
     `java-library`
     `maven-publish`
     id("io.izzel.taboolib") version "1.56"
-    id("org.jetbrains.kotlin.jvm") version "1.5.10"
+    id("org.jetbrains.kotlin.jvm") version "1.8.0"
 }
 
 taboolib {
-    install("common",
-            "common-5",
-            "module-chat",
-            "module-configuration",
-            "module-database",
-            "module-kether",
-            "module-lang",
-            "module-metrics",
-            "module-nms",
-            "module-nms-util",
-            "module-effect",
-            "module-ui",
-            "module-navigation",
-            "module-metrics",
-            "platform-bukkit")
+    install("common")
+    install("common-5")
+    install("module-chat")
+    install("module-configuration")
+    install("module-database")
+    install("module-kether")
+    install("module-lang")
+    install("module-metrics")
+    install("module-nms")
+    install("module-nms-util")
+    install("module-effect")
+    install("module-ui")
+    install("module-navigation")
+    install("module-metrics")
+    install("platform-bukkit")
     description {
         contributors {
             name("inrhor")
@@ -50,6 +50,10 @@ repositories {
     maven("https://repo.dmulloy2.net/repository/public/") // ProtocolLib
     maven("https://repo.codemc.org/repository/maven-public/") // authMe
     maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
+    maven {
+        url = uri("http://106.13.64.5:8081/repository/maven-public/")
+        isAllowInsecureProtocol = true
+    }
 }
 
 dependencies {
@@ -73,6 +77,10 @@ dependencies {
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
     compileOnly("io.lumine:MythicLib-dist:1.5.1-SNAPSHOT")
     compileOnly("com.github.LoneDev6:api-itemsadder:3.2.5")
+    compileOnly("api:csgplus:1.8.2")
+    compileOnly("hiusers:BigDoors:1.0.0")
+    compileOnly("hiusers:ServerTutorialPlus:1.22.1")
+    compileOnly("hiusers:worldedit:7.2.12")
     compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 }
 
@@ -111,16 +119,4 @@ publishing {
             groupId = project.group.toString()
         }
     }
-}
-
-sourceSets {
-    main {
-        java {
-            srcDir("src/main")
-        }
-    }
-}
-
-java {
-    withSourcesJar()
 }

@@ -10,6 +10,8 @@ abstract class NMS1193 {
      */
     abstract fun entityTypeGetId(any: Any): Int
 
+    abstract fun packetPlayOutEntityMetadata(entityId: Int, objects: List<Any>): Any
+
     companion object {
         @JvmStatic
         val INSTANCE by unsafeLazy { nmsProxy<NMS1193>() }

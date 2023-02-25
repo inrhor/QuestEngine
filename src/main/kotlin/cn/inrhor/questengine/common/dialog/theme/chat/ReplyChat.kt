@@ -3,16 +3,16 @@ package cn.inrhor.questengine.common.dialog.theme.chat
 import cn.inrhor.questengine.api.dialog.ReplyModule
 import cn.inrhor.questengine.api.dialog.theme.ReplyTheme
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
-import cn.inrhor.questengine.common.dialog.DialogManager
 import cn.inrhor.questengine.common.dialog.FlagDialog
 import cn.inrhor.questengine.common.dialog.hasFlag
 import cn.inrhor.questengine.script.kether.runEvalSet
 import taboolib.common.platform.function.adaptPlayer
+import taboolib.common.platform.function.info
 import taboolib.common.platform.function.submit
 import taboolib.module.chat.TellrawJson
 import taboolib.module.chat.colored
 
-class ReplyChat(val dialogChat: DialogChat, val reply: List<ReplyModule>): ReplyTheme {
+class ReplyChat(val dialogChat: DialogChat, val reply: List<ReplyModule>) : ReplyTheme {
 
     /**
      * 已解析的回复选择Json
@@ -51,7 +51,6 @@ class ReplyChat(val dialogChat: DialogChat, val reply: List<ReplyModule>): Reply
         }
         parserReply()
         sendReply()
-        DialogManager.sendBarHelp(dialogChat)
         executeFlag()
     }
 
@@ -59,26 +58,26 @@ class ReplyChat(val dialogChat: DialogChat, val reply: List<ReplyModule>): Reply
      * 解析回复选择到缓存中，包括对话主体内容
      */
     fun parserReply() {
+        replyJson = mutableListOf()
         val replyList = mutableListOf<ReplyModule>()
-        if (replyList.isEmpty()) {
-            reply.forEach {
-                if (runEvalSet(dialogChat.viewers, it.condition)) {
-                    replyList.add(it)
-                    replyJson.add(TellrawJson().append(dialogChat.json))
-                }
+        reply.forEach {
+            if (runEvalSet(dialogChat.viewers, it.condition)) {
+                replyList.add(it)
+                replyJson.add(TellrawJson().append(dialogChat.json))
             }
         }
         val replySize = replyList.size
-        for (i in 0 until replySize) {
-            val r = replyList[i]
-            val choose = r.tagChoose.ifEmpty { dialogChat.dialogModule.replyChoose }
-            val def = r.tagDefault.ifEmpty { dialogChat.dialogModule.replyDefault }
-            for (a in 0 until replySize) {
-                val px = if (i == a) choose else def
+        for (i in 0 until replySize) { // 遍历回复
+            for (a in 0 until replySize) { // 再次遍历回复，为了添加前缀
+                val r = replyList[a]
+                val px = if (i == a) r.tagChoose.ifEmpty { dialogChat.dialogModule.replyChoose } else r.tagDefault.ifEmpty { dialogChat.dialogModule.replyDefault }
                 r.content.forEach {
                     replyJson[i].append((px + it).colored()).newLine()
                 }
             }
+        }
+        replyJson.forEach {
+            info(it.toRawMessage())
         }
     }
 

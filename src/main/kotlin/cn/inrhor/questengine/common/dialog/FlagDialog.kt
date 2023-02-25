@@ -9,7 +9,7 @@ enum class FlagDialog {
     NO_CACHE_CHAT, // 屏蔽聊天信息的在对话结束后，不返回历史聊天记录
     NO_SCREEN, // 不屏蔽聊天信息
     WS, // WS选择回复
-    AD_CHOOSE, // 潜行选择回复
+    AD_CHOOSE, // AD确定回复
 }
 
 fun List<String>.hasFlag(flagDialog: FlagDialog): Boolean = contains(flagDialog.toString())
