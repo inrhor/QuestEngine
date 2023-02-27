@@ -13,11 +13,11 @@ data class ItemElement(
 
     fun itemStack(player: Player, variable: (ScriptContext) -> Unit): ItemStack = buildItem(XMaterial.valueOf(material)) {
         val a = this@ItemElement
-        name = player.evalString(a.name) {
+        name = player.evalString(a.name, "{{", "}}") {
             variable(it)
         }
         a.lore.forEach {
-            lore.add(player.evalString(it){ s ->
+            lore.add(player.evalString(it, "{{", "}}"){ s ->
                 variable(s)
             })
         }

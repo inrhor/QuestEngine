@@ -56,20 +56,21 @@ fun runEvalSet(players: Set<Player>, script: String, variable: (ScriptContext) -
     return true
 }
 
-fun Player.evalStringList(script: List<String>, variable: (ScriptContext) -> Unit): List<String> {
+fun Player.evalStringList(script: List<String>, star: String = "[[", end: String = "]]", variable: (ScriptContext) -> Unit): List<String> {
     val list = mutableListOf<String>()
     script.forEach {
-        list.add(evalString(it) { a ->
+        list.add(evalString(it, star, end) { a ->
             variable(a)
         })
     }
     return list
 }
 
-fun Player.evalString(script: String, variable: (ScriptContext) -> Unit): String {
+fun Player.evalString(script: String, star: String = "[[", end: String = "]]", variable: (ScriptContext) -> Unit):
+        String {
     var text = script
-    script.variableReader("[[", "]]").forEach { e ->
-        text = text.replace("[[$e]]", eval(e, {
+    script.variableReader(star, end).forEach { e ->
+        text = text.replace("$star$e$end", eval(e, {
             variable(it
             )}, {
             Coerce.toString(it)

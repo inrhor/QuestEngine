@@ -74,8 +74,10 @@ class KetherItem {
                     frame.newFrame(note).run<Any>().thenAccept { n ->
                         val nl = (Coerce.toList(n)?: listOf()) as List<String>
                         frame.newFrame(k).run<String>().thenAccept { key ->
-                            future.complete(ItemManager.itemHook(frame.player(), it, dl, nl, key) {
-                                frame.variables()
+                            future.complete(ItemManager.itemHook(frame.player(), it, dl, nl, key) { s ->
+                                frame.variables().values().forEach { a ->
+                                    s.rootFrame().variables().set(a.key, a.value)
+                                }
                             })
                         }
                     }
