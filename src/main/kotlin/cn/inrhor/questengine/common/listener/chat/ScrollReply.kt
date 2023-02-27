@@ -31,7 +31,7 @@ object ScrollReply {
                 if (chat.playing) return
                 if (it.dialogModule.flag.hasFlag(FlagDialog.WS)) return
                 val w = ev.newSlot > ev.previousSlot
-                scrollReply(chat, p, w, !w)
+                scrollReply(chat, p, w, true)
                 return
             }
         }
@@ -129,6 +129,7 @@ object ScrollReply {
         if (select != null && select != index) {
             chat.scrollIndex = select
         }
+        if (!dialog.flag.hasFlag(FlagDialog.KEEP_CONTENT)) chat.replyChat.sendReply()
     }
 
 }

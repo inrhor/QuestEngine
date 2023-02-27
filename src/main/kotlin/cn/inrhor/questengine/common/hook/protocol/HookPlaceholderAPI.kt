@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.hook
+package cn.inrhor.questengine.common.hook.protocol
 
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.adaptPlayer

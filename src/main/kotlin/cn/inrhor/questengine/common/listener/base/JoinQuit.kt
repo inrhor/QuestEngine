@@ -5,7 +5,7 @@ import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.quest.manager.QuestManager.acceptQuest
-import cn.inrhor.questengine.server.PluginLoader
+import cn.inrhor.questengine.server.ReadManager.authMeLoad
 import fr.xephi.authme.events.LoginEvent
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerJoinEvent
@@ -17,13 +17,13 @@ object JoinQuit {
 
     @SubscribeEvent
     fun onPlayerJoin(ev: PlayerJoinEvent) {
-        if (PluginLoader.authme) return
+        if (authMeLoad) return
         autoAccept(ev.player)
     }
 
     @SubscribeEvent(bind = "fr.xephi.authme.events.LoginEvent")
     fun login(op: OptionalEvent) {
-        if (PluginLoader.authme) {
+        if (authMeLoad) {
             val ev = op.get<LoginEvent>()
             autoAccept(ev.player)
         }

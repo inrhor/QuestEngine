@@ -37,6 +37,7 @@ taboolib {
             name("ItemsAdder").optional(true)
             name("MMOItems").optional(true)
             name("AuthMe").optional(true)
+            name("Invero").optional(true)
         }
         prefix("QuestEngine")
     }
@@ -80,7 +81,11 @@ dependencies {
     compileOnly("api:csgplus:1.8.2")
     compileOnly("hiusers:BigDoors:1.0.0")
     compileOnly("hiusers:ServerTutorialPlus:1.22.1")
-    compileOnly("hiusers:worldedit:7.2.12")
+    compileOnly("hiusers:WorldEdit:7.2.13")
+    compileOnly("cc.trixey.invero:framework-common:1.0.0-snapshot-1")
+    compileOnly("cc.trixey.invero:framework-bukkit:1.0.0-snapshot-1")
+    compileOnly("cc.trixey.invero:module-common:1.0.0-snapshot-1")
+    compileOnly("cc.trixey.invero:module-core:1.0.0-snapshot-1")
     compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 }
 

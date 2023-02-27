@@ -22,9 +22,9 @@ object TBreakBlock: TargetExtend<BlockBreakEvent>() {
     fun block(player: Player, name: String, blockMaterial: Material) {
         player.doingTargets(name).forEach {
             val target = it.getTargetFrame()?: return@forEach
-            val block = target.nodeMeta("block") ?: return
+            val block = target.nodeMeta("block")
             val material = block.toList()
-            val am = target.nodeMeta("amount") ?: return
+            val am = target.nodeMeta("amount")
             val amount = am[0].toInt()
             if (material.contains(blockMaterial.name)) {
                 Schedule.run(player, it, amount)

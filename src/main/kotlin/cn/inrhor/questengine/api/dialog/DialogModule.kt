@@ -8,6 +8,7 @@ import cn.inrhor.questengine.common.dialog.DialogManager
  */
 class DialogModule(
     var dialogID: String = "null",
+    var hook: String = "",
     var type: DialogType = DialogType.CHAT,
     var template: String = "",
     var dialog: List<String> = listOf(),
@@ -18,12 +19,7 @@ class DialogModule(
     var speed: Int = 1, var flag: List<String> = listOf(),
     var replyChoose: String = "",
     var replyDefault: String = ""
-) {
-
-   fun register() {
-       DialogManager.register(dialogID, this)
-   }
-}
+)
 
 enum class DialogType {
     ALL, CHAT, HOLO
@@ -32,6 +28,4 @@ enum class DialogType {
 /**
  * 对话空间模块
  */
-class SpaceDialogModule(val enable: Boolean, val condition: String) {
-    constructor(): this(false, "")
-}
+class SpaceDialogModule(var enable: Boolean = false, var condition: String = "")

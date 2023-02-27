@@ -9,7 +9,6 @@ import cn.inrhor.questengine.common.dialog.theme.chat.DialogChat
 import cn.inrhor.questengine.common.dialog.theme.hologram.core.DialogHologram
 import cn.inrhor.questengine.script.kether.runEval
 import cn.inrhor.questengine.script.kether.runEvalSet
-
 import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -29,6 +28,8 @@ object DialogManager {
 
     /**
      * 注册对话
+     *
+     * @Deprecated("使用 DialogModule.register() 替代")
      */
     fun register(dialogID: String, dialogModule: DialogModule) {
         if (exist(dialogID)) {
@@ -36,6 +37,10 @@ object DialogManager {
             return
         }
         dialogMap[dialogID] = dialogModule
+    }
+
+    fun DialogModule.register() {
+        register(dialogID, this)
     }
 
     /**

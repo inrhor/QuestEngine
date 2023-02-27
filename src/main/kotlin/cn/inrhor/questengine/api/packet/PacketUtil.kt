@@ -2,7 +2,7 @@ package cn.inrhor.questengine.api.packet
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.common.nms.NMS
-import cn.inrhor.questengine.common.hook.HookProtocolLib
+import cn.inrhor.questengine.common.hook.protocol.HookProtocolLib
 import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.Bukkit
 import org.bukkit.Location

@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.hook
+package cn.inrhor.questengine.common.hook.protocol
 
 import cn.inrhor.questengine.common.nms.getPropertiesIndex
 import com.comphenix.protocol.PacketType

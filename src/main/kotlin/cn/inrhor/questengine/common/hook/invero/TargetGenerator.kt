@@ -3,18 +3,18 @@ package cn.inrhor.questengine.common.hook.invero
 import cc.trixey.invero.core.Context
 import cc.trixey.invero.core.geneartor.ContextGenerator
 
-class GroupDoingGenerator: ContextGenerator() {
+class TargetDoingGenerator: ContextGenerator() {
 
     override fun generate(context: Context) {
-        generated = InvGenerator.questGenerate(context, UiType.GROUP_DOING)
+        generated = InvGenerator.targetGenerate(context, UiType.TARGET_DOING)
     }
 
 }
 
-class GroupCompleteGenerator: ContextGenerator() {
+class TargetCompleteGenerator: ContextGenerator() {
 
     override fun generate(context: Context) {
-        generated = InvGenerator.questGenerate(context, UiType.GROUP_COMPLETE)
+        generated = InvGenerator.targetGenerate(context, UiType.TARGET_COMPLETE)
     }
 
 }

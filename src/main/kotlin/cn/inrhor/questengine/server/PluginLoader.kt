@@ -9,6 +9,7 @@ import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.type.DatabaseManager
 import cn.inrhor.questengine.common.dialog.DialogFile
 import cn.inrhor.questengine.common.dialog.DialogManager
+import cn.inrhor.questengine.common.hook.invero.InvGenerator
 import cn.inrhor.questengine.common.item.ItemManager
 import cn.inrhor.questengine.common.loader.TemplateLoader
 import cn.inrhor.questengine.common.quest.QuestFile
@@ -25,8 +26,6 @@ import taboolib.module.nms.MinecraftVersion
 import kotlin.system.measureTimeMillis
 
 object PluginLoader {
-
-    var authme = false
 
     fun loadTask() {
         val version = MinecraftVersion.major
@@ -48,7 +47,7 @@ object PluginLoader {
         }catch (ex: Exception) {
             ex.printStackTrace()
         }
-        authme = Bukkit.getPluginManager().getPlugin("AuthMe") != null
+        InvGenerator.load()
         DatabaseManager.init()
         Bukkit.getOnlinePlayers().forEach {
             Database.playerPull(it)

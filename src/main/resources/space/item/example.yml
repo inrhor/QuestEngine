@@ -8,3 +8,20 @@ item_1:
 item_2:
   material: "STONE"
   model-data: 12345
+
+# 任务笔记菜单使用
+group:
+  name: "&f                                                  "
+  lore:
+    - "__QenGroupNote__"
+    - ""
+quest:
+  name: "&f                                                  "
+  lore:
+    - "__QenQuestNote__"
+    - ""
+target:
+  name: "&f                                                  "
+  lore:
+    - "__QenTargetNote__"
+    - ""

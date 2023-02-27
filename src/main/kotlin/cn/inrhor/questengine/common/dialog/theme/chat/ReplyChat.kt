@@ -7,7 +7,6 @@ import cn.inrhor.questengine.common.dialog.FlagDialog
 import cn.inrhor.questengine.common.dialog.hasFlag
 import cn.inrhor.questengine.script.kether.runEvalSet
 import taboolib.common.platform.function.adaptPlayer
-import taboolib.common.platform.function.info
 import taboolib.common.platform.function.submit
 import taboolib.module.chat.TellrawJson
 import taboolib.module.chat.colored
@@ -75,9 +74,6 @@ class ReplyChat(val dialogChat: DialogChat, val reply: List<ReplyModule>) : Repl
                     replyJson[i].append((px + it).colored()).newLine()
                 }
             }
-        }
-        replyJson.forEach {
-            info(it.toRawMessage())
         }
     }
 

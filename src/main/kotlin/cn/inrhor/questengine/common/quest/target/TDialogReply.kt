@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.common.quest.target
 
-import cn.inrhor.questengine.api.event.DialogEvent
 import cn.inrhor.questengine.api.event.ReplyEvent
 import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.api.target.TargetExtend
