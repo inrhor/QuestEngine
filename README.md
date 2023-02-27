@@ -13,11 +13,6 @@
 Minecraft - 面向异世界的任务引擎系统
 
 ---
-### 附属
-- 任务笔记
-  - [UiUniverse](https://github.com/inrhor/UiUniverse)
-
----
 ### 相关链接
 - [文档](http://www.questengine.cn/)
 - [爱发电](https://afdian.net/item?plan_id=667f008029d611ed900252540025c377)
