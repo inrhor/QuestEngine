@@ -14,13 +14,13 @@ import cn.inrhor.questengine.common.dialog.DialogManager.refresh
 import cn.inrhor.questengine.common.dialog.DialogManager.setId
 import cn.inrhor.questengine.common.dialog.FlagDialog
 import cn.inrhor.questengine.common.dialog.hasFlag
-import cn.inrhor.questengine.common.nms.NMS
 import cn.inrhor.questengine.utlis.variableReader
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import taboolib.common.platform.function.adaptPlayer
+import taboolib.common.platform.function.info
 import taboolib.common.platform.function.submit
 import taboolib.common5.util.printed
 import taboolib.module.chat.TellrawJson
@@ -87,19 +87,6 @@ class DialogChat(
                 }else {
                     viewer.removePotionEffect(PotionEffectType.BLINDNESS)
                 }
-            }
-        }
-        if (flag.hasFlag(FlagDialog.KEEP_VIEW)) {
-            val loc = viewer.location.clone()
-            submit {
-                viewer.walkSpeed = 0.0F
-            }
-            submit(async = true, period = 20L) {
-                if (!viewers.contains(viewer)) {
-                    cancel()
-                    return@submit
-                }
-                entityRotation(viewers, viewer.entityId, loc.yaw)
             }
         }
     }

@@ -31,6 +31,9 @@ object QuestFile {
 
     private fun checkRegQuest(file: File) {
         val setting = Configuration.loadFromFile(file)
+        if (!setting.contains("quest")) {
+            return
+        }
         val quest = setting.getObject<QuestFrame>("quest", false)
         quest.path = file.path
         quest.register()

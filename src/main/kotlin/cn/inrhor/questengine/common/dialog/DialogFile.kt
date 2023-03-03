@@ -52,7 +52,7 @@ object DialogFile {
      */
     private fun regWaitDialog(number: Int = 0, init: Boolean = false) {
         if (!init) {
-            console().sendLang("DIALOG_HOOK_REGISTER", UtilString.pluginTag, number, waitMap.values.map { it }.toString())
+            console().sendLang("DIALOG_HOOK_REGISTER", UtilString.pluginTag, number)
         }
         val its = waitMap.iterator()
         while (its.hasNext()) {

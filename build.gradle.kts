@@ -50,7 +50,6 @@ repositories {
     maven("https://jitpack.io") // ItemsAdder
     maven("https://repo.dmulloy2.net/repository/public/") // ProtocolLib
     maven("https://repo.codemc.org/repository/maven-public/") // authMe
-    maven("https://nexus.phoenixdevt.fr/repository/maven-public/")
     maven {
         url = uri("http://106.13.64.5:8081/repository/maven-public/")
         isAllowInsecureProtocol = true
@@ -76,7 +75,7 @@ dependencies {
     compileOnly("fr.xephi:authme:5.6.0-beta2")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
-    compileOnly("io.lumine:MythicLib-dist:1.5.1-SNAPSHOT")
+    compileOnly("hiusers:MythicLib:1.5")
     compileOnly("com.github.LoneDev6:api-itemsadder:3.2.5")
     compileOnly("api:csgplus:1.8.2")
     compileOnly("hiusers:BigDoors:1.0.0")

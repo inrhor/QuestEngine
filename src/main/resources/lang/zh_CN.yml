@@ -5,7 +5,7 @@ LOADER-INFO:
 LOADER-TIME_COST: "{0}&r 所有配置载入完成，耗时 &8{1}ms"
 LOADER-NOT_INSTALLED-PLIB: "{0}&c 启用外部数据包模式，但未安装插件： &rProtocolLib"
 
-DIALOG_HOOK_REGISTER: "{0}&r &8第 &6{1} &8次进行对话继承注册 &f{2}"
+DIALOG_HOOK_REGISTER: "{0}&r &8第 &6{1} &8次进行对话继承..."
 DIALOG-NO_FILES: "{0}&r &6dialog &8文件夹&c不存在，&8开始创建 &6dialog &8文件夹"
 DIALOG-EMPTY_CONTENT: "{0}&r &6{1} &c没有内容或标准错误"
 DIALOG-EXIST_DIALOG_ID: "{0}&r &6{1} &8已有相同已注册的对话ID"

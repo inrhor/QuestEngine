@@ -3,6 +3,7 @@ package cn.inrhor.questengine.common.dialog.theme.chat
 import cn.inrhor.questengine.api.dialog.ReplyModule
 import cn.inrhor.questengine.api.dialog.theme.ReplyTheme
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
+import cn.inrhor.questengine.common.dialog.DialogManager.sendBarHelp
 import cn.inrhor.questengine.common.dialog.FlagDialog
 import cn.inrhor.questengine.common.dialog.hasFlag
 import cn.inrhor.questengine.script.kether.runEvalSet
@@ -50,6 +51,7 @@ class ReplyChat(val dialogChat: DialogChat, val reply: List<ReplyModule>) : Repl
         }
         parserReply()
         sendReply()
+        sendBarHelp(dialogChat)
         executeFlag()
     }
 
