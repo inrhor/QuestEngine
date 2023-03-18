@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.listener.holo
 
 import cn.inrhor.questengine.common.dialog.DialogManager
+import cn.inrhor.questengine.common.dialog.DialogManager.isPlayChatDialog
 import ink.ptms.adyeshach.api.event.AdyeshachEntityDamageEvent
 import ink.ptms.adyeshach.api.event.AdyeshachEntityInteractEvent
 import ink.ptms.adyeshach.common.entity.EntityInstance
@@ -24,6 +25,7 @@ object ClickAdyNPC {
     }
 
     private fun sendDialog(player: Player, npc: EntityInstance) {
+        if (player.isPlayChatDialog()) return
         val npcLoc = npc.getLocation()
         val npcID = npc.id
         DialogManager.sendDialog(mutableSetOf(player), npcLoc, npcID)

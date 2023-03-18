@@ -66,9 +66,6 @@ object DialogFile {
                 if (t.template.isEmpty()) {
                     t.template = hook.template
                 }
-                if (t.npcIDs.isEmpty()) {
-                    t.npcIDs = hook.npcIDs
-                }
                 if (t.condition.isEmpty()) {
                     t.condition = hook.condition
                 }

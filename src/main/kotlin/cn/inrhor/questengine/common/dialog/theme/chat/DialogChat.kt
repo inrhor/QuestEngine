@@ -20,7 +20,6 @@ import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import taboolib.common.platform.function.adaptPlayer
-import taboolib.common.platform.function.info
 import taboolib.common.platform.function.submit
 import taboolib.common5.util.printed
 import taboolib.module.chat.TellrawJson
@@ -95,6 +94,8 @@ class DialogChat(
      * 异步播放对话
      */
     override fun play() {
+        // 对话空间检查
+        if (!DialogManager.spaceDialog(dialogModule, this)) return
         // 播放状态，防止滚动、跳过
         playing = true
         // 对所有可视者处理
@@ -109,8 +110,6 @@ class DialogChat(
             dData.addDialog(dialogModule.dialogID, this)
             // 执行对话flag
             executeFlag(it, pData)
-            // 对话空间检查
-            DialogManager.spaceDialog(dialogModule, this)
             // 对话文本发送
             textViewer(it)
         }

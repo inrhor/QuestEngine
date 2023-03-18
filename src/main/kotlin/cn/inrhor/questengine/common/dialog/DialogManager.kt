@@ -5,6 +5,7 @@ import cn.inrhor.questengine.api.dialog.DialogType
 import cn.inrhor.questengine.api.dialog.theme.DialogTheme
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.DialogData
+import cn.inrhor.questengine.common.dialog.DialogManager.endDialog
 import cn.inrhor.questengine.common.dialog.theme.chat.DialogChat
 import cn.inrhor.questengine.common.dialog.theme.hologram.core.DialogHologram
 import cn.inrhor.questengine.script.kether.runEval
@@ -122,16 +123,29 @@ object DialogManager {
         DialogChat(dialogModule, players, npcLoc).play()
     }
 
+    /**
+     * @return 有进行中的聊天对话
+     */
+    fun Player.isPlayChatDialog(): Boolean {
+        getPlayerData().dialogData.dialogMap.values.forEach {
+            if (it.type == DialogType.CHAT) {
+                val d = it as DialogChat
+                if (d.playing) return true
+            }
+        }
+        return false
+    }
+
     private fun sendDialogHolo(players: MutableSet<Player>, dialogModule: DialogModule, npcLoc: Location) {
         val dialog = DialogHologram(dialogModule, npcLoc, players)
-        dialog.play()
         spaceDialog(dialogModule, dialog)
+        dialog.play()
     }
 
     private fun sendDialogHolo(player: Player, dialogModule: DialogModule, location: Location = player.location) {
         val holoDialog = DialogHologram(dialogModule, location, mutableSetOf(player))
-        holoDialog.play()
         spaceDialog(dialogModule, holoDialog)
+        holoDialog.play()
     }
 
     fun sendBarHelp(dialogChat: DialogChat) {
@@ -146,10 +160,15 @@ object DialogManager {
         }
     }
 
-    fun spaceDialog(dialogModule: DialogModule, dialogTheme: DialogTheme) {
+    fun spaceDialog(dialogModule: DialogModule, dialogTheme: DialogTheme): Boolean {
         val space = dialogModule.space
-        if (!space.enable) return
+        if (!space.enable) return false
         val id = dialogModule.dialogID
+        val vs = dialogTheme.viewers
+        if (!checkSpace(vs, space.condition, dialogTheme.npcLoc)) {
+            vs.first().endDialog(id)
+            return false
+        }
         submit(period = 5L) {
             val viewers = dialogTheme.viewers
             if (viewers.isEmpty()) {
@@ -161,6 +180,7 @@ object DialogManager {
                 return@submit
             }
         }
+        return true
     }
 
     fun checkSpace(players: MutableSet<Player>, condition: String, loc: Location): Boolean {

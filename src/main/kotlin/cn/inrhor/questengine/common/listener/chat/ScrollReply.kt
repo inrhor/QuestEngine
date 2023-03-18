@@ -62,7 +62,7 @@ object ScrollReply {
         }
         val viewers = it.viewers
         val reply = replyList[it.scrollIndex]
-        viewers.forEach { v->
+        viewers.forEach { v ->
             ReplyEvent(v, dialog, reply).call()
         }
         runEvalSet(viewers, reply.script) { s ->

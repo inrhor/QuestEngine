@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.common.listener.holo
 
 import cn.inrhor.questengine.common.dialog.DialogManager
+import cn.inrhor.questengine.common.dialog.DialogManager.isPlayChatDialog
 import net.citizensnpcs.api.event.NPCLeftClickEvent
 import net.citizensnpcs.api.event.NPCRightClickEvent
 import net.citizensnpcs.api.npc.NPC
@@ -26,6 +27,7 @@ object ClickCitizens {
     }
 
     private fun npc(player: Player, npc: NPC) {
+        if (player.isPlayChatDialog()) return
         val npcLoc = npc.entity.location
         val npcID= npc.id.toString()
         DialogManager.sendDialog(mutableSetOf(player), npcLoc, npcID)
