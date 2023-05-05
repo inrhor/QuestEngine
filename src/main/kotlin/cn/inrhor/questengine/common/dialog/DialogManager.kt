@@ -5,7 +5,6 @@ import cn.inrhor.questengine.api.dialog.DialogType
 import cn.inrhor.questengine.api.dialog.theme.DialogTheme
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.DialogData
-import cn.inrhor.questengine.common.dialog.DialogManager.endDialog
 import cn.inrhor.questengine.common.dialog.theme.chat.DialogChat
 import cn.inrhor.questengine.common.dialog.theme.hologram.core.DialogHologram
 import cn.inrhor.questengine.script.kether.runEval

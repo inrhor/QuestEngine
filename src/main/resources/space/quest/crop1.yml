@@ -44,18 +44,12 @@ quest:
         subtitle color "&a第一篇完成"
         waitTime 3s
         subtitle color "即将开始下一篇任务"
-        waitTime 2s
-        quest accept quest2
+        quest select quest2
+        quest accept
     - select: SELF
       id: '1'
       type: ACCEPT
       script: |
-        subtitle color "&c稻草人: ..."
-        waitTime 2s
-        subtitle color "&c稻草人: ..."
-        waitTime 2s
-        subtitle 它似乎有些破损
-        waitTime 3s
         title color "&a接受任务"
         subtitle color "&f耕田之下的稻草人"
   target:
@@ -64,11 +58,11 @@ quest:
       id: a
       event: break block
       # 打破其中方块(石头，箱子)，数量要求3
-      node: |
-        {{<block>
-        [STONE]
-        [CHEST]}}
-        {{<amount>[3]}}
+      pass:
+        block:
+          - STONE
+          - CHEST
+        amount: 3
       description:
         - "打破石头或箱子{{target schedule}}/3"
       # 数据，通常API调用，如写入物品材料供给Ui

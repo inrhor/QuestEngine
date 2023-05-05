@@ -24,7 +24,6 @@ object HookProtocolLib {
     fun entityRotation(players: MutableSet<Player>, entityId: Int, yaw: Float) {
         val a = ((yaw%360)*256/360).cbyte
         val pc = PacketContainer(PacketType.Play.Server.ENTITY_LOOK)
-        pc.integers.write(0, entityId)
         pc.bytes
             .write(0, a)
         sendPacket(players, pc)
@@ -89,7 +88,7 @@ object HookProtocolLib {
 
     fun destroyEntity(player: Player, entityId: Int) {
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_DESTROY)
-        if (version >= 9 && minor == 0) {
+        if (version >= 9) {
             if (minor == 0) {
                 packet.integers.writeSafely(0, entityId)
             }else {

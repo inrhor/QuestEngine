@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.quest.target
+package cn.inrhor.questengine.common.quest.target.bukkit
 
 import cn.inrhor.questengine.api.target.TargetExtend
 import org.bukkit.event.block.BlockPlaceEvent
@@ -10,8 +10,7 @@ object TPlaceBlock: TargetExtend<BlockPlaceEvent>() {
     init {
         event = BlockPlaceEvent::class
         tasker{
-            TBreakBlock.block(player, name, blockPlaced.type)
-            player
+            TBreakBlock.blockMatch(player, name, blockPlaced.type, blockPlaced.location)
         }
     }
 

@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.api.quest
 
+import cn.inrhor.questengine.common.quest.target.node.ObjectiveNode
 import cn.inrhor.questengine.utlis.variableReader
 import taboolib.common.util.VariableReader
 
@@ -8,7 +9,8 @@ data class TargetFrame(
     var period: Int = 0, var async: Boolean = false, var condition: String = "",
     var node: String = "", var description: List<String> = listOf(),
     val data: List<String> = listOf(),
-    val trigger: MutableList<ControlFrame> = mutableListOf()
+    val trigger: MutableList<ControlFrame> = mutableListOf(),
+    val pass: ObjectiveNode = ObjectiveNode()
 ) {
 
     @Transient

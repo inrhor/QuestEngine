@@ -3,6 +3,7 @@ package cn.inrhor.questengine.common.quest.target
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.api.target.util.Schedule
 import cn.inrhor.questengine.api.manager.DataManager.doingTargets
+import cn.inrhor.questengine.api.target.util.TriggerUtils.triggerTarget
 import org.bukkit.entity.Entity
 import org.bukkit.entity.FishHook
 import org.bukkit.entity.Player
@@ -15,8 +16,15 @@ object TPlayerFish: TargetExtend<PlayerFishEvent>() {
     init {
         event = PlayerFishEvent::class
         tasker{
-            fish(player, name, caught, hook, state, expToDrop)
-            player
+//            fish(player, name, caught, hook, state, expToDrop)
+//            player
+            player.triggerTarget(name) { _, pass ->
+                val entityTypes = pass.entityTypes
+                if (entityTypes.isNotEmpty() && !entityTypes.any { it == caught?.type?.name }) {
+                    return@triggerTarget false
+                }
+
+            }
         }
     }
 
