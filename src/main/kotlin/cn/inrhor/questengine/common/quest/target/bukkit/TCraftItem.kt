@@ -5,6 +5,8 @@ import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.api.target.util.Schedule
 import cn.inrhor.questengine.api.target.util.TriggerUtils.itemTrigger
 import cn.inrhor.questengine.api.manager.DataManager.doingTargets
+import cn.inrhor.questengine.api.target.util.TriggerUtils.triggerTarget
+import cn.inrhor.questengine.common.quest.target.node.ObjectiveNode
 import cn.inrhor.questengine.utlis.bukkit.ItemMatch
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.CraftItemEvent
@@ -21,23 +23,17 @@ object TCraftItem: TargetExtend<CraftItemEvent>() {
         tasker{
             val p = whoClicked as Player
             val inv = p.inventory
-            p.doingTargets(name).forEach {
-                val target = it.getTargetFrame()?: return@forEach
-                val item = inventory.result
-                val am = target.nodeMeta("amount", "1")
-                val amount = am[0].toInt()
-                if (item != null) {
-                    if (itemTrigger(target, item, inv) && matrixItems(inventory, target, inventory.matrix)) {
-                        Schedule.run(p, it, amount)
-                    }
-                }
+            val item = inventory.result?: return@tasker p
+            p.triggerTarget(name) {
+                val pass = it.pass
+                itemTrigger(pass, item, inv) && matrixItems(inventory, it, inventory.matrix)
             }
             p
         }
     }
 
-    fun matrixItems(inventory: Inventory, target: TargetFrame, matrix: Array<ItemStack>): Boolean {
-        val content = target.nodeMeta("matrix")?: return true
+    fun matrixItems(inventory: Inventory, pass: ObjectiveNode, matrix: Array<ItemStack>): Boolean {
+        val content = target.nodeMeta("matrix")
         val a = content.toList()
         if (a.isEmpty()) return true
         matrix.forEach {

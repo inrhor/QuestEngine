@@ -4,6 +4,7 @@ import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.api.target.util.Schedule
 import cn.inrhor.questengine.api.manager.DataManager.doingTargets
+import cn.inrhor.questengine.api.target.util.TriggerUtils.triggerTarget
 import cn.inrhor.questengine.script.kether.runEval
 
 import cn.inrhor.questengine.utlis.subAfter
@@ -12,21 +13,30 @@ import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDeathEvent
 
+/**
+ * 重写
+ */
 object TKillEntity: TargetExtend<EntityDeathEvent>() {
 
     override val name = "player kill entity"
 
-
     init {
         event = EntityDeathEvent::class
-        tasker{
+        tasker {
             val player = entity.killer?: return@tasker null
-            player.doingTargets(name).forEach {
+            player.triggerTarget(name) { _, pass ->
+                val entityTypes = pass.entityTypes
+                val name = pass.name
+                pass.exp >= droppedExp &&
+                        (pass.entityTypes.isEmpty() || entityTypes.contains(entityType.name)) &&
+                        (name.isEmpty() || name == entity.)
+            }
+            /*player.doingTargets(name).forEach {
                 val target = it.getTargetFrame()?: return@forEach
                 if (checkEntity(target, entityType) && checkCondition(player, target, entity, droppedExp)) {
                     Schedule.isNumber(player, "number", it)
                 }
-            }
+            }*/
             player
         }
     }

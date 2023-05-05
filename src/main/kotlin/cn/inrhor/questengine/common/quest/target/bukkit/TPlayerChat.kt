@@ -4,11 +4,15 @@ import cn.inrhor.questengine.api.quest.TargetFrame
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.api.target.util.Schedule
 import cn.inrhor.questengine.api.manager.DataManager.doingTargets
+import cn.inrhor.questengine.api.target.util.TriggerUtils.triggerTarget
 import cn.inrhor.questengine.script.kether.runEval
 
 import org.bukkit.entity.Player
 import org.bukkit.event.player.AsyncPlayerChatEvent
 
+/**
+ * 已重写
+ */
 object TPlayerChat: TargetExtend<AsyncPlayerChatEvent>() {
 
     override val name = "player chat"
@@ -18,12 +22,19 @@ object TPlayerChat: TargetExtend<AsyncPlayerChatEvent>() {
     init {
         event = AsyncPlayerChatEvent::class
         tasker{
-            player.doingTargets(name).forEach {
+            player.triggerTarget(name) { _, pass ->
+//                pass.content.forEach {
+//                    if (message.contains())
+//                }
+                val msg = pass.content
+                msg.isEmpty() ||msg.any {  }
+            }
+            /*player.doingTargets(name).forEach {
                 val t = it.getTargetFrame()?: return@forEach
                 if (targetTrigger(player, "message", message, t)) {
                     Schedule.isNumber(player, "number", it)
                 }
-            }
+            }*/
             player
         }
     }

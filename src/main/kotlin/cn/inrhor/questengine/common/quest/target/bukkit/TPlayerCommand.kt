@@ -3,7 +3,7 @@ package cn.inrhor.questengine.common.quest.target
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.api.target.util.Schedule
 import cn.inrhor.questengine.api.manager.DataManager.doingTargets
-import cn.inrhor.questengine.common.quest.target.TPlayerChat.targetTrigger
+import cn.inrhor.questengine.api.target.util.TriggerUtils.triggerTarget
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 
 object TPlayerCommand: TargetExtend<PlayerCommandPreprocessEvent>() {
@@ -13,13 +13,10 @@ object TPlayerCommand: TargetExtend<PlayerCommandPreprocessEvent>() {
     init {
         event = PlayerCommandPreprocessEvent::class
         tasker{
-            player.doingTargets(name).forEach {
-                val t = it.getTargetFrame()?: return@forEach
-                if (targetTrigger(player, "content", message, t)) {
-                    Schedule.isNumber(player, "number", it)
-                }
+            player.triggerTarget(name) { _, pass ->
+                val content = pass.content
+                content.isEmpty() || content.any { it == message }
             }
-            player
         }
     }
 
