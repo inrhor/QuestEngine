@@ -18,7 +18,7 @@ object TKillEntity: TargetExtend<EntityDeathEvent>() {
             player.triggerTarget(name) { _, pass ->
                 val entityTypes = pass.entityTypes
                 val name = pass.name
-                pass.exp >= droppedExp &&
+                pass.exp <= droppedExp &&
                         (pass.entityTypes.isEmpty() || entityTypes.contains(entityType.name)) &&
                         (name.isEmpty() || name.contains(entity.customName))
             }

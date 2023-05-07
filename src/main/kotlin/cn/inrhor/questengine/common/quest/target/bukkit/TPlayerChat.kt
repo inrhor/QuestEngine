@@ -5,9 +5,6 @@ import cn.inrhor.questengine.api.target.util.TriggerUtils.triggerTarget
 
 import org.bukkit.event.player.AsyncPlayerChatEvent
 
-/**
- * 已重写
- */
 object TPlayerChat: TargetExtend<AsyncPlayerChatEvent>() {
 
     override val name = "player chat"

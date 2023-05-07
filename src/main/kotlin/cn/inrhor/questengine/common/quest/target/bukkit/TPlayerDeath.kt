@@ -15,7 +15,7 @@ object TPlayerDeath: TargetExtend<PlayerDeathEvent>() {
             entity.triggerTarget(name) { _, pass ->
                 val cause = pass.cause
                 cause.isEmpty() ||
-                        cause.any { cause.contains(entity.lastDamageCause.toString()) }
+                        cause.any { it == entity.lastDamageCause?.cause?.name }
             }
         }
     }

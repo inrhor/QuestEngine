@@ -1,7 +1,7 @@
-package cn.inrhor.questengine.common.quest.target
+package cn.inrhor.questengine.common.quest.target.adyeshach
 
 import cn.inrhor.questengine.api.target.TargetExtend
-import cn.inrhor.questengine.common.quest.target.TNpcLeft.match
+import cn.inrhor.questengine.common.quest.target.citizens.TNpcLeft.match
 import ink.ptms.adyeshach.api.event.AdyeshachEntityInteractEvent
 import org.bukkit.Bukkit
 
@@ -15,7 +15,6 @@ object TAdyRight: TargetExtend<AdyeshachEntityInteractEvent>() {
             tasker {
                 val player = player
                 match(player, entity.id, name)
-                player
             }
         }
     }

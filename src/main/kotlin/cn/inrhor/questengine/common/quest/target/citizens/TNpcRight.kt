@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.quest.target
+package cn.inrhor.questengine.common.quest.target.citizens
 
 import cn.inrhor.questengine.api.target.TargetExtend
 import net.citizensnpcs.api.event.NPCRightClickEvent
@@ -14,7 +14,6 @@ object TNpcRight: TargetExtend<NPCRightClickEvent>() {
             tasker {
                 val player = clicker
                 TNpcLeft.match(player, npc.id.toString(), name)
-                player
             }
         }
     }

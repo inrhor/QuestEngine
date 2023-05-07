@@ -28,19 +28,11 @@ object TriggerUtils {
         return this
     }
 
-    /*fun idTrigger(target: TargetFrame, id: String, meta: String = "id"): Boolean {
-        val idCon = target.nodeMeta(meta)
-        idCon.forEach {
-            if (id == it) return true
-        }
-        return false
-    }
-
-    *//**
+    /**
      * 条件列表
      *
      * @return 布尔值，空或满足返回true
-     *//*
+     */
     fun booleanTrigger(player: Player, targetData: TargetData, target: TargetFrame, run: Boolean = true, amount: Int = 1): Boolean {
         val needCondition = target.nodeMeta("need")
         if (needCondition.isEmpty() || runEval(player, needCondition)) {
@@ -48,7 +40,7 @@ object TriggerUtils {
             return true
         }
         return false
-    }*/
+    }
 
     /**
      * 物品匹配器

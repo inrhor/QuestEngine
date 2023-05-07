@@ -21,9 +21,9 @@ object TBreakBlock: TargetExtend<BlockBreakEvent>() {
     fun blockMatch(player: Player, name: String, blockMaterial: Material, location: Location, exp: Int = 0): Player {
         return player.triggerTarget(name) { _, pass ->
             val material = pass.material
-            !((material.isNotEmpty() && !material.contains(blockMaterial.name)) ||
-                    (pass.exp < exp) ||
-                    (pass.location != null && pass.location != location))
+            (material.isEmpty() || material.contains(blockMaterial.name)) &&
+                    (pass.exp <= exp) &&
+                    (pass.locCheck(player, location))
         }
     }
 

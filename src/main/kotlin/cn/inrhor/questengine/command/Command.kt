@@ -29,4 +29,7 @@ internal object Command {
 
     @CommandBody(permission = "QuestEngine.admin.editor")
     val editor = EditorCommand.editor
+
+    @CommandBody(permission = "QuestEngine.admin.migrate")
+    val migrate = MigrateCommand.migrate
 }
