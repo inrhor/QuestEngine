@@ -7,6 +7,7 @@ import cn.inrhor.questengine.common.database.type.DatabaseLocal
 import cn.inrhor.questengine.common.database.type.DatabaseManager
 import cn.inrhor.questengine.common.database.type.DatabaseSQL
 import cn.inrhor.questengine.common.database.type.DatabaseType
+import cn.inrhor.questengine.common.dialog.DialogManager.quitDialog
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerJoinEvent
@@ -63,8 +64,10 @@ abstract class Database {
 
         @SubscribeEvent
         fun quit(ev: PlayerQuitEvent) {
-            database.push(ev.player)
-            val uuid = ev.player.uniqueId
+            val p = ev.player
+            database.push(p)
+            val uuid = p.uniqueId
+            p.quitDialog()
             DataStorage.removePlayerData(uuid)
         }
 

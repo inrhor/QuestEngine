@@ -15,7 +15,7 @@ import org.bukkit.entity.Player
 import taboolib.common.platform.function.adaptPlayer
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.submit
-import taboolib.module.chat.TellrawJson
+import taboolib.module.chat.ComponentText
 import taboolib.module.lang.sendLang
 import taboolib.platform.util.asLangText
 
@@ -80,13 +80,18 @@ object DialogManager {
         return true
     }
 
-    fun TellrawJson.refresh(): TellrawJson {
-        for (i in 0..32) this.newLine()
+    fun ComponentText.refresh(): ComponentText {
+        for (i in 0..32) newLine()
         return this
     }
 
-    fun TellrawJson.setId(): TellrawJson {
-        return this.insertion("@d31877bc-b8bc-4355-a4e5-9b055a494e9f")
+    /**
+     * @return 复制对象
+     */
+    fun ComponentText.copy() = ComponentText.empty().append(this)
+
+    fun ComponentText.setId(): ComponentText {
+        return clickInsertText("@d31877bc-b8bc-4355-a4e5-9b055a494e9f")
     }
 
     /**
@@ -208,15 +213,19 @@ object DialogManager {
         }
     }
 
-    /**
-     * @Deprecated 推荐使用 Player.endDialog()
-     */
-    fun endHoloDialog(player: Player, dialogID: String) {
-        player.endDialog(dialogID)
-    }
-
     fun Player.endDialog(dialogID: String) {
         val pDate = getPlayerData()
         pDate.dialogData.endDialog(dialogID)
     }
+
+    /**
+     * 玩家退出对话
+     */
+    fun Player.quitDialog() {
+        val pDate = getPlayerData()
+        pDate.dialogData.dialogMap.values.forEach {
+            it.viewers.remove(this)
+        }
+    }
+
 }

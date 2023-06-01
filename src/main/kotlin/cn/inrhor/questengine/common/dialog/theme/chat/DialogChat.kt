@@ -22,7 +22,7 @@ import org.bukkit.potion.PotionEffectType
 import taboolib.common.platform.function.adaptPlayer
 import taboolib.common.platform.function.submit
 import taboolib.common5.util.printed
-import taboolib.module.chat.TellrawJson
+import taboolib.module.chat.ComponentText
 import taboolib.module.chat.colored
 import taboolib.platform.compat.replacePlaceholder
 
@@ -35,14 +35,14 @@ class DialogChat(
     override val npcLoc: Location,
     var scrollIndex: Int = 0,
     var playing: Boolean = false, // 播放状态，防止滚动、跳过
-    var json: TellrawJson = TellrawJson()
+    var componentText: ComponentText = ComponentText.empty()
 ): DialogTheme(type = DialogType.CHAT) {
 
     /**
      * 发送已经解析的json对话内容
      */
     fun sendFullDialog(viewer: Player) {
-        json.setId().sendTo(adaptPlayer(viewer))
+        componentText.setId().sendTo(adaptPlayer(viewer))
     }
 
     val replyChat: ReplyChat = ReplyChat(this, dialogModule.reply)
@@ -69,7 +69,7 @@ class DialogChat(
             }
         }
         if (!flag.hasFlag(FlagDialog.NO_CLEAR)) {
-            if (!play) TellrawJson().refresh().sendTo(adaptPlayer(viewer))
+            if (!play) ComponentText.empty().refresh().sendTo(adaptPlayer(viewer))
         }
         submit { // 同步，因为播放对话是异步的
             if (flag.hasFlag(FlagDialog.SLOW)) {
@@ -150,6 +150,10 @@ class DialogChat(
     fun parserContent(viewer: Player, list: MutableList<MutableList<DataText>>, frameLine: Int = 0) {
         if (!viewer.isOnline) return
         submit(delay = dialogModule.speed.toLong()) {
+            if (!playing) {
+                cancel()
+                return@submit
+            }
             if (finishParser(list)) {
                 // 对话内容播放结束
                 playing = false
@@ -157,9 +161,9 @@ class DialogChat(
                 replyChat.play()
                 return@submit
             }
-            val tellrawJson = TellrawJson()
-            tellrawJson.refresh() // 清除聊天框
-            tellrawJson.append("")
+            val compText = ComponentText.empty()
+            compText.refresh() // 清除聊天框
+            compText.append("")
             var newLine = 0
             var hasAnimation = false
             for (l in 0 until list.size) { // 每行
@@ -167,24 +171,24 @@ class DialogChat(
                 theLine.forEach { tag -> //每独立标签
                     if (tag.type == DisplayType.ANIMATION) {
                         if (l < frameLine) {
-                            tellrawJson.append(tag.textFrame())
+                            compText.append(tag.textFrame())
                         }else if (l == frameLine) {
-                            tellrawJson.append(tag.textFrame())
+                            compText.append(tag.textFrame())
                         }
                         if (tag.finish) newLine++
                         hasAnimation = true
                     }else {
-                        tellrawJson.append(tag.s)
+                        compText.append(tag.s)
                         tag.finish = true
                     }
                 }
-                tellrawJson.newLine()
+                compText.newLine()
                 if (!hasAnimation) {
                     newLine++
                 }
             }
-            tellrawJson.setId().sendTo(adaptPlayer(viewer))
-            json = tellrawJson
+            compText.setId().sendTo(adaptPlayer(viewer))
+            componentText = compText
             parserContent(viewer, list, newLine)
         }
     }
@@ -199,6 +203,7 @@ class DialogChat(
     }
 
     override fun end() {
+        playing = false
         viewers.forEach {
             val pData = it.getPlayerData()
             pData.dialogData.dialogMap.remove(dialogModule.dialogID)

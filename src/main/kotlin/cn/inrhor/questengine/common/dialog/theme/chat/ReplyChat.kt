@@ -3,21 +3,24 @@ package cn.inrhor.questengine.common.dialog.theme.chat
 import cn.inrhor.questengine.api.dialog.ReplyModule
 import cn.inrhor.questengine.api.dialog.theme.ReplyTheme
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
+import cn.inrhor.questengine.common.dialog.DialogManager.copy
 import cn.inrhor.questengine.common.dialog.DialogManager.sendBarHelp
 import cn.inrhor.questengine.common.dialog.FlagDialog
 import cn.inrhor.questengine.common.dialog.hasFlag
+import cn.inrhor.questengine.script.kether.evalString
 import cn.inrhor.questengine.script.kether.runEvalSet
 import taboolib.common.platform.function.adaptPlayer
 import taboolib.common.platform.function.submit
-import taboolib.module.chat.TellrawJson
+import taboolib.module.chat.ComponentText
 import taboolib.module.chat.colored
+import taboolib.platform.compat.replacePlaceholder
 
 class ReplyChat(val dialogChat: DialogChat, val reply: List<ReplyModule>) : ReplyTheme {
 
     /**
      * 已解析的回复选择Json
      */
-    var replyJson = mutableListOf<TellrawJson>()
+    var replyComponent = mutableListOf<ComponentText>()
 
     /**
      * 执行对话flag
@@ -38,8 +41,10 @@ class ReplyChat(val dialogChat: DialogChat, val reply: List<ReplyModule>) : Repl
 
     fun sendReply() {
         dialogChat.viewers.forEach {
-            val reply = replyJson[dialogChat.scrollIndex]
-            reply.sendTo(adaptPlayer(it))
+            val reply = replyComponent[dialogChat.scrollIndex]
+            val replyContext = ComponentText.raw(it.evalString(
+                reply.toRawMessage().replacePlaceholder(it), "{{", "}}") {})
+            replyContext.sendTo(adaptPlayer(it))
         }
     }
 
@@ -59,21 +64,22 @@ class ReplyChat(val dialogChat: DialogChat, val reply: List<ReplyModule>) : Repl
      * 解析回复选择到缓存中，包括对话主体内容
      */
     fun parserReply() {
-        replyJson = mutableListOf()
+        replyComponent = mutableListOf()
         val replyList = mutableListOf<ReplyModule>()
         reply.forEach {
             if (runEvalSet(dialogChat.viewers, it.condition)) {
                 replyList.add(it)
-                replyJson.add(TellrawJson().append(dialogChat.json))
+                replyComponent.add(dialogChat.componentText.copy())
             }
         }
-        val replySize = replyList.size
-        for (i in 0 until replySize) { // 遍历回复
-            for (a in 0 until replySize) { // 再次遍历回复，为了添加前缀
-                val r = replyList[a]
-                val px = if (i == a) r.tagChoose.ifEmpty { dialogChat.dialogModule.replyChoose } else r.tagDefault.ifEmpty { dialogChat.dialogModule.replyDefault }
-                r.content.forEach {
-                    replyJson[i].append((px + it).colored()).newLine()
+        replyList.forEach {// 遍历回复
+            val index = replyList.indexOf(it)
+            replyList.forEach { a -> // 再次遍历回复，为了添加前缀
+                val pxIndex = replyList.indexOf(a)
+                val px = if (index == pxIndex) a.tagChoose.ifEmpty { dialogChat.dialogModule.replyChoose } else a.tagDefault
+                    .ifEmpty { dialogChat.dialogModule.replyDefault }
+                a.content.forEach { c ->
+                        replyComponent[index].append((px + c).colored()).newLine()
                 }
             }
         }
