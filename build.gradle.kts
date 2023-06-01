@@ -42,7 +42,7 @@ taboolib {
         prefix("QuestEngine")
     }
     classifier = null
-    version = "6.0.10-117"
+    version = "6.0.10-121"
 }
 
 repositories {
@@ -50,6 +50,7 @@ repositories {
     maven("https://jitpack.io") // ItemsAdder
     maven("https://repo.dmulloy2.net/repository/public/") // ProtocolLib
     maven("https://repo.codemc.org/repository/maven-public/") // authMe
+    maven("https://nexus.frengor.com/repository/public/") // UltimateAdvancementAPI
     maven {
         url = uri("http://106.13.64.5:8081/repository/maven-public/")
         isAllowInsecureProtocol = true
