@@ -4,6 +4,7 @@ import cn.inrhor.questengine.api.dialog.DialogType
 import cn.inrhor.questengine.api.dialog.ReplyModule
 import cn.inrhor.questengine.api.event.ReplyEvent
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
+import cn.inrhor.questengine.common.dialog.DialogManager.run
 import cn.inrhor.questengine.common.dialog.FlagDialog
 import cn.inrhor.questengine.common.dialog.hasFlag
 import cn.inrhor.questengine.common.dialog.theme.chat.DialogChat
@@ -67,6 +68,10 @@ object ScrollReply {
         }
         runEvalSet(viewers, reply.script) { s ->
             s.rootFrame().variables()["@QenDialogID"] = dialog.dialogID
+        }
+        reply.cases.run(p)
+        if (!dialog.flag.hasFlag(FlagDialog.NO_END)) {
+            it.end()
         }
         ev.isCancelled = true
     }

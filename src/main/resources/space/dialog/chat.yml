@@ -1,8 +1,15 @@
+chatDialog0:
+  npcIDs:
+    - "a"
+  cases:
+    - condition: |
+        permission "hello.world"
+      send: chatDialog1
+    - condition: "true"
+      send: chatDialog2
+
 # 对话ID
 chatDialog1:
-  # 交互NPC
-  npcIDs:
-    - "1"
   # 对话需要满足的触发条件
   condition: ""
   # 播放速度(整数)
@@ -28,28 +35,32 @@ chatDialog1:
   # 关于回复
   reply:
     -
-      # 回复ID
-      replyID: reply1
       # 弹出该回复的条件，空或不填的话必弹出
       # 支持 Kether 布尔值语句
       condition: ""
       content:
         - "NB"
       # 支持 Kether 语句
-      script: |
-        dialog end
+      script: ""
     -
-      # 回复ID
-      replyID: reply2
-      # 弹出该回复的条件，空或不填的话必弹出
-      # 支持 Kether 布尔值语句
-      condition: ""
       content:
         - "OMG"
-      # 支持 Kether 语句
-      script: |
-        dialog end
   flag:
     - KEEP_CONTENT
     - BLINDNESS
     - SLOW
+
+chatDialog2:
+  # 继承
+  hook: chatDialog1
+  dialog:
+    - "什么事？"
+  reply:
+    - content:
+        - "我想接取每日任务"
+      cases:
+        - condition: |
+            permission "hello.world"
+          send: chatDialog3
+          action: |
+            tell 执行kether语句

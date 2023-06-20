@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.dialog
 
 import cn.inrhor.questengine.api.dialog.DialogModule
 import cn.inrhor.questengine.api.dialog.DialogType
+import cn.inrhor.questengine.api.dialog.LogicModule
 import cn.inrhor.questengine.api.dialog.theme.DialogTheme
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.DialogData
@@ -110,6 +111,7 @@ object DialogManager {
 
     fun sendDialog(players: MutableSet<Player>, npcLoc: Location, npcID: String) {
         val dialogModule = returnNpcDialog(players, npcID) ?: return
+        if (dialogModule.cases.run(players)) return
         if (dialogModule.type == DialogType.HOLO) {
             sendDialogHolo(players, dialogModule, npcLoc)
         }else sendDialogChat(players, dialogModule, npcLoc)
@@ -118,6 +120,7 @@ object DialogManager {
     fun sendDialog(player: Player, dialogID: String, loc: Location = player.location) {
         if (hasDialog(player, dialogID)) return
         val dialogModule = get(dialogID)?: return
+        if (dialogModule.cases.run(player)) return
         if (dialogModule.type == DialogType.HOLO) {
             sendDialogHolo(player, dialogModule, loc)
         }else sendDialogChat(mutableSetOf(player), dialogModule, loc)
@@ -162,6 +165,26 @@ object DialogManager {
                 adaptPlayer(it).sendActionBar(it.asLangText("DIALOG-CHAT-HELP"))
             }
         }
+    }
+
+    fun MutableList<LogicModule>.run(player: Player): Boolean {
+        forEach {
+            // 如果满足则不再循环
+            if (it.run(player)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    fun MutableList<LogicModule>.run(players: MutableSet<Player>): Boolean {
+        forEach {
+            // 如果满足则不再循环
+            if (it.run(players)) {
+                return true
+            }
+        }
+        return false
     }
 
     fun spaceDialog(dialogModule: DialogModule, dialogTheme: DialogTheme): Boolean {
@@ -211,6 +234,10 @@ object DialogManager {
                 }
             }
         }
+    }
+
+    fun Player.endDialog(dialogModule: DialogModule) {
+        endDialog(dialogModule.dialogID)
     }
 
     fun Player.endDialog(dialogID: String) {

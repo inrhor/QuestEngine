@@ -2,6 +2,9 @@ package cn.inrhor.questengine.common.listener.holo
 
 import cn.inrhor.questengine.api.event.HoloClickEvent
 import cn.inrhor.questengine.api.event.ReplyEvent
+import cn.inrhor.questengine.common.dialog.DialogManager.run
+import cn.inrhor.questengine.common.dialog.FlagDialog
+import cn.inrhor.questengine.common.dialog.hasFlag
 import cn.inrhor.questengine.script.kether.runEvalSet
 import taboolib.common.platform.event.SubscribeEvent
 
@@ -23,6 +26,10 @@ object ClickHolo {
         }
         runEvalSet(viewers, a) { s ->
             s.rootFrame().variables()["@QenDialogID"] = dialog.dialogID
+        }
+        replyModule.cases.run(viewers)
+        if (!dialog.flag.hasFlag(FlagDialog.NO_END)) {
+            dialogHolo.end()
         }
     }
 
