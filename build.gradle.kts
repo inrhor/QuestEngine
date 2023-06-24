@@ -52,7 +52,7 @@ repositories {
     maven("https://repo.codemc.org/repository/maven-public/") // authMe
     maven("https://nexus.frengor.com/repository/public/") // UltimateAdvancementAPI
     maven {
-        url = uri("http://106.13.64.5:8081/repository/maven-public/")
+        url = uri("http://repo.hiusers.com:8081/repository/maven-public/")
         isAllowInsecureProtocol = true
     }
 }
@@ -76,12 +76,12 @@ dependencies {
     compileOnly("fr.xephi:authme:5.6.0-beta2")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
-    compileOnly("hiusers:MythicLib:1.5")
+    compileOnly("public:MythicLib:1.5.2")
     compileOnly("com.github.LoneDev6:api-itemsadder:3.2.5")
-    compileOnly("api:csgplus:1.8.2")
-    compileOnly("hiusers:BigDoors:1.0.0")
-    compileOnly("hiusers:ServerTutorialPlus:1.22.1")
-    compileOnly("hiusers:WorldEdit:7.2.13")
+    compileOnly("api:csgplus:1.9.4")
+    compileOnly("api:BigDoors:1.0.0")
+    compileOnly("public:ServerTutorialPlus:1.24.5")
+    compileOnly("public:WorldEdit:7.2.15")
     compileOnly("cc.trixey.invero:framework-common:1.0.0-snapshot-1")
     compileOnly("cc.trixey.invero:framework-bukkit:1.0.0-snapshot-1")
     compileOnly("cc.trixey.invero:module-common:1.0.0-snapshot-1")
