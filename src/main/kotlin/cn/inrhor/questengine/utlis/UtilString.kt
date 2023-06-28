@@ -29,6 +29,10 @@ fun String.newLineList(color: String = ""): MutableList<String> {
     return l
 }
 
+fun String.asToList(): MutableList<String> {
+    return split("\n").map { it.trim() }.toMutableList()
+}
+
 fun String.removeAt(int: Int): String {
     val l = this.newLineList()
     l.removeAt(int)

@@ -3,10 +3,7 @@ package cn.inrhor.questengine.script.kether.expand.quest
 import cn.inrhor.questengine.common.quest.manager.QuestManager.getGroupFrame
 import cn.inrhor.questengine.script.kether.selectGroupID
 import taboolib.library.kether.ArgTypes
-import taboolib.module.kether.KetherParser
-import taboolib.module.kether.actionNow
-import taboolib.module.kether.scriptParser
-import taboolib.module.kether.switch
+import taboolib.module.kether.*
 
 object ActionGroup {
 
@@ -24,6 +21,11 @@ object ActionGroup {
             case("name") {
                 actionNow {
                     selectGroupID().getGroupFrame()?.name?: "null"
+                }
+            }
+            case("note") {
+                actionNow {
+                    selectGroupID().getGroupFrame()?.note?.joinToString("\\n")?: ""
                 }
             }
         }

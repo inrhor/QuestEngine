@@ -1,0 +1,31 @@
+RECORD-HOME: |
+  &f   &c&l任务日志
+  &f
+  &f     "[&7进行中的任务组](hover=&a点击阅览)&f"  &f"[&7已存档的任务组](hover=&a点击阅览)&f"  &f"[&7已失败的任务组](hover=&a点击阅览)&f"
+  &f
+
+RECORD-GROUP: |
+  &f   &c&l任务日志 &f&l| &6章别
+  &f
+  {{&@RECORD-GROUP-ITEM}}{{&@RECORD-GROUP-END}}
+
+RECORD-GROUP-ITEM: |
+  item -copy 3
+  &f      "[&7{{group name}}](hover=&a点击阅览任务组)&f"
+  &f
+
+RECORD-GROUP-END: |
+  &f   [&f←](hover=&a上一页) &7{{&@page_now}} &f/ &7{{&@page_max}} [&f→](hover=&a下一页)
+
+RECORD-QUEST: |
+  &f   &c&l任务日志 &f&l| &7任务组
+  &f
+  {{&@RECORD-QUEST-ITEM}}{{&@RECORD-QUEST-PAGE}}
+
+RECORD-QUEST-ITEM: |
+  item -copy 3
+  &f      "[&7{{quest name}}](hover=&a点击阅览任务)&f"
+  &f
+
+RECORD-QUEST-PAGE: |
+  &f   [&f←](hover=&a上一页) &7{{&@page_now}} &f/ &7{{&@page_max}} [&f→](hover=&a下一页)
