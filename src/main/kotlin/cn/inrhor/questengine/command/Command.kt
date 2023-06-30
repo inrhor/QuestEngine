@@ -1,5 +1,8 @@
 package cn.inrhor.questengine.command
 
+import cn.inrhor.questengine.command.main.*
+import cn.inrhor.questengine.command.main.DialogCommand
+import cn.inrhor.questengine.command.main.TeamCommand
 import taboolib.common.platform.command.*
 import taboolib.expansion.createHelper
 

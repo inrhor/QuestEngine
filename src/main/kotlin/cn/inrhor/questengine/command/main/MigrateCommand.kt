@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.command
+package cn.inrhor.questengine.command.main
 
 import cn.inrhor.questengine.common.quest.MigrateMode
 import cn.inrhor.questengine.utlis.file.FileUtil

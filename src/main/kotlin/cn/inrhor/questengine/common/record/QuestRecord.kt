@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.record
 
-import cn.inrhor.questengine.api.quest.GroupFrame
+import cn.inrhor.questengine.api.manager.DataManager.questData
 import cn.inrhor.questengine.common.dialog.DialogManager.refresh
 import cn.inrhor.questengine.common.hook.invero.UiType
 import cn.inrhor.questengine.common.loader.ConfigReader.recordChat
@@ -10,6 +10,7 @@ import cn.inrhor.questengine.script.kether.evalString
 import cn.inrhor.questengine.utlis.asToList
 import cn.inrhor.questengine.utlis.component.NewSimpleComponent
 import org.bukkit.entity.Player
+import taboolib.common.io.groupId
 import taboolib.common.platform.ProxyPlayer
 import taboolib.common.platform.function.adaptPlayer
 import taboolib.common5.Coerce
@@ -53,8 +54,23 @@ object QuestRecord {
                 else -> listOf()
             }
         }else listOf()
-        sendAction(player, index, page, state, questList, "QUEST-$state", "@QenQuestID") {
-            it.rootFrame().variables()["@group_id"] = groupId
+        sendAction(player, index, page, state, questList, "QUEST", "@QenQuestID") {
+            it.rootFrame().variables()["@QenGroupID"] = groupId
+        }
+    }
+
+    fun sendTarget(player: Player, index: Int = 0, page: Int = 1, state: StateType = StateType.DOING, questId: String, groupId: String) {
+        val questData = player.questData(questId)
+        val targetList = if (questData != null) {
+            when (state) {
+                StateType.DOING -> UiType.TARGET_DOING.list(player, questData)
+                StateType.FINISH -> UiType.TARGET_COMPLETE.list(player, questData)
+                else -> listOf()
+            }
+        }else listOf()
+        sendAction(player, index, page, state, targetList, "TARGET", "@QenTargetID") {
+            it.rootFrame().variables()["@QenQuestID"] = questId
+            it.rootFrame().variables()["@QenGroupID"] = groupId
         }
     }
 
@@ -74,8 +90,10 @@ object QuestRecord {
         var itemStr = ""
         var lastIndex = index
 
+        val meta = "$node-$state"
+
         if (size > 0) {
-            val item = (recordChat.getString("RECORD-$node-ITEM")?.colored()?: "RECORD-$node-ITEM").asToList()
+            val item = (recordChat.getString("RECORD-$meta-ITEM")?.colored()?: "RECORD-$meta-ITEM").asToList()
             val d = Demand(item.first())
             // 数量
             val copy = Coerce.toInteger(d.get("copy"))
@@ -106,25 +124,24 @@ object QuestRecord {
         // 上一页
         val lastCmd = "${state.name} ${if (page > 1) page-1 else 1} ${if (lastIndex >= 0) lastIndex else 0}"
 
+        fun addVar(it: ScriptContext) {
+            it.rootFrame().variables()["@page_now"] = page
+            it.rootFrame().variables()["@page_max"] = maxPage
+            it.rootFrame().variables()["@next_cmd"] = nextCmd
+            it.rootFrame().variables()["@last_cmd"] = lastCmd
+            it.rootFrame().variables()["@state"] = state.name
+            variable(it)
+        }
+
         val componentText = NewSimpleComponent(
             player.evalString(
-                recordChat.getString("RECORD-$node")?.colored()?: "RECORD-$node", "{{", "}}") {
-                it.rootFrame().variables()["@RECORD-$node-END"] = player.evalString(
-                    recordChat.getString("RECORD-$node-END")?.colored()?: "RECORD-$node-END", "{{", "}}") { a ->
-                    a.rootFrame().variables()["@page_now"] = page
-                    a.rootFrame().variables()["@page_max"] = maxPage
-                    a.rootFrame().variables()["@next_cmd"] = nextCmd
-                    a.rootFrame().variables()["@last_cmd"] = lastCmd
-                    a.rootFrame().variables()["@state"] = state.name
-                    variable(a)
+                recordChat.getString("RECORD-$meta")?.colored()?: "RECORD-$meta", "{{", "}}") {
+                it.rootFrame().variables()["@RECORD-$meta-END"] = player.evalString(
+                    recordChat.getString("RECORD-$meta-END")?.colored()?: "RECORD-$meta-END", "{{", "}}") { a ->
+                    addVar(a)
                 }
-                it.rootFrame().variables()["@page_now"] = page
-                it.rootFrame().variables()["@page_max"] = maxPage
-                it.rootFrame().variables()["@next_cmd"] = nextCmd
-                it.rootFrame().variables()["@last_cmd"] = lastCmd
-                it.rootFrame().variables()["@state"] = state.name
-                it.rootFrame().variables()["@RECORD-$node-ITEM"] = itemStr
-                variable(it)
+                addVar(it)
+                it.rootFrame().variables()["@RECORD-$meta-ITEM"] = itemStr
             }).toBuild()
 
         componentText.sendTo(adaptPlayer(player))

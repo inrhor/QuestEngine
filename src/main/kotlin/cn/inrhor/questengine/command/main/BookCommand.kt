@@ -1,10 +1,8 @@
-package cn.inrhor.questengine.command
+package cn.inrhor.questengine.command.main
 
 import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.common.record.QuestRecord
 import org.bukkit.entity.Player
-import taboolib.common.platform.command.CommandContext
-import taboolib.common.platform.command.component.CommandComponent
 import taboolib.common.platform.command.subCommand
 import taboolib.common5.Coerce
 
@@ -17,7 +15,7 @@ object BookCommand {
             }
             dynamic("state") {
                 suggestion<Player> { _, _ ->
-                    listOf("DOING", "FINISH", "FAILURE")
+                    listOf("DOING", "FINISH")
                 }
                 dynamic ("page") {
                     dynamic("start") {
@@ -32,7 +30,12 @@ object BookCommand {
                                         sp[1])
                                 }
                                 "target" -> {
-
+                                    val sp = argument.split(" ")
+                                    QuestRecord.sendTarget(sender,
+                                        Coerce.toInteger(context["start"]),
+                                        Coerce.toInteger(context["page"]),
+                                        StateType.valueOf(context["state"]),
+                                        sp[1], sp[2])
                                 }
                                 else -> {
                                     QuestRecord.sendGroup(sender,

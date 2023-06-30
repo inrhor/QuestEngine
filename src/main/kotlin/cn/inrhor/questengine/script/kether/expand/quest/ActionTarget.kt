@@ -3,6 +3,7 @@ package cn.inrhor.questengine.script.kether.expand.quest
 import cn.inrhor.questengine.api.manager.DataManager.targetData
 import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.common.quest.manager.QuestManager.finishTarget
+import cn.inrhor.questengine.common.quest.manager.QuestManager.getTargetFrame
 import cn.inrhor.questengine.common.quest.manager.QuestManager.trackTarget
 import cn.inrhor.questengine.common.quest.manager.TargetManager
 import cn.inrhor.questengine.script.kether.player
@@ -70,6 +71,11 @@ object ActionTarget {
                     actionNow {
                         (player().targetData(selectQuestID(), selectTargetID())?.state?: StateType.NOT_ACCEPT).toString()
                     }
+                }
+            }
+            case("note") {
+                actionNow {
+                    selectTargetID().getTargetFrame(selectQuestID())?.description?.joinToString("\\n")?: ""
                 }
             }
         }

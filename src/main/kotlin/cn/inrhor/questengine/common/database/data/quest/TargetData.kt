@@ -6,6 +6,7 @@ import cn.inrhor.questengine.common.quest.manager.QuestManager.finishTarget
 import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestFrame
 import cn.inrhor.questengine.common.quest.manager.QuestManager.getTargetFrame
 import cn.inrhor.questengine.common.quest.manager.QuestManager.matchMode
+import cn.inrhor.questengine.common.record.QuestRecord
 import cn.inrhor.questengine.script.kether.runEvalSet
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.submit
@@ -14,10 +15,10 @@ import taboolib.common.platform.function.submit
  * 任务目标存储
  */
 data class TargetData(
-    val id: String ="?",
+    override val id: String ="?",
     val questID: String = "?",
     var schedule: Int = 0,
-    var state: StateType = StateType.DOING) {
+    var state: StateType = StateType.DOING): QuestRecord.ActionFunc {
 
     constructor(questID: String, target: TargetFrame): this(target.id, questID)
 
