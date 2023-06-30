@@ -72,7 +72,7 @@ RECORD-TARGET-DOING-ITEM: |
   item -copy 1
   &f      [&{#9DB2BF}{{inline target note}}]&f
   &f
-  &f      [\[&6追踪&f\]](command=/qen eval {{sender}} quest select {{&@QenQuestID}} target select {{&@QenTargetID}} target track;hover=&a点击追踪该目标条目)
+  &f      [\[&6追踪&f\]](command=/qen quest track {{sender}} {{&@QenQuestID}} {{&@QenTargetID}};hover=&a点击追踪该目标条目)
   &f
 
 RECORD-TARGET-FINISH-ITEM: |

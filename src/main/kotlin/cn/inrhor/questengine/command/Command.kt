@@ -15,7 +15,7 @@ internal object Command {
         createHelper()
     }
 
-    @CommandBody(permission = "QuestEngine.admin.quest")
+    @CommandBody
     val quest = QuestCommand
 
     @CommandBody(permission = "QuestEngine.admin.eval")

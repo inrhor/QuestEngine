@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.common.nms
 
 import cn.inrhor.questengine.common.nms.DataSerializerUtil.createDataSerializer
-import com.mojang.brigadier.StringReader
 import net.minecraft.network.PacketDataSerializer
 import net.minecraft.network.protocol.game.PacketPlayOutEntity
 import net.minecraft.server.v1_16_R1.*
@@ -77,14 +76,16 @@ class NMSImpl : NMS() {
                         createDataSerializer {
                             writeVarInt(entityId)
                             writeUUID(UUID.randomUUID())
-                            when (minor) {
-                                0, 1, 2 -> writeVarInt(Class
-                                    .forName("net.minecraft.core.IRegistry")
-                                    .getProperty<Any>("ENTITY_TYPE", isStatic = true)!!
-                                    .invokeMethod<Int>("getId", getEntityType(entityType) as 
-                                            net.minecraft.world.entity.EntityTypes<*>)!!)
-                                3 -> writeVarInt(NMS1193.INSTANCE.entityTypeGetId(getEntityType(
-                                    entityType)))
+                            when (version) {
+                                12 -> {
+                                    writeVarInt(NMS1193.INSTANCE.entityTypeGetId(getEntityType(entityType)))
+                                }
+                                else -> {
+                                    when (minor) {
+                                        0, 1, 2 -> writeVarInt(Class.forName("net.minecraft.core.IRegistry").getProperty<Any>("ENTITY_TYPE", isStatic = true)!!.invokeMethod<Int>("getId", getEntityType(entityType) as net.minecraft.world.entity.EntityTypes<*>)!!)
+                                        3 -> writeVarInt(NMS1193.INSTANCE.entityTypeGetId(getEntityType(entityType)))
+                                    }
+                                }
                             }
                             writeDouble(location.x)
                             writeDouble(location.y)
