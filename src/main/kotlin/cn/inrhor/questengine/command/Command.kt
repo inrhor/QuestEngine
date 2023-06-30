@@ -1,10 +1,19 @@
 package cn.inrhor.questengine.command
 
+import cn.inrhor.questengine.command.main.*
+import cn.inrhor.questengine.command.main.DialogCommand
+import cn.inrhor.questengine.command.main.TeamCommand
 import taboolib.common.platform.command.*
+import taboolib.expansion.createHelper
 
 
 @CommandHeader("questengine", ["qen"], permission = "questengine.command")
 internal object Command {
+
+    @CommandBody
+    val main = mainCommand {
+        createHelper()
+    }
 
     @CommandBody(permission = "QuestEngine.admin.quest")
     val quest = QuestCommand
@@ -27,8 +36,8 @@ internal object Command {
     @CommandBody(permission = "QuestEngine.admin.tags")
     val tags = TagsCommand
 
-    @CommandBody(permission = "QuestEngine.admin.editor")
-    val editor = EditorCommand.editor
+    @CommandBody(permission = "QuestEngine.use.book")
+    val book = BookCommand.book
 
     @CommandBody(permission = "QuestEngine.admin.migrate")
     val migrate = MigrateCommand.migrate

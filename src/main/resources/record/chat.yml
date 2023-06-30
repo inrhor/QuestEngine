@@ -1,0 +1,87 @@
+RECORD-HOME: |
+  &f   &c&l任务日志
+  &f
+  &f     "[&{#9DB2BF}进行中的任务组](command=/qen book group DOING 1 0;hover=&a点击阅览)&f"  &f"[&{#9DB2BF}已存档的任务组](command=/qen book group FINISH 1 0;hover=&a点击阅览)&f""
+  &f
+
+RECORD-GROUP-DOING: |
+  &f   &{#E06469}&l任务日志 &f&l| &{#5A96E3}任务组   &f"&{#D8C4B6}进行中&f"
+  &f
+  {{&@RECORD-GROUP-DOING-ITEM}}{{&@RECORD-GROUP-DOING-END}}
+
+RECORD-GROUP-DOING-ITEM: |
+  item -copy 3
+  &f      "[&{#9DB2BF}{{group name}}](command=/qen book quest {{&@state}} 1 0 {{&@QenGroupID}};hover=&a点击阅览\n&f{{group note}})&f"
+  &f
+
+RECORD-GROUP-DOING-END: |
+  &f   [&f←](hover=&a上一页;command=/qen book group {{&@last_cmd}}) &7{{&@page_now}} &f/ &7{{&@page_max}} [&f→](hover=&a下一页;command=/qen book group {{&@next_cmd}})   &f[\[&7返回&f\]](command=/qen book;h=&a返回主页)
+
+RECORD-GROUP-FINISH: |
+  &f   &{#E06469}&l任务日志 &f&l| &{#5A96E3}任务组   &f"&{#D8C4B6}已存档&f"
+  &f
+  {{&@RECORD-GROUP-FINISH-ITEM}}{{&@RECORD-GROUP-FINISH-END}}
+
+RECORD-GROUP-FINISH-ITEM: |
+  item -copy 3
+  &f      "[&{#9DB2BF}{{group name}}](command=/qen book quest {{&@state}} 1 0 {{&@QenGroupID}};hover=&a点击阅览\n&f{{group note}})&f"
+  &f
+
+RECORD-GROUP-FINISH-END: |
+  &f   [&f←](hover=&a上一页;command=/qen book group {{&@last_cmd}}) &7{{&@page_now}} &f/ &7{{&@page_max}} [&f→](hover=&a下一页;command=/qen book group {{&@next_cmd}})   &f[\[&7返回&f\]](command=/qen book;h=&a返回主页)
+
+
+RECORD-QUEST-DOING: |
+  &f   &c&l任务日志 &f&l| &{#5A96E3}任务   &f"&{#D8C4B6}进行中&f"
+  &f
+  {{&@RECORD-QUEST-DOING-ITEM}}{{&@RECORD-QUEST-DOING-END}}
+
+RECORD-QUEST-FINISH: |
+  &f   &c&l任务日志 &f&l| &{#5A96E3}任务   &f"&{#D8C4B6}已存档&f"
+  &f
+  {{&@RECORD-QUEST-FINISH-ITEM}}{{&@RECORD-QUEST-FINISH-END}}
+
+RECORD-QUEST-DOING-ITEM: |
+  item -copy 3
+  &f      "[&{#9DB2BF}{{quest name}}](command=/qen book target {{&@state}} 1 0 {{&@QenQuestID}} {{&@QenGroupID}};hover=&a点击阅览\n{{inline quest note}})&f"  [\[&6追踪&f\]](command=/qen quest track {{sender}} {{&@QenQuestID}};hover=&a点击追踪该任务)"
+  &f
+
+RECORD-QUEST-FINISH-ITEM: |
+  item -copy 3
+  &f      "[&{#9DB2BF}{{quest name}}](command=/qen book target {{&@state}} 1 0 {{&@QenQuestID}} {{&@QenGroupID}};hover=&a点击阅览\n{{inline quest note}})&f"
+  &f
+
+RECORD-QUEST-DOING-END: |
+  &f   [&f←](hover=&a上一页;command=/qen book quest {{&@last_cmd}} {{&@QenGroupID}}) &7{{&@page_now}} &f/ &7{{&@page_max}} [&f→](hover=&a下一页;command=/qen book quest {{&@next_cmd}} {{&@QenGroupID}})   &f[\[&7返回&f\]](command=/qen book group {{&@state}} 1 0;h=&a返回任务组)
+
+RECORD-QUEST-FINISH-END: |
+  &f   [&f←](hover=&a上一页;command=/qen book quest {{&@last_cmd}} {{&@QenGroupID}}) &7{{&@page_now}} &f/ &7{{&@page_max}} [&f→](hover=&a下一页;command=/qen book quest {{&@next_cmd}} {{&@QenGroupID}})   &f[\[&7返回&f\]](command=/qen book group {{&@state}} 1 0;h=&a返回任务组)
+
+
+RECORD-TARGET-DOING: |
+  &f   &c&l任务日志 &f&l| &{#5A96E3}目标条目   &f"&{#D8C4B6}进行中&f"
+  &f
+  {{&@RECORD-TARGET-DOING-ITEM}}{{&@RECORD-TARGET-DOING-END}}
+
+RECORD-TARGET-FINISH: |
+  &f   &c&l任务日志 &f&l| &{#5A96E3}目标条目   &f"&{#D8C4B6}已存档&f"
+  &f
+  {{&@RECORD-TARGET-FINISH-ITEM}}{{&@RECORD-TARGET-FINISH-END}}
+
+RECORD-TARGET-DOING-ITEM: |
+  item -copy 1
+  &f      [&{#9DB2BF}{{inline target note}}]&f
+  &f
+  &f      [\[&6追踪&f\]](command=/qen eval {{sender}} quest select {{&@QenQuestID}} target select {{&@QenTargetID}} target track;hover=&a点击追踪该目标条目)
+  &f
+
+RECORD-TARGET-FINISH-ITEM: |
+  item -copy 1
+  &f      [&{#9DB2BF}{{inline target note}}]
+  &f
+
+RECORD-TARGET-DOING-END: |
+  &f   [&f←](hover=&a上一页;command=/qen book target {{&@last_cmd}} {{&@QenQuestID}} {{&@QenGroupID}}) &7{{&@page_now}} &f/ &7{{&@page_max}} [&f→](hover=&a下一页;command=/qen book target {{&@next_cmd}} {{&@QenQuestID}} {{&@QenGroupID}})   &f[\[&7返回&f\]](command=/qen book quest {{&@state}} 1 0 {{&@QenGroupID}};h=&a返回任务)
+
+RECORD-TARGET-FINISH-END: |
+  &f   [&f←](hover=&a上一页;command=/qen book target {{&@last_cmd}} {{&@QenQuestID}} {{&@QenGroupID}}) &7{{&@page_now}} &f/ &7{{&@page_max}} [&f→](hover=&a下一页;command=/qen book target {{&@next_cmd}} {{&@QenQuestID}} {{&@QenGroupID}})   &f[\[&7返回&f\]](command=/qen book quest {{&@state}} 1 0 {{&@QenGroupID}};h=&a返回任务)

@@ -14,7 +14,9 @@ import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.Configuration.Companion.getObject
 import taboolib.module.configuration.Configuration.Companion.setObject
 import taboolib.module.configuration.util.getLocation
+import taboolib.module.configuration.util.setLocation
 import taboolib.platform.util.toBukkitLocation
+import taboolib.platform.util.toProxyLocation
 import java.io.File
 import java.util.*
 
@@ -61,9 +63,9 @@ class DatabaseLocal: Database() {
                 pData.dataContainer.storage.add(StorageData(it, data.getString("storage.$it")?: "null"))
             }
         }
-        if (data.contains("nav")) {
-            data.getConfigurationSection("nav")?.getKeys(false)?.forEach {
-                val loc = data.getLocation("nav.$it.location")
+        if (data.contains("navigation")) {
+            data.getConfigurationSection("navigation")?.getKeys(false)?.forEach {
+                val loc = data.getLocation("navigation.$it.location")
                 if (loc != null) {
                     pData.navData[it] = NavData(loc.toBukkitLocation())
                 }
@@ -91,7 +93,7 @@ class DatabaseLocal: Database() {
             data["storage." + it.key] = it.value
         }
         pData.navData.forEach { (t, u) ->
-            data["nav.$t.location"] = u.location
+            data.setLocation("navigation.$t.location", u.location.toProxyLocation())
         }
         data.saveToFile(uuid.playerFile())
     }

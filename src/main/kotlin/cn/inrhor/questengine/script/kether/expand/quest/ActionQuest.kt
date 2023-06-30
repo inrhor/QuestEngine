@@ -86,6 +86,11 @@ object ActionQuest {
                     selectQuestID().getQuestFrame()?.time?.endDate?.remainDate(player(), player().questData(selectQuestID())?.state?: StateType.NOT_ACCEPT)?: player().asLangText("QUEST-ALWAYS")
                 }
             }
+            case("note") {
+                actionNow {
+                    selectQuestID().getQuestFrame()?.note?.joinToString("\\n")?: ""
+                }
+            }
         }
     }
 

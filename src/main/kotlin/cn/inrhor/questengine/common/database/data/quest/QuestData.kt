@@ -5,6 +5,7 @@ import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.common.quest.manager.QuestManager.acceptQuest
 import cn.inrhor.questengine.common.quest.manager.QuestManager.failQuest
 import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestFrame
+import cn.inrhor.questengine.common.record.QuestRecord
 import cn.inrhor.questengine.utlis.time.noTimeout
 import cn.inrhor.questengine.utlis.time.toDate
 import cn.inrhor.questengine.utlis.time.toStr
@@ -13,9 +14,9 @@ import taboolib.common.platform.function.submit
 import java.util.*
 
 data class QuestData(
-    val id: String = "?",
+    override val id: String = "?",
     var target: MutableList<TargetData> = mutableListOf(),
-    var state: StateType = StateType.DOING, var time: String = Date().toStr(), var end: String ="") {
+    var state: StateType = StateType.DOING, var time: String = Date().toStr(), var end: String =""): QuestRecord.ActionFunc {
 
     constructor(questFrame: QuestFrame): this(questFrame.id, questFrame.newTargetsData())
 

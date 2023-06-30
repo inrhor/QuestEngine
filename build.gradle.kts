@@ -21,6 +21,7 @@ taboolib {
     install("module-navigation")
     install("module-metrics")
     install("platform-bukkit")
+    install("expansion-command-helper")
     description {
         contributors {
             name("inrhor")
@@ -42,7 +43,7 @@ taboolib {
         prefix("QuestEngine")
     }
     classifier = null
-    version = "6.0.11-13"
+    version = "6.0.11-18"
 }
 
 repositories {
