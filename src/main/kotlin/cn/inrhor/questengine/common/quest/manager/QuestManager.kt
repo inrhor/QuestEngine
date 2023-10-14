@@ -14,7 +14,6 @@ import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.api.manager.DataManager.teamData
 import cn.inrhor.questengine.common.quest.enum.ModeType
 import cn.inrhor.questengine.common.quest.enum.StateType
-import cn.inrhor.questengine.common.quest.manager.QuestManager.finishTarget
 import cn.inrhor.questengine.script.kether.runEval
 import org.bukkit.entity.Player
 import taboolib.common.io.deepDelete

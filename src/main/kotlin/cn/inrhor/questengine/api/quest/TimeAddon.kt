@@ -22,13 +22,14 @@ data class TimeAddon(var type: Type = Type.ALWAYS, var duration: String = "", va
     fun updateTime() {
         timeDate = Date()
         if (type != Type.ALWAYS && duration.isNotEmpty()) {
+            var durationCustom = ""
             submit(period = 20L, async = true) {
                 if (duration.isNotEmpty()) {
-                    val sp = duration.split(">")
-                    val a = sp[0].split(",")
-                    val b = sp[1].split(",")
                     when (type) {
                         Type.DAY -> {
+                            val sp = duration.split(">")
+                            val a = sp[0].split(",")
+                            val b = sp[1].split(",")
                             val ymdFormat = SimpleDateFormat("yyyy-MM-dd")
                             val ymd = ymdFormat.format(timeDate)
                             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -38,6 +39,9 @@ data class TimeAddon(var type: Type = Type.ALWAYS, var duration: String = "", va
                         Type.ALWAYS -> {
                         }
                         Type.WEEKLY -> {
+                            val sp = duration.split(">")
+                            val a = sp[0].split(",")
+                            val b = sp[1].split(",")
                             val cal1 = Calendar.getInstance()
                             cal1.set(Calendar.DAY_OF_WEEK, a[0].toInt()) // 当前周某一天，1是上周日，2是本周一
                             val cal2 = Calendar.getInstance()
@@ -56,6 +60,9 @@ data class TimeAddon(var type: Type = Type.ALWAYS, var duration: String = "", va
                             endDate = cal2.time
                         }
                         Type.MONTHLY -> {
+                            val sp = duration.split(">")
+                            val a = sp[0].split(",")
+                            val b = sp[1].split(",")
                             val cal1 = Calendar.getInstance()
                             val cal2 = Calendar.getInstance()
                             cal1.set(Calendar.DAY_OF_MONTH, a[0].toInt()) // 当前月的某一天
@@ -74,6 +81,9 @@ data class TimeAddon(var type: Type = Type.ALWAYS, var duration: String = "", va
                             endDate = cal2.time
                         }
                         Type.YEARLY -> {
+                            val sp = duration.split(">")
+                            val a = sp[0].split(",")
+                            val b = sp[1].split(",")
                             val cal1 = Calendar.getInstance()
                             cal1.set(Calendar.MONTH, a[0].toInt()) // 当前年某一月，0是一月
                             val cal2 = Calendar.getInstance()
@@ -94,21 +104,24 @@ data class TimeAddon(var type: Type = Type.ALWAYS, var duration: String = "", va
                             endDate = cal2.time
                         }
                         Type.CUSTOM -> {
-                            val add = duration.lowercase().split(" ")
-                            val cal = Calendar.getInstance()
-                            val t = add[1].toInt()
-                            when (add[0]) {
-                                "s" -> {
-                                    cal.add(Calendar.SECOND, t)
+                            if (durationCustom.isEmpty() || durationCustom != duration) {
+                                val add = duration.lowercase().split(" ")
+                                val cal = Calendar.getInstance()
+                                val t = add[1].toInt()
+                                when (add[0]) {
+                                    "s" -> {
+                                        cal.add(Calendar.SECOND, t)
+                                    }
+                                    "m" -> {
+                                        cal.add(Calendar.MINUTE, t)
+                                    }
+                                    "h" -> {
+                                        cal.add(Calendar.HOUR, t)
+                                    }
                                 }
-                                "m" -> {
-                                    cal.add(Calendar.MINUTE, t)
-                                }
-                                "h" -> {
-                                    cal.add(Calendar.HOUR, t)
-                                }
+                                endDate = cal.time
+                                durationCustom = duration
                             }
-                            endDate = cal.time
                         }
                     }
                 }
