@@ -2,7 +2,9 @@ package cn.inrhor.questengine.script.kether.expand.quest
 
 import cn.inrhor.questengine.api.manager.DataManager.questData
 import cn.inrhor.questengine.common.quest.enum.StateType
+import cn.inrhor.questengine.common.quest.manager.QuestManager.acceptCoolDown
 import cn.inrhor.questengine.common.quest.manager.QuestManager.acceptQuest
+import cn.inrhor.questengine.common.quest.manager.QuestManager.coolDown
 import cn.inrhor.questengine.common.quest.manager.QuestManager.finishQuest
 import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestFrame
 import cn.inrhor.questengine.common.quest.manager.QuestManager.quitQuest
@@ -89,6 +91,20 @@ object ActionQuest {
             case("note") {
                 actionNow {
                     selectQuestID().getQuestFrame()?.note?.joinToString("\\n")?: ""
+                }
+            }
+            case("coolDown") {
+                try {
+                    it.mark()
+                    it.expect("lang")
+                    actionNow {
+                        player().questData(selectQuestID())?.coolDown(player())?: player().asLangText("COOL_DOWN_OK")
+                    }
+                }catch (ex: Exception) {
+                    it.reset()
+                    actionNow {
+                        player().acceptCoolDown(selectQuestID())
+                    }
                 }
             }
         }

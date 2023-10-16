@@ -6,7 +6,7 @@ import taboolib.platform.util.asLangText
 import java.text.SimpleDateFormat
 import java.util.*
 
-data class TimeAddon(var type: Type = Type.ALWAYS, var duration: String = "", var reset: Boolean = true) {
+data class TimeAddon(var type: Type = Type.ALWAYS, var duration: String = "", var reset: Boolean = true, var coolDown: String= "") {
 
     enum class Type {
         ALWAYS, DAY, WEEKLY, MONTHLY, YEARLY, CUSTOM;
@@ -19,10 +19,10 @@ data class TimeAddon(var type: Type = Type.ALWAYS, var duration: String = "", va
     /**
      * 加载任务模块请载用周期更新
      */
-    fun updateTime() {
+    fun regUpdateTime() {
         timeDate = Date()
-        if (type != Type.ALWAYS && duration.isNotEmpty()) {
-            submit(period = 20L, async = true) {
+        if (type != Type.ALWAYS && type != Type.CUSTOM && duration.isNotEmpty()) {
+            submit(now = true, period = 20L, async = true) {
                 if (duration.isNotEmpty()) {
                     val sp = duration.split(">")
                     val a = sp[0].split(",")
@@ -34,8 +34,6 @@ data class TimeAddon(var type: Type = Type.ALWAYS, var duration: String = "", va
                             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             timeDate = dateFormat.parse("$ymd ${a[0]}")
                             endDate = dateFormat.parse("$ymd ${b[0]}")
-                        }
-                        Type.ALWAYS -> {
                         }
                         Type.WEEKLY -> {
                             val cal1 = Calendar.getInstance()
@@ -93,28 +91,15 @@ data class TimeAddon(var type: Type = Type.ALWAYS, var duration: String = "", va
                             timeDate = cal1.time
                             endDate = cal2.time
                         }
-                        Type.CUSTOM -> {
-                            val add = duration.lowercase().split(" ")
-                            val cal = Calendar.getInstance()
-                            val t = add[1].toInt()
-                            when (add[0]) {
-                                "s" -> {
-                                    cal.add(Calendar.SECOND, t)
-                                }
-                                "m" -> {
-                                    cal.add(Calendar.MINUTE, t)
-                                }
-                                "h" -> {
-                                    cal.add(Calendar.HOUR, t)
-                                }
-                            }
-                            endDate = cal.time
+                        else -> {
                         }
                     }
                 }
             }
         }
     }
+
+
 
     fun langTime(player: Player): String {
         if (type == Type.ALWAYS || duration.isEmpty()) return player.asLangText("QUEST-ALWAYS")

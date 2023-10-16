@@ -5,16 +5,16 @@ import taboolib.common.platform.command.CommandBody
 
 internal object QuestCommand {
 
-    @CommandBody
+    @CommandBody(permission = "QuestEngine.admin.quest")
     val accept = QuestAccept.accept
 
-    @CommandBody
+    @CommandBody(permission = "QuestEngine.admin.quest")
     val finish = QuestFinish.finish
 
-    @CommandBody
+    @CommandBody(permission = "QuestEngine.use.quest.track")
     val track = QuestTrack.track
 
-    @CommandBody
+    @CommandBody(permission = "QuestEngine.admin.quest.quit")
     val quit = QuestQuit.quit
 
 }

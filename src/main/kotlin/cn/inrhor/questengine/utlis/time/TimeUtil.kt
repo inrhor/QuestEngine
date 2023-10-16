@@ -1,11 +1,14 @@
 package cn.inrhor.questengine.utlis.time
 
+import cn.inrhor.questengine.common.quest.*
 import cn.inrhor.questengine.common.quest.enum.StateType
 import org.bukkit.entity.Player
+import taboolib.common5.TimeCycle
 import taboolib.platform.util.asLangText
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.Calendar
+import java.util.concurrent.TimeUnit
+
 
 fun Date.toStr(): String {
     val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -56,4 +59,25 @@ fun Date.remainDate(player: Player, state: StateType): String {
     val m = player.asLangText("QUEST-TIME_MINUTE")
     val s = player.asLangText("QUEST-TIME_S")
     return "$day$d$hour$h$minute$m$second$s"
+}
+
+fun TimeCycle.remaining(player: Player): String {
+    val currentTime = System.currentTimeMillis()
+
+    val timeRemainingMillis = if (type === TimeCycle.Type.TIME) {
+        time - (currentTime - time)
+    } else {
+        end.timeInMillis - currentTime
+    }
+
+    if (timeRemainingMillis <= 0) {
+        return player.asLangText("COOL_DOWN_OK")
+    }
+
+    val days = TimeUnit.MILLISECONDS.toDays(timeRemainingMillis)
+    val hours = TimeUnit.MILLISECONDS.toHours(timeRemainingMillis) % 24
+    val minutes = TimeUnit.MILLISECONDS.toMinutes(timeRemainingMillis) % 60
+    val seconds = TimeUnit.MILLISECONDS.toSeconds(timeRemainingMillis) % 60
+
+    return player.asLangText("COOL_DOWN", days, hours, minutes, seconds)
 }
