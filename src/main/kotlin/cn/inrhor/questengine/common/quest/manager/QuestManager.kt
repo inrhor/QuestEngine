@@ -55,7 +55,7 @@ object QuestManager {
         if (accept.auto) {
             autoQuestMap[id] = this
         }
-        time.updateTime()
+        time.regUpdateTime()
     }
 
     /**
@@ -147,10 +147,13 @@ object QuestManager {
      * 接受任务
      */
     fun Player.acceptQuest(quest: QuestFrame) {
+        val id = quest.id
+        delQuest(id)
         if (runEval(this, quest.accept.condition)) {
             getPlayerData().dataContainer.installQuest(quest)
             QuestEvent.Accept(this, quest).call()
-            val data = questData(quest.id)?: return
+            val data = questData(id)?: return
+            data.generateTime()
             data.updateTime(this)
             data.target.forEach {
                 it.load(this)
@@ -182,6 +185,15 @@ object QuestManager {
         val q = questID.getQuestFrame()?: return
         getPlayerData().dataContainer.toggleQuest(questID, StateType.FINISH).finishTime(questID)
         QuestEvent.Finish(this, q).call()
+    }
+
+    /**
+     * 删除任务
+     */
+    fun Player.delQuest(questID: String) {
+        val quest = questData(questID)?: return
+        quest.unload()
+        getPlayerData().dataContainer.unloadQuest(questID)
     }
 
     /**

@@ -19,13 +19,19 @@ quest:
   # 时间框架
   time:
     # 类型: ALWAYS, DAY, WEEKLY, MONTHLY, YEARLY, CUSTOM
-    type: WEEKLY
+    type: DAY
+    # weekly  duration: 2,00:00:00>2,23:59:59
     # monthly  duration: 20,00:00:00>31,15:30:00
     # yearly  duration: 6,15,16:29:30>11,1,00:00:00
     # custom  duration: s/m/h 5
-    duration: 2,00:00:00>2,23:59:59
+    duration: 00:00:00>23:59:59
     # 是否重置，否则直接结束
     reset: true
+    # 当 reset: true 才有效
+    # 默认false
+    # 当 false 时，任务到下一个时间段会自动接受任务
+    # 当 true 时，任务不会自动接受，任务状态会变成 NOT_ACCEPT
+    noAccept: false
   # 任务模式
   mode:
     # 可选如下
