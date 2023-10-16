@@ -12,14 +12,20 @@ import cn.inrhor.questengine.common.collaboration.TeamManager
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.api.manager.DataManager.teamData
+import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.quest.enum.ModeType
 import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.script.kether.runEval
+import cn.inrhor.questengine.utlis.time.remaining
+import cn.inrhor.questengine.utlis.time.toDate
 import org.bukkit.entity.Player
 import taboolib.common.io.deepDelete
 import taboolib.common.io.newFile
+import taboolib.common.platform.function.info
+import taboolib.common5.util.parseTimeCycle
 import taboolib.module.configuration.Configuration
 import taboolib.module.configuration.Configuration.Companion.setObject
+import taboolib.platform.util.asLangText
 
 object QuestManager {
 
@@ -261,6 +267,24 @@ object QuestManager {
      */
     fun QuestFrame.getTargetFrame(targetID: String): TargetFrame? {
         return target.find { it.id == targetID }
+    }
+
+    /**
+     * @return 是否可再次接受任务
+     */
+    fun Player.acceptCoolDown(questID: String): Boolean {
+        questID.getQuestFrame()?: return false
+        val data = questData(questID)?: return true
+        if (data.state == StateType.NOT_ACCEPT) return true
+        val timeCycle = data.timeCycle?: return true
+        return timeCycle.isTimeout
+    }
+
+    /**
+     * 允许再次接受任务的时间倒数
+     */
+    fun QuestData.coolDown(player: Player): String {
+        return timeCycle?.remaining(player)?: player.asLangText("COOL_DOWN_OK")
     }
 
 }

@@ -10,10 +10,11 @@ import cn.inrhor.questengine.common.record.QuestRecord
 import cn.inrhor.questengine.utlis.time.noTimeout
 import cn.inrhor.questengine.utlis.time.toDate
 import cn.inrhor.questengine.utlis.time.toStr
-import com.avaje.ebeaninternal.server.core.BasicTypeConverter.toDate
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.submit
 import taboolib.common.platform.service.PlatformExecutor
+import taboolib.common5.TimeCycle
+import taboolib.common5.util.parseTimeCycle
 import java.util.*
 
 data class QuestData(
@@ -22,6 +23,15 @@ data class QuestData(
     var state: StateType = StateType.DOING, var time: String = Date().toStr(), var end: String =""): QuestRecord.ActionFunc {
 
     constructor(questFrame: QuestFrame): this(questFrame.id, questFrame.newTargetsData())
+
+    /**
+     * 再次接受冷却时间
+     */
+    @Transient var timeCycle: TimeCycle? = null
+
+    private fun coolDownLoad(timeAddon: TimeAddon) {
+        timeCycle = timeAddon.coolDown.parseTimeCycle().start(time.toDate().time)
+    }
 
     /**
      * 接受任务时为 CUSTOM 生成独立时间
@@ -65,12 +75,16 @@ data class QuestData(
      */
     fun updateTime(player: Player) {
         val timeAddon = id.getQuestFrame()?.time?: return
+        coolDownLoad(timeAddon)
         val timeDate = if (timeAddon.type == TimeAddon.Type.CUSTOM) {
             time.toDate()
         }else {
             timeAddon.timeDate
         }
         val endDate = if (timeAddon.type == TimeAddon.Type.CUSTOM) {
+            if (end.isEmpty()) {
+                generateTime()
+            }
             end.toDate()
         }else {
             timeAddon.endDate

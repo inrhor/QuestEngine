@@ -27,11 +27,13 @@ quest:
     duration: 00:00:00>23:59:59
     # 是否重置，否则直接结束
     reset: true
-    # 当 reset: true 才有效
-    # 默认false
-    # 当 false 时，任务到下一个时间段会自动接受任务
-    # 当 true 时，任务不会自动接受，任务状态会变成 NOT_ACCEPT
-    noAccept: false
+    # 再次接受任务冷却时间
+    # 用于语句检查true还是false: quest coolDown
+    # 当日或次日 6 点后可再次接受任务，为true
+    # 可用：day（日）week（周）month（月）
+    # week 01 06 00
+    # month 01 06 00
+    coolDown: day 06 00
   # 任务模式
   mode:
     # 可选如下

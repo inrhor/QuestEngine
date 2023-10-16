@@ -6,7 +6,7 @@ import taboolib.platform.util.asLangText
 import java.text.SimpleDateFormat
 import java.util.*
 
-data class TimeAddon(var type: Type = Type.ALWAYS, var duration: String = "", var reset: Boolean = true, var noAccept: Boolean = false) {
+data class TimeAddon(var type: Type = Type.ALWAYS, var duration: String = "", var reset: Boolean = true, var coolDown: String= "") {
 
     enum class Type {
         ALWAYS, DAY, WEEKLY, MONTHLY, YEARLY, CUSTOM;
