@@ -5,7 +5,7 @@ import taboolib.module.configuration.Configuration
 
 object ConfigReader {
 
-    @Config("record/chat.yml", true, true)
+    @Config("record/chat.yml", migrate = true, autoReload = true)
     lateinit var recordChat: Configuration
         private set
 

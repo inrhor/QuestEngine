@@ -10,7 +10,7 @@ abstract class NMS {
 
     abstract fun entityRotation(players: MutableSet<Player>, entityId: Int, yaw: Float)
 
-    abstract fun spawnEntity(players: MutableSet<Player>, entityId: Int, entityType: String, location: Location)
+    abstract fun spawnEntity(players: MutableSet<Player>, entityId: Int, location: Location, holoType: HoloType)
 
     /**
      * 生成盔甲架
@@ -117,4 +117,9 @@ abstract class NMS {
             nmsProxy<NMS>()
         }
     }
+}
+
+enum class HoloType {
+    ARMOR_STAND,
+    ITEM
 }

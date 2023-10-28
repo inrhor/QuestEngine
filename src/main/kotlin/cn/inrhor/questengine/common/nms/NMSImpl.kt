@@ -1,6 +1,5 @@
 package cn.inrhor.questengine.common.nms
 
-import cn.inrhor.questengine.common.nms.DataSerializerUtil.createDataSerializer
 import net.minecraft.network.PacketDataSerializer
 import net.minecraft.network.protocol.game.PacketPlayOutEntity
 import net.minecraft.server.v1_16_R1.*
@@ -22,17 +21,6 @@ import taboolib.module.nms.*
 
 
 class NMSImpl : NMS() {
-
-    fun returnTypeNMS(type: String): EntityTypes<*> {
-        when (type.uppercase()) {
-            "ITEM" -> EntityTypes.ITEM
-        }
-        return EntityTypes.ARMOR_STAND
-    }
-
-    fun returnInt(type: String): Int {
-        return type.toInt()
-    }
 
     private val version = MinecraftVersion.major
 
@@ -65,56 +53,57 @@ class NMSImpl : NMS() {
         return net.minecraft.server.v1_16_R1.EntityTypes::class.java.getProperty<Any>(entityTypes.uppercase(), isStatic = true)!!
     }
 
-    override fun spawnEntity(players: MutableSet<Player>, entityId: Int, entityType: String, location: Location) {
+    override fun spawnEntity(players: MutableSet<Player>, entityId: Int, location: Location, holoType: HoloType) {
+        val entityTypes: Any = when (holoType) {
+            HoloType.ARMOR_STAND -> if (isUniversal) net.minecraft.world.entity.EntityTypes.ARMOR_STAND else if (version > 5) EntityTypes.ARMOR_STAND else if (version == 5) net.minecraft.server.v1_13_R2.EntityTypes.ARMOR_STAND else 78
+            HoloType.ITEM -> if (isUniversal) net.minecraft.world.entity.EntityTypes.ITEM else if (version > 5) EntityTypes.ITEM else if (version == 5) net.minecraft.server.v1_13_R2.EntityTypes.ITEM else 2
+        }
         if (isUniversal) {
-            if (version > 10) {
-                val yaw = (location.yaw * 256.0f / 360.0f).toInt().toByte()
-                val pitch = (location.pitch * 256.0f / 360.0f).toInt().toByte()
-                packetSend(
-                    players,
-                    net.minecraft.network.protocol.game.PacketPlayOutSpawnEntity(
-                        createDataSerializer {
-                            writeVarInt(entityId)
-                            writeUUID(UUID.randomUUID())
-                            when (version) {
-                                12 -> {
-                                    writeVarInt(NMS1193.INSTANCE.entityTypeGetId(getEntityType(entityType)))
-                                }
-                                else -> {
-                                    when (minor) {
-                                        0, 1, 2 -> writeVarInt(Class.forName("net.minecraft.core.IRegistry").getProperty<Any>("ENTITY_TYPE", isStatic = true)!!.invokeMethod<Int>("getId", getEntityType(entityType) as net.minecraft.world.entity.EntityTypes<*>)!!)
-                                        3 -> writeVarInt(NMS1193.INSTANCE.entityTypeGetId(getEntityType(entityType)))
-                                    }
+            val yaw = (location.yaw * 256.0f / 360.0f).toInt().toByte()
+            val pitch = (location.pitch * 256.0f / 360.0f).toInt().toByte()
+            packetSend(
+                players,
+                net.minecraft.network.protocol.game.PacketPlayOutSpawnEntity(
+                    dataSerializerBuilder {
+                        writeVarInt(entityId)
+                        writeUUID(UUID.randomUUID())
+                        when (version) {
+                            // 1.20.+
+                            12 ->  writeVarInt(NMS1193.INSTANCE.entityTypeGetId(entityTypes))
+                            // 1.19.X
+                            11 -> {
+                                when (minor) {
+                                    0, 1, 2 -> writeVarInt(
+                                        Class.forName("net.minecraft.core.IRegistry").getProperty<Any>("ENTITY_TYPE", isStatic = true)!!
+                                            .invokeMethod<Int>("getId", entityTypes)!!
+                                    )
+                                    // 1.19.3 1.19.4
+                                    else -> writeVarInt(NMS1193.INSTANCE.entityTypeGetId(entityTypes))
                                 }
                             }
-                            writeDouble(location.x)
-                            writeDouble(location.y)
-                            writeDouble(location.z)
-                            writeByte(pitch)
-                            writeByte(yaw)
+                            else -> {
+                                writeVarInt(
+                                    Class.forName("net.minecraft.core.IRegistry").getProperty<Any>("ENTITY_TYPE", isStatic = true)!!
+                                        .invokeMethod<Int>("getId", entityTypes)!!)
+                            }
+                        }
+                        writeDouble(location.x)
+                        writeDouble(location.y)
+                        writeDouble(location.z)
+                        writeByte(pitch)
+                        writeByte(yaw)
+                        if (version > 10) {
                             writeByte(yaw)
                             writeVarInt(0)
-                            writeShort(0)
-                            writeShort(0)
-                            writeShort(0)
-                        }.build() as PacketDataSerializer
-                    )
+                        }else {
+                            writeInt(0)
+                        }
+                        writeShort(0)
+                        writeShort(0)
+                        writeShort(0)
+                    }.build() as PacketDataSerializer
                 )
-            }else {
-                packetSend(
-                    players,
-                    PacketPlayOutSpawnEntity::class.java.unsafeInstance(),
-                    "id" to entityId,
-                    "uuid" to UUID.randomUUID(),
-                    "x" to location.x,
-                    "y" to location.y,
-                    "z" to location.z,
-                    "type" to if (version >= 6) returnTypeNMS(entityType) else returnInt(
-                        entityType
-                    ),
-                    "data" to 0
-                )
-            }
+            )
         } else {
             packetSend(
                 players,
@@ -124,15 +113,17 @@ class NMSImpl : NMS() {
                 "c" to location.x,
                 "d" to location.y,
                 "e" to location.z,
-                "k" to if (version >= 6) returnTypeNMS(entityType) else returnInt(
-                    entityType
-                )
+                "k" to when {
+                    version > 5 -> IRegistry.ENTITY_TYPE.a(entityTypes as EntityTypes<*>)
+                    version == 5 -> net.minecraft.server.v1_13_R2.IRegistry.ENTITY_TYPE.a(entityTypes as net.minecraft.server.v1_13_R2.EntityTypes<*>)
+                    else -> entityTypes
+                },
             )
         }
     }
 
     override fun spawnAS(players: MutableSet<Player>, entityId: Int, location: Location) {
-        spawnEntity(players, entityId, "ARMOR_STAND", location)
+        spawnEntity(players, entityId, location, HoloType.ARMOR_STAND)
     }
 
     override fun initAS(players: MutableSet<Player>, entityId: Int, showName: Boolean, isSmall: Boolean, marker: Boolean) {
@@ -147,7 +138,7 @@ class NMSImpl : NMS() {
     }
 
     override fun spawnItem(players: MutableSet<Player>, entityId: Int, location: Location, itemStack: ItemStack) {
-        spawnEntity(players, entityId, "ITEM", location)
+        spawnEntity(players, entityId, location, HoloType.ITEM)
         updateEntityMetadata(players, entityId,
             getMetaEntityGravity(false),
             getMetaEntityItemStack(itemStack))
@@ -236,7 +227,7 @@ class NMSImpl : NMS() {
         }else if (isUniversal) {
             packetSend(players,
                 net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata(
-                    createDataSerializer {
+                    dataSerializerBuilder {
                         writeVarInt(entityId)
                         writeMetadata(objects.map { it as net.minecraft.network.syncher
                             .DataWatcher.Item<*> }.toList())
@@ -245,9 +236,9 @@ class NMSImpl : NMS() {
         }else {
             packetSend(
                 players,
-                PacketPlayOutEntityMetadata::class.java.unsafeInstance(),
-                "id" to entityId,
-                "packedItems" to objects.map { it as DataWatcher.Item<*> }.toList()
+                PacketPlayOutEntityMetadata(),
+                "a" to entityId,
+                "b" to objects.map { it as DataWatcher.Item<*> }.toList()
             )
         }
     }
@@ -284,7 +275,7 @@ class NMSImpl : NMS() {
         }else if (isUniversal) {
             packetSend(player,
                 net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata(
-                    createDataSerializer {
+                    dataSerializerBuilder {
                         writeVarInt(entityId)
                         writeMetadata(objects.map { it as net.minecraft.network.syncher
                         .DataWatcher.Item<*> }.toList())
@@ -293,9 +284,12 @@ class NMSImpl : NMS() {
         }else {
             packetSend(
                 player,
-                PacketPlayOutEntityMetadata::class.java.unsafeInstance(),
-                "id" to entityId,
-                "packedItems" to objects.map { it as DataWatcher.Item<*> }.toList()
+                PacketPlayOutEntityMetadata().also { pack ->
+                    pack.a(dataSerializerBuilder {
+                        writeVarInt(entityId)
+                        writeMetadata(objects.map { it as DataWatcher.Item<*> }.toList())
+                    }.build() as net.minecraft.server.v1_16_R1.PacketDataSerializer)
+                }
             )
         }
     }

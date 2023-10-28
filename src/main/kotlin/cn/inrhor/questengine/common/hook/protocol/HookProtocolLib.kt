@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.common.hook.protocol
 
+import cn.inrhor.questengine.common.nms.HoloType
 import cn.inrhor.questengine.common.nms.getPropertiesIndex
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.ProtocolLibrary
@@ -43,17 +44,21 @@ object HookProtocolLib {
 
     private val minor = MinecraftVersion.minor
 
-    fun spawnEntity(players: MutableSet<Player>, entityId: Int, entityType: String, location: Location) {
+    fun spawnEntity(players: MutableSet<Player>, entityId: Int, location: Location, holoType: HoloType) {
+        val entityTypes = when (holoType) {
+            HoloType.ARMOR_STAND -> if (version >= 6) EntityType.ARMOR_STAND else "78"
+            HoloType.ITEM -> if (version >= 6) EntityType.DROPPED_ITEM else "2"
+        }
         val packet = PacketContainer(PacketType.Play.Server.SPAWN_ENTITY)
         packet.modifier.writeDefaults()
         packet.integers.writeSafely(0, entityId)
         packet.uuiDs.writeSafely(0, UUID.randomUUID())
         when {
             version >= 6 -> {
-                packet.entityTypeModifier.writeSafely(0, EntityType.valueOf(entityType.uppercase()))
+                packet.entityTypeModifier.writeSafely(0, entityTypes as EntityType)
             }
             else -> {
-                packet.integers.writeSafely(6, entityType.toInt())
+                packet.integers.writeSafely(6, entityTypes as Int)
             }
         }
         packet.doubles
@@ -69,13 +74,11 @@ object HookProtocolLib {
     }
 
     fun spawnAS(players: MutableSet<Player>, entityId: Int, location: Location) {
-        val entityType = if (version >= 6) "ARMOR_STAND" else "78"
-        spawnEntity(players, entityId, entityType, location)
+        spawnEntity(players, entityId, location, HoloType.ARMOR_STAND)
     }
 
     fun spawnItem(players: MutableSet<Player>, entityId: Int, location: Location, itemStack: ItemStack) {
-        val entityType = if (version >= 6) "DROPPED_ITEM" else "2"
-        spawnEntity(players, entityId, entityType, location)
+        spawnEntity(players, entityId, location, HoloType.ITEM)
         val packet = PacketContainer(PacketType.Play.Server.ENTITY_METADATA)
         packet.modifier.writeDefaults()
         packet.integers.writeSafely(0, entityId)

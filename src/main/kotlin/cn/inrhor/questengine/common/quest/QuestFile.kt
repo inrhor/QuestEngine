@@ -21,7 +21,7 @@ object QuestFile {
         val list = FileUtil.getFileList(questFolder)
         if (list.isEmpty()) {
             console().sendLang("QUEST-NO_FILES", UtilString.pluginTag)
-            QuestEngine.resource.releaseResourceFile("space/quest/crop1.yml", true)
+            QuestEngine.resource.releaseResourceFile("space/quest/crop1.yml")
             loadQuest()
         }
         FileUtil.getFileList(questFolder).forEach {

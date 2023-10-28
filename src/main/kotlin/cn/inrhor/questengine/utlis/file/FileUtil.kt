@@ -18,7 +18,7 @@ object FileUtil {
                 console().sendLang(say, UtilString.pluginTag)
             }
             yml.forEach {
-                QuestEngine.resource.releaseResourceFile("$child$it.yml", true)
+                QuestEngine.resource.releaseResourceFile("$child$it.yml")
             }
         }
         return file
@@ -47,7 +47,7 @@ object FileUtil {
 fun releaseFile(child: String, update: Boolean = true): Configuration {
     val file = File(QuestEngine.plugin.dataFolder, child)
     if (!file.exists()) {
-        QuestEngine.resource.releaseResourceFile(child, true)
+        QuestEngine.resource.releaseResourceFile(child)
     }
     return Configuration.loadFromFile(file)
 }

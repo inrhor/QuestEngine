@@ -3,6 +3,7 @@ package cn.inrhor.questengine.api.packet
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.common.nms.NMS
 import cn.inrhor.questengine.common.hook.protocol.HookProtocolLib
+import cn.inrhor.questengine.common.nms.HoloType
 import cn.inrhor.questengine.utlis.UtilString
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -31,10 +32,10 @@ object PacketUtil {
     }
 }
 
-fun spawnEntity(players: MutableSet<Player>, entityId: Int, entityType: String, location: Location) {
+fun spawnEntity(players: MutableSet<Player>, entityId: Int, holoType: HoloType, location: Location) {
     when (PacketUtil.hookPacket) {
-        HookPacket.DEFAULT -> getPackets().spawnEntity(players, entityId, entityType, location)
-        HookPacket.PROTOCOLLIB -> HookProtocolLib.spawnEntity(players, entityId, entityType, location)
+        HookPacket.DEFAULT -> getPackets().spawnEntity(players, entityId, location, holoType)
+        HookPacket.PROTOCOLLIB -> HookProtocolLib.spawnEntity(players, entityId, location, holoType)
     }
 }
 
