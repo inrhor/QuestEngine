@@ -53,9 +53,10 @@ repositories {
     maven("https://repo.codemc.org/repository/maven-public/") // authMe
     maven("https://nexus.frengor.com/repository/public/") // UltimateAdvancementAPI
     maven {
-        url = uri("http://repo.hiusers.com:8081/repository/maven-public/")
-        isAllowInsecureProtocol = true
-    }
+        name = "citizens-repo"
+        url = uri("https://maven.citizensnpcs.co/repo")
+    } // Citizens
+    maven("https://repo.hiusers.com/artifactory/libs_release/")
 }
 
 dependencies {
@@ -71,18 +72,19 @@ dependencies {
     compileOnly("ink.ptms.core:v11100:11100")
     compileOnly("ink.ptms.core:v11000:11000")
     compileOnly("ink.ptms.core:v10900:10900")
-    compileOnly("public:Citizens:1.0.0")
-    compileOnly("public:WorldGuard:7.0.7")
+    implementation("api:worldedit:7.2.15")
+    implementation("api:CsgPlusPro:1.9.4-Beta")
+    implementation("nl.martenm:ServerTutorialPlus:1.24.5")
+    implementation("api:MythicLib:1.5.2")
+    implementation("api:worldguard:1.5.0")
+    compileOnly("net.citizensnpcs:citizens-main:2.0.30-SNAPSHOT") {
+        exclude(group = "*", module = "*")
+    }
     compileOnly("ink.ptms:Adyeshach:1.4.21")
     compileOnly("fr.xephi:authme:5.6.0-beta2")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
-    compileOnly("public:MythicLib:1.5.2")
     compileOnly("com.github.LoneDev6:api-itemsadder:3.2.5")
-    compileOnly("api:csgplus:1.9.4")
-    compileOnly("api:BigDoors:1.0.0")
-    compileOnly("public:ServerTutorialPlus:1.24.5")
-    compileOnly("public:WorldEdit:7.2.15")
     compileOnly("cc.trixey.invero:framework-common:1.0.0-snapshot-1")
     compileOnly("cc.trixey.invero:framework-bukkit:1.0.0-snapshot-1")
     compileOnly("cc.trixey.invero:module-common:1.0.0-snapshot-1")
