@@ -25,6 +25,6 @@ repositories {
 }
 
 dependencies {
-    compileOnly("dev:QuestEngine:版本")
+    compileOnly("hiusers:QuestEngine:版本")
 }
 ```
