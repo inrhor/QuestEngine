@@ -14,6 +14,7 @@ object UtilString {
     val pluginTag by lazy {
         "§7[ §ci §7]§7[ §3QuestEngine §7]"
     }
+
 }
 
 fun String.newLineList(color: String = ""): MutableList<String> {

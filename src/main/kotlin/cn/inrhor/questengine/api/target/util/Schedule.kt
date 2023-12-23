@@ -14,12 +14,13 @@ object Schedule {
     /**
      * 进度计数结算与触发奖励
      */
-    fun run(player: Player, targetData: TargetData, amount: Int) {
+    fun run(player: Player, targetData: TargetData, amount: Int,addProgress: Int = 1) {
         if (targetData.schedule < amount) {
-            targetData.schedule++
+            targetData.schedule += addProgress
         }
         val allSchedule = TargetManager.scheduleUtil(player, targetData)
         if (allSchedule >= amount) {
+            targetData.schedule = amount
             TargetEvent.Finish(player, targetData, targetData.questID.getQuestMode()).call()
         }
     }

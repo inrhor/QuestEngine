@@ -30,7 +30,6 @@ class MigrateMode {
                     }
                     "craft item" -> {
                         pass.item = listMigrate(map, "item")
-                        pass.matrix = listMigrate(map, "matrix")
                     }
                     "enchant item" -> {
                         pass.item = listMigrate(map, "item")

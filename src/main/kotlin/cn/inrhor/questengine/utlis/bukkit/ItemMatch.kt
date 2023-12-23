@@ -75,8 +75,7 @@ class ItemMatch(val itemType: ItemType = ItemType.MINECRAFT,
     }
 
     fun checkItem(itemStack: ItemStack, inventory: Inventory, take: Boolean = false): Boolean {
-        if (inventory.checkItem(itemStack, amount, take)) return true
-        return false
+        return inventory.checkItem(itemStack, amount, take)
     }
 
     fun checkPlayerItem(player: Player, inventory: Inventory, invSlot: InvSlot = InvSlot.ALL, take: Boolean = false): Boolean {

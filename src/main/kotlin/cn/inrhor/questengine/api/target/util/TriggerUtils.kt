@@ -18,11 +18,15 @@ object TriggerUtils {
      *
      * @return Player
      */
-    fun Player.triggerTarget(event: String, check: (TargetFrame, ObjectiveNode) -> Boolean = { _, _ -> true }): Player {
+    fun Player.triggerTarget(
+        event: String,
+        addProgress: Int = 1,
+        check: (TargetFrame, ObjectiveNode) -> Boolean = { _, _ -> true }
+    ): Player {
         doingTargets(event).forEach {
             val target = it.getTargetFrame()?: return@forEach
             if (check(target, target.pass)) {
-                Schedule.run(this, it, target.pass.amount)
+                Schedule.run(this, it, target.pass.amount, addProgress)
             }
         }
         return this

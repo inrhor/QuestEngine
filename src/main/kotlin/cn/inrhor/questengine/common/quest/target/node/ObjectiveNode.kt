@@ -19,8 +19,6 @@ class ObjectiveNode(
     var exp: Int = 0,
     // 物品
     var item: List<String> = emptyList(),
-    // 矩阵
-    var matrix: List<String> = emptyList(),
     // 花费
     var cost: Double = 0.0,
     // 实体类型

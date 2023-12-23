@@ -3,44 +3,43 @@ package cn.inrhor.questengine.common.quest.target.bukkit
 import cn.inrhor.questengine.api.target.TargetExtend
 import cn.inrhor.questengine.api.target.util.TriggerUtils.itemTrigger
 import cn.inrhor.questengine.api.target.util.TriggerUtils.triggerTarget
-import cn.inrhor.questengine.common.quest.target.node.ObjectiveNode
-import cn.inrhor.questengine.utlis.bukkit.ItemMatch
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.CraftItemEvent
-import org.bukkit.inventory.Inventory
-import org.bukkit.inventory.ItemStack
-import taboolib.common5.Demand
 
-object TCraftItem: TargetExtend<CraftItemEvent>() {
+object TCraftItem : TargetExtend<CraftItemEvent>() {
 
     override val name = "craft item"
 
     init {
         event = CraftItemEvent::class
-        tasker{
+        tasker {
             val p = whoClicked as Player
-            val inv = p.inventory
-            val item = inventory.result?: return@tasker p
-            p.triggerTarget(name) { _, pass ->
-                itemTrigger(pass, item, inv) && matrixItems(inventory, pass, inventory.matrix)
+            val item = inventory.result ?: return@tasker p
+            if (isShiftClick) {
+                var itemChecked = 0
+                var possibleCreations = 1
+                inventory.matrix.forEach { matrixItem ->
+                    // 如果不是空的或者不是空气
+                    if (matrixItem != null && !matrixItem.type.isAir) {
+                        possibleCreations = if (itemChecked == 0) {
+                            matrixItem.amount
+                        } else {
+                            possibleCreations.coerceAtMost(matrixItem.amount)
+                        }
+                        itemChecked++
+                    }
+                }
+                // 获得实际合成次数
+                val resultAmount = recipe.result.amount * possibleCreations
+                p.triggerTarget(name, resultAmount) { _, pass ->
+                    itemTrigger(pass, item, inventory)
+                }
+            } else {
+                p.triggerTarget(name) { _, pass ->
+                    itemTrigger(pass, item, inventory)
+                }
             }
         }
-    }
-
-    fun matrixItems(inventory: Inventory, pass: ObjectiveNode, matrix: Array<ItemStack>): Boolean {
-        val content = pass.matrix
-        if (content.isEmpty()) return true
-        matrix.forEach {
-            if (!itemsMatch(inventory, content, it)) return false
-        }
-        return true
-    }
-
-    fun itemsMatch(inventory: Inventory, s: List<String>, itemStack: ItemStack): Boolean {
-        s.forEach {
-            if (ItemMatch(Demand(it)).checkItem(itemStack, inventory)) return true
-        }
-        return false
     }
 
 }

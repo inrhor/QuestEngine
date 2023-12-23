@@ -89,8 +89,17 @@ object ActionQuest {
                 }
             }
             case("note") {
-                actionNow {
-                    selectQuestID().getQuestFrame()?.note?.joinToString("\\n")?: ""
+                try {
+                    it.mark()
+                    it.expect("parse")
+                    actionNow {
+                        player().evalString(selectQuestID().getQuestFrame()?.note?.joinToString("\\")?: "") {}
+                    }
+                }catch (ex: Exception) {
+                    it.reset()
+                    actionNow {
+                        selectQuestID().getQuestFrame()?.note?.joinToString("\\n") ?: ""
+                    }
                 }
             }
             case("coolDown") {

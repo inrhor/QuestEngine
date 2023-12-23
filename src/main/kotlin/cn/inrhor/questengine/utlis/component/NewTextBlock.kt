@@ -1,7 +1,6 @@
 package cn.inrhor.questengine.utlis.component
 
 import net.md_5.bungee.api.ChatColor
-import taboolib.common.platform.function.info
 import taboolib.module.chat.ComponentText
 import taboolib.module.chat.Components
 import taboolib.module.chat.impl.TransArgument

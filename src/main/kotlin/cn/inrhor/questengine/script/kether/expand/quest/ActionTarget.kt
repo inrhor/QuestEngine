@@ -6,6 +6,7 @@ import cn.inrhor.questengine.common.quest.manager.QuestManager.finishTarget
 import cn.inrhor.questengine.common.quest.manager.QuestManager.getTargetFrame
 import cn.inrhor.questengine.common.quest.manager.QuestManager.trackTarget
 import cn.inrhor.questengine.common.quest.manager.TargetManager
+import cn.inrhor.questengine.script.kether.evalString
 import cn.inrhor.questengine.script.kether.player
 import cn.inrhor.questengine.script.kether.selectQuestID
 import cn.inrhor.questengine.script.kether.selectTargetID
@@ -74,8 +75,18 @@ object ActionTarget {
                 }
             }
             case("note") {
-                actionNow {
-                    selectTargetID().getTargetFrame(selectQuestID())?.description?.joinToString("\\n")?: ""
+                try {
+                    it.mark()
+                    it.expect("parse")
+                    actionNow {
+                        player().evalString(
+                            selectTargetID().getTargetFrame(selectQuestID())?.description?.joinToString("\n")?: "") {}
+                    }
+                }catch (ex: Exception) {
+                    it.reset()
+                    actionNow {
+                        selectTargetID().getTargetFrame(selectQuestID())?.description?.joinToString("\\n") ?: ""
+                    }
                 }
             }
         }
