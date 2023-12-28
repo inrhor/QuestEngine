@@ -3,7 +3,6 @@ package cn.inrhor.questengine.server
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.manager.TemplateManager
 import cn.inrhor.questengine.common.database.Database
-import cn.inrhor.questengine.common.database.Database.Companion.database
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.type.DatabaseManager
@@ -60,7 +59,6 @@ object PluginLoader {
             val data = it.getPlayerData()
             data.dialogData.dialogMap.values.forEach { d -> d.end() }
             data.navData.values.forEach { n -> n.stop() }
-            database.push(it)
             DataStorage.removePlayerData(it.uniqueId)
         }
         clearMap()

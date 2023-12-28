@@ -2,7 +2,7 @@ package cn.inrhor.questengine.common.database.type
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.api.manager.DataManager.setStorage
-import cn.inrhor.questengine.api.manager.DataManager.tagsData
+import cn.inrhor.questengine.api.manager.TagsManager.addTag
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
@@ -191,7 +191,7 @@ class DatabaseSQLite: Database() {
                 "user" eq uId
             }
         }.map {
-            player.tagsData().addTag(getString("tag"))
+            player.addTag(getString("tag"))
         }
         tableStorage.select(dataSource) {
             where {
@@ -213,6 +213,14 @@ class DatabaseSQLite: Database() {
             where {
                 "user" eq player.uniqueId.toString()
                 "tag" eq tag
+            }
+        }
+    }
+
+    override fun clearTag(player: Player) {
+        tableTags.delete(dataSource) {
+            where {
+                "user" eq player.uniqueId.toString()
             }
         }
     }

@@ -47,6 +47,10 @@ class DatabaseError(val cause: Throwable): Database() {
         error()
     }
 
+    override fun clearTag(player: Player) {
+        error()
+    }
+
     /**
      * 重复使用IllegalAccessError
      */
