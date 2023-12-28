@@ -43,7 +43,7 @@ taboolib {
         prefix("QuestEngine")
     }
     classifier = null
-    version = "6.0.12-26"
+    version = "6.0.12-47"
 }
 
 repositories {
@@ -89,6 +89,7 @@ dependencies {
     compileOnly("cc.trixey.invero:framework-bukkit:1.0.0-snapshot-1")
     compileOnly("cc.trixey.invero:module-common:1.0.0-snapshot-1")
     compileOnly("cc.trixey.invero:module-core:1.0.0-snapshot-1")
+
     compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 }
 
