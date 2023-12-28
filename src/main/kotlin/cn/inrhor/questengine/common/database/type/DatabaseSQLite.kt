@@ -1,8 +1,8 @@
 package cn.inrhor.questengine.common.database.type
 
 import cn.inrhor.questengine.QuestEngine
-import cn.inrhor.questengine.api.manager.DataManager.setStorage
-import cn.inrhor.questengine.api.manager.TagsManager.addTag
+import cn.inrhor.questengine.api.manager.DataManager.storage
+import cn.inrhor.questengine.api.manager.DataManager.tagsData
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
@@ -191,14 +191,14 @@ class DatabaseSQLite: Database() {
                 "user" eq uId
             }
         }.map {
-            player.addTag(getString("tag"))
+            player.tagsData().tags.add(getString("tag"))
         }
         tableStorage.select(dataSource) {
             where {
                 "user" eq uId
             }
         }.map {
-            player.setStorage(getString("key"), getString("value"))
+            player.storage()[getString("key")] = getString("value")
         }
     }
 
@@ -225,7 +225,7 @@ class DatabaseSQLite: Database() {
         }
     }
 
-    override fun addStorage(player: Player, key: String, value: Any) {
+    override fun setStorage(player: Player, key: String, value: Any) {
         tableStorage.insert(dataSource) {
             value(player.uniqueId.toString(), key, value)
         }

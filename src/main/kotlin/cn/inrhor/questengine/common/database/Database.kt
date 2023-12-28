@@ -67,9 +67,9 @@ abstract class Database {
     abstract fun clearTag(player: Player)
 
     /**
-     * 添加键值对数据
+     * 设置键值对数据
      */
-    abstract fun addStorage(player: Player, key: String, value: Any)
+    abstract fun setStorage(player: Player, key: String, value: Any)
 
     /**
      * 移除键值对数据

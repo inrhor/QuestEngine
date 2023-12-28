@@ -39,7 +39,7 @@ class DatabaseError(val cause: Throwable): Database() {
         error()
     }
 
-    override fun addStorage(player: Player, key: String, value: Any) {
+    override fun setStorage(player: Player, key: String, value: Any) {
         error()
     }
 

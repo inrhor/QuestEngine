@@ -10,21 +10,21 @@ object TagsManager {
      * 添加标签
      */
     fun Player.addTag(tag: String) {
-        TagEvent.AddTag(this, tag).call()
+        TagEvent.Add(this, tag).call()
     }
 
     /**
      * 移除标签
      */
     fun Player.removeTag(tag: String) {
-        TagEvent.RemoveTag(this, tag).call()
+        TagEvent.Remove(this, tag).call()
     }
 
     /**
      * 清除标签
      */
     fun Player.clearTag() {
-        TagEvent.ClearTag(this).call()
+        TagEvent.Clear(this).call()
     }
 
     /**

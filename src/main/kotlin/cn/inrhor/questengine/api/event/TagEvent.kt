@@ -5,10 +5,10 @@ import taboolib.platform.type.BukkitProxyEvent
 
 class TagEvent {
 
-    class AddTag(val player: Player, val tag: String): BukkitProxyEvent()
+    class Add(val player: Player, val tag: String): BukkitProxyEvent()
 
-    class RemoveTag(val player: Player, val tag: String): BukkitProxyEvent()
+    class Remove(val player: Player, val tag: String): BukkitProxyEvent()
 
-    class ClearTag(val player: Player): BukkitProxyEvent()
+    class Clear(val player: Player): BukkitProxyEvent()
 
 }

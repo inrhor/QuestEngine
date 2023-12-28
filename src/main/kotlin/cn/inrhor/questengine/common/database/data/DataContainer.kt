@@ -6,15 +6,11 @@ import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.utlis.time.toStr
 import java.util.*
 
-data class StorageData(val key: String, var value: String) {
-
-}
-
 data class TrackData(val questID: String = "", val targetID: String = "")
 
 data class DataContainer(
     val quest: MutableMap<String, QuestData> = mutableMapOf(), var tags: TagsData = TagsData(),
-    var storage: MutableList<StorageData> = mutableListOf(), var trackData: TrackData = TrackData()
+    var storage: MutableMap<String, String> = mutableMapOf(), var trackData: TrackData = TrackData()
 ) {
 
     /**

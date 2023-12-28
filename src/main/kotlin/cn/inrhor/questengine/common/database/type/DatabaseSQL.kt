@@ -1,7 +1,9 @@
 package cn.inrhor.questengine.common.database.type
 
 import cn.inrhor.questengine.QuestEngine
-import cn.inrhor.questengine.api.manager.DataManager.setStorage
+import cn.inrhor.questengine.api.manager.DataManager.storage
+import cn.inrhor.questengine.api.manager.DataManager.tagsData
+import cn.inrhor.questengine.api.manager.StorageManager.setStorage
 import cn.inrhor.questengine.api.manager.TagsManager.addTag
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
@@ -166,13 +168,13 @@ class DatabaseSQL: Database() {
             where { "user" eq uId }
             rows("tag")
         }.map {
-            player.addTag(getString("tag"))
+            player.tagsData().tags.add(getString("tag"))
         }
         tableStorage.select(source) {
             where { "user" eq uId }
             rows("key", "value")
         }.map {
-            player.setStorage(getString("key"), getString("value"))
+            player.storage()[getString("key")] = getString("value")
         }
     }
 
@@ -275,7 +277,7 @@ class DatabaseSQL: Database() {
         }
     }
 
-    override fun addStorage(player: Player, key: String, value: Any) {
+    override fun setStorage(player: Player, key: String, value: Any) {
         val uId = userId(player)
         tableStorage.insert(source, "user", "key", "value") {
             value(uId, key, value)
