@@ -61,12 +61,12 @@ class DatabaseSQL: Database() {
     }
 
     private val tableTarget = Table(table + "_target", host) {
-        add("quest") {
+        add("quest") { // mysql quest id
             type(ColumnTypeSQL.INT, 16) {
                 options(ColumnOptionSQL.KEY)
             }
         }
-        add("id") {
+        add("id") {// target id
             type(ColumnTypeSQL.VARCHAR, 64) {
                 options(ColumnOptionSQL.KEY)
             }
@@ -141,95 +141,39 @@ class DatabaseSQL: Database() {
             rows("id", "quest", "state", "time", "end")
             where { "user" eq uId }
         }.map {
-            getLong("id") to
-                    getString("quest") to
-                    getInt("state") to
-                    getDate("time") to
-                    getDate("end")
-        }.forEach {
-            val qId = it.first.first.first.first
-            val questID = it.first.first.first.second
-            val state = it.first.first.second
-            val time = it.first.second
-            val end = if (it.second == null) "" else it.second.toStr()
-            val questData = QuestData(questID, mutableListOf(), StateType.fromInt(state), time.toStr(), end)
-            questData.target = returnTargets(qId, questID)
+            val questData = QuestData(
+                id = getString("quest"),
+                state = StateType.fromInt(getInt("state")),
+                time = getDate("time").toStr(),
+                end = getDate("end").toStr()
+            )
+            val questId = questData.id
+            tableTarget.select(source) {
+                rows("id", "schedule", "state")
+                where { "quest" eq questId }
+            }.map {
+                val targetData = TargetData(
+                    id = getString("id"),
+                    questID = questId,
+                    schedule = getInt("schedule"),
+                    state = StateType.fromInt(getInt("state"))
+                )
+                questData.target.add(targetData)
+            }
             questData.updateTime(player)
-            pData.dataContainer.quest[questID] = questData
+            pData.dataContainer.quest[questId] = questData
         }
         tableTags.select(source) {
             where { "user" eq uId }
             rows("tag")
         }.map {
-            getString("tag")
-        }.forEach {
-            player.tagsData().addTag(it)
+            player.tagsData().addTag(getString("tag"))
         }
         tableStorage.select(source) {
             where { "user" eq uId }
             rows("key", "value")
         }.map {
-            getString("key") to getString("value")
-        }.forEach {
-            player.setStorage(it.first, it.second)
-        }
-    }
-
-    private fun returnTargets(qId: Long, questID: String): MutableList<TargetData> {
-        val list = mutableListOf<TargetData>()
-        tableTarget.select(source) {
-            where { "quest" eq qId }
-            rows("id", "schedule", "state")
-        }.map {
-            getString("id") to
-                    getInt("schedule") to
-                    getInt("state")
-        }.forEach {
-            val id = it.first.first
-            val sc = it.first.second
-            val st = it.second
-            list.add(TargetData(id, questID, sc, StateType.fromInt(st)))
-        }
-        return list
-    }
-
-    override fun push(player: Player) {
-        val pData = player.getPlayerData()
-        val uId = userId(player)
-        pData.dataContainer.quest.forEach { (questID, questData) ->
-            val state = questData.state.int
-            tableQuest.update(source) {
-                where {
-                    and {
-                        "user" eq uId
-                        "quest" eq questID
-                    }
-                }
-                set("state", state)
-                set("time", questData.time.toDate())
-                if (questData.end.isNotEmpty()) {
-                    set("end", questData.end.toDate())
-                }
-            }
-            val qID = findQuest(uId, questID)
-            updateTarget(qID, questData)
-        }
-        player.tagsData().tags.forEach {
-            tableTags.update(source) {
-                where {
-                    "user" eq uId
-                }
-                set("tag", it)
-            }
-        }
-        player.storage().forEach {
-            tableStorage.update(source) {
-                where {
-                    "user" eq uId
-                }
-                set("key", it.key)
-                set("value", it.value)
-            }
+            player.setStorage(getString("key"), getString("value"))
         }
     }
 
@@ -240,33 +184,18 @@ class DatabaseSQL: Database() {
         tableQuest.insert(source, "user", "quest", "state", "time") {
             value(uId, questID, state, questData.time.toDate())
         }
-        val qID = findQuest(uId, questID)
-        createTarget(player, qID, questData)
-    }
-
-    private fun createTarget(player: Player, qID: Long, questData: QuestData) {
-        removeQuest(player, questData.id)
-        questData.target.forEach {
-            tableTarget.insert(source, "inner", "id", "name", "schedule") {
-                value(qID, it.id, it.schedule, it.state.int)
-            }
-        }
-    }
-
-    private fun updateTarget(qId: Long, questData: QuestData) {
-        questData.target.forEach {
-            tableTarget.update(source) {
-                where {
-                    "quest" eq qId
-                }
-                set("schedule", it.schedule)
-                set("state", it.state)
-            }
-        }
     }
 
     override fun removeQuest(player: Player, questID: String) {
         val uId = userId(player)
+        tableTarget.delete(source) {
+            where {
+                and {
+                    "user" eq uId
+                    "quest" eq questID
+                }
+            }
+        }
         tableQuest.delete(source) {
             where {
                 and {
@@ -277,11 +206,85 @@ class DatabaseSQL: Database() {
         }
     }
 
+    override fun createTarget(player: Player, targetData: TargetData) {
+        val uId = userId(player)
+        val qId = findQuest(uId, targetData.questID)
+        tableTarget.insert(source, "user", "quest", "id", "schedule", "state") {
+            value(uId, qId, targetData.id, targetData.schedule, targetData.state.int)
+        }
+    }
 
-    fun findQuest(uId: Long, questID: String): Long {
+
+    private fun findQuest(uId: Long, questID: String): Long {
         return tableQuest.select(source) {
             where { "user" eq uId and("quest" eq questID) }
         }.firstOrNull { getLong("id") } ?: -1L
+    }
+
+    override fun updateQuest(player: Player, questID: String, key: String, value: Any) {
+        val uId = userId(player)
+        tableQuest.update(source) {
+            where {
+                and {
+                    "user" eq uId
+                    "quest" eq questID
+                }
+            }
+            set(key, value)
+        }
+    }
+
+    override fun updateTarget(player: Player, target: TargetData, key: String, value: Any) {
+        val uId = userId(player)
+        val qId = findQuest(uId, target.questID)
+        tableTarget.update(source) {
+            where {
+                and {
+                    "user" eq uId
+                    "quest" eq qId
+                    "id" eq target.id
+                }
+            }
+            set(key, value)
+        }
+    }
+
+    override fun addTag(player: Player, tag: String) {
+        val uId = userId(player)
+        tableTags.insert(source, "user", "tag") {
+            value(uId, tag)
+        }
+    }
+
+    override fun removeTag(player: Player, tag: String) {
+        val uId = userId(player)
+        tableTags.delete(source) {
+            where {
+                and {
+                    "user" eq uId
+                    "tag" eq tag
+                }
+            }
+        }
+    }
+
+    override fun addStorage(player: Player, key: String, value: Any) {
+        val uId = userId(player)
+        tableStorage.insert(source, "user", "key", "value") {
+            value(uId, key, value)
+        }
+    }
+
+    override fun removeStorage(player: Player, key: String) {
+        val uId = userId(player)
+        tableStorage.delete(source) {
+            where {
+                and {
+                    "user" eq uId
+                    "key" eq key
+                }
+            }
+        }
     }
 
     companion object {
