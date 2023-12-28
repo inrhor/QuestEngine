@@ -3,6 +3,7 @@ package cn.inrhor.questengine.common.database
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
+import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.database.type.DatabaseLocal
 import cn.inrhor.questengine.common.database.type.DatabaseManager
 import cn.inrhor.questengine.common.database.type.DatabaseSQL
@@ -25,19 +26,59 @@ abstract class Database {
     abstract fun pull(player: Player)
 
     /**
-     * 为玩家上载数据
+     * 创建任务数据
      */
-    abstract fun push(player: Player)
+    abstract fun createQuest(player: Player, questData: QuestData)
 
     /**
-     * 清除任务数据
+     * 删除任务数据
      */
     abstract fun removeQuest(player: Player, questID: String)
 
     /**
-     * 创建任务数据
+     * 创建目标条目数据
      */
-    open fun createQuest(player: Player, questData: QuestData) {}
+    abstract fun createTarget(player: Player, targetData: TargetData)
+
+    /**
+     * 更新任务数据
+     *
+     * @param player 玩家
+     * @param questID 任务编号
+     * @param key 数据键
+     * @param value 数据值
+     */
+    abstract fun updateQuest(player: Player, questID: String, key: String, value: Any)
+
+    /**
+     * 更新目标条目数据
+     *
+     * @param player 玩家
+     * @param target 目标条目数据
+     * @param key 数据键
+     * @param value 数据值
+     */
+    abstract fun updateTarget(player: Player, target: TargetData, key: String, value: Any)
+
+    /**
+     * 添加标签
+     */
+    abstract fun addTag(player: Player, tag: String)
+
+    /**
+     * 移除标签
+     */
+    abstract fun removeTag(player: Player, tag: String)
+
+    /**
+     * 添加键值对数据
+     */
+    abstract fun addStorage(player: Player, key: String, value: Any)
+
+    /**
+     * 移除键值对数据
+     */
+    abstract fun removeStorage(player: Player, key: String)
 
     companion object {
 
@@ -60,33 +101,6 @@ abstract class Database {
             val pData = PlayerData(uuid)
             DataStorage.addPlayerData(uuid, pData)
             database.pull(player)
-        }
-
-        @SubscribeEvent
-        fun quit(ev: PlayerQuitEvent) {
-            val p = ev.player
-            database.push(p)
-            val uuid = p.uniqueId
-            p.quitDialog()
-            DataStorage.removePlayerData(uuid)
-        }
-
-        @Awake(LifeCycle.DISABLE)
-        fun cancel() {
-            pushAll()
-        }
-
-        @Awake(LifeCycle.ACTIVE)
-        fun updateDatabase() {
-            submit(async = true, period = 200L) {
-                pushAll()
-            }
-        }
-
-        private fun pushAll() {
-            Bukkit.getOnlinePlayers().forEach {
-                database.push(it)
-            }
         }
 
     }

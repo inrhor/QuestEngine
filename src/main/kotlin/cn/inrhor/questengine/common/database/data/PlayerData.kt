@@ -17,5 +17,4 @@ data class PlayerData(
     var dataContainer: DataContainer = DataContainer(),
     val chatCache: ChatCache = ChatCache(),
     val navData: MutableMap<String, NavData> = mutableMapOf(),
-    var walk: Float = 0F,
 )

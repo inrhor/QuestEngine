@@ -22,11 +22,11 @@ import javax.sql.DataSource
 
 class DatabaseSQL: Database() {
 
-    val host = HostSQL(QuestEngine.config.getConfigurationSection("data.mysql")!!)
+    private val host = HostSQL(QuestEngine.config.getConfigurationSection("data.mysql")!!)
 
-    val table = QuestEngine.config.getString("data.mysql.table")
+    private val table = QuestEngine.config.getString("data.mysql.table")
 
-    val tableUser = Table(table + "_user", host) {
+    private val tableUser = Table(table + "_user", host) {
         add { id() }
         add("uuid") {
             type(ColumnTypeSQL.VARCHAR, 36) {
@@ -35,7 +35,7 @@ class DatabaseSQL: Database() {
         }
     }
 
-    val tableQuest = Table(table + "_quest", host) {
+    private val tableQuest = Table(table + "_quest", host) {
         add { id() }
         add("user") {
             type(ColumnTypeSQL.INT, 16) {
@@ -60,7 +60,7 @@ class DatabaseSQL: Database() {
         }
     }
 
-    val tableTarget = Table(table + "_target", host) {
+    private val tableTarget = Table(table + "_target", host) {
         add("quest") {
             type(ColumnTypeSQL.INT, 16) {
                 options(ColumnOptionSQL.KEY)
@@ -79,7 +79,7 @@ class DatabaseSQL: Database() {
         }
     }
 
-    val tableTags = Table(table + "_tags", host) {
+    private val tableTags = Table(table + "_tags", host) {
         add("user") {
             type(ColumnTypeSQL.INT, 16) {
                 options(ColumnOptionSQL.KEY)
@@ -90,7 +90,7 @@ class DatabaseSQL: Database() {
         }
     }
 
-    val tableStorage = Table(table + "_storage", host) {
+    private val tableStorage = Table(table + "_storage", host) {
         add("user") {
             type(ColumnTypeSQL.INT, 16) {
                 options(ColumnOptionSQL.KEY)
@@ -104,7 +104,7 @@ class DatabaseSQL: Database() {
         }
     }
 
-    val source: DataSource by lazy {
+    private val source: DataSource by lazy {
         host.createDataSource()
     }
 
@@ -116,7 +116,7 @@ class DatabaseSQL: Database() {
         tableStorage.workspace(source) { createTable() }.run()
     }
 
-    fun userId(player: Player): Long {
+    private fun userId(player: Player): Long {
         if (saveUserId.contains(player.uniqueId)) return saveUserId[player.uniqueId]!!
         val uId = tableUser.select(source) {
             rows("id")

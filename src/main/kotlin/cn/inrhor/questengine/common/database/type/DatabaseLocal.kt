@@ -5,7 +5,6 @@ import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.StorageData
 import cn.inrhor.questengine.common.database.data.TagsData
-import cn.inrhor.questengine.common.database.data.TrackData
 import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.nav.NavData
 import org.bukkit.entity.Player
@@ -20,6 +19,7 @@ import taboolib.platform.util.toProxyLocation
 import java.io.File
 import java.util.*
 
+@Deprecated("即将弃用，以SQLite代替")
 class DatabaseLocal: Database() {
 
     private fun UUID.playerFile(): File {

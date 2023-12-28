@@ -10,8 +10,8 @@ hook:
 
 # 数据存储
 data:
-  # 存储类型 YAML MYSQL
-  type: YAML
+  # 存储类型 LOCAL MYSQL
+  type: LOCAL
   mysql:
     # 数据库设置
     host: localhost
@@ -19,4 +19,6 @@ data:
     user: root
     password: password
     database: questengine
+    table: quest_engine
+  sql:
     table: quest_engine
