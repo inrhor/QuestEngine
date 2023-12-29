@@ -88,7 +88,7 @@ object QuestManager {
     /**
      * 删除任务配置
      */
-    fun QuestFrame.delFile() {
+    private fun QuestFrame.delFile() {
         newFile(path).deepDelete()
         questMap.remove(id)
     }
@@ -142,18 +142,17 @@ object QuestManager {
      * @return 控制模块
      */
     fun String.getControlFrame(questID: String): ControlFrame? {
-        questID.getQuestFrame()?.control?.forEach { if (it.id == this) return it }
-        return null
+        return questID.getQuestFrame()?.control?.find { it.id == this }
     }
 
     /**
      * 接受任务
      */
     fun Player.acceptQuest(quest: QuestFrame) {
-        val id = quest.id
-        delQuest(id)
         if (runEval(this, quest.accept.condition)) {
-            getPlayerData().dataContainer.installQuest(quest)
+            val id = quest.id
+            delQuest(id)
+            getPlayerData().dataContainer.installQuest(this, quest)
             QuestEvent.Accept(this, quest).call()
             val data = questData(id)?: return
             data.generateTime()
@@ -177,7 +176,7 @@ object QuestManager {
      */
     fun Player.quitQuest(questID: String) {
         val q = questID.getQuestFrame()?: return
-        getPlayerData().dataContainer.unloadQuest(questID)
+        getPlayerData().dataContainer.unloadQuest(this, questID)
         QuestEvent.Quit(this, q).call()
     }
 
@@ -186,17 +185,18 @@ object QuestManager {
      */
     fun Player.finishQuest(questID: String) {
         val q = questID.getQuestFrame()?: return
-        getPlayerData().dataContainer.toggleQuest(questID, StateType.FINISH).finishTime(questID)
+        getPlayerData().dataContainer.toggleQuest(this, questID, StateType.FINISH)
+            .finishTime(this, questID)
         QuestEvent.Finish(this, q).call()
     }
 
     /**
      * 删除任务
      */
-    fun Player.delQuest(questID: String) {
+    private fun Player.delQuest(questID: String) {
         val quest = questData(questID)?: return
         quest.unload()
-        getPlayerData().dataContainer.unloadQuest(questID)
+        getPlayerData().dataContainer.unloadQuest(this, questID)
     }
 
     /**
@@ -204,7 +204,7 @@ object QuestManager {
      */
     fun Player.resetQuest(questID: String) {
         val quest = questID.getQuestFrame()?: return
-        getPlayerData().dataContainer.installQuest(quest)
+        getPlayerData().dataContainer.installQuest(this, quest)
         QuestEvent.Reset(this, quest).call()
         questData(quest.id)?.updateTime(this)
     }
@@ -214,7 +214,7 @@ object QuestManager {
      */
     fun Player.failQuest(questID: String) {
         val q = questID.getQuestFrame()?: return
-        getPlayerData().dataContainer.toggleQuest(questID, StateType.FAILURE)
+        getPlayerData().dataContainer.toggleQuest(this, questID, StateType.FAILURE)
         QuestEvent.Fail(this, q).call()
     }
 
