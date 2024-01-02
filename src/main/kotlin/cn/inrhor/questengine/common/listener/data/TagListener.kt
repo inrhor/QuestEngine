@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.listener.data
 
-import cn.inrhor.questengine.api.event.TagEvent
+import cn.inrhor.questengine.api.event.data.TagEvent
 import cn.inrhor.questengine.api.manager.DataManager.tagsData
 import cn.inrhor.questengine.common.database.Database
 import taboolib.common.platform.event.SubscribeEvent

@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.listener.data
 
-import cn.inrhor.questengine.api.event.StorageEvent
+import cn.inrhor.questengine.api.event.data.StorageEvent
 import cn.inrhor.questengine.api.manager.DataManager.storage
 import cn.inrhor.questengine.common.database.Database
 import taboolib.common.platform.event.SubscribeEvent

@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.listener.data
 
-import cn.inrhor.questengine.api.event.QuestDataEvent
+import cn.inrhor.questengine.api.event.data.QuestDataEvent
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.utlis.time.toDate
 import taboolib.common.platform.event.SubscribeEvent

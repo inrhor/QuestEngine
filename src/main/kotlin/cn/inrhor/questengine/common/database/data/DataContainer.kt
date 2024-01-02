@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.database.data
 
-import cn.inrhor.questengine.api.event.QuestDataEvent
+import cn.inrhor.questengine.api.event.data.QuestDataEvent
 import cn.inrhor.questengine.api.quest.QuestFrame
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.quest.enum.StateType
@@ -8,11 +8,14 @@ import cn.inrhor.questengine.utlis.time.toStr
 import org.bukkit.entity.Player
 import java.util.*
 
-data class TrackData(val questID: String = "", val targetID: String = "")
+/**
+ * 跟踪任务
+ */
+data class TrackData(var questID: String = "", var targetID: String ="")
 
 data class DataContainer(
     val quest: MutableMap<String, QuestData> = mutableMapOf(), var tags: TagsData = TagsData(),
-    var storage: MutableMap<String, String> = mutableMapOf(), var trackData: TrackData = TrackData()
+    var storage: MutableMap<String, String> = mutableMapOf(), val trackData: TrackData = TrackData()
 ) {
 
     /**

@@ -1,6 +1,7 @@
 package cn.inrhor.questengine.api.manager
 
 import cn.inrhor.questengine.api.collaboration.TeamOpen
+import cn.inrhor.questengine.api.event.data.TrackDataEvent
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.TagsData
 import cn.inrhor.questengine.common.database.data.TrackData
@@ -104,14 +105,15 @@ object DataManager {
     }
 
     /**
-     * @return 正在追踪的任务
-     */
-    fun Player.trackingData(): TrackData = getPlayerData().dataContainer.trackData
-
-    /**
      * 正在追踪任务的数据设定
      */
     fun Player.setTrackingData(questID: String, targetID: String = "") {
-        getPlayerData().dataContainer.trackData = TrackData(questID, targetID)
+        val trackData = getPlayerData().dataContainer.trackData
+        if (trackData.questID != questID) {
+            TrackDataEvent.Remove(this, trackData).call()
+        }
+        trackData.questID = questID
+        trackData.targetID = targetID
+        TrackDataEvent.Set(this, trackData).call()
     }
 }

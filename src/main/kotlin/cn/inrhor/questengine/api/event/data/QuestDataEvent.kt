@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.api.event
+package cn.inrhor.questengine.api.event.data
 
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import org.bukkit.entity.Player

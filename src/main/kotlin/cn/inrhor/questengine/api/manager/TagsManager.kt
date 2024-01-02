@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.api.manager
 
-import cn.inrhor.questengine.api.event.TagEvent
+import cn.inrhor.questengine.api.event.data.TagEvent
 import cn.inrhor.questengine.api.manager.DataManager.tagsData
 import org.bukkit.entity.Player
 

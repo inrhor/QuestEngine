@@ -2,7 +2,7 @@ package cn.inrhor.questengine.common.migrate
 
 import cn.inrhor.questengine.QuestEngine
 import cn.inrhor.questengine.common.database.Database
-import cn.inrhor.questengine.common.database.data.TagsData
+import cn.inrhor.questengine.common.database.data.TrackData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.type.DatabaseManager
 import cn.inrhor.questengine.common.nav.NavData
@@ -43,7 +43,8 @@ class MigrateDatabase {
                     database.createQuest(uuid, questData)
                 }
                 if (config.contains("track")) {
-                    // TODO
+                    val trackData = config.getObject<TrackData>("track", false)
+                    database.setTrack(uuid, trackData)
                 }
                 if (config.contains("tags")) {
                     config.getStringList("tags.tags").forEach {

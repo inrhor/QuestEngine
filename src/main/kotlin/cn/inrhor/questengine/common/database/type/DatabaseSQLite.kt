@@ -6,6 +6,7 @@ import cn.inrhor.questengine.api.manager.DataManager.storage
 import cn.inrhor.questengine.api.manager.DataManager.tagsData
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
+import cn.inrhor.questengine.common.database.data.TrackData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.nav.NavData
@@ -111,6 +112,22 @@ class DatabaseSQLite: Database() {
             type(ColumnTypeSQLite.TEXT, 64)
         }
         primaryKeyForLegacy += arrayOf("user", "nav")
+    }
+
+    /**
+     * 扩展性数据
+     */
+    private val tableData = Table("${table}_data", host) {
+        add("user") {
+            type(ColumnTypeSQLite.TEXT, 36)
+        }
+        add("key") {
+            type(ColumnTypeSQLite.TEXT, 64)
+        }
+        add("value") {
+            type(ColumnTypeSQLite.TEXT, 64)
+        }
+        primaryKeyForLegacy += arrayOf("user", "key")
     }
 
     private val dataSource: DataSource by lazy {
@@ -274,8 +291,25 @@ class DatabaseSQLite: Database() {
     }
 
     override fun setStorage(uuid: UUID, key: String, value: Any) {
-        tableStorage.insert(dataSource) {
-            value(uuid.toString(), key, value)
+        // 查看是否存在，不存在则创建
+        val uid = uuid.toString()
+        if (tableStorage.find(dataSource) {
+                where {
+                    "user" eq uid
+                    "key" eq key
+                }
+            }) {
+            tableStorage.update(dataSource) {
+                where {
+                    "user" eq uid
+                    "key" eq key
+                }
+                set("value", value)
+            }
+        }else {
+            tableStorage.insert(dataSource) {
+                value(uid, key, value)
+            }
         }
     }
 
@@ -310,6 +344,57 @@ class DatabaseSQLite: Database() {
                 "nav" eq navId
             }
             set(key, value)
+        }
+    }
+
+    override fun removeNavigation(uuid: UUID, navId: String) {
+        tableNav.delete(dataSource) {
+            where {
+                "user" eq uuid.toString()
+                "nav" eq navId
+            }
+        }
+    }
+
+    private fun setExtendData(uuid: UUID, key: String, value: String) {
+        val uid = uuid.toString()
+        if (tableData.find(dataSource) {
+                where {
+                    "user" eq uid
+                    "key" eq key
+                }
+            }) {
+            tableData.update(dataSource) {
+                where {
+                    "user" eq uid
+                    "key" eq key
+                }
+                set("value", value)
+            }
+        }else {
+            tableData.insert(dataSource) {
+                value(uid, key, value)
+            }
+        }
+    }
+
+    override fun setTrack(uuid: UUID, trackData: TrackData) {
+        setExtendData(uuid, "track_quest", trackData.questID)
+        setExtendData(uuid, "track_target", trackData.targetID)
+    }
+
+    override fun removeTrack(uuid: UUID) {
+        tableData.delete(dataSource) {
+            where {
+                "user" eq uuid.toString()
+                "key" eq "track_quest"
+            }
+        }
+        tableData.delete(dataSource) {
+            where {
+                "user" eq uuid.toString()
+                "key" eq "track_target"
+            }
         }
     }
 

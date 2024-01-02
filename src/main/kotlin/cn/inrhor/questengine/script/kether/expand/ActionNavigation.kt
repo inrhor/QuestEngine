@@ -34,8 +34,7 @@ class ActionNavigation {
                 NavData.State.START -> navData.start(sender, effect)
                 NavData.State.STOP -> navData.stop(sender)
                 else -> {
-                    navData.stop(sender)
-                    nav.remove(navData)
+                    navData.unload(sender)
                 }
             }
             return frameVoid()

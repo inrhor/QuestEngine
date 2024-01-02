@@ -6,6 +6,7 @@ import cn.inrhor.questengine.api.manager.DataManager.storage
 import cn.inrhor.questengine.api.manager.DataManager.tagsData
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
+import cn.inrhor.questengine.common.database.data.TrackData
 import cn.inrhor.questengine.common.database.data.quest.*
 import cn.inrhor.questengine.common.nav.NavData
 import cn.inrhor.questengine.common.quest.enum.StateType
@@ -132,6 +133,22 @@ class DatabaseSQL: Database() {
         }
         add("state") {
             type(ColumnTypeSQL.INT, 16)
+        }
+    }
+
+    private val tableData = Table(table + "_data", host) {
+        add("user") {
+            type(ColumnTypeSQL.INT, 16) {
+                options(ColumnOptionSQL.KEY)
+            }
+        }
+        add("key") {
+            type(ColumnTypeSQL.VARCHAR, 64) {
+                options(ColumnOptionSQL.KEY)
+            }
+        }
+        add("value") {
+            type(ColumnTypeSQL.VARCHAR, 64)
         }
     }
 
@@ -326,8 +343,27 @@ class DatabaseSQL: Database() {
 
     override fun setStorage(uuid: UUID, key: String, value: Any) {
         val uId = userId(uuid)
-        tableStorage.insert(source, "user", "key", "value") {
-            value(uId, key, value)
+        if (tableStorage.find(source) {
+                where {
+                    and {
+                        "user" eq uId
+                        "key" eq key
+                    }
+                }
+            }) {
+            tableStorage.update(source) {
+                where {
+                    and {
+                        "user" eq uId
+                        "key" eq key
+                    }
+                }
+                set("value", value)
+            }
+        }else {
+            tableStorage.insert(source, "user", "key", "value") {
+                value(uId, key, value)
+            }
         }
     }
 
@@ -368,6 +404,72 @@ class DatabaseSQL: Database() {
                 }
             }
             set(key, value)
+        }
+    }
+
+    override fun removeNavigation(uuid: UUID, navId: String) {
+        val uId = userId(uuid)
+        tableNavigation.delete(source) {
+            where {
+                and {
+                    "user" eq uId
+                    "nav" eq navId
+                }
+            }
+        }
+    }
+
+    /**
+     * 设置扩展
+     */
+    private fun setExtendData(uuid: UUID, key: String, value: String) {
+        val uId = userId(uuid)
+        if (tableData.find(source) {
+                where {
+                    and {
+                        "user" eq uId
+                        "key" eq key
+                    }
+                }
+            }) {
+            tableData.update(source) {
+                where {
+                    and {
+                        "user" eq uId
+                        "key" eq key
+                    }
+                }
+                set("value", value)
+            }
+        }else {
+            tableData.insert(source, "user", "key", "value") {
+                value(uId, key, value)
+            }
+        }
+    }
+
+    override fun setTrack(uuid: UUID, trackData: TrackData) {
+        setExtendData(uuid, "track_quest", trackData.questID)
+        setExtendData(uuid, "track_target", trackData.targetID)
+    }
+
+    override fun removeTrack(uuid: UUID) {
+        val uId = userId(uuid)
+        tableData.delete(source) {
+            where {
+                and {
+                    "user" eq uId
+                    "key" eq "track_quest"
+                }
+            }
+        }
+        tableData.delete(source) {
+            where {
+                and {
+                    "user" eq uId
+                    "key" eq "track_target"
+                }
+            }
         }
     }
 

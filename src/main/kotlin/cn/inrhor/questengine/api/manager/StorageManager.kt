@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.api.manager
 
-import cn.inrhor.questengine.api.event.StorageEvent
+import cn.inrhor.questengine.api.event.data.StorageEvent
 import cn.inrhor.questengine.api.manager.DataManager.storage
 import org.bukkit.entity.Player
 

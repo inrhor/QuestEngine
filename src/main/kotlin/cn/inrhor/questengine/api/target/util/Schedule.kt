@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.api.target.util
 
-import cn.inrhor.questengine.api.event.TargetDataEvent
+import cn.inrhor.questengine.api.event.data.TargetDataEvent
 import cn.inrhor.questengine.api.event.TargetEvent
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestMode

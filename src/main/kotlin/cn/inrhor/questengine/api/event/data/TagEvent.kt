@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.api.event
+package cn.inrhor.questengine.api.event.data
 
 import org.bukkit.entity.Player
 import taboolib.platform.type.BukkitProxyEvent

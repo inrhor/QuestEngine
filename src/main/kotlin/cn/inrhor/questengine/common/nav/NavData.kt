@@ -1,6 +1,6 @@
 package cn.inrhor.questengine.common.nav
 
-import cn.inrhor.questengine.api.event.NavigationEvent
+import cn.inrhor.questengine.api.event.data.NavigationDataEvent
 import cn.inrhor.questengine.api.manager.DataManager.navData
 import cn.inrhor.questengine.utlis.location.LocationTool
 import org.bukkit.Location
@@ -28,7 +28,7 @@ class NavData(val id: String, val location: Location, var state: State=State.STO
         if (state == State.START) return
         player.navData().forEach { if (it.state == State.START) it.stop(player) }
         state = State.START
-        NavigationEvent.UpdateState(player, this).call()
+        NavigationDataEvent.UpdateState(player, this).call()
         submit(period = 20L, async = true) {
             if (state == State.STOP || !player.isOnline || LocationTool.inLoc(
                     player.location, location, 2.0, 2.0, 2.0)) {
@@ -50,11 +50,16 @@ class NavData(val id: String, val location: Location, var state: State=State.STO
 
     fun stop(player: Player) {
         state = State.STOP
-        NavigationEvent.UpdateState(player, this).call()
+        NavigationDataEvent.UpdateState(player, this).call()
     }
 
     fun register(player: Player) {
         player.navData().add(this)
+    }
+
+    fun unload(player: Player) {
+        NavigationDataEvent.Remove(player, this).call()
+        player.navData().remove(this)
     }
 
 }

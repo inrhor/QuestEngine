@@ -2,6 +2,7 @@ package cn.inrhor.questengine.common.database
 
 import cn.inrhor.questengine.common.database.data.DataStorage
 import cn.inrhor.questengine.common.database.data.PlayerData
+import cn.inrhor.questengine.common.database.data.TrackData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.database.type.*
@@ -87,6 +88,21 @@ abstract class Database {
      * 设置导航数据
      */
     abstract fun setNavigation(uuid: UUID, navId: String, key: String, value: Any)
+
+    /**
+     * 删除导航数据
+     */
+    abstract fun removeNavigation(uuid: UUID, navId: String)
+
+    /**
+     * 设置跟踪任务
+     */
+    abstract fun setTrack(uuid: UUID, trackData: TrackData)
+
+    /**
+     * 删除追踪任务
+     */
+    abstract fun removeTrack(uuid: UUID)
 
     companion object {
 
