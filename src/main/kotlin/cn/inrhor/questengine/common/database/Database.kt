@@ -112,7 +112,9 @@ abstract class Database {
             database = when (DatabaseManager.type) {
                 DatabaseType.LOCAL -> DatabaseSQLite()
                 DatabaseType.MYSQL -> DatabaseSQL()
-                else -> DatabaseError(IllegalStateException())
+                else -> {
+                    DatabaseError(IllegalStateException())
+                }
             }
         }
 

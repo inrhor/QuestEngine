@@ -140,6 +140,7 @@ class DatabaseSQLite: Database() {
         tableTags.createTable(dataSource)
         tableStorage.createTable(dataSource)
         tableNav.createTable(dataSource)
+        tableData.createTable(dataSource)
     }
 
     override fun createQuest(uuid: UUID, questData: QuestData) {

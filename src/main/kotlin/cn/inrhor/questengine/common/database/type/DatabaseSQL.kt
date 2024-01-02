@@ -163,6 +163,7 @@ class DatabaseSQL: Database() {
         tableTags.createTable(source)
         tableStorage.createTable(source)
         tableNavigation.createTable(source)
+        tableData.createTable(source)
     }
 
     private fun userId(uuid: UUID): Long {

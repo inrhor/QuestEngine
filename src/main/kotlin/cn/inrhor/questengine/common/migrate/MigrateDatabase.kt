@@ -41,6 +41,9 @@ class MigrateDatabase {
                 config.getConfigurationSection("quest")?.getKeys(false)?.forEach { data ->
                     val questData = config.getObject<QuestData>("quest.$data", false)
                     database.createQuest(uuid, questData)
+                    questData.target.forEach { target ->
+                        database.createTarget(uuid, target)
+                    }
                 }
                 if (config.contains("track")) {
                     val trackData = config.getObject<TrackData>("track", false)
