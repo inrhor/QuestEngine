@@ -12,6 +12,9 @@ object QuestDataListener {
         val player = ev.player
         val questData = ev.questData
         Database.database.createQuest(player.uniqueId, questData)
+        questData.target.forEach {
+            Database.database.createTarget(player.uniqueId, it)
+        }
     }
 
     @SubscribeEvent

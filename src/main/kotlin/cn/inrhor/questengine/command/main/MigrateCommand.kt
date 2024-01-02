@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.command.main
 
+import cn.inrhor.questengine.common.database.type.DatabaseType
 import cn.inrhor.questengine.common.migrate.MigrateDatabase
 import cn.inrhor.questengine.common.migrate.MigrateQuest
 import cn.inrhor.questengine.utlis.file.FileUtil
@@ -30,6 +31,17 @@ object MigrateCommand {
                 // 旧数据 -> 新数据
                 execute<ProxyCommandSender> { sender, _, _ ->
                     MigrateDatabase().oldToNew(sender)
+                }
+            }
+            // 转换
+            literal("from") {
+                dynamic("type") {
+                    suggestion<ProxyCommandSender> { _, _ ->
+                        listOf("LOCAL", "MYSQL")
+                    }
+                    execute<ProxyCommandSender> { sender, context, _ ->
+                        MigrateDatabase().fromToDatabase(sender, DatabaseType.valueOf(context["type"]))
+                    }
                 }
             }
         }

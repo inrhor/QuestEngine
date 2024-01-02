@@ -104,6 +104,13 @@ abstract class Database {
      */
     abstract fun removeTrack(uuid: UUID)
 
+    /**
+     * 迁移数据
+     *
+     * @param type 原本的数据库类型
+     */
+    abstract fun migrate(type: DatabaseType)
+
     companion object {
 
         lateinit var database: Database

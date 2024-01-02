@@ -5,6 +5,7 @@ import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.TrackData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.type.DatabaseManager
+import cn.inrhor.questengine.common.database.type.DatabaseType
 import cn.inrhor.questengine.common.nav.NavData
 import taboolib.common.io.newFolder
 import taboolib.common.platform.ProxyCommandSender
@@ -73,6 +74,20 @@ class MigrateDatabase {
                 }
             }
         }
+        sender.sendMessage("   迁移完成，耗时 ${System.currentTimeMillis() - startTime}ms")
+        sender.sendMessage("§f")
+    }
+
+    /**
+     * 从某些数据类型迁移
+     */
+    fun fromToDatabase(sender: ProxyCommandSender, type: DatabaseType) {
+        sender.sendMessage("§f")
+        sender.sendMessage("[ 迁移 ] 开始迁移 QuestEngine 数据")
+        sender.sendMessage("   本次迁移工作为：$type 迁移到 新数据 ${DatabaseManager.type}")
+        // 计算耗时
+        val startTime = System.currentTimeMillis()
+        Database.database.migrate(type)
         sender.sendMessage("   迁移完成，耗时 ${System.currentTimeMillis() - startTime}ms")
         sender.sendMessage("§f")
     }

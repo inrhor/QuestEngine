@@ -474,6 +474,84 @@ class DatabaseSQL: Database() {
         }
     }
 
+    override fun migrate(type: DatabaseType) {
+        if (type == DatabaseType.MYSQL) {
+            tableUser.select(source) {
+                rows("uuid")
+            }.map {
+                val uuid = UUID.fromString(getString("uuid"))
+                val uId = userId(uuid)
+                tableQuest.select(source) {
+                    where { "user" eq uId }
+                }.map {
+                    val questData = QuestData(
+                        id = getString("quest"),
+                        state = StateType.fromInt(getInt("state")),
+                        time = getDate("time").toStr(),
+                        end = getDate("end").toStr()
+                    )
+                    database.createQuest(uuid, questData)
+                    val questId = questData.id
+                    tableTarget.select(source) {
+                        where { "quest" eq questId }
+                    }.map {
+                        val targetData = TargetData(
+                            id = getString("id"),
+                            questID = questId,
+                            schedule = getInt("schedule"),
+                            state = StateType.fromInt(getInt("state"))
+                        )
+                        database.createTarget(uuid, targetData)
+                    }
+                }
+                tableTags.select(source) {
+                    where { "user" eq uId }
+                }.map {
+                    database.addTag(uuid, getString("tag"))
+                }
+                tableStorage.select(source) {
+                    where { "user" eq uId }
+                }.map {
+                    database.setStorage(uuid, getString("key"), getString("value"))
+                }
+                tableNavigation.select(source) {
+                    where { "user" eq uId }
+                }.map {
+                    val navData = NavData(
+                        getString("nav"),
+                        Location(
+                            getString("world"),
+                            getDouble("x"),
+                            getDouble("y"),
+                            getDouble("z")
+                        ).toBukkitLocation(),
+                        NavData.State.fromInt(getInt("state"))
+                    )
+                    database.createNavigation(uuid, getString("nav"), navData)
+                }
+                tableData.select(source) {
+                    where {
+                        "user" eq uId
+                        "key" eq "track_quest"
+                    }
+                }.map {
+                    val questID = getString("value")
+                    tableData.select(source) {
+                        where {
+                            and {
+                                "user" eq uId
+                                "key" eq "track_target"
+                            }
+                        }
+                    }.map {
+                        val targetID = getString("value")
+                        database.setTrack(uuid, TrackData(questID, targetID))
+                    }
+                }
+            }
+        }
+    }
+
     companion object {
         private val saveUserId = ConcurrentHashMap<UUID, Long>()
     }
