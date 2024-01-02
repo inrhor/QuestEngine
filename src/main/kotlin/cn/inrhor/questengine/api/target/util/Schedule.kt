@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.api.target.util
 
+import cn.inrhor.questengine.api.event.TargetDataEvent
 import cn.inrhor.questengine.api.event.TargetEvent
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.quest.manager.QuestManager.getQuestMode
@@ -16,11 +17,11 @@ object Schedule {
      */
     fun run(player: Player, targetData: TargetData, amount: Int,addProgress: Int = 1) {
         if (targetData.schedule < amount) {
-            targetData.schedule += addProgress
+            TargetDataEvent.AddProgress(player, targetData, addProgress).call()
         }
         val allSchedule = TargetManager.scheduleUtil(player, targetData)
         if (allSchedule >= amount) {
-            targetData.schedule = amount
+            TargetDataEvent.SetProgress(player, targetData, amount).call()
             TargetEvent.Finish(player, targetData, targetData.questID.getQuestMode()).call()
         }
     }
