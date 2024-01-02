@@ -74,6 +74,10 @@ class DatabaseError(private val cause: Throwable): Database() {
         error()
     }
 
+    override fun migrate(type: DatabaseType) {
+        error()
+    }
+
     /**
      * 重复使用IllegalAccessError
      */
