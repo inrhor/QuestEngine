@@ -8,7 +8,7 @@ import taboolib.platform.util.sendLang
 object TeamDelete {
 
     val delete = subCommand {
-        execute<Player> { sender, context, _ ->
+        execute<Player> { sender, _, _ ->
             val pUUID = sender.uniqueId
             val teamData = TeamManager.getTeamData(pUUID)?: return@execute run {
                 sender.sendLang("TEAM-NO_TEAM") }

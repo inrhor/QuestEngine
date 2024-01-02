@@ -1,8 +1,8 @@
 package cn.inrhor.questengine.api.manager
 
 import cn.inrhor.questengine.api.collaboration.TeamOpen
+import cn.inrhor.questengine.api.event.data.TrackDataEvent
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
-import cn.inrhor.questengine.common.database.data.StorageData
 import cn.inrhor.questengine.common.database.data.TagsData
 import cn.inrhor.questengine.common.database.data.TrackData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
@@ -45,53 +45,24 @@ object DataManager {
     /**
      * @return 自定义数据集
      */
-    fun Player.storage(): MutableList<StorageData> {
+    fun Player.storage(): MutableMap<String, String> {
         return getPlayerData().dataContainer.storage
-    }
-
-    /**
-     * @return 自定义数据
-     */
-    fun Player.getStorageValue(key: String): String {
-        storage().forEach {
-            if (it.key == key) return it.value
-        }
-        return "null"
-    }
-
-    /**
-     * 设置自定义数据
-     */
-    fun Player.setStorage(key: String, value: String) {
-        storage().forEach {
-            if (it.key == key) {
-                it.value = value
-                return
-            }
-        }
-        storage().add(StorageData(key, value))
-    }
-
-    /**
-     * 删除某些自定义数据
-     */
-    fun Player.delStorage(key: String) {
-        val s = storage().iterator()
-        while (s.hasNext()) {
-            if (s.next().key == key) s.remove()
-            break
-        }
     }
 
     /**
      * @return 目标数据
      */
     fun Player.targetData(questID: String, targetID: String): TargetData? {
-        questData(questID)?.target?.forEach {
-            if (it.id == targetID) return it
-        }
-        return null
+        return questData(questID)?.target?.find { it.id == targetID }
     }
+
+    /**
+     * @return 导航数据列表
+     */
+    fun Player.navData(): MutableList<NavData> {
+        return getPlayerData().navData
+    }
+
 
     /**
      * @return 是否完成任务的所有目标
@@ -134,21 +105,15 @@ object DataManager {
     }
 
     /**
-     * @return 正在追踪的任务
-     */
-    fun Player.trackingData(): TrackData = getPlayerData().dataContainer.trackData
-
-    /**
      * 正在追踪任务的数据设定
      */
     fun Player.setTrackingData(questID: String, targetID: String = "") {
-        getPlayerData().dataContainer.trackData = TrackData(questID, targetID)
-    }
-
-    /**
-     * 获取所有导航数据
-     */
-    fun Player.getNavAllData(): MutableCollection<NavData> {
-        return getPlayerData().navData.values
+        val trackData = getPlayerData().dataContainer.trackData
+        if (trackData.questID != questID) {
+            TrackDataEvent.Remove(this, trackData).call()
+        }
+        trackData.questID = questID
+        trackData.targetID = targetID
+        TrackDataEvent.Set(this, trackData).call()
     }
 }

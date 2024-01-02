@@ -28,7 +28,7 @@ object ConsoleMsg {
             pluginCon.name,
             pluginCon.version,
             "&8[ $state &8]".colored(),
-            "1.12-1.20"
+            "1.12.2-1.20.4"
         )
     }
 
