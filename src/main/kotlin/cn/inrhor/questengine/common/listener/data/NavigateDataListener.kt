@@ -8,7 +8,7 @@ object NavigateDataListener {
 
     @SubscribeEvent
     fun onUpdateState(ev: NavigationEvent.UpdateState) {
-        Database.database.setNavigation(ev.player, ev.navData.id, "state", ev.navData.state.int)
+        Database.database.setNavigation(ev.player.uniqueId, ev.navData.id, "state", ev.navData.state.int)
     }
 
 }

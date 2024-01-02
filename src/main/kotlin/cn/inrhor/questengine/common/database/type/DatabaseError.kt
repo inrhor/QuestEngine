@@ -5,6 +5,7 @@ import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
 import cn.inrhor.questengine.common.nav.NavData
 import org.bukkit.entity.Player
+import java.util.*
 
 class DatabaseError(private val cause: Throwable): Database() {
 
@@ -12,51 +13,51 @@ class DatabaseError(private val cause: Throwable): Database() {
         error()
     }
 
-    override fun createQuest(player: Player, questData: QuestData) {
+    override fun createQuest(uuid: UUID, questData: QuestData) {
         error()
     }
 
-    override fun createTarget(player: Player, targetData: TargetData) {
+    override fun createTarget(uuid: UUID,targetData: TargetData) {
         error()
     }
 
-    override fun removeQuest(player: Player, questID: String) {
+    override fun removeQuest(uuid: UUID,questID: String) {
         error()
     }
 
-    override fun updateQuest(player: Player, questID: String, key: String, value: Any) {
+    override fun updateQuest(uuid: UUID,questID: String, key: String, value: Any) {
         error()
     }
 
-    override fun updateTarget(player: Player, target: TargetData, key: String, value: Any) {
+    override fun updateTarget(uuid: UUID,target: TargetData, key: String, value: Any) {
         error()
     }
 
-    override fun addTag(player: Player, tag: String) {
+    override fun addTag(uuid: UUID,tag: String) {
         error()
     }
 
-    override fun removeTag(player: Player, tag: String) {
+    override fun removeTag(uuid: UUID,tag: String) {
         error()
     }
 
-    override fun setStorage(player: Player, key: String, value: Any) {
+    override fun setStorage(uuid: UUID,key: String, value: Any) {
         error()
     }
 
-    override fun removeStorage(player: Player, key: String) {
+    override fun removeStorage(uuid: UUID,key: String) {
         error()
     }
 
-    override fun clearTag(player: Player) {
+    override fun clearTag(uuid: UUID) {
         error()
     }
 
-    override fun createNavigation(player: Player, navId: String, navData: NavData) {
+    override fun createNavigation(uuid: UUID,navId: String, navData: NavData) {
         error()
     }
 
-    override fun setNavigation(player: Player, navId: String, key: String, value: Any) {
+    override fun setNavigation(uuid: UUID,navId: String, key: String, value: Any) {
         error()
     }
 
