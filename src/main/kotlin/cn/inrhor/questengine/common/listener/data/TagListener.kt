@@ -12,7 +12,7 @@ object TagListener {
         val player = ev.player
         val tag = ev.tag
         player.tagsData().tags.add(tag)
-        Database.database.addTag(player, tag)
+        Database.database.addTag(player.uniqueId, tag)
     }
 
     @SubscribeEvent
@@ -20,14 +20,14 @@ object TagListener {
         val player = ev.player
         val tag = ev.tag
         player.tagsData().tags.remove(tag)
-        Database.database.removeTag(player, tag)
+        Database.database.removeTag(player.uniqueId, tag)
     }
 
     @SubscribeEvent
     fun onClearTag(ev: TagEvent.Clear) {
         val player = ev.player
         player.tagsData().tags.clear()
-        Database.database.clearTag(player)
+        Database.database.clearTag(player.uniqueId)
     }
 
 }

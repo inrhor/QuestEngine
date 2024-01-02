@@ -1,5 +1,6 @@
 package cn.inrhor.questengine.script.kether.expand
 
+import cn.inrhor.questengine.api.manager.DataManager.navData
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.nav.NavData
 import cn.inrhor.questengine.script.kether.frameVoid
@@ -17,7 +18,7 @@ class ActionNavigation {
     class Create(val location: ParsedAction<*>): ScriptAction<Void>() {
         override fun run(frame: ScriptFrame): CompletableFuture<Void> {
             return frame.newFrame(location).run<Location>().thenAccept {
-                frame.player().uniqueId.getPlayerData().navData[frame.selectNavID()] = NavData(it)
+                NavData(frame.selectNavID(), it).register(frame.player())
             }
         }
     }
@@ -28,15 +29,13 @@ class ActionNavigation {
             val id = frame.selectNavID()
             val data = sender.uniqueId.getPlayerData()
             val nav = data.navData
-            if (nav.containsKey(id)) {
-                val n = data.navData[id]!!
-                when (state) {
-                    NavData.State.START -> n.start(sender, effect)
-                    NavData.State.STOP -> n.stop()
-                    else -> {
-                        n.stop()
-                        nav.remove(id)
-                    }
+            val navData = nav.find { it.id == id }?: return frameVoid()
+            when (state) {
+                NavData.State.START -> navData.start(sender, effect)
+                NavData.State.STOP -> navData.stop(sender)
+                else -> {
+                    navData.stop(sender)
+                    nav.remove(navData)
                 }
             }
             return frameVoid()
@@ -80,9 +79,8 @@ class ActionNavigation {
                 }
                 case("stopAll") {
                     actionNow {
-                        val data = player().uniqueId.getPlayerData()
-                        data.navData.forEach { (_, v) ->
-                            v.stop()
+                        player().navData().forEach { a ->
+                            a.stop(player())
                         }
                     }
                 }

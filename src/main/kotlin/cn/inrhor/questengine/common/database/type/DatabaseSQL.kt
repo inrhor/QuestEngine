@@ -1,21 +1,23 @@
 package cn.inrhor.questengine.common.database.type
 
 import cn.inrhor.questengine.QuestEngine
+import cn.inrhor.questengine.api.manager.DataManager.navData
 import cn.inrhor.questengine.api.manager.DataManager.storage
 import cn.inrhor.questengine.api.manager.DataManager.tagsData
-import cn.inrhor.questengine.api.manager.StorageManager.setStorage
-import cn.inrhor.questengine.api.manager.TagsManager.addTag
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.quest.*
+import cn.inrhor.questengine.common.nav.NavData
 import cn.inrhor.questengine.common.quest.enum.StateType
 import cn.inrhor.questengine.utlis.time.toDate
 import cn.inrhor.questengine.utlis.time.toStr
 import org.bukkit.entity.Player
+import taboolib.common.util.Location
 import taboolib.module.database.ColumnOptionSQL
 import taboolib.module.database.ColumnTypeSQL
 import taboolib.module.database.HostSQL
 import taboolib.module.database.Table
+import taboolib.platform.util.toBukkitLocation
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import javax.sql.DataSource
@@ -105,27 +107,56 @@ class DatabaseSQL: Database() {
         }
     }
 
+    private val tableNavigation = Table(table + "_navigation", host) {
+        add("user") {
+            type(ColumnTypeSQL.INT, 16) {
+                options(ColumnOptionSQL.KEY)
+            }
+        }
+        add("nav") {
+            type(ColumnTypeSQL.VARCHAR, 64) {
+                options(ColumnOptionSQL.KEY)
+            }
+        }
+        add("x") {
+            type(ColumnTypeSQL.DOUBLE, 16)
+        }
+        add("y") {
+            type(ColumnTypeSQL.DOUBLE, 16)
+        }
+        add("z") {
+            type(ColumnTypeSQL.DOUBLE, 16)
+        }
+        add("world") {
+            type(ColumnTypeSQL.VARCHAR, 64)
+        }
+        add("state") {
+            type(ColumnTypeSQL.INT, 16)
+        }
+    }
+
     private val source: DataSource by lazy {
         host.createDataSource()
     }
 
     init {
-        tableUser.workspace(source) { createTable() }.run()
-        tableQuest.workspace(source) { createTable() }.run()
-        tableTarget.workspace(source) { createTable() }.run()
-        tableTags.workspace(source) { createTable() }.run()
-        tableStorage.workspace(source) { createTable() }.run()
+        tableUser.createTable(source)
+        tableQuest.createTable(source)
+        tableTarget.createTable(source)
+        tableTags.createTable(source)
+        tableStorage.createTable(source)
+        tableNavigation.createTable(source)
     }
 
-    private fun userId(player: Player): Long {
-        if (saveUserId.contains(player.uniqueId)) return saveUserId[player.uniqueId]!!
+    private fun userId(uuid: UUID): Long {
+        if (saveUserId.contains(uuid)) return saveUserId[uuid]!!
         val uId = tableUser.select(source) {
             rows("id")
-            where { "uuid" eq player.uniqueId.toString() }
+            where { "uuid" eq uuid.toString() }
         }.map {
             getLong("id")
         }.firstOrNull() ?: -1L
-        saveUserId[player.uniqueId] = uId
+        saveUserId[uuid] = uId
         return uId
     }
 
@@ -137,7 +168,7 @@ class DatabaseSQL: Database() {
                 value(uuid.toString())
             }
         }
-        val uId = userId(player)
+        val uId = userId(uuid)
         tableQuest.select(source) {
             rows("id", "quest", "state", "time", "end")
             where { "user" eq uId }
@@ -176,19 +207,35 @@ class DatabaseSQL: Database() {
         }.map {
             player.storage()[getString("key")] = getString("value")
         }
+        tableNavigation.select(source) {
+            where { "user" eq uId }
+            rows("nav", "x", "y", "z", "world", "state")
+        }.map {
+            val navData = NavData(
+                getString("nav"),
+                Location(
+                    getString("world"),
+                    getDouble("x"),
+                    getDouble("y"),
+                    getDouble("z")
+                ).toBukkitLocation(),
+                NavData.State.fromInt(getInt("state"))
+            )
+            player.navData().add(navData)
+        }
     }
 
-    override fun createQuest(player: Player, questData: QuestData) {
+    override fun createQuest(uuid: UUID, questData: QuestData) {
         val questID = questData.id
         val state = questData.state.int
-        val uId = userId(player)
+        val uId = userId(uuid)
         tableQuest.insert(source, "user", "quest", "state", "time") {
             value(uId, questID, state, questData.time.toDate())
         }
     }
 
-    override fun removeQuest(player: Player, questID: String) {
-        val uId = userId(player)
+    override fun removeQuest(uuid: UUID, questID: String) {
+        val uId = userId(uuid)
         tableTarget.delete(source) {
             where {
                 and {
@@ -207,8 +254,8 @@ class DatabaseSQL: Database() {
         }
     }
 
-    override fun createTarget(player: Player, targetData: TargetData) {
-        val uId = userId(player)
+    override fun createTarget(uuid: UUID, targetData: TargetData) {
+        val uId = userId(uuid)
         val qId = findQuest(uId, targetData.questID)
         tableTarget.insert(source, "user", "quest", "id", "schedule", "state") {
             value(uId, qId, targetData.id, targetData.schedule, targetData.state.int)
@@ -222,8 +269,8 @@ class DatabaseSQL: Database() {
         }.firstOrNull { getLong("id") } ?: -1L
     }
 
-    override fun updateQuest(player: Player, questID: String, key: String, value: Any) {
-        val uId = userId(player)
+    override fun updateQuest(uuid: UUID, questID: String, key: String, value: Any) {
+        val uId = userId(uuid)
         tableQuest.update(source) {
             where {
                 and {
@@ -235,8 +282,8 @@ class DatabaseSQL: Database() {
         }
     }
 
-    override fun updateTarget(player: Player, target: TargetData, key: String, value: Any) {
-        val uId = userId(player)
+    override fun updateTarget(uuid: UUID, target: TargetData, key: String, value: Any) {
+        val uId = userId(uuid)
         val qId = findQuest(uId, target.questID)
         tableTarget.update(source) {
             where {
@@ -250,15 +297,15 @@ class DatabaseSQL: Database() {
         }
     }
 
-    override fun addTag(player: Player, tag: String) {
-        val uId = userId(player)
+    override fun addTag(uuid: UUID, tag: String) {
+        val uId = userId(uuid)
         tableTags.insert(source, "user", "tag") {
             value(uId, tag)
         }
     }
 
-    override fun removeTag(player: Player, tag: String) {
-        val uId = userId(player)
+    override fun removeTag(uuid: UUID, tag: String) {
+        val uId = userId(uuid)
         tableTags.delete(source) {
             where {
                 and {
@@ -269,23 +316,23 @@ class DatabaseSQL: Database() {
         }
     }
 
-    override fun clearTag(player: Player) {
+    override fun clearTag(uuid: UUID) {
         tableTags.delete(source) {
             where {
-                "user" eq player.uniqueId.toString()
+                "user" eq uuid.toString()
             }
         }
     }
 
-    override fun setStorage(player: Player, key: String, value: Any) {
-        val uId = userId(player)
+    override fun setStorage(uuid: UUID, key: String, value: Any) {
+        val uId = userId(uuid)
         tableStorage.insert(source, "user", "key", "value") {
             value(uId, key, value)
         }
     }
 
-    override fun removeStorage(player: Player, key: String) {
-        val uId = userId(player)
+    override fun removeStorage(uuid: UUID, key: String) {
+        val uId = userId(uuid)
         tableStorage.delete(source) {
             where {
                 and {
@@ -293,6 +340,34 @@ class DatabaseSQL: Database() {
                     "key" eq key
                 }
             }
+        }
+    }
+
+    override fun createNavigation(uuid: UUID, navId: String, navData: NavData) {
+        val uId = userId(uuid)
+        tableNavigation.insert(source, "user", "nav", "x", "y", "z", "world", "state") {
+            val loc = navData.location
+            value(
+                uId,
+                navId,
+                loc.x,
+                loc.y,
+                loc.z,
+                loc.world?.name?: "world",
+                navData.state.int)
+        }
+    }
+
+    override fun setNavigation(uuid: UUID, navId: String, key: String, value: Any) {
+        val uId = userId(uuid)
+        tableNavigation.update(source) {
+            where {
+                and {
+                    "user" eq uId
+                    "nav" eq navId
+                }
+            }
+            set(key, value)
         }
     }
 

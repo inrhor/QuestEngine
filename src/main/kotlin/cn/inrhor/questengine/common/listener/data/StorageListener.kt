@@ -13,7 +13,7 @@ object StorageListener {
         val key = ev.key
         val value = ev.value
         player.storage()[key] = value
-        Database.database.setStorage(player, key, value)
+        Database.database.setStorage(player.uniqueId, key, value)
     }
 
     @SubscribeEvent
@@ -21,7 +21,7 @@ object StorageListener {
         val player = ev.player
         val key = ev.key
         player.storage().remove(key)
-        Database.database.removeStorage(player, key)
+        Database.database.removeStorage(player.uniqueId, key)
     }
 
 }

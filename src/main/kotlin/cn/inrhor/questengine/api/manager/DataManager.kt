@@ -52,11 +52,16 @@ object DataManager {
      * @return 目标数据
      */
     fun Player.targetData(questID: String, targetID: String): TargetData? {
-        questData(questID)?.target?.forEach {
-            if (it.id == targetID) return it
-        }
-        return null
+        return questData(questID)?.target?.find { it.id == targetID }
     }
+
+    /**
+     * @return 导航数据列表
+     */
+    fun Player.navData(): MutableList<NavData> {
+        return getPlayerData().navData
+    }
+
 
     /**
      * @return 是否完成任务的所有目标
@@ -108,12 +113,5 @@ object DataManager {
      */
     fun Player.setTrackingData(questID: String, targetID: String = "") {
         getPlayerData().dataContainer.trackData = TrackData(questID, targetID)
-    }
-
-    /**
-     * 获取所有导航数据
-     */
-    fun Player.getNavAllData(): MutableCollection<NavData> {
-        return getPlayerData().navData.values
     }
 }

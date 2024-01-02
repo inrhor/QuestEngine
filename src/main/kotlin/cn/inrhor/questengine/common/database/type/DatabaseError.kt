@@ -3,9 +3,10 @@ package cn.inrhor.questengine.common.database.type
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
+import cn.inrhor.questengine.common.nav.NavData
 import org.bukkit.entity.Player
 
-class DatabaseError(val cause: Throwable): Database() {
+class DatabaseError(private val cause: Throwable): Database() {
 
     override fun pull(player: Player) {
         error()
@@ -48,6 +49,14 @@ class DatabaseError(val cause: Throwable): Database() {
     }
 
     override fun clearTag(player: Player) {
+        error()
+    }
+
+    override fun createNavigation(player: Player, navId: String, navData: NavData) {
+        error()
+    }
+
+    override fun setNavigation(player: Player, navId: String, key: String, value: Any) {
         error()
     }
 

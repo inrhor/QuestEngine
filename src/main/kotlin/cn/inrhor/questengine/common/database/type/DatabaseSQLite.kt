@@ -1,19 +1,24 @@
 package cn.inrhor.questengine.common.database.type
 
 import cn.inrhor.questengine.QuestEngine
+import cn.inrhor.questengine.api.manager.DataManager.navData
 import cn.inrhor.questengine.api.manager.DataManager.storage
 import cn.inrhor.questengine.api.manager.DataManager.tagsData
 import cn.inrhor.questengine.common.database.Database
 import cn.inrhor.questengine.common.database.data.DataStorage.getPlayerData
 import cn.inrhor.questengine.common.database.data.quest.QuestData
 import cn.inrhor.questengine.common.database.data.quest.TargetData
+import cn.inrhor.questengine.common.nav.NavData
 import cn.inrhor.questengine.common.quest.enum.StateType
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.getDataFolder
+import taboolib.common.util.Location
 import taboolib.module.database.ColumnTypeSQLite
 import taboolib.module.database.Table
 import taboolib.module.database.getHost
+import taboolib.platform.util.toBukkitLocation
 import java.io.File
+import java.util.*
 import javax.sql.DataSource
 
 class DatabaseSQLite: Database() {
@@ -83,6 +88,31 @@ class DatabaseSQLite: Database() {
         primaryKeyForLegacy += arrayOf("user", "key")
     }
 
+    private val tableNav = Table("${table}_nav", host) {
+        add("user") {
+            type(ColumnTypeSQLite.TEXT, 36)
+        }
+        add("nav") {
+            type(ColumnTypeSQLite.TEXT, 36)
+        }
+        add("state") {
+            type(ColumnTypeSQLite.INTEGER, 16)
+        }
+        add("x") {
+            type(ColumnTypeSQLite.NUMERIC, 16)
+        }
+        add("y") {
+            type(ColumnTypeSQLite.NUMERIC, 16)
+        }
+        add("z") {
+            type(ColumnTypeSQLite.NUMERIC, 16)
+        }
+        add("world") {
+            type(ColumnTypeSQLite.TEXT, 64)
+        }
+        primaryKeyForLegacy += arrayOf("user", "nav")
+    }
+
     private val dataSource: DataSource by lazy {
         host.createDataSource()
     }
@@ -92,12 +122,13 @@ class DatabaseSQLite: Database() {
         tableTarget.createTable(dataSource)
         tableTags.createTable(dataSource)
         tableStorage.createTable(dataSource)
+        tableNav.createTable(dataSource)
     }
 
-    override fun createQuest(player: Player, questData: QuestData) {
+    override fun createQuest(uuid: UUID, questData: QuestData) {
         tableQuest.insert(dataSource) {
             value(
-                player.uniqueId.toString(),
+                uuid.toString(),
                 questData.id,
                 questData.state.int,
                 questData.time,
@@ -105,25 +136,25 @@ class DatabaseSQLite: Database() {
         }
     }
 
-    override fun removeQuest(player: Player, questID: String) {
+    override fun removeQuest(uuid: UUID, questID: String) {
         tableTarget.delete(dataSource) {
             where {
-                "user" eq player.uniqueId.toString()
+                "user" eq uuid.toString()
                 "quest" eq questID
             }
         }
         tableQuest.delete(dataSource) {
             where {
-                "user" eq player.uniqueId.toString()
+                "user" eq uuid.toString()
                 "quest" eq questID
             }
         }
     }
 
-    override fun createTarget(player: Player, targetData: TargetData) {
+    override fun createTarget(uuid: UUID, targetData: TargetData) {
         tableTarget.insert(dataSource) {
             value(
-                player.uniqueId.toString(),
+                uuid.toString(),
                 targetData.questID,
                 targetData.id,
                 targetData.schedule,
@@ -132,20 +163,20 @@ class DatabaseSQLite: Database() {
         }
     }
 
-    override fun updateQuest(player: Player, questID: String, key: String, value: Any) {
+    override fun updateQuest(uuid: UUID, questID: String, key: String, value: Any) {
         tableQuest.update(dataSource) {
             where {
-                "user" eq player.uniqueId.toString()
+                "user" eq uuid.toString()
                 "quest" eq questID
             }
             set(key, value)
         }
     }
 
-    override fun updateTarget(player: Player, target: TargetData, key: String, value: Any) {
+    override fun updateTarget(uuid: UUID, target: TargetData, key: String, value: Any) {
         tableTarget.update(dataSource) {
             where {
-                "user" eq player.uniqueId.toString()
+                "user" eq uuid.toString()
                 "quest" eq target.questID
                 "target" eq target.id
             }
@@ -200,43 +231,85 @@ class DatabaseSQLite: Database() {
         }.map {
             player.storage()[getString("key")] = getString("value")
         }
-    }
-
-    override fun addTag(player: Player, tag: String) {
-        tableTags.insert(dataSource) {
-            value(player.uniqueId.toString(), tag)
+        tableNav.select(dataSource) {
+            where {
+                "user" eq uId
+            }
+        }.map {
+            val navData = NavData(
+                getString("nav"),
+                Location(
+                    getString("world"),
+                    getDouble("x"),
+                    getDouble("y"),
+                    getDouble("z")
+                ).toBukkitLocation(),
+                NavData.State.fromInt(getInt("state"))
+            )
+            player.navData().add(navData)
         }
     }
 
-    override fun removeTag(player: Player, tag: String) {
+    override fun addTag(uuid: UUID, tag: String) {
+        tableTags.insert(dataSource) {
+            value(uuid.toString(), tag)
+        }
+    }
+
+    override fun removeTag(uuid: UUID, tag: String) {
         tableTags.delete(dataSource) {
             where {
-                "user" eq player.uniqueId.toString()
+                "user" eq uuid.toString()
                 "tag" eq tag
             }
         }
     }
 
-    override fun clearTag(player: Player) {
+    override fun clearTag(uuid: UUID) {
         tableTags.delete(dataSource) {
             where {
-                "user" eq player.uniqueId.toString()
+                "user" eq uuid.toString()
             }
         }
     }
 
-    override fun setStorage(player: Player, key: String, value: Any) {
+    override fun setStorage(uuid: UUID, key: String, value: Any) {
         tableStorage.insert(dataSource) {
-            value(player.uniqueId.toString(), key, value)
+            value(uuid.toString(), key, value)
         }
     }
 
-    override fun removeStorage(player: Player, key: String) {
+    override fun removeStorage(uuid: UUID, key: String) {
         tableStorage.delete(dataSource) {
             where {
-                "user" eq player.uniqueId.toString()
+                "user" eq uuid.toString()
                 "key" eq key
             }
+        }
+    }
+
+    override fun createNavigation(uuid: UUID, navId: String, navData: NavData) {
+        tableNav.insert(dataSource) {
+            val loc = navData.location
+            value(
+                uuid.toString(),
+                navId,
+                navData.state.int,
+                loc.x,
+                loc.y,
+                loc.z,
+                loc.world?.name?: "world"
+            )
+        }
+    }
+
+    override fun setNavigation(uuid: UUID, navId: String, key: String, value: Any) {
+        tableNav.update(dataSource) {
+            where {
+                "user" eq uuid.toString()
+                "nav" eq navId
+            }
+            set(key, value)
         }
     }
 

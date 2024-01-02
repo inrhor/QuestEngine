@@ -58,7 +58,7 @@ object PluginLoader {
         Bukkit.getOnlinePlayers().forEach {
             val data = it.getPlayerData()
             data.dialogData.dialogMap.values.forEach { d -> d.end() }
-            data.navData.values.forEach { n -> n.stop() }
+            data.navData.forEach { a -> a.stop(it) }
             DataStorage.removePlayerData(it.uniqueId)
         }
         clearMap()

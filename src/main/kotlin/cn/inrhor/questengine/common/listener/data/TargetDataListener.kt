@@ -11,7 +11,7 @@ object TargetDataListener {
         val targetData = ev.targetData
         targetData.schedule += ev.addProgress
         val p = ev.player
-        Database.database.updateTarget(p, targetData, "schedule", targetData.schedule)
+        Database.database.updateTarget(p.uniqueId, targetData, "schedule", targetData.schedule)
     }
 
     @SubscribeEvent
@@ -19,13 +19,13 @@ object TargetDataListener {
         val targetData = ev.targetData
         targetData.schedule = ev.setProgress
         val p = ev.player
-        Database.database.updateTarget(p, targetData, "schedule", targetData.schedule)
+        Database.database.updateTarget(p.uniqueId, targetData, "schedule", targetData.schedule)
     }
 
     @SubscribeEvent
     fun onSetState(ev: TargetDataEvent.SetState) {
         val targetData = ev.targetData
-        Database.database.updateTarget(ev.player, targetData, "state", targetData.state)
+        Database.database.updateTarget(ev.player.uniqueId, targetData, "state", targetData.state)
     }
 
 }

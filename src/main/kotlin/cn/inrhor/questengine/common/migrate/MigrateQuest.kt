@@ -1,4 +1,4 @@
-package cn.inrhor.questengine.common.quest
+package cn.inrhor.questengine.common.migrate
 
 import cn.inrhor.questengine.common.quest.manager.QuestManager
 import cn.inrhor.questengine.common.quest.manager.QuestManager.saveFile
@@ -14,7 +14,7 @@ import taboolib.common.platform.function.warning
  *
  * 本次迁移任务：目标条目的变化
  */
-class MigrateMode {
+class MigrateQuest {
 
     fun task() {
         info("[ 迁移 ] 开始迁移任务")

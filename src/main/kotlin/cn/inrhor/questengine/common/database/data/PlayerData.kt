@@ -16,5 +16,5 @@ data class PlayerData(
     val dialogData: DialogData = DialogData(),
     var dataContainer: DataContainer = DataContainer(),
     val chatCache: ChatCache = ChatCache(),
-    val navData: MutableMap<String, NavData> = mutableMapOf(),
+    val navData: MutableList<NavData> = mutableListOf(),
 )
