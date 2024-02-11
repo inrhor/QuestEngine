@@ -21,7 +21,9 @@ Minecraft - 面向异世界的任务引擎系统
 ### Kts
 ```
 repositories {
-    maven("https://repo.hiusers.com/artifactory/libs_release/")
+    maven {
+        url = uri("https://repo.hiusers.com/releases")
+    }
 }
 
 dependencies {

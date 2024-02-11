@@ -48,15 +48,9 @@ taboolib {
 
 repositories {
     mavenCentral()
-    maven("https://jitpack.io") // ItemsAdder
-    maven("https://repo.dmulloy2.net/repository/public/") // ProtocolLib
-    maven("https://repo.codemc.org/repository/maven-public/") // authMe
-    maven("https://nexus.frengor.com/repository/public/") // UltimateAdvancementAPI
     maven {
-        name = "citizens-repo"
-        url = uri("https://maven.citizensnpcs.co/repo")
-    } // Citizens
-    maven("https://repo.hiusers.com/artifactory/libs_release/")
+        url = uri("https://repo.hiusers.com/releases")
+    }
 }
 
 dependencies {
@@ -72,19 +66,19 @@ dependencies {
     compileOnly("ink.ptms.core:v11100:11100")
     compileOnly("ink.ptms.core:v11000:11000")
     compileOnly("ink.ptms.core:v10900:10900")
-    implementation("api:worldedit:7.2.15")
-    implementation("api:CsgPlusPro:1.9.4-Beta")
-    implementation("nl.martenm:ServerTutorialPlus:1.24.5")
-    implementation("api:MythicLib:1.5.2")
-    implementation("api:worldguard:1.5.0")
-    compileOnly("net.citizensnpcs:citizens-main:2.0.30-SNAPSHOT") {
-        exclude(group = "*", module = "*")
-    }
+    implementation("plugin:BigDoors:0.1.8.48")
+    implementation("plugin:WorldEdit:7.2.15")
+    implementation("plugin:WorldGuard:1.5.0")
+    implementation("plugin:AuthMe:5.6.0")
+    implementation("plugin:CsgPlusPro:1.9.4")
+    implementation("plugin:ServerTutorialPlus:1.24.5")
+    implementation("plugin:MythicLib:1.5.2")
+    implementation("plugin:ItemsAdder:3.6.3")
+    implementation("plugin:AuthMe:5.6.0")
+    implementation("plugin:ProtocolLib:5.1.0")
+    implementation("api:Citizens:2.0.33")
     compileOnly("ink.ptms:Adyeshach:1.4.21")
-    compileOnly("fr.xephi:authme:5.6.0-beta2")
-    compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
-    compileOnly("com.github.LoneDev6:api-itemsadder:3.2.5")
     compileOnly("cc.trixey.invero:framework-common:1.0.0-snapshot-1")
     compileOnly("cc.trixey.invero:framework-bukkit:1.0.0-snapshot-1")
     compileOnly("cc.trixey.invero:module-common:1.0.0-snapshot-1")
