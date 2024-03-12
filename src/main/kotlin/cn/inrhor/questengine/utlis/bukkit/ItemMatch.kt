@@ -119,7 +119,7 @@ class ItemMatch(val itemType: ItemType = ItemType.MINECRAFT,
         }else {
             val itemStack = player.equipment?.itemInMainHand?: return false
             if (itemStack.amount >= amount) {
-                itemStack.amount -= amount
+                if (take) itemStack.amount -= amount
                 return true
             }
         }
